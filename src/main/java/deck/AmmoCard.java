@@ -6,21 +6,13 @@ import java.util.*;
  * 
  */
 public class AmmoCard extends Card {
+    private int[] cubes;
+    private boolean hasPowerUp;
 
-    /**
-     * Default constructor
-     */
+
+
     public AmmoCard() {
     }
 
-    /**
-     * 
-     */
-    private int[] cubes;
-
-    /**
-     * 
-     */
-    private boolean hasPowerUp;
 
 }

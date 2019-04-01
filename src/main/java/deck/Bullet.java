@@ -7,16 +7,12 @@ import java.util.*;
  */
 public class Bullet {
 
-    /**
-     * Default constructor
-     */
+    private Color color;
+
+
     public Bullet() {
     }
 
-    /**
-     * 
-     */
-    private Color color;
 
 
 }

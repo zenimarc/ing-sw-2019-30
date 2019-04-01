@@ -7,26 +7,14 @@ import java.util.*;
  */
 public abstract class WeaponCard extends Card {
 
-    /**
-     * Default constructor
-     */
+
+    private ArrayList<Bullet> cost;
+    private ArrayList<Attack> attacks;
+    private boolean isLoaded;
+
     public WeaponCard() {
     }
 
-    /**
-     * l'array è di tre elementi, indica in ordine il costo di ogni colore. es. array [2, 0, 1] paghi 2 rossi, 0 gialli e 1 blu.
-     */
-    private ArrayList<Bullet> cost;
-
-    /**
-     * 
-     */
-    private ArrayList<Attack> attacks;
-
-    /**
-     * 
-     */
-    private boolean isLoaded;
 
 
     /**

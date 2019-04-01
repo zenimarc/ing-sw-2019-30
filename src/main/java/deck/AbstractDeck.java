@@ -7,16 +7,10 @@ import java.util.*;
  */
 public abstract class AbstractDeck {
 
-    /**
-     * Default constructor
-     */
+    private List<Card> cards;
+
     public AbstractDeck() {
     }
-
-    /**
-     * 
-     */
-    private List<Card> cards;
 
     /**
      * @return
