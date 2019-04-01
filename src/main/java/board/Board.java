@@ -9,37 +9,18 @@ import java.util.*;
  */
 public class Board {
 
+    private int numSkulls;
+    private HashMap<Player, Integer> playerSkulls;
+    private List<Door> doors;
+    private Cell[] billboard;
+    private boolean isFinalFrenzy;
+
+
     /**
      * Default constructor
      */
     public Board() {
     }
-
-    /**
-     * 
-     */
-    private int numSkulls;
-
-    /**
-     * HashMap<Player, int>
-     * teschi di ogni player
-     */
-    private HashMap<Player, Integer> playerSkulls;
-
-    /**
-     * 
-     */
-    private List<Door> doors;
-
-    /**
-     * in realtà il tipo è Cell[4][3]
-     */
-    private Cell[] billboard;
-
-    /**
-     * 
-     */
-    private boolean isFinalFrenzy;
 
 
     /**

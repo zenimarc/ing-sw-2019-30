@@ -11,31 +11,18 @@ import java.util.*;
  */
 public class Cell {
 
+    private Color color;
+    private ArrayList<Pawn> pawns;
+    private List<Cell> shootableCells;
+    private List<Cell> walkableCells;
+
+
     /**
      * Default constructor
      */
     public Cell() {
     }
 
-    /**
-     * 
-     */
-    private Color color;
-
-    /**
-     * 
-     */
-    private ArrayList<Pawn> pawns;
-
-    /**
-     * 
-     */
-    private List<Cell> shootableCells;
-
-    /**
-     * 
-     */
-    private List<Cell> walkableCells;
 
 
     /**

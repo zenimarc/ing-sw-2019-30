@@ -7,20 +7,11 @@ import java.util.*;
  */
 public class Door {
 
-    /**
-     * Default constructor
-     */
+    private Cell cell1;
+    private Cell cell2;
+
     public Door() {
     }
 
-    /**
-     * 
-     */
-    private Cell cell1;
-
-    /**
-     * 
-     */
-    private Cell cell2;
 
 }
