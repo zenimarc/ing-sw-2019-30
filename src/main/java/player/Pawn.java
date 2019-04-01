@@ -9,20 +9,15 @@ import java.util.*;
  */
 public class Pawn {
 
+    private Player player;
+    private Cell position;
+
     /**
      * Default constructor
      */
     public Pawn() {
     }
 
-    /**
-     * 
-     */
-    private Player player;
 
-    /**
-     * 
-     */
-    private Cell position;
 
 }
