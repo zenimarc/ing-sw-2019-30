@@ -9,25 +9,40 @@ import java.util.*;
 /**
  * 
  */
-public class Cell {
+public abstract class  Cell {
 
-    private Color color;
-    private ArrayList<Pawn> pawns;
-    private List<Cell> shootableCells;
-    private List<Cell> walkableCells;
+    protected Color color;
+    protected ArrayList<Pawn> pawns;
+    protected List<Cell> shootableCells;
+    protected List<Cell> walkableCells;
 
+    public Cell(Color color) {
+        pawns = new ArrayList<Pawn>();
+        shootableCells = new ArrayList<Cell>();
+        walkableCells = new ArrayList<Cell>();
+        this.color = color;
+    }
 
-    public Cell() {
+    public Cell(){
+        this(null);
     }
 
 
+    //TODO eliminerei questo metodo perchè in NormalCell ok tornare Card ma in RegenerationCell non ha senso - Gio
     public Card getCard(){
     // Implementation by "sons"
         return null;
     }
 
-    public void setCard(Card card) {
+    //TODO metodo da aggiungere a UML - Gio
+    public Card removeCard(Card card){
         // Implementation by "sons"
+        return null;
+    }
+
+    public boolean setCard(Card card) {
+        // Implementation by "sons"
+        return  false;
     }
 
     public boolean isInShootable(Cell cell) {
