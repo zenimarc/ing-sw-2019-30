@@ -17,47 +17,25 @@ public class Cell {
     private List<Cell> walkableCells;
 
 
-    /**
-     * Default constructor
-     */
     public Cell() {
     }
 
 
-
-    /**
-     * @return
-     */
-    public Card getCard() {
-        // TODO implement here
+    public Card getCard(){
+    // Implementation by "sons"
         return null;
     }
 
-    /**
-     * @param card 
-     * @return
-     */
     public void setCard(Card card) {
-        // TODO implement here
-
+        // Implementation by "sons"
     }
 
-    /**
-     * @param cell 
-     * @return
-     */
     public boolean isInShootable(Cell cell) {
-        // TODO implement here
-        return false;
+        return shootableCells.contains(cell);
     }
 
-    /**
-     * @param cell Cell 
-     * @return
-     */
     public boolean isInWalkable(Cell cell) {
-        // TODO implement here
-        return false;
+        return walkableCells.contains(cell);
     }
 
 }
