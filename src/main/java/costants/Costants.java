@@ -2,7 +2,9 @@ package costants;
 
 public enum Costants {
 
-    MAX_WEAPON_REGENERATIONCELL(3);
+    MAX_WEAPON_REGENERATIONCELL(3),
+    DIMENSION_X(4),
+    DIMENSION_Y(3);
 
     private int value;
 
