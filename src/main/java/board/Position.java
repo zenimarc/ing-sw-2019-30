@@ -27,4 +27,12 @@ public class Position {
         if(y == p.y && (x==p.x-1 || x==p.x+1)){return true;}
         return false;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }
