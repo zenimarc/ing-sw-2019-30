@@ -8,9 +8,7 @@ import deck.WeaponCard;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * 
- */
+
 public class RegenerationCell extends Cell {
 
     private WeaponCard[] weaponCard;
@@ -80,7 +78,6 @@ public class RegenerationCell extends Cell {
                 return wc;
             }
         }
-
         return null;
     }
 

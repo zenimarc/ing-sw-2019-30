@@ -14,12 +14,12 @@ public abstract class  Cell {
     protected Color color;
     protected ArrayList<Pawn> pawns;
     protected List<Cell> shootableCells;
-    protected List<Cell> walkableCells;
+  //  protected List<Cell> walkableCells;
 
     public Cell(Color color) {
         pawns = new ArrayList<Pawn>();
         shootableCells = new ArrayList<Cell>();
-        walkableCells = new ArrayList<Cell>();
+    //    walkableCells = new ArrayList<Cell>();
         this.color = color;
     }
 
@@ -47,8 +47,8 @@ public abstract class  Cell {
         return shootableCells.contains(cell);
     }
 
-    public boolean isInWalkable(Cell cell) {
+   /* public boolean isInWalkable(Cell cell) {
         return walkableCells.contains(cell);
-    }
+    }*/
 
 }

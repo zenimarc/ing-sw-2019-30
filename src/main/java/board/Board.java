@@ -12,7 +12,7 @@ public class Board {
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;
     private List<Door> doors;
-    private Cell[] billboard;
+    private Cell[][] billboard;
     private boolean isFinalFrenzy;
 
 
@@ -20,6 +20,7 @@ public class Board {
      * Default constructor
      */
     public Board() {
+        billboard = new Cell[4][3];
     }
 
 
