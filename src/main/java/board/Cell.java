@@ -28,8 +28,7 @@ public abstract class  Cell {
     }
 
 
-    //TODO eliminerei questo metodo perchè in NormalCell ok tornare Card ma in RegenerationCell non ha senso - Gio
-    public Card getCard(){
+    public Card getCard(int p){
     // Implementation by "sons"
         return null;
     }

@@ -47,6 +47,13 @@ public class RegenerationCell extends Cell {
     }
 
     @Override
+    public Card getCard(int p) {
+
+        if(p>=3){return null;}
+        return weaponCard[p];
+    }
+
+    @Override
     public boolean setCard(Card card) {
         //check card is a weaponCard
         if(card.getClass() != WeaponCard.class){return false;}

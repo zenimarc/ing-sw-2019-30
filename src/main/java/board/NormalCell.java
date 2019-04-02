@@ -32,7 +32,7 @@ public class NormalCell extends Cell {
 
     //WARNING: Potrebbe tornare null;
     @Override
-    public Card getCard() {
+    public Card getCard(int p) {
         return ammoCard;
     }
 
