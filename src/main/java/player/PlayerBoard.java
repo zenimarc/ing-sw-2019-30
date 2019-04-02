@@ -27,10 +27,10 @@ public class PlayerBoard {
     }
 
     /**
+     *
      * Si occuperà del conteggio effettivo dei punti da assegnare ad ogni player (guardando il numDeath ecc), verrà divisa in sottofunzioni.
      */
     public HashMap<Player, Integer> getPoints() {
-        // TODO implement here
         return null;
     }
 
