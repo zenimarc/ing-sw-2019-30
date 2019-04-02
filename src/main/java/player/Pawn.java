@@ -15,7 +15,21 @@ public class Pawn {
     /**
      * Default constructor
      */
-    public Pawn() {
+    public Pawn(){
+        this(null, null);
+    }
+
+    public Pawn(Player player){
+        this(player, null);
+    }
+
+    public Pawn(Player player, Cell position){
+        this.player = player;
+        this.position = position;
+    }
+
+    public void setPosition(Cell cell){ //TODO: la chiamerà il controller quando il giocatore decide dove iniziare, è public? -Marco
+        this.position = cell;
     }
 
 

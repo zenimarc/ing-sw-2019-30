@@ -18,6 +18,8 @@ public class PlayerBoard {
      * Default constructor
      */
     public PlayerBoard() {
+        this.marks = new HashMap<Player, Integer>();
+        this.numDeaths = 0;
     }
 
     /**
