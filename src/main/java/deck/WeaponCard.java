@@ -13,18 +13,18 @@ public abstract class WeaponCard extends Card {
     private boolean isLoaded;
 
     public WeaponCard() {
+        this(null, null);
     }
 
-
-
-    /**
-     * @return
-     */
-    public Bullet getFirst() {
-        // TODO implement here
-        return null;
+    public WeaponCard(ArrayList<Bullet> cost, ArrayList<Attack> attacks) {
+        cost = new ArrayList<Bullet>();
+        attacks = new ArrayList<Attack>();
+        isLoaded = false;
     }
 
+    public ArrayList<Bullet> getCost(){
+        return this.cost;
+    }
     /**
      *
      * @return
