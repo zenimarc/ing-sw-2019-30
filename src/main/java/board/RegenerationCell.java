@@ -1,12 +1,11 @@
 package board;
 
-import costants.Costants;
+import constants.Constants;
 import deck.Card;
 import deck.Color;
 import deck.WeaponCard;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class RegenerationCell extends Cell {
@@ -28,7 +27,7 @@ public class RegenerationCell extends Cell {
     public RegenerationCell(Color color, WeaponCard[] weaponCard){
         super(color);
 
-        this.weaponCard = new WeaponCard[Costants.MAX_WEAPON_REGENERATIONCELL.getValue()];
+        this.weaponCard = new WeaponCard[Constants.MAX_WEAPON_REGENERATIONCELL.getValue()];
 
         for(int i=0;i<this.weaponCard.length && i<weaponCard.length;i++){
             this.weaponCard[i] = weaponCard[i];

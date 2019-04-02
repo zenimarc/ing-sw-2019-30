@@ -1,5 +1,6 @@
 package player;
 
+import constants.Constants;
 import deck.Bullet;
 import deck.PowerCard;
 import deck.WeaponCard;
@@ -20,7 +21,14 @@ public class Player {
     private ArrayList<Bullet> ammo;
 
 
-    public Player() {
+    public Player(String nickname) {
+        this.nickname = nickname;
+        this.pawn = new Pawn(this);
+        this.points = 0; //a new player has 0 points
+        this.playerBoard = new PlayerBoard();
+        this.weapons = new WeaponCard[Constants.MAX_WEAPON_HAND_SIZE.getValue()];
+        this.powerups = new PowerCard[Constants.MAX_POWER_HAND_SIZE.getValue()];
+        this.ammo = new ArrayList<Bullet>();
     }
 
 
