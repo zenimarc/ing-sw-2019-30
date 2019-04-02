@@ -22,13 +22,17 @@ public abstract class WeaponCard extends Card {
         isLoaded = false;
     }
 
-    public ArrayList<Bullet> getCost(){
-        return this.cost;
+    public ArrayList<Attack> getAttacks(){
+        return this.attacks;
     }
     /**
      *
      * @return
      */
+    public ArrayList<Bullet> getCost(){
+        return this.cost;
+    }
+
     public Attack getAttack(int idAttack) {
         // TODO implement here
         return null;

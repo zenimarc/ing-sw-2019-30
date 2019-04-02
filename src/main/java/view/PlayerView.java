@@ -10,6 +10,7 @@ import java.util.*;
  */
 public class PlayerView {
 
+
     /**
      * Default constructor
      */
@@ -35,7 +36,9 @@ public class PlayerView {
 
 
     public boolean grab(Cell cell) {
-        // TODO implement here
+        /**if(player.Playerboard.damageTrack[2)!= null)
+         *
+         */
         return false;
     }
 
