@@ -1,5 +1,7 @@
 package player;
 
+import constants.Constants;
+
 import java.util.*;
 
 /**
@@ -7,6 +9,7 @@ import java.util.*;
  */
 public class PlayerBoard {
 
+    //tiene la lista dei giocatori che hanno colpito
     private Player[] damageTrack;
     /**
      * tiene per ogni giocatore i marker che ha inflitto
@@ -18,6 +21,7 @@ public class PlayerBoard {
      * Default constructor
      */
     public PlayerBoard() {
+        this.damageTrack = new Player[Constants.MAX_DAMAGE.getValue()];
         this.marks = new HashMap<Player, Integer>();
         this.numDeaths = 0;
     }
