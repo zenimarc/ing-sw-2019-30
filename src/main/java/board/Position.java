@@ -21,4 +21,10 @@ public class Position {
         }
         return false;
     }
+
+    public boolean isNear(Position p){
+        if(x == p.x && (y==p.y-1 || y==p.y+1)){return true;}
+        if(y == p.y && (x==p.x-1 || x==p.x+1)){return true;}
+        return false;
+    }
 }
