@@ -69,32 +69,21 @@ public class Billboard {
 
         if(step==1) return canMove(start,goal);
 
-        int xStep = 0, yStep = 0;
-
-        int necessaryStep =0;
-
         Position startPosition = billboard.get(start);
         Position goalPosition = billboard.get(goal);
 
         //Se stesso colore basta contare numero di passi
         if(start.color == goal.color){
-            //xStep = startPosition.getX()-goalPosition.getX();
-            //yStep = startPosition.getY()-goalPosition.getY();
-
-            necessaryStep = startPosition.getX()-goalPosition.getX();
-            necessaryStep += startPosition.getY()-goalPosition.getY();
-
-            return step>=necessaryStep;
+            return step>= goalPosition.distance(startPosition);
         }else{
-            //TODO colore diverso
+            //TODO colore diverso -gio
+            //TODO rivedere stream() - gio
 
+            //Find port from actual color
             List<Cell> portMyColor = billboard.keySet().stream().filter(x -> {
                 if(doors.stream().filter(y -> y.getCell1()==x || y.getCell2()==x).findFirst().isPresent()) return true;
                 else return false;
             }).collect(Collectors.toList());
-
-
-
 
 
         }
@@ -148,6 +137,10 @@ public class Billboard {
         doors.add(new Door(c12, c22));
 
         Billboard myBillboard = new Billboard(mappaProva,doors);
+
+        System.out.println(myBillboard.canMove(c01,c12));
+
+        System.out.println(myBillboard.canMove(c01,c12,3));
 
 
     }
