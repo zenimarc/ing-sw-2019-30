@@ -13,12 +13,12 @@ public abstract class  Cell {
 
     protected Color color;
     protected ArrayList<Pawn> pawns;
-    protected List<Cell> shootableCells;
+  //  protected List<Cell> shootableCells;
   //  protected List<Cell> walkableCells;
 
     public Cell(Color color) {
         pawns = new ArrayList<Pawn>();
-        shootableCells = new ArrayList<Cell>();
+    //    shootableCells = new ArrayList<Cell>();
     //    walkableCells = new ArrayList<Cell>();
         this.color = color;
     }
@@ -38,15 +38,17 @@ public abstract class  Cell {
         return null;
     }
 
+    public Color getColor(){return color;}
+
     public boolean setCard(Card card) {
         // Implementation by "sons"
         return  false;
     }
 
-    public boolean isInShootable(Cell cell) {
+   /* public boolean isInShootable(Cell cell) {
         return shootableCells.contains(cell);
     }
-
+*/
    /* public boolean isInWalkable(Cell cell) {
         return walkableCells.contains(cell);
     }*/
