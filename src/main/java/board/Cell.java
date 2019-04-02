@@ -29,12 +29,12 @@ public abstract class  Cell {
 
 
     //TODO eliminerei questo metodo perchè in NormalCell ok tornare Card ma in RegenerationCell non ha senso - Gio
+    //Metterei i metodi specifici a normal e regeneration cell
     public Card getCard(){
     // Implementation by "sons"
         return null;
     }
 
-    //TODO metodo da aggiungere a UML - Gio
     public Card removeCard(Card card){
         // Implementation by "sons"
         return null;
