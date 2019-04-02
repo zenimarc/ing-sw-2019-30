@@ -48,7 +48,6 @@ public class RegenerationCell extends Cell {
 
     @Override
     public Card getCard(int p) {
-
         if(p>=3){return null;}
         return weaponCard[p];
     }

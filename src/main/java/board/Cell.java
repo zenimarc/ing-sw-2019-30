@@ -33,7 +33,6 @@ public abstract class  Cell {
         return null;
     }
 
-    //TODO metodo da aggiungere a UML - Gio
     public Card removeCard(Card card){
         // Implementation by "sons"
         return null;
