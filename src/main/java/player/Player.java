@@ -31,7 +31,12 @@ public class Player {
         this.ammo = new ArrayList<Bullet>();
     }
 
+    public PlayerBoard getPlayerBoard(){
+        return this.playerBoard;
+    }
 
-
-
+    @Override
+    public String toString() {
+        return this.nickname;
+    }
 }
