@@ -34,6 +34,13 @@ public class Billboard {
      * End constructors
      */
 
+    /**
+     * Say if exist in this a Door between c1 and c2 (or c2 and c1)
+     * @param c1 First Cell
+     * @param c2 Second Cell
+     * @return true if exist door(c1, c2) else false
+     */
+
     public boolean existPort(Cell c1, Cell c2) {
 
         return doors.stream()
