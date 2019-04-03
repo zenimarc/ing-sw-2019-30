@@ -34,6 +34,9 @@ public class PlayerBoard {
             damageTrack.add(player);
         //se ne ha già 12 non fa niente
     }
+    public int getNumDamages(){
+        return damageTrack.size();
+    }
 
     /**
      * Si occuperà del conteggio effettivo dei punti da assegnare ad ogni player (guardando il numDeath ecc), verrà divisa in sottofunzioni.
