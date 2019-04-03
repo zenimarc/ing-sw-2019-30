@@ -7,19 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Billboard {
+/**
+ * Billboards' instance is a billboard's astraction, know cell position
+ */
 
+public class Billboard {
 
     private HashMap<Cell, Position> billboard;
     private List<Door> doors;
-
 
     /**
      * Constructors
      */
 
     public Billboard(){
-        doors = new ArrayList<Door>();
+        doors = new ArrayList<>();
         billboard = new HashMap<>();
     }
 
@@ -35,7 +37,7 @@ public class Billboard {
     public boolean existPort(Cell c1, Cell c2) {
 
         return doors.stream()
-                .filter(x -> (x.getCell1() == c1 && x.getCell2() == c2) || (x.getCell1() == c2 && x.getCell2() == c1)).findFirst().isPresent();
+                .anyMatch(x -> (x.getCell1() == c1 && x.getCell2() == c2) || (x.getCell1() == c2 && x.getCell2() == c1));
 
     }
 
@@ -80,24 +82,29 @@ public class Billboard {
      */
     private ArrayList<Cell> sameColorDoor(Color color){
         ArrayList<Cell> sameColor = sameColorCell(color);
-        return sameColor.stream().filter(x -> {
-
-            if(doors.stream().filter(y-> y.getCell2()==x || y.getCell1()==x).findFirst().isPresent()) return true;
-            else return false;
-
-        }).collect(Collectors.toCollection(ArrayList::new));
+        return sameColor.stream().filter(x ->
+                (doors.stream()
+                        .anyMatch(y-> y.getCell2()==x || y.getCell1()==x))
+        ).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
      * This function return the distance between two billboard's cells
      * @param c1
      * @param c2
-     * @return
+     * @return distance c1->c2
      */
     private int cellDistance(Cell c1, Cell c2){
         return billboard.get(c1).distance(billboard.get(c2));
     }
 
+    /**
+     * This return a sub-List, from cells, attainable from c in step steps
+     * @param cells list of cells
+     * @param c start cell
+     * @param step max num of steps
+     * @return sub-list of cells
+     */
     private ArrayList<Cell> attainableCell (ArrayList<Cell> cells, Cell c, int step){
 
         return cells.stream()
@@ -126,11 +133,11 @@ public class Billboard {
 
             //Select only doorCell attainable in step-1 steps from goalCell, if not exist return false
             ArrayList<Cell> goalCellDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
-            if(goalCellDoor.size()==0) return false;
+            if(goalCellDoor.isEmpty()) return false;
 
             //select only doorCell attainable in step-1 steps from startCell, if not exist return false
             ArrayList<Cell> startCellDoor = attainableCell(sameColorDoor(start.color), start, step-1);
-            if(startCellDoor.size()==0) return false;
+            if(startCellDoor.isEmpty()) return false;
 
             //select door player can pass to arrive in goalCell
             //all possibleDoor has cell1.color == start.color
@@ -156,7 +163,7 @@ public class Billboard {
         return false;
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         HashMap<Cell, Position> mappaProva = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
