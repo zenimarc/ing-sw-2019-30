@@ -11,30 +11,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BillboardTest {
 
-    Billboard myBillboard;
-    HashMap<Cell, Position> mappaProva = new HashMap<>();
-    ArrayList<Door> doors = new ArrayList<>();
+    private static Billboard myBillboard;
+    private static HashMap<Cell, Position> mappaProva = new HashMap<>();
+    private static ArrayList<Door> doors = new ArrayList<>();
+
+    private static Cell c00 = new NormalCell(Color.GREEN);
+    private static Cell c10 = new NormalCell(Color.BLUE);
+    private static Cell c20 = new NormalCell(Color.BLUE);
+    private static Cell c30 = new NormalCell(Color.BLUE);
+
+    private static Cell c01 = new NormalCell(Color.YELLOW);
+    private static Cell c11 = new NormalCell(Color.YELLOW);
+    private static Cell c21 = new NormalCell(Color.RED);
+    private static Cell c31 = new NormalCell(Color.RED);
+
+    private static Cell c02 = new NormalCell(Color.YELLOW);
+    private static Cell c12 = new NormalCell(Color.YELLOW);
+    private static Cell c22 = new NormalCell(Color.WHITE);
+    private static Cell c32 = new NormalCell();
 
     @BeforeAll
-    public void init(){
+    public static void init(){
 
         //CREATE A MAP
-
-        Cell c00 = new NormalCell(Color.GREEN);
-        Cell c10 = new NormalCell(Color.BLUE);
-        Cell c20 = new NormalCell(Color.BLUE);
-        Cell c30 = new NormalCell(Color.BLUE);
-
-        Cell c01 = new NormalCell(Color.YELLOW);
-        Cell c11 = new NormalCell(Color.YELLOW);
-        Cell c21 = new NormalCell(Color.RED);
-        Cell c31 = new NormalCell(Color.RED);
-
-        Cell c02 = new NormalCell(Color.YELLOW);
-        Cell c12 = new NormalCell(Color.YELLOW);
-        Cell c22 = new NormalCell(Color.WHITE);
-        Cell c32 = new NormalCell();
-
 
         mappaProva.put(c00, new Position(0, 0));
         mappaProva.put(c10, new Position(1, 0));
@@ -66,10 +65,11 @@ class BillboardTest {
 
     @Test
     void existPort() {
-
-
-
-
+        for(Door door:doors){
+            assertEquals(myBillboard.existPort(door.getCell1(),door.getCell2()),true);
+        }
+        assertEquals(myBillboard.existPort(c00,c22), false);
+        assertEquals(myBillboard.existPort(c00,c11), false);
     }
 
     @Test
