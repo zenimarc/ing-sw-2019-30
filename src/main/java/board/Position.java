@@ -13,6 +13,7 @@ public class Position {
 
     @Override
     public boolean equals(Object obj) {
+        if(obj== null) return false;
 
         if(obj.getClass()==Position.class){
             Position p = (Position) obj;
