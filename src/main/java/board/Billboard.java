@@ -42,10 +42,8 @@ public class Billboard {
      */
 
     public boolean existPort(Cell c1, Cell c2) {
-
         return doors.stream()
                 .anyMatch(x -> (x.getCell1() == c1 && x.getCell2() == c2) || (x.getCell1() == c2 && x.getCell2() == c1));
-
     }
 
     /**
@@ -58,7 +56,7 @@ public class Billboard {
      * @param goal goal Cell
      * @return true if player can move from start to go, else false
      */
-    private boolean canMove(Cell start, Cell goal){
+    private boolean canMoveSingleStep(Cell start, Cell goal){
 
         Position startPosition = billboard.get(start);
         Position goalPosition = billboard.get(goal);
@@ -130,7 +128,7 @@ public class Billboard {
      */
     public boolean canMove(Cell start, Cell goal, int step){
 
-        if(step==1) return canMove(start,goal);
+        if(step==1) return canMoveSingleStep(start,goal);
 
         if(start.color == goal.color){
             //Start and Goal same color so distance = num of cell
