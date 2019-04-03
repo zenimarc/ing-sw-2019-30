@@ -7,17 +7,14 @@ import java.util.*;
  */
 public abstract class AbstractDeck {
 
-    private List<Card> cards;
+    protected List<Card> cards;
 
     public AbstractDeck() {
+        this.cards = null;
     }
 
     /**
      * @return
      */
-    public int size() {
-        // TODO implement here
-        return 0;
-    }
 
 }

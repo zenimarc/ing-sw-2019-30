@@ -9,10 +9,10 @@ public class Bullet {
 
     private Color color;
 
-    //TODO
-    /**public Bullet() {
-        this.color = WHITE;
-    }**/
+
+    public Bullet() {
+        this.color = null;
+    }
 
     public Bullet(Color color) {
         this.color = color;

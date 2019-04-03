@@ -10,11 +10,11 @@ public class AmmoCard extends Card {
     private boolean hasPowerUp;
 
 
-/** TODO
+
     public AmmoCard() {
-        this.cubes = [0,0,0];
+        this.cubes = new int[]{0, 0, 0};
     }
-**/
+
     public AmmoCard(int[] cubes, boolean hasPowerUp) {
         this.cubes = cubes;
         this.hasPowerUp = hasPowerUp;
