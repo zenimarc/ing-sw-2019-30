@@ -37,7 +37,9 @@ public class PlayerView {
 
     public boolean grab(Cell cell) {
         /**if(player.Playerboard.damageTrack[2)!= null)
-         *
+         *  player.move(cell);
+         * getCard(int i);
+         * player.turns--;
          */
         return false;
     }
@@ -56,7 +58,10 @@ public class PlayerView {
 
 
     private boolean finalGrab(Cell cell) {
-        // TODO implement here
+        /**player.move(cell)
+         * getCard(int i);
+         * player.turns--;
+         */
         return false;
     }
 

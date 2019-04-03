@@ -11,6 +11,11 @@ public class Bullet {
 
 
     public Bullet() {
+        this.color = null;
+    }
+
+    public Bullet(Color color) {
+        this.color = color;
     }
 
 

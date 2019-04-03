@@ -7,11 +7,7 @@ import java.util.*;
  */
 public class DiscardedPile extends AbstractDeck {
 
-    /**
-     * Default constructor
-     */
-    public DiscardedPile() {
-    }
+    //il costruttore di default non serve perchè già presente nella sovraclasse
 
 
 
@@ -20,8 +16,7 @@ public class DiscardedPile extends AbstractDeck {
      * @return
      */
     public void addCard(Card card) {
-        // TODO implement here
-
+        this.cards.add(card);
     }
 
 }
