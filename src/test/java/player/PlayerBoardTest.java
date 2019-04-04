@@ -42,5 +42,7 @@ class PlayerBoardTest {
         p1.getPlayerBoard().addDamage(p3);
         p1.getPlayerBoard().addDamage(p4);
         assertEquals(9,p1.getPlayerBoard().getPoints().get(p4));
+        assertEquals(6,p1.getPlayerBoard().getPoints().get(p3));
+        assertEquals(4,p1.getPlayerBoard().getPoints().get(p2));
     }
 }

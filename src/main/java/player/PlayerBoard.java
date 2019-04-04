@@ -77,13 +77,12 @@ public class PlayerBoard {
         }
 
         //a partire dalla hashmap giocatore-danni crea lista di merito dei player che ritorna
-        List<Player> playersByDamage = playersDamage.entrySet().stream()
+        return playersDamage.entrySet().stream()
                 .sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey((a, b) -> damageTrack.indexOf(a) - damageTrack.indexOf(b))))
                 .map(x -> x.getKey())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        return playersByDamage;
     }
     public static void main(String[] args){
         Player p1 = new Player("Marco");
