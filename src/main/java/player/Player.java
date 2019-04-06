@@ -31,6 +31,8 @@ public class Player {
         this.ammo = new ArrayList<Bullet>();
     }
 
+    public Pawn getPawn(){return this.pawn;}
+
     public PlayerBoard getPlayerBoard(){
         return this.playerBoard;
     }

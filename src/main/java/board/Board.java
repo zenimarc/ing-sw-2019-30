@@ -34,7 +34,8 @@ public class Board {
      * @return
      */
     public boolean isFinalFrenzy() {
-        // TODO implement here
+        if(this.numSkulls == 0)
+            return true;
         return false;
     }
 

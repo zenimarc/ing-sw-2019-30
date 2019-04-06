@@ -81,7 +81,7 @@ public class Billboard {
     }
 
     /**
-     * This function return a list of same color's cell whit a door
+     * This function return a list of same color's cell with a door
      * @param color the color of cells
      * @return a list of cell
      */
