@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public class PlayerBoard {
     private static final int[] REWARDS_BY_DAMAGE = {8, 6, 4, 2, 1, 1};
     //tiene la lista dei giocatori che hanno colpito
-    //private Player[] damageTrack;
     private ArrayList<Player> damageTrack;
     /**
      * tiene per ogni giocatore i marker che ha inflitto
@@ -23,9 +22,8 @@ public class PlayerBoard {
      * Default constructor
      */
     public PlayerBoard() {
-        //this.damageTrack = new Player[Constants.MAX_DAMAGE.getValue()];
         this.damageTrack = new ArrayList<>();
-        this.marks = new HashMap<Player, Integer>();
+        this.marks = new HashMap<>();
         this.numDeaths = 0;
     }
 
@@ -39,11 +37,15 @@ public class PlayerBoard {
     }
 
     /**
-     * Si occuperà del conteggio effettivo dei punti da assegnare ad ogni player (guardando il numDeath ecc), verrà divisa in sottofunzioni.
+     * This function calculates the points to give
+     * to each player who have inflicted damage to the current player.
+     * it uses REWARDS_BY_DAMAGE array to determine how many points
+     * to give based on damage count and order of infliction.
+     * @return an HashMap containing players and points they should obtain.
      */
-    public HashMap<Player, Integer> getPoints() {
+    public Map<Player, Integer> getPoints() {
 
-        HashMap<Player, Integer> pointsMap = new HashMap<>();
+        Map<Player, Integer> pointsMap = new HashMap<>();
 
         //assegna un punto al giocatore che ha colpito per primo
         pointsMap.putIfAbsent(damageTrack.get(0), 1 );
@@ -58,6 +60,12 @@ public class PlayerBoard {
         return pointsMap;
     }
 
+    /**
+     * This function calculate the points to give to a player
+     * based on his position in the list of the players ordered by damage
+     * @param position position of the player in the list of players ordered by damage
+     * @return points to assign to this player
+     */
     private int getRewardPoints(int position){
         int[] rewardsByDamage = REWARDS_BY_DAMAGE;
         if ((position + numDeaths) > rewardsByDamage.length)
@@ -65,7 +73,14 @@ public class PlayerBoard {
         else
             return rewardsByDamage[position + numDeaths];
     }
-    //dovrebbe restituire un'arraylist ordinata dei player che hanno fatto più danno, già gestito il caso uguali danni chi ha fatto per primo.
+
+
+    /**
+     * This function counts the damage inflicted by each player
+     * and create an ordered list containing players ordered by damage.
+     * in case of equal damage, it's already managed the damage priority.
+     * @return an ordered list of players by damage
+     */
     private List<Player> getPlayersByDamage(){
         HashMap<Player, Integer> playersDamage = new HashMap<>();
         Integer currentDamage;
@@ -76,26 +91,11 @@ public class PlayerBoard {
             }
         }
 
-        //a partire dalla hashmap giocatore-danni crea lista di merito dei player che ritorna
         return playersDamage.entrySet().stream()
                 .sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey((a, b) -> damageTrack.indexOf(a) - damageTrack.indexOf(b))))
                 .map(x -> x.getKey())
                 .collect(Collectors.toCollection(ArrayList::new));
-
-    }
-    public static void main(String[] args){
-        Player p1 = new Player("Marco");
-        Player p2 = new Player("Christian");
-        Player p3 = new Player("Giovanni");
-        Player p4 = new Player("Paolo");
-        p1.getPlayerBoard().addDamage(p4);
-        p1.getPlayerBoard().addDamage(p3);
-        p1.getPlayerBoard().addDamage(p2);
-        p1.getPlayerBoard().addDamage(p2);
-        p1.getPlayerBoard().addDamage(p3);
-        p1.getPlayerBoard().addDamage(p4);
-        System.out.println(p1.getPlayerBoard().getPoints().toString());
 
     }
 }
