@@ -30,16 +30,14 @@ public class Deck {
     }**/
 
     public void shuffle() {
-        Random number = new Random();
-        Collections.shuffle(this.cards, number);
+        Collections.shuffle(this.cards);
     }
 
     /**
      * @return
      */
     public Card draw() {
-        // TODO implement here
-        return null;
+        return cards.get(cards.size()-1);
     }
 
     public void addCard(Card card) {
