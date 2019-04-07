@@ -5,11 +5,29 @@ import java.util.*;
 /**
  * 
  */
-public class Deck extends AbstractDeck {
+public class Deck {
 
-    //private int totCards=0; //TODO Secondo me non serve indicare la dimensione, visto che possiamo già sfruttare la .size delle arraylist -Christian
+    private List<Card> cards;
 
-    //il costruttore non serve perchè già definito nella sovraclasse
+    public Deck() {
+        this.cards = null;
+    }
+
+    /**public static void main(String [] args){
+        Deck test = new Deck();
+        Bullet bullet1 = new Bullet(Color.WHITE);
+        PowerCard Card1 = new PowerCard(bullet1, PowerUp.GUNSIGHT);
+        test.cards.add(Card1);
+        Bullet bullet2 = new Bullet(Color.YELLOW);
+        PowerCard Card2 = new PowerCard(bullet2, PowerUp.GUNSIGHT);
+        test.cards.add(Card1);
+        Bullet bullet3 = new Bullet(Color.RED);
+        PowerCard Card3 = new PowerCard(bullet3, PowerUp.GUNSIGHT);
+        test.cards.add(Card1);
+        for(Card card: test.cards){
+            System.out.print("Color 1:"+ test.cards.Bullet);
+        }
+    }**/
 
     public void shuffle() {
         Random number = new Random();
@@ -24,19 +42,22 @@ public class Deck extends AbstractDeck {
         return null;
     }
 
+    public void addCard(Card card) {
+        this.cards.add(card);
+    }
+
     /**
      * @param cards 
      * @return
      */
     public void addAll(List<Card> cards) {
         for(Card card: cards){
-            this.cards.add(card);
+            this.addCard(card);
         }
 
     }
 
-    public void removeCard(DiscardedPile discard){
-        discard.addCard(this.cards.get(0));
+    public void removeCard(){
         this.cards.remove(0);
     }
 

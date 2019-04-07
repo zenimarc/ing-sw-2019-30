@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Billboards' instance is a billboard's astraction, know cell position
+ * Billboards' instance is a billboardCell's astraction, know cell position
  */
 
 public class Billboard {
 
-    private HashMap<Cell, Position> billboard;
+    private HashMap<Cell, Position> billboardCell;
     private List<Door> doors;
 
     /**
@@ -22,11 +22,11 @@ public class Billboard {
 
     public Billboard(){
         doors = new ArrayList<>();
-        billboard = new HashMap<>();
+        billboardCell = new HashMap<>();
     }
 
-    public Billboard(HashMap<Cell, Position> billboard, List<Door> doors){
-        this.billboard = billboard;
+    public Billboard(HashMap<Cell, Position> billboardCell, List<Door> doors){
+        this.billboardCell = billboardCell;
         this.doors = doors;
     }
 
@@ -58,8 +58,8 @@ public class Billboard {
      */
     private boolean canMoveSingleStep(Cell start, Cell goal){
 
-        Position startPosition = billboard.get(start);
-        Position goalPosition = billboard.get(goal);
+        Position startPosition = billboardCell.get(start);
+        Position goalPosition = billboardCell.get(goal);
 
         if(startPosition.equals(goalPosition))return false;
 
@@ -77,11 +77,11 @@ public class Billboard {
      * @return a list of Cell
      */
     private ArrayList<Cell> sameColorCell(Color color){
-        return billboard.keySet().stream().filter(x -> x.color == color).collect(Collectors.toCollection(ArrayList::new));
+        return billboardCell.keySet().stream().filter(x -> x.color == color).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
-     * This function return a list of same color's cell whit a door
+     * This function return a list of same color's cell with a door
      * @param color the color of cells
      * @return a list of cell
      */
@@ -94,13 +94,13 @@ public class Billboard {
     }
 
     /**
-     * This function return the distance between two billboard's cells
+     * This function return the distance between two billboardCell's cells
      * @param c1
      * @param c2
      * @return distance c1->c2
      */
     private int cellDistance(Cell c1, Cell c2){
-        return billboard.get(c1).distance(billboard.get(c2));
+        return billboardCell.get(c1).distance(billboardCell.get(c2));
     }
 
     /**
@@ -114,6 +114,19 @@ public class Billboard {
 
         return cells.stream()
                 .filter(x-> cellDistance(x,c)<=step)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private ArrayList<Door> doorsPlayerCanPass( ArrayList<Cell> startAttainableDoor, ArrayList<Cell> goalAttainableDoor){
+        return doors.stream()
+                .filter(x->
+                        (goalAttainableDoor.contains(x.getCell1()) && startAttainableDoor.contains(x.getCell2()))||
+                                (goalAttainableDoor.contains(x.getCell2()) && startAttainableDoor.contains(x.getCell1()))
+                )//attainable
+                .map(x -> {
+                    if(x.getCell1().color == startAttainableDoor.get(0).color) return x;
+                    return new Door(x.getCell2(), x.getCell1());
+                })
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -137,87 +150,23 @@ public class Billboard {
             //Start and Goal not same color
 
             //Select only doorCell attainable in step-1 steps from goalCell, if not exist return false
-            ArrayList<Cell> goalCellDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
-            if(goalCellDoor.isEmpty()) return false;
+            ArrayList<Cell> goalCellsDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
+            if(goalCellsDoor.isEmpty()) return false;
 
             //select only doorCell attainable in step-1 steps from startCell, if not exist return false
-            ArrayList<Cell> startCellDoor = attainableCell(sameColorDoor(start.color), start, step-1);
-            if(startCellDoor.isEmpty()) return false;
+            ArrayList<Cell> startCellsDoor = attainableCell(sameColorDoor(start.color), start, step-1);
+            if(startCellsDoor.isEmpty()) return false;
 
-            //select door player can pass to arrive in goalCell
+            //select door that player can pass to arrive in goalCell
             //all possibleDoor has cell1.color == start.color
-            ArrayList<Door> possibleDoor = doors.stream()
-                    .filter(x->
-                            (goalCellDoor.contains(x.getCell1()) && startCellDoor.contains(x.getCell2()))||
-                                    (goalCellDoor.contains(x.getCell2()) && startCellDoor.contains(x.getCell1()))
-                    )
-                    .map(x -> {
-                        if(x.getCell1().color == start.color) return x;
-                        return new Door(x.getCell2(), x.getCell1());
-                    })
-                    .collect(Collectors.toCollection(ArrayList::new));
-
+            ArrayList<Door> possibleDoor = doorsPlayerCanPass(startCellsDoor, goalCellsDoor);
             for (Door door : possibleDoor){
                 if(cellDistance(start,door.getCell1())+cellDistance(goal,door.getCell2())<=step) return true;
             }
 
 
         }
-
-
         return false;
-    }
-
-    public static void main(String[] args) {
-
-        HashMap<Cell, Position> mappaProva = new HashMap<>();
-        ArrayList<Door> doors = new ArrayList<>();
-
-        Cell c00 = new NormalCell(Color.GREEN);
-        Cell c10 = new NormalCell(Color.BLUE);
-        Cell c20 = new NormalCell(Color.BLUE);
-//        Cell c30 = new NormalCell(Color.BLUE);
-
-        Cell c01 = new NormalCell(Color.YELLOW);
-        Cell c11 = new NormalCell(Color.YELLOW);
-        Cell c21 = new NormalCell(Color.RED);
-//        Cell c31 = new NormalCell(Color.RED);
-
-//        Cell c02 = new NormalCell(Color.YELLOW);
-//        Cell c12 = new NormalCell(Color.YELLOW);
-//        Cell c22 = new NormalCell(Color.WHITE);
-//        Cell c32 = new NormalCell();
-
-
-        mappaProva.put(c00, new Position(0, 0));
-        mappaProva.put(c10, new Position(1, 0));
-        mappaProva.put(c20, new Position(2, 0));
-//        mappaProva.put(c30, new Position(3, 0));
-
-        mappaProva.put(c01, new Position(0, 1));
-        mappaProva.put(c11, new Position(1, 1));
-        mappaProva.put(c21, new Position(2, 1));
-//        mappaProva.put(c31, new Position(3, 1));
-
-//        mappaProva.put(c02, new Position(0, 2));
-//        mappaProva.put(c12, new Position(1, 2));
-//        mappaProva.put(c22, new Position(2, 2));
-//        mappaProva.put(c32, new Position(3, 2));
-
-
-        doors.add(new Door(c00, c01));
-        doors.add(new Door(c00, c10));
-        doors.add(new Door(c10, c11));
-//        doors.add(new Door(c30, c31));
-//        doors.add(new Door(c21, c22));
-//        doors.add(new Door(c12, c22));
-
-        Billboard myBillboard = new Billboard(mappaProva,doors);
-
-        System.out.println("Posso andare da 00 a 11 in 1 passo: "+myBillboard.canMove(c00,c11,1));
-        System.out.println("Posso andare da 00 a 11 in 2 passo: "+myBillboard.canMove(c00,c11,2));
-        System.out.println("Posso andare da 00 a 11 in 3 passo: "+myBillboard.canMove(c00,c11,3));
-
     }
 
 }

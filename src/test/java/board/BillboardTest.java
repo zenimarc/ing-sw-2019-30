@@ -16,16 +16,16 @@ class BillboardTest {
     private static ArrayList<Door> doors = new ArrayList<>();
 
     private static Cell c00 = new NormalCell(Color.GREEN);
-    private static Cell c10 = new NormalCell(Color.BLUE);
+    private static Cell c10 = new RegenerationCell(Color.BLUE);
     private static Cell c20 = new NormalCell(Color.BLUE);
     private static Cell c30 = new NormalCell(Color.BLUE);
 
     private static Cell c01 = new NormalCell(Color.YELLOW);
     private static Cell c11 = new NormalCell(Color.YELLOW);
     private static Cell c21 = new NormalCell(Color.RED);
-    private static Cell c31 = new NormalCell(Color.RED);
+    private static Cell c31 = new RegenerationCell(Color.RED);
 
-    private static Cell c02 = new NormalCell(Color.YELLOW);
+    private static Cell c02 = new RegenerationCell(Color.YELLOW);
     private static Cell c12 = new NormalCell(Color.YELLOW);
     private static Cell c22 = new NormalCell(Color.WHITE);
     private static Cell c32 = new NormalCell();
@@ -77,9 +77,11 @@ class BillboardTest {
         //test canMoveSingleStep
         assertTrue(myBillboard.canMove(c01,c11,1));
         assertFalse(myBillboard.canMove(c11,c31,1));
+        assertFalse(myBillboard.canMove(c11,c21,1));
         for(Door door:doors){
             assertTrue(myBillboard.canMove(door.getCell1(),door.getCell2(),1));
         }
+
 
         //test canMove, startCell and goalCell same color
         assertFalse(myBillboard.canMove(c01,c12,1));

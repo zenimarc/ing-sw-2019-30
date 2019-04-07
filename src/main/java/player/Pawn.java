@@ -32,6 +32,6 @@ public class Pawn {
         this.position = cell;
     }
 
-
+    public Cell getCell (){return this.position;}
 
 }
