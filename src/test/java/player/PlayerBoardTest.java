@@ -45,4 +45,43 @@ class PlayerBoardTest {
         assertEquals(6,p1.getPlayerBoard().getPoints().get(p3));
         assertEquals(4,p1.getPlayerBoard().getPoints().get(p2));
     }
+    @Test
+    void getPointsWithDeathTest() {
+        p1.getPlayerBoard().addSkull();
+        p1.getPlayerBoard().addDamage(p4);
+        p1.getPlayerBoard().addDamage(p3);
+        p1.getPlayerBoard().addDamage(p2);
+        p1.getPlayerBoard().addDamage(p2);
+        p1.getPlayerBoard().addDamage(p3);
+        p1.getPlayerBoard().addDamage(p4);
+        assertEquals(7,p1.getPlayerBoard().getPoints().get(p4));
+        assertEquals(4,p1.getPlayerBoard().getPoints().get(p3));
+        assertEquals(2,p1.getPlayerBoard().getPoints().get(p2));
+        p1.getPlayerBoard().addSkull();
+        p1.getPlayerBoard().addSkull();
+        p1.getPlayerBoard().addSkull();
+        assertEquals(2,p1.getPlayerBoard().getPoints().get(p4));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p3));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p2));
+        p1.getPlayerBoard().addSkull();
+        p1.getPlayerBoard().addSkull();
+        assertEquals(2,p1.getPlayerBoard().getPoints().get(p4));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p3));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p2));
+
+    }
+    @Test
+    void addMarkTest(){
+        for (int i=0; i<5; i++)
+            p1.getPlayerBoard().addMark(p2);
+        p1.getPlayerBoard().addMark(p3);
+        try {
+            assertEquals(3, p1.getPlayerBoard().getMarks(p2));
+            assertEquals(1, p1.getPlayerBoard().getMarks(p3));
+            p1.getPlayerBoard().getMarks(p4);
+        }catch (PlayerNotFoundException pnfe) {
+            assertEquals("Player: "+p4.getName()+" not found", pnfe.toString());
+        }
+
+    }
 }

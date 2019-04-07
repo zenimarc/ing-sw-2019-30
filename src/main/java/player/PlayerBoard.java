@@ -32,9 +32,46 @@ public class PlayerBoard {
             damageTrack.add(player);
         //se ne ha già 12 non fa niente
     }
+    public int getNumDeaths() {
+        return this.numDeaths;
+    }
+
+    /**
+     * add a death to the PlayerBoard, (increment numDeath by 1)
+     */
+    public void addSkull(){
+        this.numDeaths++;
+    }
+
     public int getNumDamages(){
         return damageTrack.size();
     }
+
+    /**
+     * this function add a mark to the board from a specified player
+     * @param player the player who want to give a mark
+     */
+    public void addMark(Player player){
+        Integer currentMarks = marks.putIfAbsent(player, 1);
+        if (currentMarks != null && currentMarks<3){
+            marks.replace(player, currentMarks+1);
+        }
+    }
+
+    /**
+     * this function return the number of marks that have been put by the indicated player to this player board.
+     * @param player player you want to know how many marks put
+     * @return number of marks have been put by indicated player
+     * @throws PlayerNotFoundException if the indicated player hasn't put any mark
+     */
+
+    public int getMarks(Player player) throws PlayerNotFoundException{
+        if (marks.get(player) != null)
+            return marks.get(player);
+        else
+            throw new PlayerNotFoundException(player);
+    }
+
 
     /**
      * This function calculates the points to give
@@ -68,7 +105,7 @@ public class PlayerBoard {
      */
     private int getRewardPoints(int position){
         int[] rewardsByDamage = REWARDS_BY_DAMAGE;
-        if ((position + numDeaths) > rewardsByDamage.length)
+        if ((position + numDeaths) > rewardsByDamage.length -1)
             return 1;
         else
             return rewardsByDamage[position + numDeaths];

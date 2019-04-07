@@ -32,6 +32,7 @@ public class Player {
     }
 
     public Pawn getPawn(){return this.pawn;}
+    public String getName(){return this.nickname;}
 
     public PlayerBoard getPlayerBoard(){
         return this.playerBoard;
