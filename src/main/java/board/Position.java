@@ -25,10 +25,13 @@ public class Position {
         return false;
     }
 
+    /**
+     * Position p is near this if the distance is a vertical step or a horizontal step.
+     * @param p other position
+     * @return true if if the distance is a vertical step or a horizontal step else @return false
+     */
     public boolean isNear(Position p){
-        if(x == p.x && (y==p.y-1 || y==p.y+1)){return true;}
-        if(y == p.y && (x==p.x-1 || x==p.x+1)){return true;}
-        return false;
+        return (x == p.x && (y==p.y-1 || y==p.y+1)) || (y == p.y && (x==p.x-1 || x==p.x+1));
     }
 
     //NB not see wall
@@ -36,10 +39,18 @@ public class Position {
         return abs(this.x-p.x) + abs(this.y-p.y);
     }
 
+    /**
+     *
+     * @return x position
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     *
+     * @return y position
+     */
     public int getY() {
         return y;
     }
