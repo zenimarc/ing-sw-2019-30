@@ -28,7 +28,9 @@ public class Pawn {
         this.position = position;
     }
 
-    public void setPosition(Cell cell){ //TODO: la chiamerà il controller quando il giocatore decide dove iniziare, è public? -Marco
+    public Player getPlayer(){return this.player;}
+
+    public void setCell(Cell cell){ //TODO: la chiamerà il controller quando il giocatore decide dove iniziare, è public? -Marco
         this.position = cell;
     }
 
