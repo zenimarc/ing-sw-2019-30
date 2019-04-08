@@ -58,10 +58,15 @@ public class PlayerBoard {
         }
     }
 
+    public void addMark(Player player, int marks){
+        for (int i=0; i<marks; i++)
+            this.addMark(player);
+    }
+
     /**
-     * this function return the number of marks that have been put by the indicated player to this player board.
+     * this function returns the number of marks that have been put by the indicated player to this player board.
      * @param player player you want to know how many marks put
-     * @return number of marks have been put by indicated player
+     * @return number of marks which have been put by indicated player
      * @throws PlayerNotFoundException if the indicated player hasn't put any mark
      */
 
@@ -76,9 +81,9 @@ public class PlayerBoard {
     /**
      * This function calculates the points to give
      * to each player who have inflicted damage to the current player.
-     * it uses REWARDS_BY_DAMAGE array to determine how many points
+     * It uses REWARDS_BY_DAMAGE array to determine how many points
      * to give based on damage count and order of infliction.
-     * @return an HashMap containing players and points they should obtain.
+     * @return a HashMap containing players and points they should obtain.
      */
     public Map<Player, Integer> getPoints() {
 
@@ -99,7 +104,7 @@ public class PlayerBoard {
 
     /**
      * This function calculate the points to give to a player
-     * based on his position in the list of the players ordered by damage
+     * based on his position in the list of the players, ordered by damage
      * @param position position of the player in the list of players ordered by damage
      * @return points to assign to this player
      */
@@ -114,8 +119,8 @@ public class PlayerBoard {
 
     /**
      * This function counts the damage inflicted by each player
-     * and create an ordered list containing players ordered by damage.
-     * in case of equal damage, it's already managed the damage priority.
+     * and creates an ordered list containing players ordered by damage.
+     * In case of equal damage, the damage priority's already managed.
      * @return an ordered list of players by damage
      */
     private List<Player> getPlayersByDamage(){

@@ -30,10 +30,8 @@ public class Attack {
         players = new ArrayList<Player>();
     }
 
-    public Attack(Player player, int damage, ArrayList<Player> players, boolean is_visible, int max_d, int min_d, boolean is_area, int marks, int movement){
-        this.shooter = player;
+    public Attack(int damage, boolean is_visible, int max_d, int min_d, boolean is_area, int marks, int movement){
         this.damage = damage;
-        this.players = players;
         this.isvisible = is_visible;
         this.max_distance = max_d;
         this.min_distance = min_d;
