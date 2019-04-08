@@ -104,14 +104,13 @@ public class Billboard {
     }
 
     /**
-     * This return a sub-List, from cells, attainable from c in step steps
+     * This return a sub-List, from cells, attainable from c in step number of steps
      * @param cells list of cells
      * @param c start cell
      * @param step max num of steps
      * @return sub-list of cells
      */
     private ArrayList<Cell> attainableCell (ArrayList<Cell> cells, Cell c, int step){
-
         return cells.stream()
                 .filter(x-> cellDistance(x,c)<=step)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -129,6 +128,23 @@ public class Billboard {
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
     }
+
+    /**
+     * Find way from start room to goal room without pass in other room
+     * @param sc start cell
+     * @param gc goal cell
+     * @param possibleDoors linking door from start cell to goal cell
+     * @param step max step number that player can do
+     * @return true if there is one (or more) way to go from startCell to goalCell
+     */
+    private boolean thereIsWalkableSimpleWay(Cell sc, Cell gc, ArrayList<Door> possibleDoors, int step){
+        for (Door door : possibleDoors) {
+            //+1 is for room's switch
+            if (cellDistance(sc, door.getCell1()) + cellDistance(gc, door.getCell2())+1 <= step) return true;
+        }
+        return false;
+    }
+
 
 
     /**
@@ -148,7 +164,6 @@ public class Billboard {
             return step>= cellDistance(start, goal);
         }else{
             //Start and Goal not same color
-
             //Select only doorCell attainable in step-1 steps from goalCell, if not exist return false
             ArrayList<Cell> goalCellsDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
             if(goalCellsDoor.isEmpty()) return false;
@@ -158,13 +173,24 @@ public class Billboard {
             if(startCellsDoor.isEmpty()) return false;
 
             //select door that player can pass to arrive in goalCell
-            //all possibleDoor has cell1.color == start.color
-            ArrayList<Door> possibleDoor = doorsPlayerCanPass(startCellsDoor, goalCellsDoor);
-            for (Door door : possibleDoor){
-                if(cellDistance(start,door.getCell1())+cellDistance(goal,door.getCell2())<=step) return true;
-            }
+            //all possibleDoors have cell1.color == start.color
+            ArrayList<Door> possibleDoors = doorsPlayerCanPass(startCellsDoor, goalCellsDoor);
+
+            //Find if exist one (or more) way from start room to goal room without pass in other room
+            if(thereIsWalkableSimpleWay(start,goal, possibleDoors, step)) return true;
+
+            HashMap<Door,Door> doubleDoors;
 
 
+            //TODO bozza da continuare
+        /*    doors.stream()
+                    .filter(x-> (x.getCell1()==start || x.getCell1()==goal || x.getCell2()==start || x.getCell2()==goal) && x.getCell1()!=x.getCell2() )
+                    .map(x -> {
+                        if (x.getCell2() == start || x.getCell1() == goal) return new Door(x.getCell2(), x.getCell1());
+                        else return  x;
+                    });
+
+*/
         }
         return false;
     }

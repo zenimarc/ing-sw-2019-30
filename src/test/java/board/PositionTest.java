@@ -19,8 +19,15 @@ class PositionTest {
     @Test
     void equals1() {
 
+        //same position
         assertTrue(p1.equals(new Position(1,2)));
+        //different position
         assertFalse(p1.equals(new Position(1,1)));
+        //no postion to compare
+        assertFalse(p1.equals(null));
+        //no position
+        assertFalse(p1.equals("Ciao"));
+
 
     }
 
