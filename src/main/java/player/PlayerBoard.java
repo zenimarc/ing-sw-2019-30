@@ -1,5 +1,6 @@
 package player;
 
+import board.Board;
 import constants.Constants;
 
 import java.util.*;
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
  */
 public class PlayerBoard {
     private static final int[] REWARDS_BY_DAMAGE = {8, 6, 4, 2, 1, 1};
+    private static final int[] FRENZY_REWARDS_BY_DAMAGE = {2, 1, 1, 1};
+    private Board board;
     //tiene la lista dei giocatori che hanno colpito
     private ArrayList<Player> damageTrack;
     /**
@@ -21,7 +24,8 @@ public class PlayerBoard {
     /**
      * Default constructor
      */
-    public PlayerBoard() {
+    public PlayerBoard(Board board) {
+        this.board = board;
         this.damageTrack = new ArrayList<>();
         this.marks = new HashMap<>();
         this.numDeaths = 0;
@@ -89,8 +93,9 @@ public class PlayerBoard {
 
         Map<Player, Integer> pointsMap = new HashMap<>();
 
-        //assegna un punto al giocatore che ha colpito per primo
-        pointsMap.putIfAbsent(damageTrack.get(0), 1 );
+        //assegna un punto al giocatore che ha colpito per primo se non siamo in frenzy
+        if (!board.isFinalFrenzy())
+            pointsMap.putIfAbsent(damageTrack.get(0), 1 );
 
         //controlla i danni dei giocatori e assegna loro i punteggi
         Integer currentDamage;
@@ -103,13 +108,18 @@ public class PlayerBoard {
     }
 
     /**
-     * This function calculate the points to give to a player
+     * This function calculate the points to give to a player (checking if we're in frenzy mode)
      * based on his position in the list of the players, ordered by damage
      * @param position position of the player in the list of players ordered by damage
      * @return points to assign to this player
      */
     private int getRewardPoints(int position){
-        int[] rewardsByDamage = REWARDS_BY_DAMAGE;
+        int[] rewardsByDamage;
+        if (board.isFinalFrenzy())
+            rewardsByDamage = FRENZY_REWARDS_BY_DAMAGE;
+        else
+            rewardsByDamage = REWARDS_BY_DAMAGE;
+
         if ((position + numDeaths) > rewardsByDamage.length -1)
             return 1;
         else
@@ -136,7 +146,7 @@ public class PlayerBoard {
         return playersDamage.entrySet().stream()
                 .sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey((a, b) -> damageTrack.indexOf(a) - damageTrack.indexOf(b))))
-                .map(x -> x.getKey())
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toCollection(ArrayList::new));
 
     }

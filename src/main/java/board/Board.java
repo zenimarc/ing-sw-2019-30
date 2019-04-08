@@ -12,13 +12,18 @@ public class Board {
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;
     private Billboard billboard;
-    private boolean isFinalFrenzy;
 
 
     /**
      * Default constructor
      */
-    public Board() {
+    public Board(){
+        this(8);
+    }
+    public Board(int numskull) {
+        this.numSkulls = numskull;
+        this.playerSkulls = new HashMap<>();
+        this.billboard = new Billboard();
     }
 
 
@@ -30,6 +35,10 @@ public class Board {
         return null;
     }
 
+    public void decrementSkull(){
+        this.numSkulls--;
+    }
+
     /**
      * @return
      */
@@ -38,5 +47,6 @@ public class Board {
             return true;
         return false;
     }
+
 
 }

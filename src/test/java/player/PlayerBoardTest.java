@@ -1,5 +1,6 @@
 package player;
 
+import board.Board;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerBoardTest {
+    private Board board;
     private Player p1;
     private Player p2;
     private Player p3;
@@ -16,10 +18,11 @@ class PlayerBoardTest {
 
     @BeforeEach
     public void before() {
-        p1 = new Player("Marco");
-        p2 = new Player("Christian");
-        p3 = new Player("Giovanni");
-        p4 = new Player("Paolo");
+        board = new Board(1);
+        p1 = new Player("Marco", board);
+        p2 = new Player("Christian", board);
+        p3 = new Player("Giovanni", board);
+        p4 = new Player("Paolo", board);
     }
 
     @Test
@@ -68,6 +71,26 @@ class PlayerBoardTest {
         assertEquals(2,p1.getPlayerBoard().getPoints().get(p4));
         assertEquals(1,p1.getPlayerBoard().getPoints().get(p3));
         assertEquals(1,p1.getPlayerBoard().getPoints().get(p2));
+
+    }
+    @Test
+    void getPointsInFrenzyMode(){
+        board.decrementSkull();
+        assertTrue(board.isFinalFrenzy());
+        p1.getPlayerBoard().addDamage(p4);
+        p1.getPlayerBoard().addDamage(p3);
+        p1.getPlayerBoard().addDamage(p2);
+        p1.getPlayerBoard().addDamage(p2);
+        p1.getPlayerBoard().addDamage(p3);
+        p1.getPlayerBoard().addDamage(p4);
+        assertEquals(2,p1.getPlayerBoard().getPoints().get(p4));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p3));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p2));
+        p1.getPlayerBoard().addSkull();
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p4));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p3));
+        assertEquals(1,p1.getPlayerBoard().getPoints().get(p2));
+
 
     }
     @Test
