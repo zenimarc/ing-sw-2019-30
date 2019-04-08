@@ -76,17 +76,28 @@ class BillboardTest {
     void canMove() {
         //test canMoveSingleStep
         assertTrue(myBillboard.canMove(c01,c11,1));
-        assertFalse(myBillboard.canMove(c11,c31,1));
-        assertFalse(myBillboard.canMove(c11,c21,1));
+        assertFalse(myBillboard.canMove(c01,c01,1));
+
         for(Door door:doors){
             assertTrue(myBillboard.canMove(door.getCell1(),door.getCell2(),1));
         }
-
 
         //test canMove, startCell and goalCell same color
         assertFalse(myBillboard.canMove(c01,c12,1));
         assertTrue(myBillboard.canMove(c01,c12,2));
         assertTrue(myBillboard.canMove(c01,c12,3));
+
+        //test canMove near room
+        assertTrue(myBillboard.canMove(c00,c12,3));
+        assertFalse(myBillboard.canMove(c00,c12,2));
+
+        assertTrue(myBillboard.canMove(c30,c12,4));
+        assertFalse(myBillboard.canMove(c30,c12,3));
+
+        assertTrue(myBillboard.canMove(c30,c11,3));
+        assertFalse(myBillboard.canMove(c30,c11,2));
+
+
 
     }
 }
