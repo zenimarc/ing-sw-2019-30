@@ -19,10 +19,17 @@ class DeckTest {
 
     @Test
     void draw() {
+        Bullet bullet1 = new Bullet(Color.WHITE);
+        PowerCard card1 = new PowerCard(bullet1, PowerUp.GUNSIGHT);
+        deck.addCard(card1);
+        assertEquals(card1, deck.draw());
     }
 
     @Test
-    void addCard() {
+    void addCardTest() {
+        Card card1 = new PowerCard(new Bullet(Color.WHITE), PowerUp.GUNSIGHT);
+        deck.addCard(card1);
+        assertEquals(1, deck.getSize());
     }
 
     @Test

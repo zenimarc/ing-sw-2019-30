@@ -10,7 +10,7 @@ public class Deck {
     private List<Card> cards;
 
     public Deck() {
-        this.cards = null;
+        this.cards = new ArrayList<>();
     }
 
     /**public static void main(String [] args){
@@ -37,11 +37,14 @@ public class Deck {
      * @return
      */
     public Card draw() {
-        return cards.get(cards.size()-1);
+        return cards.get(0);
     }
 
     public void addCard(Card card) {
         this.cards.add(card);
+    }
+    public int getSize(){
+        return this.cards.size();
     }
 
     /**

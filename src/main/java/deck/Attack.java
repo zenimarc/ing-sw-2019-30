@@ -50,13 +50,6 @@ public class Attack {
 
     }
 
-    public void damage_not_visible_attack(){
-        //if(player non è visibile)
-            for(Player player : players)
-                for(int i = 0; i < damage; i++)
-                    player.getPlayerBoard().addDamage(shooter);
-
-    }
 
     public void add_mark(){
 

@@ -13,8 +13,7 @@ public class PowerCard extends Card {
      * Default constructor
      */
     public PowerCard() {
-        this.bullet = null;
-        this.cardType = null;
+        this(null, null);
     }
 
     public PowerCard(Bullet bullet, PowerUp cardType) {
