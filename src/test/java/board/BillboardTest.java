@@ -76,8 +76,8 @@ class BillboardTest {
     void canMove() {
         //test canMoveSingleStep
         assertTrue(myBillboard.canMove(c01,c11,1));
-        assertFalse(myBillboard.canMove(c01,c01,1));
-
+        assertFalse(myBillboard.canMove(c11,c31,1));
+        assertFalse(myBillboard.canMove(c11,c21,1));
         for(Door door:doors){
             assertTrue(myBillboard.canMove(door.getCell1(),door.getCell2(),1));
         }
@@ -96,8 +96,6 @@ class BillboardTest {
 
         assertTrue(myBillboard.canMove(c30,c11,3));
         assertFalse(myBillboard.canMove(c30,c11,2));
-
-
 
     }
 }
