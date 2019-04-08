@@ -36,6 +36,10 @@ public class PlayerBoard {
             damageTrack.add(player);
         //se ne ha già 12 non fa niente
     }
+    public void increaseNumDeath(){
+        this.numDeaths++;
+    }
+
     public int getNumDeaths() {
         return this.numDeaths;
     }

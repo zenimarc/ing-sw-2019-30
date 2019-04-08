@@ -26,6 +26,11 @@ class PlayerBoardTest {
     }
 
     @Test
+    void playerBoardTest(){
+        assertEquals(0, p1.getPlayerBoard().getNumDeaths());
+    }
+
+    @Test
     void addDamageTest() {
         p1.getPlayerBoard().addDamage(p4);
         assertEquals(1, p1.getPlayerBoard().getNumDamages());
@@ -101,10 +106,16 @@ class PlayerBoardTest {
         try {
             assertEquals(3, p1.getPlayerBoard().getMarks(p2));
             assertEquals(1, p1.getPlayerBoard().getMarks(p3));
+            p1.getPlayerBoard().addMark(p3, 2);
+            assertEquals(3, p1.getPlayerBoard().getMarks(p3));
             p1.getPlayerBoard().getMarks(p4);
         }catch (PlayerNotFoundException pnfe) {
             assertEquals("Player: "+p4.getName()+" not found", pnfe.toString());
         }
-
+    }
+    @Test
+    void numDeathTest(){
+        p1.getPlayerBoard().increaseNumDeath();
+        assertEquals(1, p1.getPlayerBoard().getNumDeaths());
     }
 }
