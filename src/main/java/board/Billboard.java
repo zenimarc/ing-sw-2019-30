@@ -129,6 +129,34 @@ public class Billboard {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    private HashMap<Door,Door> doorsPlayerCanPass(Cell sc, Cell gc){
+        HashMap<Door,Door> doors = new HashMap<>();
+
+        //TODO bozza da continuare
+
+        //CAMBIARE PARTIRE DALLE PORTE RAGGIUNGIBILI CHE VENGONO GIÀ TROVATE NELLA canMove()
+        ArrayList<Door> possibleDoors = this.doors.stream()
+                .filter(x->
+                        (x.getCell1()==sc || x.getCell1()==gc || x.getCell2()==sc || x.getCell2()==gc))
+                .map(x -> {
+                    if (x.getCell2() == sc || x.getCell1() == gc) return new Door(x.getCell2(), x.getCell1());
+                    else return  x;
+                })
+                .filter(x->(x.getCell1()==sc && x.getCell2()!=gc)|| (x.getCell1()!=sc && x.getCell2()==gc))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for(int i=0;i<possibleDoors.size()-1;i++){
+            for(int j=i+1;j<possibleDoors.size();j++){
+                if(possibleDoors.get(i).getCell2().getColor()==possibleDoors.get(j).getCell1().getColor()){
+                    doors.put(possibleDoors.get(i), possibleDoors.get(j));
+                }
+            }
+        }
+
+        return doors;
+
+    }
+
     /**
      * Find way from start room to goal room without pass in other room
      * @param sc start cell
@@ -164,6 +192,8 @@ public class Billboard {
             return step>= cellDistance(start, goal);
         }else{
             //Start and Goal not same color
+            //Near room
+
             //Select only doorCell attainable in step-1 steps from goalCell, if not exist return false
             ArrayList<Cell> goalCellsDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
             if(goalCellsDoor.isEmpty()) return false;
@@ -179,18 +209,11 @@ public class Billboard {
             //Find if exist one (or more) way from start room to goal room without pass in other room
             if(thereIsWalkableSimpleWay(start,goal, possibleDoors, step)) return true;
 
+            //Not near room
             HashMap<Door,Door> doubleDoors;
 
 
-            //TODO bozza da continuare
-        /*    doors.stream()
-                    .filter(x-> (x.getCell1()==start || x.getCell1()==goal || x.getCell2()==start || x.getCell2()==goal) && x.getCell1()!=x.getCell2() )
-                    .map(x -> {
-                        if (x.getCell2() == start || x.getCell1() == goal) return new Door(x.getCell2(), x.getCell1());
-                        else return  x;
-                    });
 
-*/
         }
         return false;
     }
