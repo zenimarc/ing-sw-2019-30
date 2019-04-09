@@ -9,7 +9,6 @@ import java.util.*;
  * Il controllo dei danni è già presente in Playerboard
  * vari tipi di attacco, ad un arma possono essere associati più attacchi.
  * qui andranno tutti i possibili attacchi che troviamo nelle carte (quelli base, quelli a costo aggiuntivo ecc.)
- * TODO implementare funzione isvisible(player 1, player 2)
  */
 public class Attack {
     private Player shooter;
@@ -47,27 +46,5 @@ public class Attack {
                 player.getPlayerBoard().addDamage(shooter);
 
     }
-
-
-    public void add_mark(){
-
-    }
-
-    /**public boolean range(Player player){
-        if(max_distance != min_distance)
-            if(Billboard.canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance) && !Billboard.canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance))
-                return true;
-        else if(Board.getBillboard().canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance))
-            return true;
-        return false;
-    }
-
-    public boolean is_visible(Player player){
-        if(shooter.getPawn().getCell().getColor() == player.getPawn().getCell().getColor())
-            return true;
-        else if()
-                return true;
-        return false;
-    }**/
 
 }

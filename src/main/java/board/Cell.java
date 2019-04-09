@@ -7,19 +7,19 @@ import player.Pawn;
 import java.util.*;
 
 /**
- * 
+ * Cell is an abstraction of the areas which create a board
  */
 public abstract class  Cell {
 
     protected Color color;
     protected ArrayList<Pawn> pawns;
-  //  protected List<Cell> shootableCells;
-  //  protected List<Cell> walkableCells;
+
+    /**
+     * Constructors
+     */
 
     public Cell(Color color) {
         pawns = new ArrayList<Pawn>();
-    //    shootableCells = new ArrayList<Cell>();
-    //    walkableCells = new ArrayList<Cell>();
         this.color = color;
     }
 
@@ -27,30 +27,43 @@ public abstract class  Cell {
         this(null);
     }
 
+    /**
+     * End Constructors
+     */
 
-    public Card getCard(int p){
-    // Implementation by "sons"
-        return null;
-    }
-
-    public Card removeCard(Card card){
-        // Implementation by "sons"
-        return null;
-    }
-
+    /**
+     * This function returns the color of the cell
+     * @return the color of the cell
+     */
     public Color getColor(){return color;}
 
-    public boolean setCard(Card card) {
-        // Implementation by "sons"
-        return  false;
+    /**
+     * This function does nothing because it is implemented by sons
+     * @param p
+     * @return nothing
+     */
+    public Card getCard(int p){
+        return null;
     }
 
-   /* public boolean isInShootable(Cell cell) {
-        return shootableCells.contains(cell);
+    /**
+     * This function does nothing because it is implemented by sons
+     * @param card
+     * @return nothing
+     */
+
+    public Card removeCard(Card card){
+        return null;
     }
-*/
-   /* public boolean isInWalkable(Cell cell) {
-        return walkableCells.contains(cell);
-    }*/
+
+    /**
+     * This function does nothing because it is implemented by sons
+     * @param card
+     * @return
+     */
+
+    public boolean setCard(Card card) {
+        return  false;
+    }
 
 }
