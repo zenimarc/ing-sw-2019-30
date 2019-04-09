@@ -31,11 +31,28 @@ public class PlayerBoard {
         this.numDeaths = 0;
     }
 
+    void addDamage(Player player, int num){
+        for (int i=0; i<num; i++){
+            addDamage(player);
+        }
+    }
+    /**
+     * this function add a damage from the indicated player to this playerBoard
+     * if there are marks from the indicated player they will be converted into damages
+     * @param player who wants to add damage to this playerBoard
+     */
     public void addDamage(Player player){
         if (damageTrack.size()<Constants.MAX_DAMAGE.getValue())
             damageTrack.add(player);
         //se ne ha già 12 non fa niente
+        int marksToAdd = getMarks(player);
+        for (int i=0; i<marksToAdd; i++) {
+            if (damageTrack.size()<Constants.MAX_DAMAGE.getValue())
+                damageTrack.add(player);
+            removeMark(player);
+        }
     }
+
     public void increaseNumDeath(){
         this.numDeaths++;
     }
@@ -56,6 +73,13 @@ public class PlayerBoard {
     }
 
     /**
+     * this function clears the damageTrack (useful when changing mode to frenzy)
+     */
+    public void clearDamages(){
+        damageTrack.clear();
+    }
+
+    /**
      * this function add a mark to the board from a specified player
      * @param player the player who want to give a mark
      */
@@ -70,6 +94,9 @@ public class PlayerBoard {
         for (int i=0; i<marks; i++)
             this.addMark(player);
     }
+    public void removeMark(Player player){
+        marks.put(player, marks.get(player)-1);
+    }
 
     /**
      * this function returns the number of marks that have been put by the indicated player to this player board.
@@ -78,11 +105,11 @@ public class PlayerBoard {
      * @throws PlayerNotFoundException if the indicated player hasn't put any mark
      */
 
-    public int getMarks(Player player) throws PlayerNotFoundException{
+    public int getMarks(Player player){
         if (marks.get(player) != null)
             return marks.get(player);
         else
-            throw new PlayerNotFoundException(player);
+            return 0;
     }
 
 

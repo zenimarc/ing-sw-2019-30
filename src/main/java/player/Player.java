@@ -20,7 +20,8 @@ public class Player {
     private PlayerBoard playerBoard;
     private WeaponCard[] weapons;
     private PowerCard[] powerups;
-    private ArrayList<Bullet> ammo; //TODO: in che modo vogliamo memorizzare le ammo nell'arraylist
+    private Map<Color, Integer> ammo;
+    private int marksGiven; //each player can give max 3 marks to other players (the sum of marks given mustn't exceed 3)
 
     public Player(String nickname, Board board) {
         this.nickname = nickname;
@@ -29,7 +30,8 @@ public class Player {
         this.playerBoard = new PlayerBoard(board);
         this.weapons = new WeaponCard[Constants.MAX_WEAPON_HAND_SIZE.getValue()];
         this.powerups = new PowerCard[Constants.MAX_POWER_HAND_SIZE.getValue()];
-        this.ammo = new ArrayList<>();
+        this.ammo = new EnumMap<>(Color.class);
+        this.marksGiven = 0;
     }
 
     public Pawn getPawn(){return this.pawn;}
@@ -48,8 +50,11 @@ public class Player {
     public PowerCard[] getPowerups(){
         return this.powerups;
     }
-    public List<Bullet> getBullets(){
+    public Map<Color, Integer> getBullets(){
         return this.ammo;
+    }
+    public void useAmmo(List<Bullet> bullets){
+
     }
 
     @Override
