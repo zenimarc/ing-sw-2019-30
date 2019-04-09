@@ -5,6 +5,7 @@ import deck.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -137,8 +138,12 @@ public class Billboard {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-
-    //TODO bozza da continuare
+    /**
+     *
+     * @param startAttainableDoorCell
+     * @param goalAttainableDoorCell
+     * @return
+     */
     private HashMap<Door,Door> doubleDoorsPlayerCanPass(ArrayList<Cell> startAttainableDoorCell, ArrayList<Cell> goalAttainableDoorCell){
         HashMap<Door,Door> possibleDoors = new HashMap<>();
         ArrayList<Door> startDoor = new ArrayList<>();
@@ -154,7 +159,7 @@ public class Billboard {
 
         for(Door door: startDoor){
             for(Door door1 : goalDoor){
-                if (door.getCell2()==door.getCell1()){
+                if (door.getCell2().getColor()==door1.getCell1().getColor()){
                     possibleDoors.put(door,door1);
                 }
             }
@@ -165,7 +170,7 @@ public class Billboard {
     }
 
     /**
-     * Find way from start room to goal room without pass in other room
+     * Find way from start room to goal room without passing in other room
      * @param sc start cell
      * @param gc goal cell
      * @param possibleDoors linking door from start cell to goal cell
@@ -176,6 +181,25 @@ public class Billboard {
         for (Door door : possibleDoors) {
             //+1 is for room's switch
             if (cellDistance(sc, door.getCell1()) + cellDistance(gc, door.getCell2())+1 <= step) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Find way from start room to goal room passing in other room
+     * @param sc
+     * @param gc
+     * @param possibleDoors
+     * @param step
+     * @return
+     */
+    private boolean thereIsWalkableComplexWay(Cell sc, Cell gc, HashMap<Door,Door> possibleDoors, int step){
+
+        for(Map.Entry<Door,Door> entry: possibleDoors.entrySet()){
+            if(cellDistance(sc,entry.getKey().getCell1())
+                    +cellDistance(entry.getKey().getCell2(), entry.getValue().getCell1())
+                    +cellDistance(entry.getValue().getCell2(), gc)
+                    +2 <=step) return true;
         }
         return false;
     }
@@ -218,6 +242,7 @@ public class Billboard {
 
             //Not near room (pass two doors)
             HashMap<Door,Door> doubleDoors = doubleDoorsPlayerCanPass(startCellsDoor,goalCellsDoor);
+            if(thereIsWalkableComplexWay(start,goal,doubleDoors,step)) return true;
 
 
 
@@ -261,4 +286,6 @@ public class Billboard {
     public boolean isVisible(Cell cell1, Cell cell2){
         return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
     }
+
+
 }

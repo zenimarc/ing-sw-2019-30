@@ -97,5 +97,11 @@ class BillboardTest {
         assertTrue(myBillboard.canMove(c30,c11,3));
         assertFalse(myBillboard.canMove(c30,c11,2));
 
+        // Find way from start room to goal room passing in other room
+
+        assertTrue(myBillboard.canMove(c00,c31, 4));
+        assertFalse(myBillboard.canMove(c00,c31, 3));
+
+
     }
 }
