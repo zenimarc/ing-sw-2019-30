@@ -39,7 +39,7 @@ public abstract class WeaponCard extends Card {
         return this.attacks;
     }
     /**
-     * This function returns the cost of every attacks
+     * This function returns the cost of every attack
      * @return the cost of every attack
      */
     public ArrayList<Bullet> getCost(){

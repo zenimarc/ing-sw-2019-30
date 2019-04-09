@@ -39,12 +39,4 @@ public class Attack {
         this.movement = movement;
     }
 
-    public void damage_visible_attack(){
-        //if(player è visibile)
-        for(Player player : players)
-            for(int i = 0; i < damage; i++)
-                player.getPlayerBoard().addDamage(shooter);
-
-    }
-
 }
