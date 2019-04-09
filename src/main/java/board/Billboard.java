@@ -87,6 +87,7 @@ public class Billboard {
      */
     private ArrayList<Cell> sameColorDoor(Color color){
         ArrayList<Cell> sameColor = sameColorCell(color);
+
         return sameColor.stream().filter(x ->
                 (doors.stream()
                         .anyMatch(y-> y.getCell2()==x || y.getCell1()==x))
@@ -116,7 +117,14 @@ public class Billboard {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private ArrayList<Door> doorsPlayerCanPass( ArrayList<Cell> startAttainableDoor, ArrayList<Cell> goalAttainableDoor){
+    /**
+     *
+     * @param startAttainableDoor
+     * @param goalAttainableDoor
+     * @return
+     */
+
+    private ArrayList<Door> singleDoorsPlayerCanPass( ArrayList<Cell> startAttainableDoor, ArrayList<Cell> goalAttainableDoor){
         return doors.stream()
                 .filter(x->
                         (goalAttainableDoor.contains(x.getCell1()) && startAttainableDoor.contains(x.getCell2()))||
@@ -129,31 +137,30 @@ public class Billboard {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private HashMap<Door,Door> doorsPlayerCanPass(Cell sc, Cell gc){
-        HashMap<Door,Door> doors = new HashMap<>();
 
-        //TODO bozza da continuare
+    //TODO bozza da continuare
+    private HashMap<Door,Door> doubleDoorsPlayerCanPass(ArrayList<Cell> startAttainableDoorCell, ArrayList<Cell> goalAttainableDoorCell){
+        HashMap<Door,Door> possibleDoors = new HashMap<>();
+        ArrayList<Door> startDoor = new ArrayList<>();
+        ArrayList<Door> goalDoor = new ArrayList<>();
 
-        //CAMBIARE PARTIRE DALLE PORTE RAGGIUNGIBILI CHE VENGONO GIÀ TROVATE NELLA canMove()
-        ArrayList<Door> possibleDoors = this.doors.stream()
-                .filter(x->
-                        (x.getCell1()==sc || x.getCell1()==gc || x.getCell2()==sc || x.getCell2()==gc))
-                .map(x -> {
-                    if (x.getCell2() == sc || x.getCell1() == gc) return new Door(x.getCell2(), x.getCell1());
-                    else return  x;
-                })
-                .filter(x->(x.getCell1()==sc && x.getCell2()!=gc)|| (x.getCell1()!=sc && x.getCell2()==gc))
-                .collect(Collectors.toCollection(ArrayList::new));
+        for(Door door:this.doors){
+            if (startAttainableDoorCell.contains(door.getCell1())) startDoor.add(door);
+            if (startAttainableDoorCell.contains(door.getCell2())) startDoor.add(new Door(door.getCell2(),door.getCell1()));
 
-        for(int i=0;i<possibleDoors.size()-1;i++){
-            for(int j=i+1;j<possibleDoors.size();j++){
-                if(possibleDoors.get(i).getCell2().getColor()==possibleDoors.get(j).getCell1().getColor()){
-                    doors.put(possibleDoors.get(i), possibleDoors.get(j));
+            if (goalAttainableDoorCell.contains(door.getCell2())) goalDoor.add(door);
+            if (goalAttainableDoorCell.contains(door.getCell1())) goalDoor.add(new Door(door.getCell2(),door.getCell1()));
+        }
+
+        for(Door door: startDoor){
+            for(Door door1 : goalDoor){
+                if (door.getCell2()==door.getCell1()){
+                    possibleDoors.put(door,door1);
                 }
             }
         }
 
-        return doors;
+        return possibleDoors;
 
     }
 
@@ -204,13 +211,14 @@ public class Billboard {
 
             //select door that player can pass to arrive in goalCell
             //all possibleDoors have cell1.color == start.color
-            ArrayList<Door> possibleDoors = doorsPlayerCanPass(startCellsDoor, goalCellsDoor);
+            ArrayList<Door> possibleDoors = singleDoorsPlayerCanPass(startCellsDoor, goalCellsDoor);
 
             //Find if exist one (or more) way from start room to goal room without pass in other room
             if(thereIsWalkableSimpleWay(start,goal, possibleDoors, step)) return true;
 
-            //Not near room
-            HashMap<Door,Door> doubleDoors;
+            //Not near room (pass two doors)
+            HashMap<Door,Door> doubleDoors = doubleDoorsPlayerCanPass(startCellsDoor,goalCellsDoor);
+
 
 
 
@@ -224,7 +232,7 @@ public class Billboard {
      * @param cell2
      * @return true if they have the same color, else false
      */
-    private boolean hasSameColor(Cell cell1, Cell cell2){
+    public boolean hasSameColor(Cell cell1, Cell cell2){
         return (cell1.getColor() == cell2.getColor());
     }
 
@@ -234,7 +242,7 @@ public class Billboard {
      * @param cell2 the cell which I want to see
      * @return true if I can see the other cell, else false
      */
-    private boolean canSeeThroughDoor(Cell cell1, Cell cell2){
+    public boolean canSeeThroughDoor(Cell cell1, Cell cell2){
         ArrayList<Cell> cellsWithDoor;
         cellsWithDoor = sameColorCell(cell2.getColor());
         for(Cell cell : cellsWithDoor)
