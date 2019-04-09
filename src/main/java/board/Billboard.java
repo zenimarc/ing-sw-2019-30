@@ -41,7 +41,7 @@ public class Billboard {
      * @return true if exist door(c1, c2) else false
      */
 
-    public boolean existPort(Cell c1, Cell c2) {
+    public boolean hasDoor(Cell c1, Cell c2) {
         return doors.stream()
                 .anyMatch(x -> (x.getCell1() == c1 && x.getCell2() == c2) || (x.getCell1() == c2 && x.getCell2() == c1));
     }
@@ -65,7 +65,7 @@ public class Billboard {
 
         if(startPosition.isNear(goalPosition)) {
             if (start.color == goal.color) return true;
-            if (existPort(start, goal)) return true;
+            if (hasDoor(start, goal)) return true;
         }
 
         return false;
@@ -218,4 +218,39 @@ public class Billboard {
         return false;
     }
 
+    /**
+     * This function verifies if two cells have the same color
+     * @param cell1
+     * @param cell2
+     * @return true if they have the same color, else false
+     */
+    private boolean hasSameColor(Cell cell1, Cell cell2){
+        return (cell1.getColor() == cell2.getColor());
+    }
+
+    /**
+     * This function verifies if I can see a specific cell in a different room from another cell
+     * @param cell1 the cell from which I want to see
+     * @param cell2 the cell which I want to see
+     * @return true if I can see the other cell, else false
+     */
+    private boolean canSeeThroughDoor(Cell cell1, Cell cell2){
+        ArrayList<Cell> cellsWithDoor;
+        cellsWithDoor = sameColorCell(cell2.getColor());
+        for(Cell cell : cellsWithDoor)
+            if(hasDoor(cell1, cell))
+                return true;
+        return false;
+    }
+
+    /**
+     * This function verifies if a player can see another one
+     * @param cell1 the cell from which I want to see
+     * @param cell2 the cell which I want to see
+     * @return true if they have the same color, else false
+     */
+
+    public boolean isVisible(Cell cell1, Cell cell2){
+        return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
+    }
 }
