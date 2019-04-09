@@ -13,10 +13,6 @@ public class Bullet {
      * Constructors
      */
 
-    public Bullet() {
-        this.color = null;
-    }
-
     public Bullet(Color color) {
         this.color = color;
     }

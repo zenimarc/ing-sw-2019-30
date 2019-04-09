@@ -6,7 +6,7 @@ import java.util.*;
  * AmmoCard are cards found in a NormalCell
  */
 public class AmmoCard extends Card {
-    private int[] cubes;
+    private int[] cubes; //Colors in order are: red, yellow, blue
     private boolean hasPowerUp;
 
     /**

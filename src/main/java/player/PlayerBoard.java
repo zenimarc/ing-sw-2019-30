@@ -71,7 +71,7 @@ public class PlayerBoard {
         else
             return 0;
     }
-    
+
     /**
      * this function add a damage from the indicated player to this playerBoard
      * if there are marks from the indicated player they will be converted into damages
