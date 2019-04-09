@@ -5,7 +5,7 @@ import board.Cell;
 import java.util.*;
 
 /**
- * associazione tra player e posizione
+ * Pawn is an association between player and position
  */
 public class Pawn {
 
@@ -13,7 +13,7 @@ public class Pawn {
     private Cell position;
 
     /**
-     * Default constructor
+     * Constructors
      */
     public Pawn(){
         this(null, null);
@@ -28,12 +28,30 @@ public class Pawn {
         this.position = position;
     }
 
+    /**
+     * End constructors
+     */
+
+    /**
+     * This function returns the player associated with the pawn
+     * @return the player associated
+     */
+
     public Player getPlayer(){return this.player;}
+
+    /**
+     * TODO serve davvero questa funzione in questa classe?
+     * @param cell
+     */
 
     public void setCell(Cell cell){ //TODO: la chiamerà il controller quando il giocatore decide dove iniziare, è public? -Marco
         this.position = cell;
     }
 
+    /**
+     * This function return the position of the pawn
+     * @return the position of the pawn
+     */
     public Cell getCell (){return this.position;}
 
 }

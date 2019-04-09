@@ -7,22 +7,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 
+ *  PlayerBoard contains all information about the situation of the player
  */
 public class PlayerBoard {
     private static final int[] REWARDS_BY_DAMAGE = {8, 6, 4, 2, 1, 1};
     private static final int[] FRENZY_REWARDS_BY_DAMAGE = {2, 1, 1, 1};
     private Board board;
-    //tiene la lista dei giocatori che hanno colpito
     private ArrayList<Player> damageTrack;
-    /**
-     * tiene per ogni giocatore i marker che ha inflitto
-     */
     private HashMap<Player, Integer> marks;
     private int numDeaths;
 
     /**
-     * Default constructor
+     * Constructors
      */
     public PlayerBoard(Board board) {
         this.board = board;
@@ -31,11 +27,51 @@ public class PlayerBoard {
         this.numDeaths = 0;
     }
 
+    /**
+     * End Constructors
+     */
+
+    /**
+     * This function returns the number of times the layer has died
+     * @return the number of deaths
+     */
+    public int getNumDeaths() {
+        return this.numDeaths;
+    }
+
+    /**
+     * This function returns the number of damage received by a player
+     * @return the number of damage received
+     */
+    public int getNumDamages(){
+        return damageTrack.size();
+    }
+
+    /**
+     * This function is a cycle for adding damage
+     * @param player player who shot
+     * @param num damage dealt by the shooter
+     */
+
     void addDamage(Player player, int num){
         for (int i=0; i<num; i++){
             addDamage(player);
         }
     }
+
+    /**
+     * This function returns the number of marks that have been put by the indicated player to this player board.
+     * @param player player you want to know how many marks put
+     * @return number of marks which have been put by indicated player
+     */
+
+    public int getMarks(Player player){
+        if (marks.get(player) != null)
+            return marks.get(player);
+        else
+            return 0;
+    }
+    
     /**
      * this function add a damage from the indicated player to this playerBoard
      * if there are marks from the indicated player they will be converted into damages
@@ -53,34 +89,40 @@ public class PlayerBoard {
         }
     }
 
+    /**
+     * This function increase the number of deaths of the player
+     */
     public void increaseNumDeath(){
         this.numDeaths++;
     }
 
-    public int getNumDeaths() {
-        return this.numDeaths;
-    }
 
     /**
-     * add a death to the PlayerBoard, (increment numDeath by 1)
+     * This function adds a death to the PlayerBoard, (increment numDeath by 1)
      */
     public void addSkull(){
         this.numDeaths++;
     }
 
-    public int getNumDamages(){
-        return damageTrack.size();
-    }
-
     /**
-     * this function clears the damageTrack (useful when changing mode to frenzy)
+     * This function clears the damageTrack (useful when changing mode to frenzy)
      */
     public void clearDamages(){
         damageTrack.clear();
     }
 
     /**
-     * this function add a mark to the board from a specified player
+     * This function is a cycle for adding marks
+     * @param player the player who will give marks
+     * @param marks numberof marks given
+     */
+    public void addMark(Player player, int marks){
+        for (int i=0; i<marks; i++)
+            this.addMark(player);
+    }
+
+    /**
+     * This function adds a mark to the board from a specified player
      * @param player the player who want to give a mark
      */
     public void addMark(Player player){
@@ -90,28 +132,13 @@ public class PlayerBoard {
         }
     }
 
-    public void addMark(Player player, int marks){
-        for (int i=0; i<marks; i++)
-            this.addMark(player);
-    }
+    /**
+     * This function removes a mark inflicted by a specific player
+     * @param player who gave the mark
+     */
     public void removeMark(Player player){
         marks.put(player, marks.get(player)-1);
     }
-
-    /**
-     * this function returns the number of marks that have been put by the indicated player to this player board.
-     * @param player player you want to know how many marks put
-     * @return number of marks which have been put by indicated player
-     * @throws PlayerNotFoundException if the indicated player hasn't put any mark
-     */
-
-    public int getMarks(Player player){
-        if (marks.get(player) != null)
-            return marks.get(player);
-        else
-            return 0;
-    }
-
 
     /**
      * This function calculates the points to give
