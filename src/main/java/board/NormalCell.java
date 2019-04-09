@@ -6,6 +6,10 @@ import deck.Color;
 
 import java.util.*;
 
+/**
+ * A NormalCell is a cell which can have an ammoCard
+ */
+
 public class NormalCell extends Cell {
 
     private AmmoCard ammoCard;
@@ -13,6 +17,7 @@ public class NormalCell extends Cell {
     /**
      * Constructors
      */
+
     public NormalCell(){
         this(null,null);
     }
@@ -27,15 +32,24 @@ public class NormalCell extends Cell {
     }
 
     /**
-     * End Cosnstructors
+     * End Constructors
      */
 
-    //WARNING: Potrebbe tornare null;
+    /**
+     * This function returns the ammoCard of the cell
+     * @param p
+     * @return
+     */
     @Override
-    public Card getCard(int p) {
+    public Card getCard(int p) { //TODO problema se ritorna NULL
         return ammoCard;
     }
 
+    /**
+     * This function removes the ammoCard from the cell if it exists
+     * @param card the card in the cell
+     * @return null because there is no more a card
+     */
     @Override
     public Card removeCard(Card card) {
         if(ammoCard==card){
@@ -45,10 +59,15 @@ public class NormalCell extends Cell {
         return null;
     }
 
-    public Card removeCard(){
+    public Card removeCard(){//TODO non capisco a cosa serva
         return removeCard(ammoCard);
     }
 
+    /**
+     * This function verifies if there is already an ammoCard and, in case, it sets a new one if there is none
+     * @param card the card to bet set
+     * @return true if there was not an ammoCard, else false
+     */
     @Override
     public boolean setCard(Card card) {
         if(card.getClass()==AmmoCard.class && ammoCard==null){

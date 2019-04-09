@@ -7,6 +7,9 @@ import deck.WeaponCard;
 
 import java.util.*;
 
+/**
+ * A RegenerationCell is a cell which can have WeaponCards and where players can respawn if killed
+ */
 
 public class RegenerationCell extends Cell {
 
@@ -38,17 +41,30 @@ public class RegenerationCell extends Cell {
      * End constructor
      */
 
-
+    /**
+     * This function returns the list of cards in the RegenerationCell
+     * @return the list of cards set in the cell
+     */
     public ArrayList<WeaponCard> getCards() {
         return new ArrayList<WeaponCard>(Arrays.asList(weaponCard));
     }
 
+    /**
+     * This function returns the card in a precise position
+     * @param p the position of the card wanted
+     * @return the card wanted if there is one, else null
+     */
     @Override
     public Card getCard(int p) {
         if(p>=3){return null;}
         return weaponCard[p];
     }
 
+    /**
+     * This function adds cards in the RegenerationCell
+     * @param card the card to be added
+     * @return true if a card was added, false if not possible
+     */
     @Override
     public boolean setCard(Card card) {
         //check card is a weaponCard
@@ -64,6 +80,11 @@ public class RegenerationCell extends Cell {
         return false;
     }
 
+    /**
+     * This function removes a card which was picked
+     * @param card the card to be picked
+     * @return a card if there is one, else null
+     */
     @Override
     public Card removeCard(Card card) {
         //Check card is WeaponCard

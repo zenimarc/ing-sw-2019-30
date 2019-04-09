@@ -41,7 +41,7 @@ public class Billboard {
      * @return true if exist door(c1, c2) else false
      */
 
-    public boolean existPort(Cell c1, Cell c2) {
+    public boolean hasDoor(Cell c1, Cell c2) {
         return doors.stream()
                 .anyMatch(x -> (x.getCell1() == c1 && x.getCell2() == c2) || (x.getCell1() == c2 && x.getCell2() == c1));
     }
@@ -65,7 +65,7 @@ public class Billboard {
 
         if(startPosition.isNear(goalPosition)) {
             if (start.color == goal.color) return true;
-            if (existPort(start, goal)) return true;
+            if (hasDoor(start, goal)) return true;
         }
 
         return false;
@@ -87,6 +87,7 @@ public class Billboard {
      */
     private ArrayList<Cell> sameColorDoor(Color color){
         ArrayList<Cell> sameColor = sameColorCell(color);
+
         return sameColor.stream().filter(x ->
                 (doors.stream()
                         .anyMatch(y-> y.getCell2()==x || y.getCell1()==x))
@@ -116,7 +117,14 @@ public class Billboard {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private ArrayList<Door> doorsPlayerCanPass( ArrayList<Cell> startAttainableDoor, ArrayList<Cell> goalAttainableDoor){
+    /**
+     *
+     * @param startAttainableDoor
+     * @param goalAttainableDoor
+     * @return
+     */
+
+    private ArrayList<Door> singleDoorsPlayerCanPass( ArrayList<Cell> startAttainableDoor, ArrayList<Cell> goalAttainableDoor){
         return doors.stream()
                 .filter(x->
                         (goalAttainableDoor.contains(x.getCell1()) && startAttainableDoor.contains(x.getCell2()))||
@@ -127,6 +135,33 @@ public class Billboard {
                     return new Door(x.getCell2(), x.getCell1());
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+
+    //TODO bozza da continuare
+    private HashMap<Door,Door> doubleDoorsPlayerCanPass(ArrayList<Cell> startAttainableDoorCell, ArrayList<Cell> goalAttainableDoorCell){
+        HashMap<Door,Door> possibleDoors = new HashMap<>();
+        ArrayList<Door> startDoor = new ArrayList<>();
+        ArrayList<Door> goalDoor = new ArrayList<>();
+
+        for(Door door:this.doors){
+            if (startAttainableDoorCell.contains(door.getCell1())) startDoor.add(door);
+            if (startAttainableDoorCell.contains(door.getCell2())) startDoor.add(new Door(door.getCell2(),door.getCell1()));
+
+            if (goalAttainableDoorCell.contains(door.getCell2())) goalDoor.add(door);
+            if (goalAttainableDoorCell.contains(door.getCell1())) goalDoor.add(new Door(door.getCell2(),door.getCell1()));
+        }
+
+        for(Door door: startDoor){
+            for(Door door1 : goalDoor){
+                if (door.getCell2()==door.getCell1()){
+                    possibleDoors.put(door,door1);
+                }
+            }
+        }
+
+        return possibleDoors;
+
     }
 
     /**
@@ -164,6 +199,8 @@ public class Billboard {
             return step>= cellDistance(start, goal);
         }else{
             //Start and Goal not same color
+            //Near room
+
             //Select only doorCell attainable in step-1 steps from goalCell, if not exist return false
             ArrayList<Cell> goalCellsDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
             if(goalCellsDoor.isEmpty()) return false;
@@ -174,25 +211,54 @@ public class Billboard {
 
             //select door that player can pass to arrive in goalCell
             //all possibleDoors have cell1.color == start.color
-            ArrayList<Door> possibleDoors = doorsPlayerCanPass(startCellsDoor, goalCellsDoor);
+            ArrayList<Door> possibleDoors = singleDoorsPlayerCanPass(startCellsDoor, goalCellsDoor);
 
             //Find if exist one (or more) way from start room to goal room without pass in other room
             if(thereIsWalkableSimpleWay(start,goal, possibleDoors, step)) return true;
 
-            HashMap<Door,Door> doubleDoors;
+            //Not near room (pass two doors)
+            HashMap<Door,Door> doubleDoors = doubleDoorsPlayerCanPass(startCellsDoor,goalCellsDoor);
 
 
-            //TODO bozza da continuare
-        /*    doors.stream()
-                    .filter(x-> (x.getCell1()==start || x.getCell1()==goal || x.getCell2()==start || x.getCell2()==goal) && x.getCell1()!=x.getCell2() )
-                    .map(x -> {
-                        if (x.getCell2() == start || x.getCell1() == goal) return new Door(x.getCell2(), x.getCell1());
-                        else return  x;
-                    });
 
-*/
+
         }
         return false;
     }
 
+    /**
+     * This function verifies if two cells have the same color
+     * @param cell1
+     * @param cell2
+     * @return true if they have the same color, else false
+     */
+    public boolean hasSameColor(Cell cell1, Cell cell2){
+        return (cell1.getColor() == cell2.getColor());
+    }
+
+    /**
+     * This function verifies if I can see a specific cell in a different room from another cell
+     * @param cell1 the cell from which I want to see
+     * @param cell2 the cell which I want to see
+     * @return true if I can see the other cell, else false
+     */
+    public boolean canSeeThroughDoor(Cell cell1, Cell cell2){
+        ArrayList<Cell> cellsWithDoor;
+        cellsWithDoor = sameColorCell(cell2.getColor());
+        for(Cell cell : cellsWithDoor)
+            if(hasDoor(cell1, cell))
+                return true;
+        return false;
+    }
+
+    /**
+     * This function verifies if a player can see another one
+     * @param cell1 the cell from which I want to see
+     * @param cell2 the cell which I want to see
+     * @return true if they have the same color, else false
+     */
+
+    public boolean isVisible(Cell cell1, Cell cell2){
+        return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
+    }
 }

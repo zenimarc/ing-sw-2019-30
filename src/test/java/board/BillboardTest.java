@@ -64,12 +64,12 @@ class BillboardTest {
 
 
     @Test
-    void existPort() {
+    void hasDoor() {
         for(Door door:doors){
-            assertEquals(myBillboard.existPort(door.getCell1(),door.getCell2()),true);
+            assertEquals(myBillboard.hasDoor(door.getCell1(),door.getCell2()),true);
         }
-        assertEquals(myBillboard.existPort(c00,c22), false);
-        assertEquals(myBillboard.existPort(c00,c11), false);
+        assertEquals(myBillboard.hasDoor(c00,c22), false);
+        assertEquals(myBillboard.hasDoor(c00,c11), false);
     }
 
     @Test
@@ -98,4 +98,17 @@ class BillboardTest {
         assertFalse(myBillboard.canMove(c30,c11,2));
 
     }
+
+    @Test
+    void hasSameColor(){
+        assertTrue(myBillboard.hasSameColor(c10, c20));
+        assertFalse(myBillboard.hasSameColor(c10, c00));
+    }
+
+    @Test
+    void isVisible(){
+        assertTrue(myBillboard.isVisible(c00, c12));
+        assertFalse(myBillboard.isVisible(c12, c00));
+    }
+
 }
