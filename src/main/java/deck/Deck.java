@@ -3,40 +3,33 @@ package deck;
 import java.util.*;
 
 /**
- * 
+ * Deck manages the cards yet to be used or discarded
  */
 public class Deck {
 
     private List<Card> cards;
 
+    /**
+     * Constructors
+     */
+
     public Deck() {
         this.cards = new ArrayList<>();
     }
 
-    /**public static void main(String [] args){
-        Deck test = new Deck();
-        Bullet bullet1 = new Bullet(Color.WHITE);
-        PowerCard Card1 = new PowerCard(bullet1, PowerUp.GUNSIGHT);
-        test.cards.add(Card1);
-        Bullet bullet2 = new Bullet(Color.YELLOW);
-        PowerCard Card2 = new PowerCard(bullet2, PowerUp.GUNSIGHT);
-        test.cards.add(Card1);
-        Bullet bullet3 = new Bullet(Color.RED);
-        PowerCard Card3 = new PowerCard(bullet3, PowerUp.GUNSIGHT);
-        test.cards.add(Card1);
-        for(Card card: test.cards){
-            System.out.print("Color 1:"+ test.cards.Bullet);
-        }
-    }**/
+    /**
+     * End constructors
+     */
 
     /**
-     * this function shuffles the deck
+     * This function shuffles the deck
      */
     public void shuffle() {
         Collections.shuffle(this.cards);
     }
 
     /**
+     * This function picks the first card from the deck
      * @return the drawn card
      */
     public Card draw() {
