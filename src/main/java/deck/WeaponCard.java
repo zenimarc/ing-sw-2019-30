@@ -13,12 +13,13 @@ public abstract class WeaponCard extends Card {
     private boolean isLoaded;
 
     public WeaponCard() {
-        this(null, null);
+        this.cost = new ArrayList<>();
+        this.attacks = new ArrayList<>();
     }
 
     public WeaponCard(ArrayList<Bullet> cost, ArrayList<Attack> attacks) {
-        cost = new ArrayList<Bullet>();
-        attacks = new ArrayList<Attack>();
+        this.cost = cost;
+        this.attacks = attacks;
         isLoaded = false;
     }
 

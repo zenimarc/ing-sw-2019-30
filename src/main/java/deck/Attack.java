@@ -1,6 +1,6 @@
 package deck;
 
-import board.Billboard;
+import board.Board;
 import player.Player;
 
 import java.util.*;
@@ -57,7 +57,7 @@ public class Attack {
         if(max_distance != min_distance)
             if(Billboard.canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance) && !Billboard.canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance))
                 return true;
-        else if(Billboard.canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance))
+        else if(Board.getBillboard().canMove(this.shooter.getPawn().getCell(), player.getPawn().getCell(), max_distance))
             return true;
         return false;
     }

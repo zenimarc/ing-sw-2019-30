@@ -66,10 +66,10 @@ class BillboardTest {
     @Test
     void existPort() {
         for(Door door:doors){
-            assertEquals(myBillboard.existPort(door.getCell1(),door.getCell2()),true);
+            assertEquals(myBillboard.hasDoor(door.getCell1(),door.getCell2()),true);
         }
-        assertEquals(myBillboard.existPort(c00,c22), false);
-        assertEquals(myBillboard.existPort(c00,c11), false);
+        assertEquals(myBillboard.hasDoor(c00,c22), false);
+        assertEquals(myBillboard.hasDoor(c00,c11), false);
     }
 
     @Test
