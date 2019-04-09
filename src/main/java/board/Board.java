@@ -5,7 +5,7 @@ import player.Player;
 import java.util.*;
 
 /**
- * 
+ * The
  */
 public class Board {
 
@@ -15,17 +15,20 @@ public class Board {
 
 
     /**
-     * Default constructor
+     * Constructors
      */
     public Board(){
         this(8);
     }
     public Board(int numskull) {
         this.numSkulls = numskull;
-        this.playerSkulls = new HashMap<>();
+        this.playerSkulls = new HashMap<>(); //TODO controllare questa parte come dovrebbe servire
         this.billboard = new Billboard();
     }
 
+    /**
+     * End Constructors
+     */
 
     /**
      * @return
@@ -35,17 +38,19 @@ public class Board {
         return null;
     }
 
+    /**
+     * This function decrements the number of skulls in the board
+     */
     public void decrementSkull(){
         this.numSkulls--;
     }
 
     /**
-     * @return
+     * This function verifies if the final phase of the game can begin
+     * @return true if the number of skulls is zero
      */
     public boolean isFinalFrenzy() {
-        if(this.numSkulls == 0)
-            return true;
-        return false;
+        return (this.numSkulls == 0);
     }
 
 

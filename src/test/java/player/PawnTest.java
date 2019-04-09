@@ -25,7 +25,6 @@ class PawnTest {
     }
     @Test
     void getPlayerTest() {
-        pawn.getPlayer();
         assertEquals(player1, pawn.getPlayer());
     }
 }

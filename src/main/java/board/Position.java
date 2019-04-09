@@ -2,17 +2,33 @@ package board;
 
 import static java.lang.Math.abs;
 
+/**
+ * This class is used to determine the position of an object
+ */
+
 public class Position {
     private int x;
     private int y;
 
+    /**
+     * Constructors
+     */
     public Position(int x, int y){
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * End Constructors
+     */
+
+    /**
+     * This function verifies if two objects have the same position
+      * @param obj
+     * @return
+     */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) {//TODO non capisco bene oggetto cosa sia e perchè sia così
         if(obj== null) return false;
 
         if(obj.getClass()==Position.class){
@@ -40,7 +56,7 @@ public class Position {
     }
 
     /**
-     *
+     * This function returs the x coordinate of an object
      * @return x position
      */
     public int getX() {
@@ -48,7 +64,7 @@ public class Position {
     }
 
     /**
-     *
+     * This function returs the x coordinate of an object
      * @return y position
      */
     public int getY() {

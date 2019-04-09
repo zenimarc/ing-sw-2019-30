@@ -3,14 +3,14 @@ package deck;
 import java.util.*;
 
 /**
- * 
+ * PowerCard is the card which represent which ammo you can receive and if you can pick a power up
  */
 public class PowerCard extends Card {
 
     private Bullet bullet;
     private PowerUp cardType;
     /**
-     * Default constructor
+     * Constructors
      */
     public PowerCard() {
         this(null, null);
@@ -20,5 +20,9 @@ public class PowerCard extends Card {
         this.bullet = bullet;
         this.cardType = cardType;
     }
+
+    /**
+     * End constructors
+     */
 
 }
