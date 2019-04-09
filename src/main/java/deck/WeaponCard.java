@@ -7,8 +7,8 @@ import java.util.*;
  */
 public abstract class WeaponCard extends Card {
 
-    private ArrayList<Bullet> cost;
-    private ArrayList<Attack> attacks;
+    private int[] cost;
+    private List<Attack> attacks;
     private boolean isLoaded;
 
     /**
@@ -16,11 +16,11 @@ public abstract class WeaponCard extends Card {
      */
 
     public WeaponCard() {
-        this.cost = new ArrayList<>();
+        this.cost = new int[3];
         this.attacks = new ArrayList<>();
     }
 
-    public WeaponCard(ArrayList<Bullet> cost, ArrayList<Attack> attacks) {
+    public WeaponCard(int[] cost, List<Attack> attacks) {
         this.cost = cost;
         this.attacks = attacks;
         isLoaded = false;
@@ -35,14 +35,14 @@ public abstract class WeaponCard extends Card {
      * @return the list of attacks
      */
 
-    public ArrayList<Attack> getAttacks(){
+    public List<Attack> getAttacks(){
         return this.attacks;
     }
     /**
      * This function returns the cost of every attack
      * @return the cost of every attack
      */
-    public ArrayList<Bullet> getCost(){
+    public int[] getCost(){
         return this.cost;
     }
 

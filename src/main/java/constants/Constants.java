@@ -5,7 +5,8 @@ public enum Constants {
     MAX_WEAPON_REGENERATIONCELL(3),
     MAX_WEAPON_HAND_SIZE(3), //max number of weapon cards in hand
     MAX_POWER_HAND_SIZE(3), //max number of power up cards in hand
-    MAX_DAMAGE(12); //max number of damage
+    MAX_DAMAGE(12), //max number of damage
+    MAX_BULLET_PER_COLOR(3);
 
     private int value;
 
