@@ -55,14 +55,19 @@ public class Player {
     public PowerCard[] getPowerups(){
         return this.powerups;
     }
+
+    /**
+     * @return an HashMap containg player's ammo by color.
+     */
     public Map<Color, Integer> getBullets(){
         return this.ammo;
     }
 
-    /**public boolean useAmmo(Map<Color, Integer> bullets){
-        bullets.forEach(Map.Entry.useAmmo(x.getKey(), x.getValue()));
-        return false;
-    }**/
+    /**
+     * This function checks if the player can pay for the indicated ammo.
+     * @param ammo is an array containing ammo to pay per color
+     * @return True if the player has enough ammo, else False.
+     */
     private boolean canPay(int[] ammo) {
         for (int i = 0; i < ammo.length; i++)
             if (ammo[i] > this.ammo.get(Color.values()[i]) || this.ammo.get(Color.values()[i]) == null)
@@ -70,6 +75,12 @@ public class Player {
         return true;
     }
 
+    /**
+     * this function first checks if the player has enough ammo, then use the indicated ammo from the array.
+     * if the player cannot pay the indicated ammo, his ammo are not modified.
+     * @param ammo is an array containing bullet cost for each color
+     * @return True if the player can pay the requested ammo, else return False.
+     */
     public boolean useAmmo(int[] ammo){
         if (canPay(ammo)) {
             addAmmo(Arrays.stream(ammo).map(x -> -x).toArray());
@@ -79,6 +90,7 @@ public class Player {
             return false;
     }
 
+    //DEPRECATED, going to remove
     public boolean useBullet(Color color, int count) {
         if (count > ammo.get(color)) return false;
         else {
@@ -93,7 +105,6 @@ public class Player {
      * @param ammo array containing ammo cost for each color
      *             (ammo[0] -> RED cost, ammo[1] -> YELLOW cost, ammo[2] -> BLUE cost)
      */
-
     public void addAmmo(int[] ammo){
         this.ammo.put(RED, (this.ammo.get(RED) != null) ?
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), this.ammo.get(RED)+ammo[0]) :

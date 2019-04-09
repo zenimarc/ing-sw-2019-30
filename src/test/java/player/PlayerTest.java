@@ -83,6 +83,10 @@ class PlayerTest {
         assertEquals(0, p1.getBullets().get(RED));
         assertEquals(0, p1.getBullets().get(YELLOW));
         assertEquals(0, p1.getBullets().get(BLUE));
+        assertTrue(p1.useAmmo(new int[]{0,0,0}));
+        assertEquals(0, p1.getBullets().get(RED));
+        assertEquals(0, p1.getBullets().get(YELLOW));
+        assertEquals(0, p1.getBullets().get(BLUE));
     }
 
     @Test
