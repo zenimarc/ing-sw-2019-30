@@ -74,6 +74,9 @@ class BillboardTest {
 
     @Test
     void canMove() {
+        //test non-move
+        assertTrue(myBillboard.canMove(c22,c22,4));
+
         //test canMoveSingleStep
         assertTrue(myBillboard.canMove(c01,c11,1));
         assertFalse(myBillboard.canMove(c11,c31,1));
@@ -98,7 +101,6 @@ class BillboardTest {
         assertFalse(myBillboard.canMove(c30,c11,2));
 
         // Find way from start room to goal room passing in other room
-
         assertTrue(myBillboard.canMove(c00,c31, 4));
         assertFalse(myBillboard.canMove(c00,c31, 3));
 
