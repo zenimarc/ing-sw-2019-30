@@ -17,9 +17,9 @@ public class Billboard {
     private HashMap<Cell, Position> billboardCell;
     private List<Door> doors;
 
-    /**
-     * Constructors
-     */
+
+    //Start Constructors
+
 
     public Billboard(){
         doors = new ArrayList<>();
@@ -31,9 +31,8 @@ public class Billboard {
         this.doors = doors;
     }
 
-    /**
-     * End constructors
-     */
+    //End constructors
+
 
     /**
      * Say if exist in this a Door between c1 and c2 (or c2 and c1)
@@ -41,7 +40,6 @@ public class Billboard {
      * @param c2 Second Cell
      * @return true if exist door(c1, c2) else false
      */
-
     public boolean hasDoor(Cell c1, Cell c2) {
         return doors.stream()
                 .anyMatch(x -> (x.getCell1() == c1 && x.getCell2() == c2) || (x.getCell1() == c2 && x.getCell2() == c1));
@@ -61,8 +59,6 @@ public class Billboard {
 
         Position startPosition = billboardCell.get(start);
         Position goalPosition = billboardCell.get(goal);
-
-        if(startPosition.equals(goalPosition))return false;
 
         if(startPosition.isNear(goalPosition)) {
             if (start.color == goal.color) return true;
@@ -119,7 +115,7 @@ public class Billboard {
     }
 
     /**
-     *
+     * This function return an ArrayList of Door attainable from
      * @param startAttainableDoor
      * @param goalAttainableDoor
      * @return
@@ -187,11 +183,11 @@ public class Billboard {
 
     /**
      * Find way from start room to goal room passing in other room
-     * @param sc
-     * @param gc
-     * @param possibleDoors
-     * @param step
-     * @return
+     * @param sc start cell
+     * @param gc goal cell
+     * @param possibleDoors couple from start room to goal room passing in other room
+     * @param step max step number that player can do
+     * @return true if there is one (or more) way to go from startCell to goalCell
      */
     private boolean thereIsWalkableComplexWay(Cell sc, Cell gc, HashMap<Door,Door> possibleDoors, int step){
 
@@ -204,8 +200,6 @@ public class Billboard {
         return false;
     }
 
-
-
     /**
      * This function verify if a player can move from a cell "start" to a cell "goal" in a number of steps <= "steps"
      *
@@ -215,6 +209,8 @@ public class Billboard {
      * @return true if can move else false, if start cell == goal cell return false
      */
     public boolean canMove(Cell start, Cell goal, int step){
+
+        if(billboardCell.get(start).equals(billboardCell.get(goal))) return true;
 
         if(step==1) return canMoveSingleStep(start,goal);
 
@@ -243,9 +239,6 @@ public class Billboard {
             //Not near room (pass two doors)
             HashMap<Door,Door> doubleDoors = doubleDoorsPlayerCanPass(startCellsDoor,goalCellsDoor);
             if(thereIsWalkableComplexWay(start,goal,doubleDoors,step)) return true;
-
-
-
 
         }
         return false;
@@ -282,10 +275,7 @@ public class Billboard {
      * @param cell2 the cell which I want to see
      * @return true if they have the same color, else false
      */
-
     public boolean isVisible(Cell cell1, Cell cell2){
         return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
     }
-
-
 }
