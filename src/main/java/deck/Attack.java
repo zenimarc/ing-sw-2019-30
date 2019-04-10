@@ -1,6 +1,5 @@
 package deck;
 
-import board.Board;
 import player.Player;
 
 import java.util.*;
@@ -13,7 +12,7 @@ import java.util.*;
 public class Attack {
     private Player shooter;
     private int damage = 0;
-    private ArrayList<Player> players;
+    protected ArrayList<Player> players;
     private boolean isvisible;
     private int max_distance = 0;
     private int min_distance = 0;

@@ -48,18 +48,6 @@ public class PlayerBoard {
     }
 
     /**
-     * This function is a cycle for adding damage
-     * @param player player who shot
-     * @param num damage dealt by the shooter
-     */
-
-    void addDamage(Player player, int num){
-        for (int i=0; i<num; i++){
-            addDamage(player);
-        }
-    }
-
-    /**
      * This function returns the number of marks that have been put by the indicated player to this player board.
      * @param player player you want to know how many marks put
      * @return number of marks which have been put by indicated player
@@ -70,6 +58,25 @@ public class PlayerBoard {
             return marks.get(player);
         else
             return 0;
+    }
+
+    /**
+     * This function returns the boardof the player
+     * @return the board of the player
+     */
+
+    public Board getPlayerBoard(){return this.board;}
+
+    /**
+     * This function is a cycle for adding damage
+     * @param player player who shot
+     * @param num damage dealt by the shooter
+     */
+
+    public void addDamage(Player player, int num){
+        for (int i=0; i<num; i++){
+            addDamage(player);
+        }
     }
 
     /**
@@ -105,7 +112,7 @@ public class PlayerBoard {
     }
 
     /**
-     * This function clears the damageTrack (useful when changing mode to frenzy)
+     * This function clears the damageTrack (useful when changing to frenzy mode)
      */
     public void clearDamages(){
         damageTrack.clear();
@@ -114,7 +121,7 @@ public class PlayerBoard {
     /**
      * This function is a cycle for adding marks
      * @param player the player who will give marks
-     * @param marks numberof marks given
+     * @param marks number of marks given
      */
     public void addMark(Player player, int marks){
         for (int i=0; i<marks; i++)
