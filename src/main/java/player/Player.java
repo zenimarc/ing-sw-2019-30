@@ -89,7 +89,8 @@ public class Player {
             return false;
     }
 
-    //DEPRECATED, going to remove
+    @Deprecated
+    //going to remove
     public boolean useBullet(Color color, int count) {
         if (count > ammo.get(color)) return false;
         else {
