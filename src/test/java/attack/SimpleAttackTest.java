@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import player.Player;
 import weapon.Gun;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +21,7 @@ class SimpleAttackTest {
     @BeforeAll
     public static void init(){
         int[] payment = {0,0,2};
-        ArrayList<Attack> attacks= new ArrayList<>();
+        ArrayList<Attack_> attacks= new ArrayList<>();
         myAttack = new SimpleAttack("Effetto base", "2 danni e 1 marchio a 1 bersaglio che puoi vedere",
                 2, 1);
         attacks.add(myAttack);

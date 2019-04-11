@@ -3,7 +3,7 @@ package attack;
 
 import player.Player;
 
-public class SimpleAttack extends Attack implements AttackSinglePlayerInterface {
+public class SimpleAttack extends Attack_ implements AttackSinglePlayerInterface {
 
     private static int damage;
     private static int mark;

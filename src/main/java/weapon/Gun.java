@@ -1,14 +1,13 @@
 package weapon;
 
-import attack.Attack;
-import attack.SimpleAttack;
+import attack.Attack_;
 
 import java.util.List;
 
 public class Gun extends WeaponCard {
 
 
-    public Gun(String name, int[] cost, List<Attack> attacks) {
+    public Gun(String name, int[] cost, List<Attack_> attacks) {
         super();
     }
 
