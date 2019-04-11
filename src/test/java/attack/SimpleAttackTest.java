@@ -34,7 +34,6 @@ class SimpleAttackTest {
         p2 = new Player("Player2", board);
 
         p1.addWeapon(destructor);
-
     }
 
     @Test
@@ -44,7 +43,6 @@ class SimpleAttackTest {
         System.out.println(p2.getName()+"\tDanni: "+ p2.getPlayerBoard().getNumDamages());
 
         myAttack.attack(p1,p2);
-
 
         System.out.println(p1.getName()+"\tDanni: "+ p1.getPlayerBoard().getNumDamages());
         System.out.println(p2.getName()+"\tDanni: "+ p2.getPlayerBoard().getNumDamages());

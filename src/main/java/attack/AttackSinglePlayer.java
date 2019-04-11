@@ -2,7 +2,7 @@ package attack;
 
 import player.Player;
 
-public interface SinglePlayerAttack {
+public interface AttackSinglePlayer {
 
     Player setTarget(Player player);
 
