@@ -1,6 +1,8 @@
-package deck;
+package attack;
 
-public class Destructor extends Attack{
+import attack.Attack;
+
+public class Destructor extends Attack {
     private int maxTargets = 1;
 
     public void baseAttack(){

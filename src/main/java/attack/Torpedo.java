@@ -1,4 +1,6 @@
-package deck;
+package attack;
+
+import attack.Attack;
 
 public class Torpedo extends Attack {
     public int maxTargets = 1;

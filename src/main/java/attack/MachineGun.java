@@ -1,5 +1,6 @@
-package deck;
+package attack;
 
+import attack.Attack;
 import player.Player;
 
 public class MachineGun extends Attack {

@@ -1,5 +1,7 @@
 package deck;
 
+import attack.Attack;
+
 import java.util.*;
 
 /**

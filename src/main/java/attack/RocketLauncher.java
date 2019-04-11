@@ -1,8 +1,9 @@
-package deck;
+package attack;
 
+import attack.Attack;
 import player.Player;
 
-public class RocketLauncher extends Attack{
+public class RocketLauncher extends Attack {
 
     public void baseAttack(){
         //chiama una f per selezionare il target e deve esssere vsisibile e non nella tua cella

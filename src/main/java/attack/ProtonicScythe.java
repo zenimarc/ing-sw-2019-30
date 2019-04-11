@@ -1,8 +1,9 @@
-package deck;
+package attack;
 
+import attack.Attack;
 import player.Player;
 
-public class ProtonicScythe extends Attack{
+public class ProtonicScythe extends Attack {
 
     public void baseAttack(){
         //chiama una f per selezionare i target nella cella in cui sono

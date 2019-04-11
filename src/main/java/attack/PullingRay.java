@@ -1,6 +1,8 @@
-package deck;
+package attack;
 
-public class PullingRay extends Attack{
+import attack.Attack;
+
+public class PullingRay extends Attack {
     private int maxEnemyMovement = 2;
 
     public void baseAttack(){

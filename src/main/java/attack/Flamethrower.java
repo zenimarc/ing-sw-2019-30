@@ -1,6 +1,6 @@
-package deck;
+package attack;
 
-import player.Player;
+import attack.Attack;
 
 public class Flamethrower extends Attack {
     private int distance1 = 1;

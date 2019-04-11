@@ -1,4 +1,6 @@
-package deck;
+package attack;
+
+import attack.Attack;
 
 public class PlasmaGun extends Attack {
     int maxMovement = 2;

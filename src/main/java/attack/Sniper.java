@@ -1,6 +1,8 @@
-package deck;
+package attack;
 
-public class Sniper extends Attack{
+import attack.Attack;
+
+public class Sniper extends Attack {
     private int min_distance = 2;
 
     public void baseAttack(){
