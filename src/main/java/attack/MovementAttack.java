@@ -10,9 +10,9 @@ public class MovementAttack extends Attack {
     public void fire() {
         //viene chiamata f per effettuare il movimento
         for (Player player : players)
-            player.getPlayerBoard().addDamage(getShooter(), this.damage);
+            player.addDamage(getShooter(), this.damage);
         for (Player player : players)
-            player.getPlayerBoard().addMark(getShooter(), this.marks);
+            player.addMark(getShooter(), this.marks);
 
     }
 }

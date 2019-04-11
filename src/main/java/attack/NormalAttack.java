@@ -8,9 +8,9 @@ public class NormalAttack extends Attack {
 
     public void fire() {
         for (Player player : players)
-            player.getPlayerBoard().addDamage(getShooter(), this.damage);
+            player.addDamage(getShooter(), this.damage);
         for (Player player : players)
-            player.getPlayerBoard().addMark(getShooter(), this.marks);
+            player.addMark(getShooter(), this.marks);
 
     }
 }

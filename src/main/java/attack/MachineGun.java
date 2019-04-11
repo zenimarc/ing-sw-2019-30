@@ -10,19 +10,19 @@ public class MachineGun extends Attack {
     public void baseAttack(){
         //chiama una f per selezionare i target e devono esssere visibili
         for(Player player : players)
-            player.getPlayerBoard().addDamage(getShooter(), 1);
+            player.addDamage(getShooter(), 1);
     }
 
     public void optionalAttack1(){
 
         //chiama una f per selezionare uno dei due target visibili
-            players.get(i).getPlayerBoard().addDamage(getShooter(), 1);
+            players.get(i).addDamage(getShooter(), 1);
     }
 
     public void optionaleAttack2(){
         //chiama una f per selezionare l'altro dei due target visibili. Nel caso non sia stato attivato il primo opzionale, non serve il controllo
-        players.get(i).getPlayerBoard().addDamage(getShooter(), 1);
+        players.get(i).addDamage(getShooter(), 1);
         //chiama una f per selezionare un bersaglio diverso dai primi due e gli infligge danno(si può anche non fare)
-        players.get(i).getPlayerBoard().addDamage(getShooter(), 1);
+        players.get(i).addDamage(getShooter(), 1);
     }
 }

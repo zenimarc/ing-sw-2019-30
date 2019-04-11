@@ -7,7 +7,7 @@ public class Sniper extends Attack {
 
     public void baseAttack(){
         //chiama una f per selezionare i target e deve esssere visisibile e lontano 2 spazi
-        players.get(0).getPlayerBoard().addDamage(getShooter(), 3);
-        players.get(0).getPlayerBoard().addMark(getShooter(), 1);
+        players.get(0).addDamage(getShooter(), 3);
+        players.get(0).addMark(getShooter(), 1);
     }
 }

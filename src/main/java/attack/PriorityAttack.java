@@ -9,7 +9,7 @@ public class PriorityAttack extends Attack {
     public void fire() {
         if(doesDamage) //caso eccezionale
             for (Player player : players)
-                player.getPlayerBoard().addDamage(getShooter(), this.damage);
+                player.addDamage(getShooter(), this.damage);
         else movement = 1; //il resto fa solo movimento
     }
 }

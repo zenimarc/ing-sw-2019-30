@@ -7,7 +7,7 @@ public class PlasmaGun extends Attack {
 
     public void baseAttack(){
         //chiama una f per selezionare il target e deve esssere visisibile
-        players.get(0).getPlayerBoard().addDamage(getShooter(), 2);
+        players.get(0).addDamage(getShooter(), 2);
     }
 
     public void priorityMove(){
@@ -16,6 +16,6 @@ public class PlasmaGun extends Attack {
     }
     public void optionalAttack(){
         //colpisce il target scelto in precedenza
-        players.get(0).getPlayerBoard().addDamage(getShooter(), 1);
+        players.get(0).addDamage(getShooter(), 1);
     }
 }
