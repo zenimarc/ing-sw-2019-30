@@ -10,19 +10,19 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SimpleAttackTest {
+class SingleAttackTest {
 
     private static Player p1, p2;
     private static Gun destructor;
     private static Board board;
-    private static SimpleAttack myAttack;
+    private static SingleAttack myAttack;
 
 
     @BeforeAll
     public static void init(){
         int[] payment = {0,0,2};
         ArrayList<Attack_> attacks= new ArrayList<>();
-        myAttack = new SimpleAttack("Effetto base", "2 danni e 1 marchio a 1 bersaglio che puoi vedere",
+        myAttack = new SingleAttack("Effetto base", "2 danni e 1 marchio a 1 bersaglio che puoi vedere",
                 2, 1);
         attacks.add(myAttack);
         destructor = new Gun("Destructor", payment, attacks);

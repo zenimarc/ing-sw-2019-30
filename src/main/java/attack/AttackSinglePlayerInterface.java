@@ -5,5 +5,5 @@ import player.Player;
 
 public interface AttackSinglePlayerInterface {
 
-    boolean attack(Player player, Player opponents);
+    boolean attack(Player player, Player opponent);
 }

@@ -2,6 +2,7 @@ package weapon;
 
 import attack.Attack_;
 import deck.Card;
+import player.Player;
 
 import java.util.*;
 
@@ -12,7 +13,7 @@ public abstract class WeaponCard extends Card {
 
     private String name;
     private int[] cost;
-    private List<Attack_> attacks;
+    protected List<Attack_> attacks;
     private boolean isLoaded;
 
     /**
@@ -55,4 +56,5 @@ public abstract class WeaponCard extends Card {
         return attacks.get(idAttack);
     }
 
+    public abstract boolean shoot (Player shooter, Player opposit, int idAttack);
 }
