@@ -1,4 +1,4 @@
-package deck;
+package attack;
 
 import player.Player;
 
@@ -9,7 +9,7 @@ import java.util.*;
  * vari tipi di attacco, ad un arma possono essere associati più attacchi.
  * qui andranno tutti i possibili attacchi che troviamo nelle carte (quelli base, quelli a costo aggiuntivo ecc.)
  */
-public class Attack {
+public abstract class Attack {
     private Player shooter;
     private int damage = 0;
     protected ArrayList<Player> players;
