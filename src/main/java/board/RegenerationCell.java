@@ -3,7 +3,7 @@ package board;
 import constants.Constants;
 import deck.Card;
 import deck.Color;
-import deck.WeaponCard;
+import weapon.WeaponCard;
 
 import java.util.*;
 
@@ -46,7 +46,7 @@ public class RegenerationCell extends Cell {
      * @return the list of cards set in the cell
      */
     public ArrayList<WeaponCard> getCards() {
-        return new ArrayList<WeaponCard>(Arrays.asList(weaponCard));
+        return new ArrayList<>(Arrays.asList(weaponCard));
     }
 
     /**

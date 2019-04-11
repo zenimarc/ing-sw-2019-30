@@ -1,9 +1,7 @@
 package view;
 import board.Cell;
 import player.Player;
-import deck.WeaponCard;
-
-import java.util.*;
+import weapon.WeaponCard;
 
 /**
  * 

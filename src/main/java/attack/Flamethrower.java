@@ -8,17 +8,17 @@ public class Flamethrower extends Attack {
 
     public void baseAttack() {
         //chiama una f per selezionare due bersagli su quadrati diversi e nella stessa direzione distanti rispettivamente 1 e 2 quadrati da te, verificando per entrambi che non ci siano muri
-        players.get(0).getPlayerBoard().addDamage(getShooter(), 1);
+        players.get(0).addDamage(getShooter(), 1);
         //seconda verifica
-        players.get(1).getPlayerBoard().addDamage(getShooter(), 1);
+        players.get(1).addDamage(getShooter(), 1);
     }
 
     public void alternativeAttack() {
         //chiama una f per selezionare due quadrati diversi e nella stessa direzione distanti rispettivamente 1 e 2 quadrati da te, verificando per entrambi che non ci siano muri
         for(Player player : players)
-            player.getPlayerBoard().addDamage(getShooter(), 2);
+            player.addDamage(getShooter(), 2);
         //seconda verifica
         for(Player player : players)
-            player.getPlayerBoard().addDamage(getShooter(), 1);
+            player.addDamage(getShooter(), 1);
     }
 }
