@@ -1,4 +1,6 @@
-package attack;
+package cardAttack;
+
+import attack.Attack;
 
 public class HeatMissile extends Attack {
 

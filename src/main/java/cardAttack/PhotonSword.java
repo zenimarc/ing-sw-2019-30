@@ -1,6 +1,8 @@
-package attack;
+package cardAttack;
 
-public class PhotonSword extends Attack{
+import attack.Attack;
+
+public class PhotonSword extends Attack {
 
     public void baseAttack(){
         //chiama una f per selezionare il target e deve esssere nella stessa cella in cui si è

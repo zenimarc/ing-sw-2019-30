@@ -1,4 +1,4 @@
-package attack;
+package cardAttack;
 
 import attack.Attack;
 import player.Player;

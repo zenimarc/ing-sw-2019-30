@@ -1,5 +1,6 @@
-package attack;
+package cardAttack;
 
+import attack.Attack;
 import player.Player;
 
 public class PriorityAttack extends Attack {
