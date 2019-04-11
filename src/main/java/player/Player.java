@@ -23,7 +23,6 @@ public class Player {
     private WeaponCard[] weapons;
     private PowerCard[] powerups;
     private Map<Color, Integer> ammo;
-    private int marksGiven; //each player can give max 3 marks to other players (the sum of marks given mustn't exceed 3)
 
     public Player(String nickname, Board board) {
         this.nickname = nickname;
@@ -33,7 +32,6 @@ public class Player {
         this.weapons = new WeaponCard[Constants.MAX_WEAPON_HAND_SIZE.getValue()];
         this.powerups = new PowerCard[Constants.MAX_POWER_HAND_SIZE.getValue()];
         this.ammo = new EnumMap<>(Color.class);
-        this.marksGiven = 0;
     }
 
     public Pawn getPawn(){return this.pawn;}

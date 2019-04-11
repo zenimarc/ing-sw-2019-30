@@ -38,4 +38,5 @@ public abstract class Attack {
         this.movement = movement;
     }
 
+    public Player getShooter(){return this.shooter;}
 }
