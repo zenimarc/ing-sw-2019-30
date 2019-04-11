@@ -1,6 +1,7 @@
-package deck;
+package weapon;
 
-import attack.AttackInterface;
+import attack.Attack;
+import deck.Card;
 
 import java.util.*;
 
@@ -9,8 +10,9 @@ import java.util.*;
  */
 public abstract class WeaponCard extends Card {
 
+    private String name;
     private int[] cost;
-    private List<AttackInterface> attacks;
+    private List<Attack> attacks;
     private boolean isLoaded;
 
     /**
@@ -22,7 +24,8 @@ public abstract class WeaponCard extends Card {
         this.attacks = new ArrayList<>();
     }
 
-    public WeaponCard(int[] cost, List<AttackInterface> attacks) {
+    public WeaponCard(String name, int[] cost, List<Attack> attacks) {
+        this.name = name;
         this.cost = cost;
         this.attacks = attacks;
         isLoaded = false;
@@ -37,7 +40,7 @@ public abstract class WeaponCard extends Card {
      * @return the list of attacks
      */
 
-    public List<AttackInterface> getAttacks(){
+    public List<Attack> getAttacks(){
         return this.attacks;
     }
     /**
@@ -48,9 +51,8 @@ public abstract class WeaponCard extends Card {
         return this.cost;
     }
 
-    public AttackInterface getAttack(int idAttack) {
-        // TODO implement here
-        return null;
+    public Attack getAttack(int idAttack) {
+        return attacks.get(idAttack);
     }
 
 }
