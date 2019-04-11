@@ -5,7 +5,7 @@ import player.Player;
 public class ZX2 extends Attack {
 
     public void baseAttack(){
-        //chiama una f per selezionare il target e deve esssere vsisibile
+        //chiama una f per selezionare il target e deve esssere visisibile
         players.get(0).getPlayerBoard().addDamage(getShooter(), 1);
         players.get(0).getPlayerBoard().addMark(getShooter(), 2);
     }

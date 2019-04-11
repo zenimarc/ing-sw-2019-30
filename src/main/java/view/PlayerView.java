@@ -50,6 +50,9 @@ public class PlayerView {
         return false;
     }
 
+    public void chooseTarget(){
+        //TODO implement here
+    }
 
     private boolean finalMove(Cell cell) {
         // TODO implement here

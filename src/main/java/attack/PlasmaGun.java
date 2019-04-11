@@ -6,7 +6,7 @@ public class PlasmaGun extends Attack {
     int maxMovement = 2;
 
     public void baseAttack(){
-        //chiama una f per selezionare i target e deve esssere vsisibile
+        //chiama una f per selezionare il target e deve esssere visisibile
         players.get(0).getPlayerBoard().addDamage(getShooter(), 2);
     }
 
