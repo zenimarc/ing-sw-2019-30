@@ -3,8 +3,6 @@ package board;
 import deck.AmmoCard;
 import deck.Color;
 import deck.PowerCard;
-import deck.WeaponCard;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
