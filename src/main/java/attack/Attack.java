@@ -1,10 +1,8 @@
 package attack;
 
+public abstract class Attack {
 
-
-
-public interface Attack {
-
-    boolean attack();
+    protected static String name;
+    protected static String description;
 
 }
