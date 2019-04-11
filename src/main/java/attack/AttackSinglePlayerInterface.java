@@ -3,7 +3,7 @@ package attack;
 import player.Player;
 
 
-public interface AttackInterface {
+public interface AttackSinglePlayerInterface {
 
     boolean attack(Player player, Player opponents);
 }
