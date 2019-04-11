@@ -3,7 +3,7 @@ package board;
 import constants.Constants;
 import deck.Card;
 import deck.Color;
-import deck.WeaponCard;
+import weapon.WeaponCard;
 
 import java.util.*;
 
