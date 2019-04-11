@@ -73,7 +73,7 @@ public class PlayerBoard {
      * @param num damage dealt by the shooter
      */
 
-    public void addDamage(Player player, int num){
+    protected void addDamage(Player player, int num){
         for (int i=0; i<num; i++){
             addDamage(player);
         }
@@ -84,7 +84,7 @@ public class PlayerBoard {
      * if there are marks from the indicated player they will be converted into damages
      * @param player who wants to add damage to this playerBoard
      */
-    public void addDamage(Player player){
+    private void addDamage(Player player){
         if (damageTrack.size()<Constants.MAX_DAMAGE.getValue())
             damageTrack.add(player);
         //se ne ha già 12 non fa niente
@@ -123,7 +123,7 @@ public class PlayerBoard {
      * @param player the player who will give marks
      * @param marks number of marks given
      */
-    public void addMark(Player player, int marks){
+    protected void addMark(Player player, int marks){
         for (int i=0; i<marks; i++)
             this.addMark(player);
     }
@@ -132,7 +132,7 @@ public class PlayerBoard {
      * This function adds a mark to the board from a specified player
      * @param player the player who want to give a mark
      */
-    public void addMark(Player player){
+    private void addMark(Player player){
         Integer currentMarks = marks.putIfAbsent(player, 1);
         if (currentMarks != null && currentMarks<3){
             marks.replace(player, currentMarks+1);
