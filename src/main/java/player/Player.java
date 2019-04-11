@@ -118,6 +118,14 @@ public class Player {
 
     }
 
+    public void addDamage(Player oppenent, int shots){
+        this.playerBoard.addDamage(oppenent,shots);
+    }
+
+    public void addMark(Player oppenent, int mark){
+        this.playerBoard.addMark(oppenent,mark);
+    }
+
     @Override
     public String toString() {
         return this.nickname;
