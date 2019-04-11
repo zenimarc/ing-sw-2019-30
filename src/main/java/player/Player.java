@@ -2,10 +2,9 @@ package player;
 
 import board.Board;
 import constants.Constants;
-import deck.Bullet;
 import deck.Color;
 import deck.PowerCard;
-import deck.WeaponCard;
+import weapon.WeaponCard;
 
 import java.util.*;
 
@@ -20,7 +19,7 @@ public class Player {
     private Pawn pawn;
     private int points;
     private PlayerBoard playerBoard;
-    private WeaponCard[] weapons;
+    private ArrayList<WeaponCard> weapons;
     private PowerCard[] powerups;
     private Map<Color, Integer> ammo;
     private int marksGiven; //each player can give max 3 marks to other players (the sum of marks given mustn't exceed 3)
@@ -30,7 +29,7 @@ public class Player {
         this.pawn = new Pawn(this);
         this.points = 0; //a new player has 0 points
         this.playerBoard = new PlayerBoard(board);
-        this.weapons = new WeaponCard[Constants.MAX_WEAPON_HAND_SIZE.getValue()];
+        this.weapons = new ArrayList<>();
         this.powerups = new PowerCard[Constants.MAX_POWER_HAND_SIZE.getValue()];
         this.ammo = new EnumMap<>(Color.class);
         this.marksGiven = 0;
@@ -49,7 +48,7 @@ public class Player {
     public int getPoints(){
         return this.points;
     }
-    public WeaponCard[] getWeapons(){
+    public ArrayList<WeaponCard> getWeapons(){
         return this.weapons;
     }
     public PowerCard[] getPowerups(){
@@ -116,6 +115,14 @@ public class Player {
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), this.ammo.get(BLUE)+ammo[2]) :
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), ammo[2] ));
 
+    }
+
+    public boolean addWeapon(WeaponCard weaponCard){
+        if(weapons.size()<Constants.MAX_WEAPON_HAND_SIZE.getValue()){
+            weapons.add(weaponCard);
+            return true;
+        }
+        return false;
     }
 
     public void addDamage(Player oppenent, int shots){
