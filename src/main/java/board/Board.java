@@ -38,6 +38,8 @@ public class Board {
         return null;
     }
 
+    public Billboard getBillboard(){return billboard;}
+
     /**
      * This function decrements the number of skulls in the board
      */

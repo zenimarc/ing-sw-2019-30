@@ -132,6 +132,10 @@ public class Player {
         this.playerBoard.addMark(oppenent,mark);
     }
 
+    public boolean canView(Player opponent){
+        return (playerBoard.getBoard().getBillboard().isVisible(this.pawn.getCell(), opponent.pawn.getCell()));
+    }
+
     @Override
     public String toString() {
         return this.nickname;

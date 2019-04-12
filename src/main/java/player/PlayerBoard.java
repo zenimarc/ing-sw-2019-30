@@ -65,7 +65,7 @@ public class PlayerBoard {
      * @return the board of the player
      */
 
-    public Board getPlayerBoard(){return this.board;}
+    public Board getBoard(){return this.board;}
 
     /**
      * This function is a cycle for adding damage
