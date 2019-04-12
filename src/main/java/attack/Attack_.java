@@ -1,15 +1,12 @@
 package attack;
 
-import deck.Color;
 import player.Player;
-
-import java.util.ArrayList;
 
 public abstract class Attack_ {
 
-    protected static String name;
-    protected static String description;
-    protected static int[] bulletsColor;
+    protected String name;
+    protected String description;
+    protected int[] bulletsColor;
 
     public abstract boolean attack(Player player, Player opponent);
     public abstract String getDescription();
@@ -18,7 +15,7 @@ public abstract class Attack_ {
         this.bulletsColor = bulletsColor;
     }
 
-    public static int[] getCost() {
+    public int[] getCost() {
         return bulletsColor;
     }
 

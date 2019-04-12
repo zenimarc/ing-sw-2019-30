@@ -5,18 +5,19 @@ import player.Player;
 
 public class SingleAttack extends Attack_{
 
-    private static int damage;
-    private static int mark;
+    private int damage;
+    private int mark;
 
     public SingleAttack(String name, String description, int damage, int mark){
         this.name = name;
         this.description = description;
         this.damage = damage;
         this.mark = mark;
+
     }
 
     public SingleAttack(String name, int damage, int mark){
-        this.name = name;
+        this.name =  name;
         this.damage = damage;
         this.mark = mark;
     }
@@ -30,7 +31,7 @@ public class SingleAttack extends Attack_{
 
     @Override
     public String getDescription() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("Dai ");
         sb.append(damage);
         sb.append(" danni e ");
@@ -39,11 +40,11 @@ public class SingleAttack extends Attack_{
         return sb.toString();
     }
 
-    public static int getDamage() {
+    public int getDamage() {
         return damage;
     }
 
-    public static int getMark() {
+    public int getMark() {
         return mark;
     }
 }

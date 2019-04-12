@@ -1,5 +1,7 @@
 package board;
 
+import java.util.Objects;
+
 import static java.lang.Math.abs;
 
 /**
@@ -23,12 +25,21 @@ public class Position {
      */
 
     /**
+     * hashcode() function
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+    /**
      * This function verifies if two objects have the same position
       * @param obj
      * @return
      */
     @Override
-    public boolean equals(Object obj) {//TODO non capisco bene oggetto cosa sia e perchè sia così
+    public boolean equals(Object obj) {
         if(obj== null) return false;
 
         if(obj.getClass()==Position.class){
