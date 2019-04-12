@@ -11,6 +11,8 @@ class SingleAttackTest {
 
     private static Player p1, p2;
     private static Board board;
+    private static SingleAttack singleAttack;
+    private final static int testDamage = 3, testMark = 1;
 
     @BeforeAll
     static void init(){
@@ -18,20 +20,23 @@ class SingleAttackTest {
         p1 = new Player("p1", board);
         p2 = new Player("p2", board);
 
+        singleAttack = new SingleAttack("Atteck test", "Lorem ipsum",testDamage,testMark);
     }
 
     @Test
     void attack() {
-
-        SingleAttack singleAttack = new SingleAttack("Atteck test", "Lorem ipsum",2,1);
         singleAttack.attack(p1,p2);
 
         assertEquals(p1.getPlayerBoard().getNumDamages(), 0);
-        assertEquals(p2.getPlayerBoard().getNumDamages(), 2);
+        assertEquals(p2.getPlayerBoard().getNumDamages(), testDamage);
 
         assertEquals(p1.getPlayerBoard().getMarks(p2),0);
-        assertEquals(p2.getPlayerBoard().getMarks(p1),1);
+        assertEquals(p2.getPlayerBoard().getMarks(p1),testMark);
+    }
 
-
+    @Test
+    void getDescription() {
+        assertEquals(singleAttack.getDescription(),
+                "Dai "+testDamage+" danni e "+testMark+" marchio/i a 1 bersaglio che puoi vedere.");
     }
 }

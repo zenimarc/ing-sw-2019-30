@@ -35,7 +35,7 @@ public class SingleAttack extends Attack_{
         sb.append(damage);
         sb.append(" danni e ");
         sb.append(mark);
-        sb.append(" marchio/i a 1 bersagli che puoi vedere.");
+        sb.append(" marchio/i a 1 bersaglio che puoi vedere.");
         return sb.toString();
     }
 
