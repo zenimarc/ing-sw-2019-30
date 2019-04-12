@@ -38,4 +38,12 @@ public class SingleAttack extends Attack_{
         sb.append(" marchio/i a 1 bersagli che puoi vedere.");
         return sb.toString();
     }
+
+    public static int getDamage() {
+        return damage;
+    }
+
+    public static int getMark() {
+        return mark;
+    }
 }

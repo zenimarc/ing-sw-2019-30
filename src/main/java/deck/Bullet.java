@@ -28,7 +28,7 @@ public class Bullet {
      */
     public int[] toIntArray(ArrayList<Bullet> bullets){
 
-        int[] colorArray = new int[3];
+        int[] colorArray = new int[]{0,0,0};
         int i;
 
         for(Bullet bullet : bullets){
