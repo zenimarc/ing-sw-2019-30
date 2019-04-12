@@ -1,6 +1,7 @@
 package weapon;
 
 import attack.Attack_;
+import deck.Bullet;
 import deck.Card;
 import player.Player;
 
@@ -12,29 +13,31 @@ import java.util.*;
 public abstract class WeaponCard extends Card {
 
     private String name;
-    private int[] cost;
+    private List<Bullet> cost;
     protected List<Attack_> attacks;
     private boolean isLoaded;
 
-    /**
-     * Default constructor
-     */
 
+    //Default constructor
     public WeaponCard() {
-        this.cost = new int[3];
+        this.cost = new ArrayList<>();
         this.attacks = new ArrayList<>();
     }
 
-    public WeaponCard(String name, int[] cost, List<Attack_> attacks) {
+    public WeaponCard(String name,List<Bullet> cost) {
+        this.name = name;
+        this.cost = cost;
+        isLoaded = false;
+    }
+
+    public WeaponCard(String name, List<Bullet> cost, List<Attack_> attacks) {
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
         isLoaded = false;
     }
 
-    /**
-     * End constructors
-     */
+    //End constructors
 
     /**
      * This function returns the list of attacks a weapon has
@@ -48,13 +51,19 @@ public abstract class WeaponCard extends Card {
      * This function returns the cost of every attack
      * @return the cost of every attack
      */
-    public int[] getCost(){
+    public List<Bullet> getCost(){
         return this.cost;
     }
+
+    /**
+     * Get the weapon name
+     * @return weapon name
+     */
+    public String getName(){return this.name;}
+
 
     public Attack_ getAttack(int idAttack) {
         return attacks.get(idAttack);
     }
 
-    public abstract boolean shoot (Player shooter, Player opposit, int idAttack);
 }

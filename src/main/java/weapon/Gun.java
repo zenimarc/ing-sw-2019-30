@@ -12,10 +12,5 @@ public class Gun extends WeaponCard {
         super();
     }
 
-    @Override
-    public boolean shoot(Player shooter, Player opposite, int idAttack) {
-        if(attacks.size()<=idAttack) return false;
-        attacks.get(idAttack).attack(shooter,opposite);
-        return false;
-    }
+
 }
