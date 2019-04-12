@@ -15,7 +15,7 @@ public abstract class WeaponCard extends Card {
     private String name;
     private List<Bullet> cost;
     protected List<Attack_> attacks;
-    private boolean isLoaded;
+    protected boolean isLoaded;
 
 
     //Default constructor
@@ -66,7 +66,7 @@ public abstract class WeaponCard extends Card {
         return attacks.get(idAttack);
     }
 
-    public abstract boolean shoot(int idAttack, Player shooter, ArrayList<Player> opponets);
+    public abstract boolean shoot(int idAttack, Player shooter, List<Player> opponets);
 
     public boolean shoot(int idAttack, Player shooter, Player opponent){
         return shoot(idAttack, shooter, new ArrayList<>(Arrays.asList(opponent)));
