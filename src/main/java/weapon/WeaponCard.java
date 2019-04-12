@@ -39,6 +39,7 @@ public abstract class WeaponCard extends Card {
 
     //End constructors
 
+
     /**
      * This function returns the list of attacks a weapon has
      * @return the list of attacks
@@ -61,9 +62,15 @@ public abstract class WeaponCard extends Card {
      */
     public String getName(){return this.name;}
 
-
     public Attack_ getAttack(int idAttack) {
         return attacks.get(idAttack);
     }
+
+    public abstract boolean shoot(int idAttack, Player shooter, ArrayList<Player> opponets);
+
+    public boolean shoot(int idAttack, Player shooter, Player opponent){
+        return shoot(idAttack, shooter, new ArrayList<>(Arrays.asList(opponent)));
+    }
+
 
 }

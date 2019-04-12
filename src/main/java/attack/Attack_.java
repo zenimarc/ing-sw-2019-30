@@ -10,6 +10,9 @@ public abstract class Attack_ {
     protected static Color bulletColor;
 
     public abstract boolean attack(Player player, Player opponent);
+    public abstract String getDescription();
+
+    public String getName(){return this.name;}
 
 
     }

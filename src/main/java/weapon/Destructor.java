@@ -1,9 +1,9 @@
 package weapon;
 
-import attack.Attack;
 import attack.Attack_;
 import attack.SingleAttack;
 import deck.Bullet;
+import player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +20,24 @@ public class Destructor extends WeaponCard {
         super(enumWeapon.DESTRUCTOR.getName(),enumWeapon.DESTRUCTOR.getCost());
 
         attacks.add(new SingleAttack("Effetto base",
-                "Dai 2 danni e 1 marchio a 1 bersaglio che puoi vedere.",
                 2,1));
+
         attacks.add(new SingleAttack("Secondo Aggancio",
-                "Dai 1 marchio a un altro bersaglio che puoi vedere",
                 0,1));
     }
 
 
+    @Override
+    public boolean shoot(int idAttack, Player shooter, ArrayList<Player> opponents) {
+        if(idAttack>=attacks.size()) return false;
+        Attack_ attack = attacks.get(idAttack);
+        Player opponent = opponents.get(0);
 
-    /*
-    public void baseAttack(){
-        //chiama una f per selezionare il target e deve esssere visisibile
-        players.get(0).addDamage(getShooter(), 2);
-        players.get(0).addMark(getShooter(), 1);
+        if(shooter.canView(opponent)) {
+            attack.attack(shooter, opponent);
+            return true;
+        }
+        return false;
     }
 
-    public void optionalAttack(){
-        //chiama una f per selezionare il target visible e diverso dal primo
-        players.get(1).addMark(getShooter(), 1);
-    }*/
 }
