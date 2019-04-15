@@ -165,6 +165,10 @@ public class Player {
         this.playerBoard.addDamage(opponent,shots);
     }
 
+    public void addDamage(Player opponent){
+        this.addDamage(opponent,1);
+    }
+
     /**
      * This function adds marks to an opponent
      * @param opponent who will receive marks
@@ -172,6 +176,18 @@ public class Player {
      */
     public void addMark(Player opponent, int mark){
         this.playerBoard.addMark(opponent,mark);
+    }
+
+    public void addMark(Player opponent){
+        this.addMark(opponent, 1);
+    }
+
+    public int getMarks(Player opponent){
+        return this.playerBoard.getMarks(opponent);
+    }
+
+    public int getNumDamages(){
+        return this.playerBoard.getNumDamages();
     }
 
     /**

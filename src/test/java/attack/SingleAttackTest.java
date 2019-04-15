@@ -27,11 +27,11 @@ class SingleAttackTest {
     void attack() {
         singleAttack.attack(p1,p2);
 
-        assertEquals(p1.getPlayerBoard().getNumDamages(), 0);
-        assertEquals(p2.getPlayerBoard().getNumDamages(), testDamage);
+        assertEquals(p1.getNumDamages(), 0);
+        assertEquals(p2.getNumDamages(), testDamage);
 
-        assertEquals(p1.getPlayerBoard().getMarks(p2),0);
-        assertEquals(p2.getPlayerBoard().getMarks(p1),testMark);
+        assertEquals(p1.getMarks(p2),0);
+        assertEquals(p2.getMarks(p1),testMark);
     }
 
     @Test
