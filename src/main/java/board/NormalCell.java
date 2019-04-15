@@ -32,10 +32,6 @@ public class NormalCell extends Cell {
     }
 
     /**
-     * End Constructors
-     */
-
-    /**
      * This function returns the ammoCard of the cell
      * @param p
      * @return

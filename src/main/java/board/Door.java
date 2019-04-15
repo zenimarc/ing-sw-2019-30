@@ -21,10 +21,6 @@ public class Door {
     }
 
     /**
-     * End Constructors
-     */
-
-    /**
      * This function returns the first cell of two cells connected by a door
      * @return the first cell
      */

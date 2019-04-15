@@ -22,7 +22,4 @@ public class AmmoCard extends Card {
         this.hasPowerUp = hasPowerUp;
     }
 
-    /**
-     * End constructors
-     */
 }

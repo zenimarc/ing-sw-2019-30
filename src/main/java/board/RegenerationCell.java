@@ -38,10 +38,6 @@ public class RegenerationCell extends Cell {
     }
 
     /**
-     * End constructor
-     */
-
-    /**
      * This function returns the list of cards in the RegenerationCell
      * @return the list of cards set in the cell
      */

@@ -18,10 +18,6 @@ public class Deck {
     }
 
     /**
-     * End constructors
-     */
-
-    /**
      * This function shuffles the deck
      */
     public void shuffle() {

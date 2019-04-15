@@ -29,10 +29,6 @@ public class Pawn {
     }
 
     /**
-     * End constructors
-     */
-
-    /**
      * This function returns the player associated with the pawn
      * @return the player associated
      */

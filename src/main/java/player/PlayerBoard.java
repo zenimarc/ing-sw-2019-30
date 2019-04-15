@@ -27,9 +27,6 @@ public class PlayerBoard {
         this.numDeaths = 0;
     }
 
-    /**
-     * End Constructors
-     */
 
     /**
      * This function returns the number of times the layer has died

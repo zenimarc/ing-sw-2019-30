@@ -83,7 +83,7 @@ public class Player {
 
     /**
      * This function adds the points to a player after a kill
-     * @param points
+     * @param points to give
      */
     public void addPoints(int points){
         this.points += points;
@@ -158,7 +158,7 @@ public class Player {
     /**
      * This function adds damage to an opponent
      * @param opponent who will receive damage
-     * @param shots
+     * @param shots to give
      */
     public void addDamage(Player opponent, int shots){
         this.playerBoard.addDamage(opponent,shots);
