@@ -130,7 +130,8 @@ public class PlayerBoard {
     }
 
     /**
-     * This function adds a mark to the board from a specified player
+     * This function adds a mark to the playerBoard from a specified player
+     * only if it's possible to add another mark (marks < 3)
      * @param player the player who want to give a mark
      */
     private void addMark(Player player){

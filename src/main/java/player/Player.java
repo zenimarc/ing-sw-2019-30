@@ -125,6 +125,7 @@ public class Player {
 
     /**
      * this function adds ammo to the player from an ammo[] array
+     * requires ammo.length()>=3
      * player ammo are capped per color by MAX_BULLET_PER_COLOR constants
      * @param ammo array containing ammo cost for each color
      *             (ammo[0] -> RED cost, ammo[1] -> YELLOW cost, ammo[2] -> BLUE cost)
