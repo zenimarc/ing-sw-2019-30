@@ -27,10 +27,6 @@ public class Board {
     }
 
     /**
-     * End Constructors
-     */
-
-    /**
      * @return
      */
     public Board cloneBoard() {
@@ -38,7 +34,17 @@ public class Board {
         return null;
     }
 
+    /**
+     * This function returns the billboard used
+     * @return the billboard used
+     */
     public Billboard getBillboard(){return billboard;}
+
+    /**
+     * This function returns the number of skulls still to be assigned
+     * @return the remaining number of skulls
+     */
+    public int getSkulls(){return this.numSkulls;}
 
     /**
      * This function decrements the number of skulls in the board

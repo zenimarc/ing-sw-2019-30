@@ -6,6 +6,7 @@ import player.Player;
 public class MovementAttack extends Attack {
     private int maxTargets = 0;
     private int minDistance = 0;
+    private int maxDistance = 0;
     private int movement = 0;
 
     public void fire() {

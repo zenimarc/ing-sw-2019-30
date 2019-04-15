@@ -108,7 +108,8 @@ public class PlayerBoard {
      * This function adds a death to the PlayerBoard, (increment numDeath by 1)
      */
     public void addSkull(){
-        this.numDeaths++;
+        if (this.board.getSkulls() > 0)
+            this.numDeaths++;
     }
 
     /**
