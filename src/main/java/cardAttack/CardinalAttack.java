@@ -3,12 +3,8 @@ package cardAttack;
 import attack.Attack;
 import player.Player;
 
-/** attacchi soddisfatti così:
- * distruttore tutti, mitragliatrice tutti(problema solo gestione bersagli), Torpedine, fucile al plasma, cecchino
- */
-public class NormalAttack extends Attack {
-    private int maxTargets = 0;
-    private int minDistance = 0;
+public class CardinalAttack extends Attack {
+    private boolean isPierce;
 
     public void fire() {
         for (Player player : players)

@@ -21,8 +21,4 @@ public class PowerCard extends Card {
         this.cardType = cardType;
     }
 
-    /**
-     * End constructors
-     */
-
 }

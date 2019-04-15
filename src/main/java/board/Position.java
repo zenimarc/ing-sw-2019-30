@@ -21,10 +21,6 @@ public class Position {
     }
 
     /**
-     * End Constructors
-     */
-
-    /**
      * hashcode() function
      * @return
      */
@@ -45,9 +41,7 @@ public class Position {
         if(obj.getClass()==Position.class){
             Position p = (Position) obj;
 
-            if(this.x == p.x && this.y == p.y){
-                return  true;
-            }
+            return(this.x == p.x && this.y == p.y);
         }
         return false;
     }

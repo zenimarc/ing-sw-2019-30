@@ -11,7 +11,7 @@ import java.util.*;
 import static deck.Color.*;
 
 /**
- * 
+ * Player saves all information about a player
  */
 public class Player {
 
@@ -23,6 +23,10 @@ public class Player {
     private PowerCard[] powerups;
     private Map<Color, Integer> ammo;
 
+    /**
+     * Default constructors
+     */
+
     public Player(String nickname, Board board) {
         this.nickname = nickname;
         this.pawn = new Pawn(this);
@@ -33,24 +37,56 @@ public class Player {
         this.ammo = new EnumMap<>(Color.class);
     }
 
+    /**
+     * This function returns the pawn of the player
+     * @return pawn of the player
+     */
     public Pawn getPawn(){return this.pawn;}
+
+    /**
+     * This function returns the name of the player
+     * @return the name of the player
+     */
     public String getName(){return this.nickname;}
 
+    /**
+     * This function returns the points of the player
+     * @return the points the player has earned
+     */
+    public int getPoints(){
+        return this.points;
+    }
+
+    /**
+     * This function returns the board which the player can see
+     * @return the board seen by the player
+     */
     public PlayerBoard getPlayerBoard(){
         return this.playerBoard;
     }
 
-    public void addPoints(int points){
-        this.points += points;
-    }
-    public int getPoints(){
-        return this.points;
-    }
+    /**
+     * This function returns the list of weapons the player has
+     * @return weapons the player has
+     */
     public ArrayList<WeaponCard> getWeapons(){
         return this.weapons;
     }
+
+    /**
+     * This function returns the list of power ups the player has
+     * @return the power up the player has
+     */
     public PowerCard[] getPowerups(){
         return this.powerups;
+    }
+
+    /**
+     * This function adds the points to a player after a kill
+     * @param points to give
+     */
+    public void addPoints(int points){
+        this.points += points;
     }
 
     /**
@@ -87,18 +123,9 @@ public class Player {
             return false;
     }
 
-    @Deprecated
-    //going to remove
-    public boolean useBullet(Color color, int count) {
-        if (count > ammo.get(color)) return false;
-        else {
-            this.ammo.put(color, ammo.get(color) - count);
-            return true;
-        }
-    }
-
     /**
      * this function adds ammo to the player from an ammo[] array
+     * requires ammo.length()>=3
      * player ammo are capped per color by MAX_BULLET_PER_COLOR constants
      * @param ammo array containing ammo cost for each color
      *             (ammo[0] -> RED cost, ammo[1] -> YELLOW cost, ammo[2] -> BLUE cost)
@@ -116,6 +143,11 @@ public class Player {
 
     }
 
+    /**
+     * This function adds a weapon to the list of weapons the players has
+     * @param weaponCard to add
+     * @return true if it is possible, else false
+     */
     public boolean addWeapon(WeaponCard weaponCard){
         if(weapons.size()<Constants.MAX_WEAPON_HAND_SIZE.getValue()){
             weapons.add(weaponCard);
@@ -124,14 +156,45 @@ public class Player {
         return false;
     }
 
-    public void addDamage(Player oppenent, int shots){
-        this.playerBoard.addDamage(oppenent,shots);
+    /**
+     * This function adds damage to an opponent
+     * @param opponent who will receive damage
+     * @param shots to give
+     */
+    public void addDamage(Player opponent, int shots){
+        this.playerBoard.addDamage(opponent,shots);
     }
 
-    public void addMark(Player oppenent, int mark){
-        this.playerBoard.addMark(oppenent,mark);
+    public void addDamage(Player opponent){
+        this.addDamage(opponent,1);
     }
 
+    /**
+     * This function adds marks to an opponent
+     * @param opponent who will receive marks
+     * @param mark number of marks given
+     */
+    public void addMark(Player opponent, int mark){
+        this.playerBoard.addMark(opponent,mark);
+    }
+
+    public void addMark(Player opponent){
+        this.addMark(opponent, 1);
+    }
+
+    public int getMarks(Player opponent){
+        return this.playerBoard.getMarks(opponent);
+    }
+
+    public int getNumDamages(){
+        return this.playerBoard.getNumDamages();
+    }
+
+    /**
+     *  This function verifies if a player is visible
+     * @param opponent you want to verify if he is visible
+     * @return true if visible, else false
+     */
     public boolean canView(Player opponent){
         return (playerBoard.getBoard().getBillboard().isVisible(this.pawn.getCell(), opponent.pawn.getCell()));
     }

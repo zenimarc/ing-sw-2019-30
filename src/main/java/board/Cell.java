@@ -19,17 +19,9 @@ public abstract class  Cell {
      */
 
     public Cell(Color color) {
-        pawns = new ArrayList<Pawn>();
+        pawns = new ArrayList<>();
         this.color = color;
     }
-
-    public Cell(){
-        this(null);
-    }
-
-    /**
-     * End Constructors
-     */
 
     /**
      * This function returns the color of the cell
@@ -39,7 +31,7 @@ public abstract class  Cell {
 
     /**
      * This function does nothing because it is implemented by sons
-     * @param p
+     * @param p variable
      * @return nothing
      */
     public Card getCard(int p){
@@ -48,7 +40,7 @@ public abstract class  Cell {
 
     /**
      * This function does nothing because it is implemented by sons
-     * @param card
+     * @param card variable
      * @return nothing
      */
 
@@ -58,8 +50,8 @@ public abstract class  Cell {
 
     /**
      * This function does nothing because it is implemented by sons
-     * @param card
-     * @return
+     * @param card variable
+     * @return false
      */
 
     public boolean setCard(Card card) {

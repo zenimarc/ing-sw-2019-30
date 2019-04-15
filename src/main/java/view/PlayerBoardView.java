@@ -15,8 +15,28 @@ public class PlayerBoardView {
 
 
     public void drawCLI() {
-        // TODO implement here
-
+        System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+                "| \t\t|\t       \t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ | _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _|\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|_ _ _ _ _ _ _ _| _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|");
+//TODO implement here
     }
 
 

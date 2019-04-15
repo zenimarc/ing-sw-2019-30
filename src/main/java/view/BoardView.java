@@ -20,7 +20,27 @@ public class BoardView {
 
 
     public void drawCLI() {
-        // TODO implement here
+        System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ | _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _|\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|_ _ _ _ _ _ _ _| _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
+                "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|");
 
     }
 

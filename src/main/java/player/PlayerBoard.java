@@ -27,9 +27,6 @@ public class PlayerBoard {
         this.numDeaths = 0;
     }
 
-    /**
-     * End Constructors
-     */
 
     /**
      * This function returns the number of times the layer has died
@@ -43,7 +40,7 @@ public class PlayerBoard {
      * This function returns the number of damage received by a player
      * @return the number of damage received
      */
-    public int getNumDamages(){
+    protected int getNumDamages(){
         return damageTrack.size();
     }
 
@@ -53,7 +50,7 @@ public class PlayerBoard {
      * @return number of marks which have been put by indicated player
      */
 
-    public int getMarks(Player player){
+    protected int getMarks(Player player){
         if (marks.get(player) != null)
             return marks.get(player);
         else
@@ -108,7 +105,8 @@ public class PlayerBoard {
      * This function adds a death to the PlayerBoard, (increment numDeath by 1)
      */
     public void addSkull(){
-        this.numDeaths++;
+        if (this.board.getSkulls() > 0)
+            this.numDeaths++;
     }
 
     /**
@@ -129,7 +127,8 @@ public class PlayerBoard {
     }
 
     /**
-     * This function adds a mark to the board from a specified player
+     * This function adds a mark to the playerBoard from a specified player
+     * only if it's possible to add another mark (marks < 3)
      * @param player the player who want to give a mark
      */
     private void addMark(Player player){

@@ -3,6 +3,10 @@ package cardAttack;
 import attack.Attack;
 import player.Player;
 
+/**
+ * soddisfa secondo effetto fucile al plasma
+ */
+
 public class PriorityAttack extends Attack {
     private int movement;
     private boolean doesDamage; //perchè esiste un attacco che ha priorità e fa danno
