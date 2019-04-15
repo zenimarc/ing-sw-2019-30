@@ -21,7 +21,7 @@ public class BoardView {
 
     public void drawCLI() {
         System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
-                "| \t\t|\t       \t |\t\t  |\t\t  |\n" +
+                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +

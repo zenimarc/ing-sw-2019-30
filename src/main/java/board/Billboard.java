@@ -17,9 +17,9 @@ public class Billboard {
     private HashMap<Cell, Position> billboardCell;
     private List<Door> doors;
 
-
-    //Start Constructors
-
+    /**
+     * Constructors
+     */
 
     public Billboard(){
         doors = new ArrayList<>();
@@ -30,9 +30,6 @@ public class Billboard {
         this.billboardCell = billboardCell;
         this.doors = doors;
     }
-
-    //End constructors
-
 
     /**
      * Say if exist in this a Door between c1 and c2 (or c2 and c1)
@@ -62,9 +59,8 @@ public class Billboard {
 
         if(startPosition.isNear(goalPosition)) {
             if (start.color == goal.color) return true;
-            if (hasDoor(start, goal)) return true;
+            return (hasDoor(start, goal));
         }
-
         return false;
     }
 
@@ -92,9 +88,9 @@ public class Billboard {
     }
 
     /**
-     * This function return the distance between two billboardCell's cells
-     * @param c1
-     * @param c2
+     * This function returns the distance between two billboardCell's cells
+     * @param c1 the first cell
+     * @param c2 the second cell
      * @return distance c1->c2
      */
     private int cellDistance(Cell c1, Cell c2){
@@ -246,8 +242,8 @@ public class Billboard {
 
     /**
      * This function verifies if two cells have the same color
-     * @param cell1
-     * @param cell2
+     * @param cell1 the first cell
+     * @param cell2 the second cell
      * @return true if they have the same color, else false
      */
     public boolean hasSameColor(Cell cell1, Cell cell2){
