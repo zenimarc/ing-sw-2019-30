@@ -40,7 +40,7 @@ public class PlayerBoard {
      * This function returns the number of damage received by a player
      * @return the number of damage received
      */
-    public int getNumDamages(){
+    protected int getNumDamages(){
         return damageTrack.size();
     }
 
@@ -50,7 +50,7 @@ public class PlayerBoard {
      * @return number of marks which have been put by indicated player
      */
 
-    public int getMarks(Player player){
+    protected int getMarks(Player player){
         if (marks.get(player) != null)
             return marks.get(player);
         else

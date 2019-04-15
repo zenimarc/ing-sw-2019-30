@@ -12,10 +12,11 @@ import java.util.*;
  */
 public abstract class WeaponCard extends Card {
 
-    private String name;
+    protected String name;
     private List<Bullet> cost;
     protected List<Attack_> attacks;
     protected boolean isLoaded;
+    protected enumWeapon weaponType;
 
 
     //Default constructor
