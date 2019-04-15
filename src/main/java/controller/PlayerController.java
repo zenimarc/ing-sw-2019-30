@@ -1,4 +1,5 @@
 package controller;
+import board.Billboard;
 import board.Cell;
 import player.Player;
 import view.PlayerView;
@@ -6,10 +7,14 @@ import weapon.WeaponCard;
 
 import java.util.*;
 
+import static controller.PlayerCommand.MOVE;
+
 /**
  * 
  */
 public class PlayerController {
+    private BoardController boardControl;
+    private Billboard billboard;
 
     /**
      * Default constructor
@@ -32,12 +37,25 @@ public class PlayerController {
      * switch(command)
      *  case "MOVE" ecc.
      * argomento potrebbe essere la cella di dest.
-     * @param command
-     * @param arg
+     * @param command which command a players wants to do
+     * @param arg which parameter is used
      * @return
      */
     public void update(PlayerCommand command, Object arg) {
-        // TODO implement here
+        switch (command) {
+            case MOVE:
+                move((Cell)arg);
+                break;
+            case GRAB:
+                grab((Cell)arg);
+                break;
+            case SHOOT: //TODO verificare come implementarlo per bene
+                move((Cell)arg);
+                break;
+            case END_TURN:
+                boardControl.changeTurn();
+                break;
+        }
     }
 
     /**
@@ -45,8 +63,11 @@ public class PlayerController {
      * @return
      */
     public boolean move(Cell cell) {
-        // TODO implement here
-        return false;
+        if(!boardControl.isFinalFrenzy()){
+            if(billboard.canMove(player.getPawn().getCell(), cell, 3))
+                return true;
+            else return false;}
+        else return billboard.canMove(player.getPawn().getCell(), cell, 4);
     }
 
     /**
