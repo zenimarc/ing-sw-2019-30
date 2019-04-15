@@ -1,15 +1,13 @@
 package weapon;
 
-import attack.SingleAttack;
+import attack.SimpleAttack;
 import board.Board;
-import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,8 +37,8 @@ class DestructorTest {
 
         //shoot type 0
         assertTrue(destructor.shoot(0,p1,p2));
-        assertEquals(((SingleAttack) destructor.getAttack(0)).getDamage(), p2.getPlayerBoard().getNumDamages());
-        assertEquals(((SingleAttack) destructor.getAttack(0)).getMark(), p2.getPlayerBoard().getMarks(p1));
+        assertEquals(((SimpleAttack) destructor.getAttack(0)).getDamage(), p2.getPlayerBoard().getNumDamages());
+        assertEquals(((SimpleAttack) destructor.getAttack(0)).getMark(), p2.getPlayerBoard().getMarks(p1));
 
         //shoot type 1
 
@@ -49,12 +47,12 @@ class DestructorTest {
 
         assertTrue(destructor.shoot(1,p1, new ArrayList<Player>(Arrays.asList(p2,p3))));
 
-        assertEquals(((SingleAttack) destructor.getAttack(0)).getDamage(), p2.getPlayerBoard().getNumDamages());
-        assertEquals(((SingleAttack) destructor.getAttack(1)).getDamage(), p3.getPlayerBoard().getNumDamages());
+        assertEquals(((SimpleAttack) destructor.getAttack(0)).getDamage(), p2.getPlayerBoard().getNumDamages());
+        assertEquals(((SimpleAttack) destructor.getAttack(1)).getDamage(), p3.getPlayerBoard().getNumDamages());
 
 
-        assertEquals(((SingleAttack) destructor.getAttack(0)).getMark(), p2.getPlayerBoard().getMarks(p1));
-        assertEquals(((SingleAttack) destructor.getAttack(1)).getMark(), p3.getPlayerBoard().getMarks(p1));
+        assertEquals(((SimpleAttack) destructor.getAttack(0)).getMark(), p2.getPlayerBoard().getMarks(p1));
+        assertEquals(((SimpleAttack) destructor.getAttack(1)).getMark(), p3.getPlayerBoard().getMarks(p1));
 
 
     }

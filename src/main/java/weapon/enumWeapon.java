@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum enumWeapon {
-    DESTRUCTOR("Distruttore", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE))));
+    LOCKRIFLE("Distruttore", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),
+    MACHINEGUN("Mitragliatrice", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE), new Bullet(Color.RED))));
+
 
     private String name;
     private ArrayList<Bullet> cost;
