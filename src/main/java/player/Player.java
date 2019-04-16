@@ -20,7 +20,7 @@ public class Player {
     private int points;
     private PlayerBoard playerBoard;
     private ArrayList<WeaponCard> weapons;
-    private PowerCard[] powerups;
+    private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
 
     /**
@@ -33,7 +33,7 @@ public class Player {
         this.points = 0; //a new player has 0 points
         this.playerBoard = new PlayerBoard(board);
         this.weapons = new ArrayList<>();
-        this.powerups = new PowerCard[Constants.MAX_POWER_HAND_SIZE.getValue()];
+        this.powerups = new ArrayList<>();
         this.ammo = new EnumMap<>(Color.class);
     }
 
@@ -77,7 +77,7 @@ public class Player {
      * This function returns the list of power ups the player has
      * @return the power up the player has
      */
-    public PowerCard[] getPowerups(){
+    public ArrayList<PowerCard> getPowerups(){
         return this.powerups;
     }
 
@@ -202,5 +202,19 @@ public class Player {
     @Override
     public String toString() {
         return this.nickname;
+    }
+
+    /**
+     * This function adds a power up card to the player
+     * @param power power up to add
+     * @return true if it was possible, else false
+     */
+    public boolean addPowerCard(PowerCard power) {
+        if(powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
+            powerups.add(power);
+            return true;
+        }
+        return false;
+
     }
 }

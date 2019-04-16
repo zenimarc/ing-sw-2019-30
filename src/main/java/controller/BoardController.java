@@ -11,6 +11,7 @@ import java.util.*;
 public class BoardController {
 
     private int playerTurn = 0;
+    private int verifyFinalFrenzyTurns = 0;
     private List<Player> listOfPlayers;
     private Board board;
 
@@ -47,6 +48,23 @@ public class BoardController {
      */
     public boolean isFinalFrenzy() {
         return (this.board.getSkulls() == 0);
+    }
+
+    /**
+     * This function changes the value of verifyFinalFrenzyTurns to decide the number of actions of a player during Final Frenzy
+     */
+    public void setFinalFrenzyTurns(){
+        if(this.isFinalFrenzy()){
+            this.verifyFinalFrenzyTurns = this.playerTurn;
+        }
+    }
+
+    /**
+     * This function verifies if the player can have one or two turns during Final Frenzy
+     * @return true if he can have two turns, false if one
+     */
+    public boolean verifyTwoTurnsFrenzy(){
+        return(this.playerTurn > this.verifyFinalFrenzyTurns);
     }
 
     /**

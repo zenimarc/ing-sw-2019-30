@@ -22,4 +22,16 @@ public class AmmoCard extends Card {
         this.hasPowerUp = hasPowerUp;
     }
 
+    /**
+     * This function returns an array containing the ammo cubes the AmmoCard has
+     * @return an array of cubes
+     */
+    public int[] getAmmo(){return this.cubes;}
+
+    /**
+     * This function verifies if the AmmoCard can give a power up
+     * @return true if it can, else false
+     */
+
+    public boolean verifyPowerup(){return this.hasPowerUp;}
 }

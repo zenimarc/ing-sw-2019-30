@@ -27,7 +27,6 @@ public class PlayerBoard {
         this.numDeaths = 0;
     }
 
-
     /**
      * This function returns the number of times the layer has died
      * @return the number of deaths
@@ -40,8 +39,8 @@ public class PlayerBoard {
      * This function returns the number of damage received by a player
      * @return the number of damage received
      */
-    protected int getNumDamages(){
-        return damageTrack.size();
+    public int getNumDamages(){
+        return this.damageTrack.size();
     }
 
     /**

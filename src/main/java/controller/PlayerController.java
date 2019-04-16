@@ -1,6 +1,9 @@
 package controller;
 import board.Billboard;
 import board.Cell;
+import board.NormalCell;
+import deck.AmmoCard;
+import deck.Card;
 import player.Player;
 import view.PlayerView;
 import weapon.WeaponCard;
@@ -8,6 +11,8 @@ import weapon.WeaponCard;
 import java.util.*;
 
 import static controller.PlayerCommand.MOVE;
+
+//TODO finire la shoot e decidere come gestirla
 
 /**
  * 
@@ -19,7 +24,8 @@ public class PlayerController {
     /**
      * Default constructor
      */
-    public PlayerController() {
+    public PlayerController(Player player) {
+        this.player = player;
     }
 
     /**
@@ -41,16 +47,16 @@ public class PlayerController {
      * @param arg which parameter is used
      * @return
      */
-    public void update(PlayerCommand command, Object arg) {
+    public void update(PlayerCommand command, Object arg, int val) {
         switch (command) {
             case MOVE:
-                move((Cell)arg);
+                move((Cell)arg, 0);
                 break;
             case GRAB:
-                grab((Cell)arg);
+                grab((Cell)arg, val);
                 break;
             case SHOOT: //TODO verificare come implementarlo per bene
-                move((Cell)arg);
+                move((Cell)arg, 0);
                 break;
             case END_TURN:
                 boardControl.changeTurn();
@@ -59,25 +65,72 @@ public class PlayerController {
     }
 
     /**
-     * @param cell 
-     * @return
+     * This function controls the MOVE action and verifies if a player can move to a cell
+     * @param cell of destination
+     * @return if the player can move, else false
      */
-    public boolean move(Cell cell) {
-        if(!boardControl.isFinalFrenzy()){
-            if(billboard.canMove(player.getPawn().getCell(), cell, 3))
+    public boolean move(Cell cell, int i) {
+        switch(i) {
+            case 0: //normal move
+                if (!boardControl.isFinalFrenzy()) {
+                    if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
+                        return false;
+                } else if (!billboard.canMove(player.getPawn().getCell(), cell, 4))
+                    return false;
+                player.getPawn().setCell(cell);
                 return true;
-            else return false;}
-        else return billboard.canMove(player.getPawn().getCell(), cell, 4);
-    }
 
-    /**
-     * @param cell 
-     * @return
-     */
-    public boolean grab(Cell cell) {
-        // TODO implement here
+            case 1: //move from grab
+                if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
+                    if (player.getPlayerBoard().getNumDamages() > 2) {
+                        if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
+                            return false;
+                    } else if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
+                        return false;
+                } else {//Final Frenzy
+                    if (boardControl.verifyTwoTurnsFrenzy()) {
+                        if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
+                            return false;
+                    } else if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
+                        return false;
+                }
+
+                player.getPawn().setCell(cell);
+                return true;
+
+            case 2: //move from shoot
+                if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
+                    if (player.getPlayerBoard().getNumDamages() > 5) {
+                        if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
+                            return false;
+                    } else {//Final Frenzy
+                        if (boardControl.verifyTwoTurnsFrenzy()) {
+                            if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
+                                return false;
+                        } else if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
+                            return false;
+                    }
+
+                    player.getPawn().setCell(cell);
+                    return true;
+                }
+        }
         return false;
     }
+
+
+    /**
+     * This function controls the GRAB action
+     * @param cell of destination
+     * @return true if the action was successful, else false
+     */
+    public Card grab(Cell cell, int val) {
+        if(!this.move(cell, 1))
+            return null;
+        //TODO lancia errore se il movimento non è valido
+        return cell.getCard(val);
+    }
+
 
     /**
      * @param opponents 
@@ -85,7 +138,8 @@ public class PlayerController {
      * @return
      */
     public boolean shoot(List<Player> opponents, WeaponCard weapon) {
-        // TODO implement here
+       // if(!this.move(cell, 2))
+        //    return false; //lancia errore
         return false;
     }
 

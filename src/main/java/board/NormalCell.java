@@ -3,6 +3,7 @@ package board;
 import deck.AmmoCard;
 import deck.Card;
 import deck.Color;
+import player.Player;
 
 import java.util.*;
 
@@ -33,12 +34,12 @@ public class NormalCell extends Cell {
 
     /**
      * This function returns the ammoCard of the cell
-     * @param p
-     * @return
+     * @param p not used
+     * @return an AmmoCard
      */
     @Override
     public Card getCard(int p) { //TODO problema se ritorna NULL
-        return ammoCard;
+        return this.ammoCard;
     }
 
     /**
@@ -71,5 +72,10 @@ public class NormalCell extends Cell {
             return true;
         }
         return false;
+    }
+
+    public boolean giveCard(Player player){
+        player.addAmmo(this.ammoCard.getAmmo());
+        return(this.ammoCard.verifyPowerup());
     }
 }

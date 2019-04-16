@@ -20,10 +20,17 @@ public class Board {
     public Board(){
         this(8);
     }
+
     public Board(int numskull) {
         this.numSkulls = numskull;
         this.playerSkulls = new HashMap<>(); //TODO controllare questa parte come dovrebbe servire
         this.billboard = new Billboard();
+    }
+
+    public Board(int numskull, Billboard board) {
+        this.numSkulls = numskull;
+        this.playerSkulls = new HashMap<>(); //TODO controllare questa parte come dovrebbe servire
+        this.billboard = board;
     }
 
     /**

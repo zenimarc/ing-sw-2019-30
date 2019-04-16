@@ -36,8 +36,8 @@ public class Pawn {
     public Player getPlayer(){return this.player;}
 
     /**
-     * TODO serve davvero questa funzione in questa classe?
-     * @param cell
+     * Thisfunction modifies the position of the pawn
+     * @param cell of destination
      */
 
     public void setCell(Cell cell){ //TODO: la chiamerà il controller quando il giocatore decide dove iniziare, è public? -Marco
