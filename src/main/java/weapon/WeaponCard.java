@@ -68,7 +68,7 @@ public abstract class WeaponCard extends Card {
         return attacks.get(idAttack);
     }
 
-    public abstract boolean shoot(int idAttack, Player shooter, List<Player> opponets);
+    public abstract boolean shoot(int typeAttack, Player shooter, List<Player> opponets);
 
     public boolean shoot(int idAttack, Player shooter, Player opponent){
         return shoot(idAttack, shooter, new ArrayList<>(Arrays.asList(opponent)));
