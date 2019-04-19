@@ -23,8 +23,9 @@ public class BoardController {
         this.listOfPlayers = new ArrayList<>();
     }
 
-    public BoardController(ArrayList<Player> players) {
+    public BoardController(ArrayList<Player> players, Board board) {
         this.listOfPlayers = players;
+        this.board = board;
     }
 
     /**
@@ -34,11 +35,26 @@ public class BoardController {
     public Player getPlayer(){return this.listOfPlayers.get(playerTurn);}
 
     /**
+     * This function returns a board //TODO specificarla meglio
+     * @return a board
+     */
+
+    public Board getBoard(){return this.board;}
+
+    /**
+     * This function returns the number of the actual turn
+     * @return the number of the turn
+     */
+
+    public int getNumTurns() { return this.playerTurn;
+    }
+
+    /**
      * This function changes the number to decide which turn is
      */
     public void changeTurn() {
         if(playerTurn == listOfPlayers.size()-1)
-            playerTurn = 1;
+            playerTurn = 0;
         else playerTurn++;
     }
 
@@ -64,7 +80,7 @@ public class BoardController {
      * @return true if he can have two turns, false if one
      */
     public boolean verifyTwoTurnsFrenzy(){
-        return(this.playerTurn > this.verifyFinalFrenzyTurns);
+        return(this.verifyFinalFrenzyTurns != 0 && this.playerTurn >= this.verifyFinalFrenzyTurns);
     }
 
     /**
@@ -83,4 +99,9 @@ public class BoardController {
         return(deck.getSize() == 0);
     }
 
+    /**
+     * This function sets the board of a BoardController
+     * @param board to assign
+     */
+    public void setBoard(Board board) {this.board = board; }
 }

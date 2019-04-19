@@ -5,7 +5,7 @@ import player.Player;
 import java.util.*;
 
 /**
- * The
+ * Board is a class which //TODO Java doc
  */
 public class Board {
 

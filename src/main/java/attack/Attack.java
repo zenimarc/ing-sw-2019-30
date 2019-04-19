@@ -33,4 +33,5 @@ public abstract class Attack {
     }
 
     public Player getShooter(){return this.shooter;}
+
 }

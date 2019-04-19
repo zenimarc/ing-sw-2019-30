@@ -19,7 +19,7 @@ public class Bullet {
 
     /**
      * From ArrayList of Bullet to int array[num of R,num of Y, num of B]
-     * @param bullets
+     * @param bullets //TODO scrivedre meglio Java doc
      * @return
      */
     public int[] toIntArray(ArrayList<Bullet> bullets){

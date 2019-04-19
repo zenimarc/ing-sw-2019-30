@@ -1,8 +1,8 @@
 package controller;
+import attack.Attack;
 import board.Billboard;
 import board.Cell;
-import board.NormalCell;
-import deck.AmmoCard;
+import cardAttack.AreaAttack;
 import deck.Card;
 import player.Player;
 import view.PlayerView;
@@ -15,11 +15,13 @@ import static controller.PlayerCommand.MOVE;
 //TODO finire la shoot e decidere come gestirla
 
 /**
- * 
+ * PlayerController is used to control if a player can do certain actions
  */
 public class PlayerController {
     private BoardController boardControl;
     private Billboard billboard;
+    private PlayerView playerView;
+    private Player player;
 
     /**
      * Default constructor
@@ -27,17 +29,6 @@ public class PlayerController {
     public PlayerController(Player player) {
         this.player = player;
     }
-
-    /**
-     * 
-     */
-    private PlayerView playerView;
-
-    /**
-     * 
-     */
-    private Player player;
-
 
     /**
      * switch(command)
@@ -72,10 +63,10 @@ public class PlayerController {
     public boolean move(Cell cell, int i) {
         switch(i) {
             case 0: //normal move
-                if (!boardControl.isFinalFrenzy()) {
+                if (!boardControl.isFinalFrenzy()) {//non final Frenzy
                     if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
-                        return false;
-                } else if (!billboard.canMove(player.getPawn().getCell(), cell, 4))
+                        return false; }
+                else if (!billboard.canMove(player.getPawn().getCell(), cell, 4))
                     return false;
                 player.getPawn().setCell(cell);
                 return true;
@@ -84,14 +75,14 @@ public class PlayerController {
                 if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 2) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
-                            return false;
-                    } else if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
-                        return false;
-                } else {//Final Frenzy
+                            return false; }
+                    else if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
+                        return false; }
+                else {//Final Frenzy
                     if (boardControl.verifyTwoTurnsFrenzy()) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
-                            return false;
-                    } else if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
+                            return false; }
+                    else if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
                         return false;
                 }
 
@@ -102,12 +93,12 @@ public class PlayerController {
                 if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 5) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
-                            return false;
-                    } else {//Final Frenzy
+                            return false; }
+                    else {//Final Frenzy
                         if (boardControl.verifyTwoTurnsFrenzy()) {
                             if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
-                                return false;
-                        } else if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
+                                return false; }
+                        else if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
                             return false;
                     }
 
@@ -124,23 +115,59 @@ public class PlayerController {
      * @param cell of destination
      * @return true if the action was successful, else false
      */
-    public Card grab(Cell cell, int val) {
+    public Card grab(Cell cell, int val) {//TODO aggiunge la carta ed è boolean
         if(!this.move(cell, 1))
             return null;
         //TODO lancia errore se il movimento non è valido
         return cell.getCard(val);
     }
 
+    /**
+     * This function controls the SHOOT action
+     * @param cell of destination of the movement
+     * @param i the weapon of choice to use
+     * @return true if the attack was successful, false otherwise
+     */
+    public boolean shoot(Cell cell, int i/*List<Player> opponents, WeaponCard weapon*/) {
+        if(!this.move(cell, 2))
+           return false; //lancia errore
+        // for(int j = 0; j < weapon.getAttacks().size(); j++){
+        chooseAttack(chooseWeapon(i), i);//TODO modificare la seconda i perchè è relativa alla scelta degli attacchi
+        //chooseTarget(attack, oggetto da colpire);
+        return true;
+    }
 
     /**
-     * @param opponents 
-     * @param weapon 
-     * @return
+     * This function returns the weapon the player chose to use
+     * @param i the number of the weapon
+     * @return the weapon desired
      */
-    public boolean shoot(List<Player> opponents, WeaponCard weapon) {
-       // if(!this.move(cell, 2))
-        //    return false; //lancia errore
+    public WeaponCard chooseWeapon(int i){
+       return player.getWeapons().get(i);
+    }
+
+    /**
+     * This function returns the attack the player wants to use
+     * @param weapon wanted to use
+     * @param k the number of the attack
+     * @return the attack wanted
+     */
+
+    public boolean chooseAttack(WeaponCard weapon, int k){
+        /**if(weapon.getAttacks().get(i).getattack se è Optional || è optional ed è senza priorità)
+         *  return false
+         * return true;
+         */
         return false;
     }
 
-}
+    /**
+     * This function verifies if the target is hittable or not
+     * @param attack the attack the player wants to use
+     * @param obj a cell o a list of target to hit
+     * @return true if the attack was successful, false otherwise
+     */
+    public boolean chooseTarget(Attack attack, Object obj){
+            return false;
+        }
+    }

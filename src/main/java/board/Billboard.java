@@ -111,7 +111,7 @@ public class Billboard {
     }
 
     /**
-     * This function return an ArrayList of Door attainable from
+     * This function return an ArrayList of Door attainable from //TODO finire Javadoc
      * @param startAttainableDoor
      * @param goalAttainableDoor
      * @return
@@ -131,7 +131,7 @@ public class Billboard {
     }
 
     /**
-     *
+     * TODO Javadoc
      * @param startAttainableDoorCell
      * @param goalAttainableDoorCell
      * @return

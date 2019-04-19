@@ -18,9 +18,9 @@ class PlayerControllerTest {
     private static HashMap<Cell, Position> mappaProva = new HashMap<>();
     private static ArrayList<Door> doors = new ArrayList<>();
     private static Player player;
-    private static Board myBoard = new Board(0, myBillboard);
-    private static PlayerController controller =new PlayerController(player);
-    private static BoardController control = new BoardController();
+    private static Board myBoard;
+    private static PlayerController controller;
+    private static BoardController control;
 
 
     private static Cell c00 = new NormalCell(Color.GREEN);
@@ -39,7 +39,7 @@ class PlayerControllerTest {
     private static Cell c32 = new NormalCell();
 
     @BeforeAll
-    public static void init(){
+    static void init(){
 
         //CREATE A MAP
 
@@ -67,12 +67,20 @@ class PlayerControllerTest {
         doors.add(new Door(c12, c22));
 
         myBillboard = new Billboard(mappaProva,doors);
+
+        myBoard = new Board(0, myBillboard);
+        player = new Player("Marco", myBoard);
+        controller = new PlayerController(player);
+        control = new BoardController();
+        control.setBoard(myBoard);
+
     }
 
     @Test
     void move(){
         player.getPawn().setCell(c00);
-        assertTrue(controller.move(c11, 0));
+        assertTrue(control.isFinalFrenzy());
+        assertFalse(controller.move(c11, 0));
     }
 
 

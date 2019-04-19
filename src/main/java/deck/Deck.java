@@ -56,7 +56,6 @@ public class Deck {
         for(Card card: cards){
             this.addCard(card);
         }
-
     }
 
     /**
