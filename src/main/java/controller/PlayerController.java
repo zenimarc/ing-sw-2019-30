@@ -2,7 +2,6 @@ package controller;
 import attack.Attack;
 import board.Billboard;
 import board.Cell;
-import cardAttack.AreaAttack;
 import deck.Card;
 import player.Player;
 import view.PlayerView;
@@ -17,7 +16,7 @@ import static controller.PlayerCommand.MOVE;
 /**
  * PlayerController is used to control if a player can do certain actions
  */
-public class PlayerController {
+public class PlayerController implements Observer {
     private BoardController boardControl;
     private Billboard billboard;
     private PlayerView playerView;
@@ -30,7 +29,25 @@ public class PlayerController {
         this.player = player;
     }
 
-    /**
+    @Override
+    public void update(Observable view, Object obj){
+        switch (((CommandObj)obj).getCmd()) {
+            case MOVE:
+                move(((CommandObj)obj).getCell(), 0);
+                break;
+            case GRAB:
+                grab(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
+                break;
+            case SHOOT: //TODO verificare come implementarlo per bene
+                //move(((CommandObj)obj).getCell(), 0);
+                break;
+            case END_TURN:
+                boardControl.changeTurn();
+                break;
+        }
+    }
+
+    /*
      * switch(command)
      *  case "MOVE" ecc.
      * argomento potrebbe essere la cella di dest.
@@ -38,6 +55,8 @@ public class PlayerController {
      * @param arg which parameter is used
      * @return
      */
+/*
+    TODO: Ho riadattato il metodo per poter fare override di update() degli observer, se può andare quello sopra, questo va eliminato
     public void update(PlayerCommand command, Object arg, int val) {
         switch (command) {
             case MOVE:
@@ -46,7 +65,7 @@ public class PlayerController {
             case GRAB:
                 grab((Cell)arg, val);
                 break;
-            case SHOOT: //TODO verificare come implementarlo per bene
+            case SHOOT:
                 move((Cell)arg, 0);
                 break;
             case END_TURN:
@@ -54,7 +73,7 @@ public class PlayerController {
                 break;
         }
     }
-
+    */
     /**
      * This function controls the MOVE action and verifies if a player can move to a cell
      * @param cell of destination
