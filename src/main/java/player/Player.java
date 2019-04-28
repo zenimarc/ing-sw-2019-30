@@ -101,7 +101,7 @@ public class Player {
      * @param ammo is an array containing ammo to pay per color
      * @return True if the player has enough ammo, else False.
      */
-    private boolean canPay(int[] ammo) {
+    public boolean canPay(int[] ammo) {
         for (int i = 0; i < ammo.length; i++)
             if (ammo[i] > this.ammo.get(Color.values()[i]) || this.ammo.get(Color.values()[i]) == null)
                 return false;

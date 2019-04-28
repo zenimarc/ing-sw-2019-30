@@ -3,6 +3,7 @@ package attack;
 import player.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Single attack is an attack that hit an opponent and add damage and/or mark to it
@@ -43,14 +44,16 @@ public class SimpleAttack extends Attack_{
      * @return true
      */
     @Override
-    public boolean attack(Player player, ArrayList<Player> opponents) {
-        if(opponents.size()==target) {
+    public boolean attack(Player player, List<Player> opponents) {
+
+        if(opponents.size()>target){
+            opponents = opponents.subList(0,target);
+        }
+
             for (Player opponent : opponents) {
                 attack(player, opponent);
             }
             return true;
-        }
-        return false;
     }
 
     public boolean attack(Player player, Player opponent) {
