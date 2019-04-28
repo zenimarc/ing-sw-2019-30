@@ -2,30 +2,38 @@ package weapon;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class WeaponFactory {
 
-    private WeaponFactory(){
+    private WeaponFactory() {
 
         Gson gson = new Gson();
-        ArrayList<String> jsonWeapon = new ArrayList<>();
+        ArrayList<String> jsonWeapons = new ArrayList<>();
+        String jsonWeapon;
 
-        for(enumWeapon weapon : enumWeapon.values()){
-            jsonWeapon.add(gson.toJson(getFactory(weapon)));
-        }
 
-        try {
-            for(String weapon : jsonWeapon) {
-                Files.write(FileSystems.getDefault().getPath("weapon.json"), weapon.getBytes());
-                System.out.println(weapon);
+        for (enumWeapon weapon : enumWeapon.values()) {
+            jsonWeapons.add(gson.toJson(getFactory(weapon)));
+            jsonWeapon = gson.toJson(getFactory(weapon));
+
+            PrintWriter writer = null;
+            File file = new File("src/resources/weapon/" + weapon + ".json");
+
+            try {
+                writer = new PrintWriter(file);
+                writer.write(jsonWeapon);
+                writer.flush();
+            } catch (IOException ioe) {
+                ioe.fillInStackTrace();
+                System.out.println(ioe.getLocalizedMessage());
+            }finally {
+                writer.close();
             }
-        }catch (IOException ioe){ioe.fillInStackTrace();
-            System.out.println(ioe.getLocalizedMessage());}
-
+    }
      /*   JsonReader reader = new JsonReader(new FileReader(filename));
         Review data = gson.fromJson(reader, Review.class);
         data.toScreen(); // prints to screen some values
