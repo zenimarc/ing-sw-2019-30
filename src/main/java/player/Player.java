@@ -13,7 +13,7 @@ import static deck.Color.*;
 /**
  * Player saves all information about a player
  */
-public class Player {
+public class Player extends Observable {
 
     private String nickname;
     private Pawn pawn;
@@ -117,6 +117,8 @@ public class Player {
     public boolean useAmmo(int[] ammo){
         if (canPay(ammo)) {
             addAmmo(Arrays.stream(ammo).map(x -> -x).toArray());
+            setChanged();
+            notifyObservers();
             return true;
         }
         else
@@ -140,7 +142,8 @@ public class Player {
         this.ammo.put(BLUE, (this.ammo.get(BLUE) != null) ?
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), this.ammo.get(BLUE)+ammo[2]) :
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), ammo[2] ));
-
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -151,6 +154,8 @@ public class Player {
     public boolean addWeapon(WeaponCard weaponCard){
         if(weapons.size()<Constants.MAX_WEAPON_HAND_SIZE.getValue()){
             weapons.add(weaponCard);
+            setChanged();
+            notifyObservers();
             return true;
         }
         return false;
@@ -163,6 +168,8 @@ public class Player {
      */
     public void addDamage(Player opponent, int shots){
         this.playerBoard.addDamage(opponent,shots);
+        setChanged();
+        notifyObservers();
     }
 
     public void addDamage(Player opponent){
@@ -176,6 +183,8 @@ public class Player {
      */
     public void addMark(Player opponent, int mark){
         this.playerBoard.addMark(opponent,mark);
+        setChanged();
+        notifyObservers();
     }
 
     public void addMark(Player opponent){
@@ -212,6 +221,8 @@ public class Player {
     public boolean addPowerCard(PowerCard power) {
         if(powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
             powerups.add(power);
+            setChanged();
+            notifyObservers();
             return true;
         }
         return false;

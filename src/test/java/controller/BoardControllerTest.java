@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 //TODO fare i test
 
 class BoardControllerTest {
-    private static ArrayList<Player> players = new ArrayList<>();
-    private static Board board = new Board(0);
-    private static BoardController controller;
-    private static Player p1;
-    private static Player p2;
-    private static Player p3;
-    private static Player p4;
+    private  ArrayList<Player> players = new ArrayList<>();
+    private  Board board = new Board(0);
+    private  BoardController controller;
+    private  Player p1;
+    private  Player p2;
+    private  Player p3;
+    private  Player p4;
 
     @BeforeEach
     public void init(){
