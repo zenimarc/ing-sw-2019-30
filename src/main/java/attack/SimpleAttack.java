@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class SimpleAttack extends Attack_{
 
-    private int target;
     private int damage;
     private int mark;
 

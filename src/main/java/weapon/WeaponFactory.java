@@ -15,41 +15,39 @@ public class WeaponFactory {
         ArrayList<String> jsonWeapons = new ArrayList<>();
         String jsonWeapon;
 
-
         for (enumWeapon weapon : enumWeapon.values()) {
 
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
             jsonWeapon = gson.toJson(getFactory(weapon));
 
-            PrintWriter writer = null;
             File file = new File("src/resources/weapon/" + weapon + ".json");
 
-            try {
-                writer = new PrintWriter(file);
+            try (PrintWriter writer = new PrintWriter(file)) {
                 writer.write(jsonWeapon);
                 writer.flush();
             } catch (IOException ioe) {
                 ioe.fillInStackTrace();
                 System.out.println(ioe.getLocalizedMessage());
-            }finally {
-                writer.close();
+            }catch (NullPointerException npe){
+                System.out.println(npe.getLocalizedMessage());
             }
-    }
-     /*   JsonReader reader = new JsonReader(new FileReader(filename));
-        Review data = gson.fromJson(reader, Review.class);
-        data.toScreen(); // prints to screen some values
-       */
+
+        }
     }
 
     private WeaponCard getFactory(enumWeapon type) {
 
         switch (type){
             case LOCKRIFLE:
-                return new Gun(enumWeapon.LOCKRIFLE);
+                return new SimpleWeapon(enumWeapon.LOCKRIFLE);
             case MACHINEGUN:
-                return  new Gun(enumWeapon.MACHINEGUN);
+                return  new SimpleWeapon(enumWeapon.MACHINEGUN);
             case ELECTROSCYTHE:
-                return new Gun(enumWeapon.ELECTROSCYTHE);
+                return new SimpleWeapon(enumWeapon.ELECTROSCYTHE);
+            case HEATSEEKER:
+                return new SimpleWeapon(enumWeapon.HEATSEEKER);
+            case TRACTOR_BEAM:
+                return new MovementWeapon(enumWeapon.TRACTOR_BEAM);
         }
         return null;
     }

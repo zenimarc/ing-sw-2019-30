@@ -5,9 +5,9 @@ import player.Player;
 
 import java.util.List;
 
-public class Gun extends WeaponCard{
+public class SimpleWeapon extends WeaponCard{
 
-    Gun(enumWeapon type){
+    SimpleWeapon(enumWeapon type){
         this.weaponType = type;
 
         switch (type){
@@ -29,6 +29,7 @@ public class Gun extends WeaponCard{
                 attacks.add(new SimpleAttack("Effetto base", 3,0,1));
                 break;
             default:
+                //TODO ERROR
                 break;
         }
     }
