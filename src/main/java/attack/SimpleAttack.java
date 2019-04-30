@@ -2,7 +2,6 @@ package attack;
 
 import player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,12 +52,12 @@ public class SimpleAttack extends Attack_{
         }
 
             for (Player opponent : opponents) {
-                attack(player, opponent);
+                singleAttack(player, opponent);
             }
             return true;
     }
 
-    public boolean attack(Player player, Player opponent) {
+    public boolean singleAttack(Player player, Player opponent) {
         opponent.addDamage(player,damage);
         opponent.addMark(player, mark);
         return true;
