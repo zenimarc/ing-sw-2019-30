@@ -219,7 +219,7 @@ public class Player extends Observable {
      * @return true if it was possible, else false
      */
     public boolean addPowerCard(PowerCard power) {
-        if(powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
+        if (powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
             powerups.add(power);
             setChanged();
             notifyObservers();
@@ -228,5 +228,8 @@ public class Player extends Observable {
         }
         return false;
 
+    }
+    public boolean equals(Player player){
+        return this.getName().equals(player.getName());
     }
 }

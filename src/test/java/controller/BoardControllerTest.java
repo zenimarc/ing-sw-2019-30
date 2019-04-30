@@ -34,6 +34,13 @@ class BoardControllerTest {
     }
 
     @Test
+    void BoardControllerConstructorTest(){
+        for (Player player : controller.getListOfPlayers()) {
+            assertTrue(controller.getListOfPlayers().contains(player));
+            assertNotNull(controller.getPlayerController(player));
+        }
+    }
+
     void testTurn(){
         assertEquals(p1, controller.getPlayer());
         controller.changeTurn();

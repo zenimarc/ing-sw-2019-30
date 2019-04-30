@@ -31,6 +31,10 @@ public class PlayerController implements Observer {
         this.player = player;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     @Override
     public void update(Observable view, Object obj){
         switch (((CommandObj)obj).getCmd()) {
