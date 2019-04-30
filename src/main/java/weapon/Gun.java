@@ -25,12 +25,15 @@ public class Gun extends WeaponCard{
                 attacks.add(new SimpleAttack("Effetto base", 1,0,-1));
                 attacks.add(new SimpleAttack("Modalità mietitore", 2,0,-1));
                 break;
+            case HEATSEEKER:
+                attacks.add(new SimpleAttack("Effetto base", 3,0,1));
+                break;
             default:
                 break;
         }
     }
 
-    private boolean lockrifleShot(int typeAttack, Player shooter, List<Player> opponents){
+    private boolean lockrifleShoot(int typeAttack, Player shooter, List<Player> opponents){
         attacks.get(0).attack(shooter, opponents.get(0));
         if(typeAttack==1){
             attacks.get(1).attack(shooter, opponents.get(1));
@@ -38,8 +41,7 @@ public class Gun extends WeaponCard{
         return true;
     }
 
-    private boolean machinegunShot(int typeAttack, Player shooter, List<Player> opponents){
-
+    private boolean machinegunShoot(int typeAttack, Player shooter, List<Player> opponents){
         //Base Attack
         attacks.get(0).attack(shooter,opponents);
 
@@ -62,7 +64,7 @@ public class Gun extends WeaponCard{
         return true;
     }
 
-    private boolean electroscythe(int typeAttack, Player shooter, List<Player> opponents){
+    private boolean electroscytheShoot(int typeAttack, Player shooter, List<Player> opponents){
         switch (typeAttack){
             case 0:
                 attacks.get(0).attack(shooter,opponents);
@@ -76,17 +78,24 @@ public class Gun extends WeaponCard{
         return true;
     }
 
+    private boolean heatSeekerShoot(Player shooter, List<Player> opponents){
+        attacks.get(0).attack(shooter,opponents.get(0));
+        return true;
+    }
+
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents) {
         if(typeAttack>=attacks.size()) return false;
         switch (this.weaponType) {
             case LOCKRIFLE:
-                return lockrifleShot(typeAttack,shooter,opponents);
+                return lockrifleShoot(typeAttack,shooter,opponents);
             case MACHINEGUN:
-                return machinegunShot(typeAttack,shooter,opponents);
+                return machinegunShoot(typeAttack,shooter,opponents);
             case ELECTROSCYTHE:
-                return electroscythe(typeAttack,shooter, opponents);
+                return electroscytheShoot(typeAttack,shooter, opponents);
+            case HEATSEEKER:
+                return heatSeekerShoot(shooter, opponents);
             default:
                 return false;
         }
