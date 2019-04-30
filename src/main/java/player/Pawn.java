@@ -36,7 +36,7 @@ public class Pawn {
     public Player getPlayer(){return this.player;}
 
     /**
-     * Thisfunction modifies the position of the pawn
+     * This function modifies the position of the pawn
      * @param cell of destination
      */
 
@@ -48,6 +48,6 @@ public class Pawn {
      * This function return the position of the pawn
      * @return the position of the pawn
      */
-    public Cell getCell (){return this.position;}
+    public Cell getCell(){return this.position;}
 
 }

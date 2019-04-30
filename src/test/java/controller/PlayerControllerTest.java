@@ -3,6 +3,7 @@ package controller;
 import board.*;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
 
@@ -38,7 +39,7 @@ class PlayerControllerTest {
     private static Cell c22 = new NormalCell(Color.WHITE);
     private static Cell c32 = new NormalCell();
 
-    @BeforeAll
+    @BeforeEach
     static void init(){
 
         //CREATE A MAP

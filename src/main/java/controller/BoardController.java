@@ -46,8 +46,7 @@ public class BoardController {
      * @return the number of the turn
      */
 
-    public int getNumTurns() { return this.playerTurn;
-    }
+    public int getNumTurns() { return this.playerTurn; }
 
     /**
      * This function changes the number to decide which turn is

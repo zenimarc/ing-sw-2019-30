@@ -21,4 +21,10 @@ public class PowerCard extends Card {
         this.cardType = cardType;
     }
 
+    /**
+     * This function returns the type of power up the card has
+     * @return a power up
+     */
+    public PowerUp getPowerUp(){return this.cardType;}
+
 }

@@ -3,6 +3,7 @@ import attack.Attack;
 import board.Billboard;
 import board.Cell;
 import deck.Card;
+import deck.PowerUp;
 import player.Player;
 import view.PlayerView;
 import weapon.WeaponCard;
@@ -10,8 +11,9 @@ import weapon.WeaponCard;
 import java.util.*;
 
 import static controller.PlayerCommand.MOVE;
+import static deck.PowerUp.KINETICRAY;
 
-//TODO finire la shoot e decidere come gestirla
+//TODO finire la shoot e decidere come gestirla, fare overloading di alcune funzioni
 
 /**
  * PlayerController is used to control if a player can do certain actions
@@ -33,7 +35,7 @@ public class PlayerController implements Observer {
     public void update(Observable view, Object obj){
         switch (((CommandObj)obj).getCmd()) {
             case MOVE:
-                move(((CommandObj)obj).getCell(), 0);
+                move(((CommandObj)obj).getCell(), 10);
                 break;
             case GRAB:
                 grab(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
@@ -41,39 +43,15 @@ public class PlayerController implements Observer {
             case SHOOT: //TODO verificare come implementarlo per bene
                 //move(((CommandObj)obj).getCell(), 0);
                 break;
+            case POWERUP:
+                verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
+                break;
             case END_TURN:
                 boardControl.changeTurn();
                 break;
         }
     }
 
-    /*
-     * switch(command)
-     *  case "MOVE" ecc.
-     * argomento potrebbe essere la cella di dest.
-     * @param command which command a players wants to do
-     * @param arg which parameter is used
-     * @return
-     */
-/*
-    TODO: Ho riadattato il metodo per poter fare override di update() degli observer, se può andare quello sopra, questo va eliminato
-    public void update(PlayerCommand command, Object arg, int val) {
-        switch (command) {
-            case MOVE:
-                move((Cell)arg, 0);
-                break;
-            case GRAB:
-                grab((Cell)arg, val);
-                break;
-            case SHOOT:
-                move((Cell)arg, 0);
-                break;
-            case END_TURN:
-                boardControl.changeTurn();
-                break;
-        }
-    }
-    */
     /**
      * This function controls the MOVE action and verifies if a player can move to a cell
      * @param cell of destination
@@ -81,16 +59,16 @@ public class PlayerController implements Observer {
      */
     public boolean move(Cell cell, int i) {
         switch(i) {
-            case 0: //normal move
+            case 10: //normal move
                 if (!boardControl.isFinalFrenzy()) {//non final Frenzy
                     if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
                         return false; }
                 else if (!billboard.canMove(player.getPawn().getCell(), cell, 4))
                     return false;
-                player.getPawn().setCell(cell);
+                setCell(cell);
                 return true;
 
-            case 1: //move from grab
+            case 11: //move from grab
                 if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 2) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
@@ -105,10 +83,10 @@ public class PlayerController implements Observer {
                         return false;
                 }
 
-                player.getPawn().setCell(cell);
+                setCell(cell);
                 return true;
 
-            case 2: //move from shoot
+            case 12: //move from shoot
                 if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 5) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
@@ -121,21 +99,28 @@ public class PlayerController implements Observer {
                             return false;
                     }
 
-                    player.getPawn().setCell(cell);
+                    setCell(cell);
                     return true;
                 }
         }
         return false;
     }
 
-
+    /*overloading
+     public boolean move(Player player, Cell cell, int i){
+        if (!billboard.canMove(player.getPawn().getCell(), cell, i))
+            return false;
+        setCell(player, cell);
+        return true;
+     }
+*/
     /**
      * This function controls the GRAB action
      * @param cell of destination
      * @return true if the action was successful, else false
      */
     public Card grab(Cell cell, int val) {//TODO aggiunge la carta ed è boolean
-        if(!this.move(cell, 1))
+        if(!this.move(cell, 11))
             return null;
         //TODO lancia errore se il movimento non è valido
         return cell.getCard(val);
@@ -147,10 +132,9 @@ public class PlayerController implements Observer {
      * @param i the weapon of choice to use
      * @return true if the attack was successful, false otherwise
      */
-    public boolean shoot(Cell cell, int i/*List<Player> opponents, WeaponCard weapon*/) {
-        if(!this.move(cell, 2))
+    public boolean shoot(Cell cell, int i) {
+        if(!this.move(cell, 12))
            return false; //lancia errore
-        // for(int j = 0; j < weapon.getAttacks().size(); j++){
         chooseAttack(chooseWeapon(i), i);//TODO modificare la seconda i perchè è relativa alla scelta degli attacchi
         //chooseTarget(attack, oggetto da colpire);
         return true;
@@ -189,4 +173,28 @@ public class PlayerController implements Observer {
     public boolean chooseTarget(Attack attack, Object obj){
             return false;
         }
+
+    /**
+     * This function modifies the position of the pawn
+     * @param cell of destination
+     */
+
+    public void setCell(Cell cell){
+        this.player.getPawn().setCell(cell);
     }
+
+    public boolean verifyPowerUp(Cell cell, int i) { //TODO gestire la questione costi ed i rimanenti power up
+        /* if(player.getPowerups().get(i).getPowerUp() == PowerUp.KINETICRAY){
+        chooseTarget(); TODO fare overloading di chooseTarget
+        move(player, cell, 2);
+        return true;
+    }*/
+        if(player.getPowerups().get(i).getPowerUp() == PowerUp.TELEPORTER) {
+            setCell(cell);
+            return true;
+        }
+        return false;
+    }
+
+}
+

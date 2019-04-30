@@ -39,9 +39,6 @@ public abstract class WeaponCard extends Card {
         isLoaded = false;
     }
 
-    //End constructors
-
-
     /**
      * This function returns the list of attacks a weapon has
      * @return the list of attacks

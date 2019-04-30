@@ -74,9 +74,4 @@ public class NormalCell extends Cell {
         return false;
     }
 
-    //TODO vedere meglio come gestire qui
-    public boolean giveCard(Player player){
-        player.addAmmo(this.ammoCard.getAmmo());
-        return(this.ammoCard.verifyPowerup());
-    }
 }

@@ -224,6 +224,7 @@ public class Player extends Observable {
             setChanged();
             notifyObservers();
             return true;
+
         }
         return false;
 

@@ -34,4 +34,7 @@ public abstract class Attack {
 
     public Player getShooter(){return this.shooter;}
 
+    public boolean getOptional(){return this.isOptional;}
+
+    public boolean getAlternative(){return this.isAlternative;}
 }
