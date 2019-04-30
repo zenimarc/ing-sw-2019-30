@@ -11,18 +11,26 @@ public class MoveAttack extends Attack_{
     private int damage;
 
     //Costructor
-    public MoveAttack(String name, String desc, int step, int damage){
+    public MoveAttack(String name, String desc, int step, int damage, int target){
         this.name = name;
         this.description = desc;
         this.step = step;
         this.damage = damage;
+        this.target = target;
+    }
+
+    //Costructor
+    public MoveAttack(String name, int step, int damage, int target){
+        this.name = name;
+        this.step = step;
+        this.damage = damage;
+        this.description = getDescription();
+        this.target = target;
     }
 
     //Costructor
     public MoveAttack(String name, int step, int damage){
-        this.name = name;
-        this.step = step;
-        this.damage = damage;
+        this(name,step, damage, 1);
         this.description = getDescription();
     }
 
