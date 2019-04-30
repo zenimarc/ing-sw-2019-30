@@ -1,6 +1,7 @@
 package player;
 
 import board.Board;
+import board.Cell;
 import constants.Constants;
 import deck.Color;
 import deck.PowerCard;
@@ -42,6 +43,12 @@ public class Player extends Observable {
      * @return pawn of the player
      */
     public Pawn getPawn(){return this.pawn;}
+
+    /**
+     * This function returns the position of the player
+     * @return player position
+     */
+    public Cell getCell(){ return this.pawn.getCell();}
 
     /**
      * This function returns the name of the player

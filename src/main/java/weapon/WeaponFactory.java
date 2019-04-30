@@ -17,6 +17,7 @@ public class WeaponFactory {
 
 
         for (enumWeapon weapon : enumWeapon.values()) {
+
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
             jsonWeapon = gson.toJson(getFactory(weapon));
 
@@ -47,6 +48,8 @@ public class WeaponFactory {
                 return new Gun(enumWeapon.LOCKRIFLE);
             case MACHINEGUN:
                 return  new Gun(enumWeapon.MACHINEGUN);
+            case ELECTROSCYTHE:
+                return new Gun(enumWeapon.ELECTROSCYTHE);
         }
         return null;
     }
