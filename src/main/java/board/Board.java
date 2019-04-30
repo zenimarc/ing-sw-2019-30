@@ -1,6 +1,11 @@
 package board;
 
+import deck.AmmoCard;
+import deck.Card;
+import deck.Deck;
+import deck.PowerCard;
 import player.Player;
+import weapon.WeaponCard;
 
 import java.util.*;
 
@@ -12,7 +17,9 @@ public class Board {
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;
     private Billboard billboard;
-
+    private Deck weaponDeck;
+    private Deck ammoDeck;
+    private Deck powerUpDeck;
 
     /**
      * Constructors
@@ -23,14 +30,23 @@ public class Board {
 
     public Board(int numskull) {
         this.numSkulls = numskull;
-        this.playerSkulls = new HashMap<>(); //TODO controllare questa parte come dovrebbe servire
+        this.playerSkulls = new HashMap<>();
         this.billboard = new Billboard();
     }
 
     public Board(int numskull, Billboard board) {
         this.numSkulls = numskull;
-        this.playerSkulls = new HashMap<>(); //TODO controllare questa parte come dovrebbe servire
+        this.playerSkulls = new HashMap<>();
         this.billboard = board;
+    }
+
+    public Board(int numskull, Billboard board, ArrayList<Card> ammoCard, ArrayList<Card> weaponCard, ArrayList<Card> powerUpCard) {
+        this.numSkulls = numskull;
+        this.playerSkulls = new HashMap<>();
+        this.billboard = board;
+        this.weaponDeck= new Deck(weaponCard);
+        this.powerUpDeck= new Deck(powerUpCard);
+        this.ammoDeck= new Deck(ammoCard);
     }
 
     /**
@@ -40,6 +56,24 @@ public class Board {
         // TODO implement here
         return null;
     }
+
+    /**
+     * This function returns the power up deck
+     * @return the deck
+     */
+    public Deck getPowerUpDeck(){return this.powerUpDeck;}
+
+    /**
+     * This function returns the weapon card deck
+     * @return the deck
+     */
+    public Deck getWeaponCardDeck(){return this.weaponDeck;}
+
+    /**
+     * This function returns the ammo card deck
+     * @return the deck
+     */
+    public Deck getAmmoCardDeck(){return this.ammoDeck;}
 
     /**
      * This function returns the billboard used

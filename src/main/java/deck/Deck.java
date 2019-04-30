@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class Deck {
 
-    private List<Card> cards;
+    private ArrayList<Card> cards;
 
     /**
      * Constructors
@@ -16,6 +16,15 @@ public class Deck {
     public Deck() {
         this.cards = new ArrayList<>();
     }
+
+    public Deck(ArrayList<Card> cards) {
+        this.cards = cards;
+    }
+    /**
+     * This function returns the cards of the deck
+     * @return a list of cards
+     */
+    public ArrayList<Card> getCards(){return this.cards;}
 
     /**
      * This function shuffles the deck

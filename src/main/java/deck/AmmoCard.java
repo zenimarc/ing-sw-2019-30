@@ -33,5 +33,5 @@ public class AmmoCard extends Card {
      * @return true if it can, else false
      */
 
-    public boolean verifyPowerup(){return this.hasPowerUp;}
+    public boolean verifyPowerUp(){return this.hasPowerUp;}
 }
