@@ -1,6 +1,7 @@
 package weapon;
 
 import attack.Attack_;
+import board.Cell;
 import deck.Bullet;
 import deck.Card;
 import player.Player;
@@ -65,7 +66,13 @@ public abstract class WeaponCard extends Card {
         return attacks.get(idAttack);
     }
 
-    public abstract boolean shoot(int typeAttack, Player shooter, List<Player> opponents);
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents){
+        return false;
+    }
+
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Cell cell){
+        return false;
+    }
 
     public boolean shoot(int idAttack, Player shooter, Player opponent){
         return shoot(idAttack, shooter, new ArrayList<>(Arrays.asList(opponent)));

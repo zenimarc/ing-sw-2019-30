@@ -16,6 +16,7 @@ public abstract class Attack_ {
     protected String name;
     protected String description;
     protected int[] bulletsColor;
+    protected int target;
 
     public boolean attack(Player player, List<Player> opponents){
         return false;

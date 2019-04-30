@@ -29,6 +29,7 @@ public class Gun extends WeaponCard{
                 attacks.add(new SimpleAttack("Effetto base", 3,0,1));
                 break;
             default:
+                //TODO ERROR
                 break;
         }
     }
