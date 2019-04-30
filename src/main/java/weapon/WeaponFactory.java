@@ -17,6 +17,7 @@ public class WeaponFactory {
 
 
         for (enumWeapon weapon : enumWeapon.values()) {
+
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
             jsonWeapon = gson.toJson(getFactory(weapon));
 
