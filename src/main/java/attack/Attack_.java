@@ -1,5 +1,6 @@
 package attack;
 
+import board.Cell;
 import player.Player;
 
 import java.util.ArrayList;
@@ -16,11 +17,23 @@ public abstract class Attack_ {
     protected String description;
     protected int[] bulletsColor;
 
-    public abstract boolean attack(Player player, List<Player> opponents);
+    public boolean attack(Player player, List<Player> opponents){
+        return false;
+    }
+
+    public boolean attack(Player player, List<Player> opponents, Cell cell){
+        return false;
+    }
 
     public boolean attack(Player player, Player opponents){
         return attack(player, new ArrayList<>(Arrays.asList(opponents)));
     }
+
+    public boolean attack(Player player, Player opponents, Cell cell){
+        return attack(player,new ArrayList<>(Arrays.asList(opponents)),cell);
+    }
+
+
 
 
     /**

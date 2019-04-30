@@ -51,6 +51,12 @@ public class Player extends Observable {
     public Cell getCell(){ return this.pawn.getCell();}
 
     /**
+     * This set player cell
+     * @param c
+     */
+    public void setCell(Cell c){this.pawn.setCell(c);}
+
+    /**
      * This function returns the name of the player
      * @return the name of the player
      */
