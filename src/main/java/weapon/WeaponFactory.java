@@ -15,7 +15,6 @@ public class WeaponFactory {
         ArrayList<String> jsonWeapons = new ArrayList<>();
         String jsonWeapon;
 
-
         for (enumWeapon weapon : enumWeapon.values()) {
 
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
@@ -34,11 +33,7 @@ public class WeaponFactory {
             }finally {
                 writer.close();
             }
-    }
-     /*   JsonReader reader = new JsonReader(new FileReader(filename));
-        Review data = gson.fromJson(reader, Review.class);
-        data.toScreen(); // prints to screen some values
-       */
+        }
     }
 
     private WeaponCard getFactory(enumWeapon type) {
