@@ -45,11 +45,15 @@ public class WeaponFactory {
 
         switch (type){
             case LOCKRIFLE:
-                return new Gun(enumWeapon.LOCKRIFLE);
+                return new SimpleWeapon(enumWeapon.LOCKRIFLE);
             case MACHINEGUN:
-                return  new Gun(enumWeapon.MACHINEGUN);
+                return  new SimpleWeapon(enumWeapon.MACHINEGUN);
             case ELECTROSCYTHE:
-                return new Gun(enumWeapon.ELECTROSCYTHE);
+                return new SimpleWeapon(enumWeapon.ELECTROSCYTHE);
+            case HEATSEEKER:
+                return new SimpleWeapon(enumWeapon.HEATSEEKER);
+            case TRACTOR_BEAM:
+                return new MovementWeapon(enumWeapon.TRACTOR_BEAM);
         }
         return null;
     }
