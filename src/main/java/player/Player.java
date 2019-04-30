@@ -228,12 +228,11 @@ public class Player extends Observable {
 
     /**
      * This function adds a power up card to the player
-     * @param power power up to add
      * @return true if it was possible, else false
      */
-    public boolean addPowerCard(PowerCard power) {
+    public boolean addPowerCard() {
         if(powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
-            powerups.add(power);
+            powerups.add((PowerCard)playerBoard.getBoard().getPowerUpDeck().draw());
             setChanged();
             notifyObservers();
             return true;

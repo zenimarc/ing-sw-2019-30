@@ -13,6 +13,7 @@ public class BoardController {
     private int playerTurn = 0;
     private int verifyFinalFrenzyTurns = 0;
     private List<Player> listOfPlayers;
+    private List<PlayerController> playerControllers;
     private Board board;
 
     /**
@@ -21,11 +22,17 @@ public class BoardController {
 
     public BoardController() {
         this.listOfPlayers = new ArrayList<>();
+        this.playerControllers = new ArrayList<>();
     }
 
-    public BoardController(ArrayList<Player> players, Board board) {
+    public BoardController(List<Player> players, Board board) {
         this.listOfPlayers = players;
         this.board = board;
+        this.playerControllers = new ArrayList<>();
+        for (Player player : this.listOfPlayers){
+            playerControllers.add(new PlayerController(player));
+        }
+
     }
 
     /**
@@ -103,4 +110,16 @@ public class BoardController {
      * @param board to assign
      */
     public void setBoard(Board board) {this.board = board; }
+
+    /**
+     * This function return the PlayerController associated to a specific Player
+     * @param player you want to know its PlayerController
+     * @return player's PlayerController if present, else null.
+     */
+    public PlayerController getPlayerController(Player player){
+        return this.playerControllers.stream().filter(x -> x.getPlayer() == player).findFirst().orElse(null);
+    }
+    public List<Player> getListOfPlayers(){
+        return listOfPlayers;
+    }
 }

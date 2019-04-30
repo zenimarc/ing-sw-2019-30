@@ -3,6 +3,7 @@ package board;
 import constants.Constants;
 import deck.Card;
 import deck.Color;
+import player.Player;
 import weapon.WeaponCard;
 
 import java.util.*;
@@ -95,6 +96,16 @@ public class RegenerationCell extends Cell {
             }
         }
         return null;
+    }
+
+    /**
+     * This function gives the i weapon to a player
+     * @param player to receive a card
+     * @param i card to pick
+     */
+    @Override
+    public void giveCard(Player player, int i){
+        player.addWeapon(this.weaponCard[i]);
     }
 
 }

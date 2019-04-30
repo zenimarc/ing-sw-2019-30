@@ -3,6 +3,7 @@ package board;
 import deck.Card;
 import deck.Color;
 import player.Pawn;
+import player.Player;
 
 import java.util.*;
 
@@ -56,6 +57,15 @@ public abstract class  Cell {
 
     public boolean setCard(Card card) {
         return  false;
+    }
+
+    /**
+     * This function does nothing because it is implemented by sons
+     * @param player to receive a card
+     * @param i card to pick
+     */
+    public void giveCard(Player player, int i){
+
     }
 
 }
