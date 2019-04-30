@@ -20,19 +20,18 @@ public class WeaponFactory {
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
             jsonWeapon = gson.toJson(getFactory(weapon));
 
-            PrintWriter writer = null;
             File file = new File("src/resources/weapon/" + weapon + ".json");
 
-            try {
-                writer = new PrintWriter(file);
+            try (PrintWriter writer = new PrintWriter(file)) {
                 writer.write(jsonWeapon);
                 writer.flush();
             } catch (IOException ioe) {
                 ioe.fillInStackTrace();
                 System.out.println(ioe.getLocalizedMessage());
-            }finally {
-                writer.close();
+            }catch (NullPointerException npe){
+                System.out.println(npe.getLocalizedMessage());
             }
+
         }
     }
 
