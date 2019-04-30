@@ -4,7 +4,6 @@ import attack.MoveAttack;
 import board.Cell;
 import player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovementWeapon extends WeaponCard {
@@ -20,6 +19,7 @@ public class MovementWeapon extends WeaponCard {
             case VORTEX_CANNON:
                 attacks.add(new MoveAttack("Modalità base", 1,2));
                 attacks.add(new MoveAttack("Buco Nero", 1, 1,2));
+                break;
                 default:
                     //TODO ERROR
                     break;
