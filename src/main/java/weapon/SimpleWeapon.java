@@ -5,9 +5,9 @@ import player.Player;
 
 import java.util.List;
 
-public class Gun extends WeaponCard{
+public class SimpleWeapon extends WeaponCard{
 
-    Gun(enumWeapon type){
+    SimpleWeapon(enumWeapon type){
         this.weaponType = type;
 
         switch (type){
