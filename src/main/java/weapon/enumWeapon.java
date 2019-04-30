@@ -8,8 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum enumWeapon {
-    LOCKRIFLE("Distruttore", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),
-    MACHINEGUN("Mitragliatrice", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE), new Bullet(Color.RED))));
+    LOCKRIFLE("Lockrifle", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),
+    MACHINEGUN("Machinegun", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE), new Bullet(Color.RED)))),
+    ELECTROSCYTHE("Electroscyte", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE))));
 
 
     private String name;

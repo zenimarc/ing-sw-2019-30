@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Single attack is an attack that hit an opponent and add damage and/or mark to it
+ *
+ * target = -1 => no-defined num of target
  */
 public class SimpleAttack extends Attack_{
 
@@ -46,7 +48,7 @@ public class SimpleAttack extends Attack_{
     @Override
     public boolean attack(Player player, List<Player> opponents) {
 
-        if(opponents.size()>target){
+        if(opponents.size()>target && target!=-1){
             opponents = opponents.subList(0,target);
         }
 

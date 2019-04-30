@@ -21,45 +21,54 @@ public class Gun extends WeaponCard{
                 attacks.add(new SimpleAttack("Colpo focalizzato", 1,0));
                 attacks.add(new SimpleAttack("Tripode di supporto", 1,0,2));
                 break;
+            case ELECTROSCYTHE:
+                attacks.add(new SimpleAttack("Effetto base", 1,0,-1));
+                attacks.add(new SimpleAttack("Modalità mietitore", 2,0,-1));
+                break;
             default:
                 break;
         }
     }
 
     private boolean lockrifleShot(int typeAttack, Player shooter, List<Player> opponents){
-        //Base Attack
         attacks.get(0).attack(shooter, opponents.get(0));
-        //Optional attack
-        if(typeAttack==1) {
-            if (shooter.useAmmo(attacks.get(1).getCost())) {
-                attacks.get(1).attack(shooter, opponents.get(1));
-                return true;
-            } else return false;
+        if(typeAttack==1){
+            attacks.get(1).attack(shooter, opponents.get(1));
         }
         return true;
     }
 
     private boolean machinegunShot(int typeAttack, Player shooter, List<Player> opponents){
+
         //Base Attack
         attacks.get(0).attack(shooter,opponents);
 
-        //Optional attack
         switch (typeAttack){
+            case 0:
+                break;
             case 1:
-                if(shooter.useAmmo(attacks.get(1).getCost())){
-                    attacks.get(1).attack(shooter, opponents.get(0));
-                }else return false;
+                attacks.get(1).attack(shooter, opponents.get(0));
                 break;
             case 2:
-                if(shooter.useAmmo(attacks.get(2).getCost())){
-                    attacks.get(2).attack(shooter,opponents.subList(1,2));
-                }else return false;
+                attacks.get(2).attack(shooter,opponents.subList(1,2));
                 break;
             case 12:
-                if(shooter.canPay(attacks.get(1).getCost()) && shooter.canPay(attacks.get(2).getCost())){
-                    machinegunShot(1,shooter,opponents);
-                    machinegunShot(2,shooter,opponents);
-                }else return false;
+                    attacks.get(1).attack(shooter, opponents.get(0));
+                    attacks.get(2).attack(shooter,opponents.subList(1,2));
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    private boolean electroscythe(int typeAttack, Player shooter, List<Player> opponents){
+        switch (typeAttack){
+            case 0:
+                attacks.get(0).attack(shooter,opponents);
+                break;
+            case 1:
+                attacks.get(1).attack(shooter,opponents);
                 break;
             default:
                 return false;
@@ -76,6 +85,8 @@ public class Gun extends WeaponCard{
                 return lockrifleShot(typeAttack,shooter,opponents);
             case MACHINEGUN:
                 return machinegunShot(typeAttack,shooter,opponents);
+            case ELECTROSCYTHE:
+                return electroscythe(typeAttack,shooter, opponents);
             default:
                 return false;
         }

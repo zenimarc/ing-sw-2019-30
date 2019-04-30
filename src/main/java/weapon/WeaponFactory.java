@@ -48,6 +48,8 @@ public class WeaponFactory {
                 return new Gun(enumWeapon.LOCKRIFLE);
             case MACHINEGUN:
                 return  new Gun(enumWeapon.MACHINEGUN);
+            case ELECTROSCYTHE:
+                return new Gun(enumWeapon.ELECTROSCYTHE);
         }
         return null;
     }
