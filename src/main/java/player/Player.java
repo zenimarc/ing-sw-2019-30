@@ -1,6 +1,7 @@
 package player;
 
 import board.Board;
+import board.Cell;
 import constants.Constants;
 import deck.Color;
 import deck.PowerCard;
@@ -42,6 +43,12 @@ public class Player extends Observable {
      * @return pawn of the player
      */
     public Pawn getPawn(){return this.pawn;}
+
+    /**
+     * This function returns the position of the player
+     * @return player position
+     */
+    public Cell getCell(){ return this.pawn.getCell();}
 
     /**
      * This function returns the name of the player
@@ -215,12 +222,11 @@ public class Player extends Observable {
 
     /**
      * This function adds a power up card to the player
-     * @param power power up to add
      * @return true if it was possible, else false
      */
-    public boolean addPowerCard(PowerCard power) {
-        if (powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
-            powerups.add(power);
+    public boolean addPowerCard() {
+        if(powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
+            powerups.add((PowerCard)playerBoard.getBoard().getPowerUpDeck().draw());
             setChanged();
             notifyObservers();
             return true;
@@ -228,8 +234,5 @@ public class Player extends Observable {
         }
         return false;
 
-    }
-    public boolean equals(Player player){
-        return this.getName().equals(player.getName());
     }
 }

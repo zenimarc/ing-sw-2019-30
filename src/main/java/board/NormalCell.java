@@ -56,7 +56,7 @@ public class NormalCell extends Cell {
         return null;
     }
 
-    public Card removeCard(){//TODO non capisco a cosa serva
+    public Card removeCard(){
         return removeCard(ammoCard);
     }
 
@@ -74,4 +74,15 @@ public class NormalCell extends Cell {
         return false;
     }
 
+    /**
+     * This function adds ammo from the ammo card to a player and, in case, also a power card
+     * @param player to receive a card
+     * @param i not used
+     */
+    @Override
+    public void giveCard(Player player, int i){
+        player.addAmmo(this.ammoCard.getAmmo());
+        if(this.ammoCard.verifyPowerUp())
+            player.addPowerCard();
+    }
 }

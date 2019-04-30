@@ -2,6 +2,7 @@ package controller;
 import attack.Attack;
 import board.Billboard;
 import board.Cell;
+import deck.AmmoCard;
 import deck.Card;
 import deck.PowerUp;
 import player.Player;
@@ -123,11 +124,11 @@ public class PlayerController implements Observer {
      * @param cell of destination
      * @return true if the action was successful, else false
      */
-    public Card grab(Cell cell, int val) {//TODO aggiunge la carta ed è boolean
+    public boolean grab(Cell cell, int val) {//TODO aggiunge la carta ed è boolean
         if(!this.move(cell, 11))
-            return null;
-        //TODO lancia errore se il movimento non è valido
-        return cell.getCard(val);
+            return false;
+        cell.giveCard(this.player, val);
+            return true;
     }
 
     /**

@@ -1,6 +1,7 @@
 package board;
 
 import deck.Color;
+import player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -274,4 +275,5 @@ public class Billboard {
     public boolean isVisible(Cell cell1, Cell cell2){
         return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
     }
+
 }
