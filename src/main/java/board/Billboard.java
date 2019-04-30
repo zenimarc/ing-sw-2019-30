@@ -276,4 +276,8 @@ public class Billboard {
         return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
     }
 
+    public List<Cell> visibleCells(Cell shooterCell){
+        return billboardCell.keySet().stream().filter(x -> isVisible(shooterCell, x)).collect(Collectors.toCollection(ArrayList::new));
+    }
+
 }
