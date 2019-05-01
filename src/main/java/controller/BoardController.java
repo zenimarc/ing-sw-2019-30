@@ -130,7 +130,11 @@ public class BoardController {
     public List<Player> getPotentialTargets(Cell shooterCell, EnumTargetSet targetType) {
         switch (targetType) {
             case VISIBLE:
-                return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getPawn().getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+            case SAME_ROOM:
+                return listOfPlayers.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+            case SAME_CELL:
+                return listOfPlayers.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toCollection(ArrayList::new));
         }
         return null;
     }

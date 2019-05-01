@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static controller.EnumTargetSet.VISIBLE;
+import static controller.EnumTargetSet.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 //TODO fare i test
@@ -75,10 +75,20 @@ class BoardControllerTest {
         p1.setCell(c01);
         p2.setCell(c12);
         p3.setCell(c22);
+        p4.setCell(c22);
         ArrayList<Player> potentialTargets = new ArrayList<>();
         potentialTargets.add(p1);
         potentialTargets.add(p2);
         assertTrue(controller.getPotentialTargets(c00, VISIBLE).containsAll(potentialTargets));
+        assertTrue(controller.getPotentialTargets(c02, SAME_ROOM).containsAll(potentialTargets));
+        potentialTargets.remove(p2); //change potential targets to test same cell
+        assertTrue(controller.getPotentialTargets(c01, SAME_CELL).containsAll(potentialTargets));
+        potentialTargets.clear();
+        //testing same cell with 2 player
+        potentialTargets.add(p3);
+        potentialTargets.add(p4);
+        assertTrue(controller.getPotentialTargets(c22, SAME_CELL).containsAll(potentialTargets));
+
     }
 
     void testTurn(){
