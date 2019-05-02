@@ -46,8 +46,8 @@ public class BoardController {
     public Player getPlayer(){return this.listOfPlayers.get(playerTurn);}
 
     /**
-     * This function returns a board //TODO specificarla meglio
-     * @return a board
+     * This function returns the board associated with this controller
+     * @return the board associated with this controller
      */
 
     public Board getBoard(){return this.board;}
@@ -151,6 +151,6 @@ public class BoardController {
                         && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
 
         }
-        return null;
+        return Collections.emptyList();
     }
 }
