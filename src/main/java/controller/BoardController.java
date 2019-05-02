@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import static controller.EnumTargetSet.VISIBLE;
 
 /**
- * BoardController controls turns during the game
+ * BoardController controls the table game.
  */
 public class BoardController {
 
@@ -110,7 +110,7 @@ public class BoardController {
     }
 
     /**
-     * This function sets the board of a BoardController
+     * This function sets the board (game) of the BoardController
      * @param board to assign
      */
     public void setBoard(Board board) {this.board = board; }
@@ -123,6 +123,11 @@ public class BoardController {
     public PlayerController getPlayerController(Player player){
         return this.playerControllers.stream().filter(x -> x.getPlayer() == player).findFirst().orElse(null);
     }
+
+    /**
+     * This function returns the list of players associated to this board (this game)
+     * @return the list of player associated to this board
+     */
     public List<Player> getListOfPlayers(){
         return listOfPlayers;
     }
@@ -146,6 +151,14 @@ public class BoardController {
                 return listOfPlayers.stream().filter(x -> (board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY()).collect(Collectors.toCollection(ArrayList::new));
             case CARDINAL:
+                /*
+                it's the same of Cardinal_Wall_Bypass but it has to check if there are walls that obstacle the line.
+                so do the same checks as upper case, and if there aren't walls between shooter_cell and target_cell,
+                need to be true this sentence: the shooter could potentially move to the target_cell
+                in a number of steps that are the distance between the two cells.
+                please note that if the two cells are on the same axe (has to be true due the first check) the distance between
+                the two cell is the minimum possible steps to reach the target cell.
+                 */
                 return listOfPlayers.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
                         && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
