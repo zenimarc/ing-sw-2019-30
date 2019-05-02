@@ -82,7 +82,7 @@ public class Player extends Observable {
      * This function returns the list of weapons the player has
      * @return weapons the player has
      */
-    public ArrayList<WeaponCard> getWeapons(){
+    public List<WeaponCard> getWeapons(){
         return this.weapons;
     }
 
@@ -90,7 +90,7 @@ public class Player extends Observable {
      * This function returns the list of power ups the player has
      * @return the power up the player has
      */
-    public ArrayList<PowerCard> getPowerups(){
+    public List<PowerCard> getPowerups(){
         return this.powerups;
     }
 
@@ -103,7 +103,7 @@ public class Player extends Observable {
     }
 
     /**
-     * @return an HashMap containg player's ammo by color.
+     * @return an HashMap containing player's ammo by color.
      */
     public Map<Color, Integer> getBullets(){
         return this.ammo;
@@ -175,8 +175,9 @@ public class Player extends Observable {
     }
 
     /**
-     * This function adds damage to an opponent
-     * @param opponent who will receive damage
+     * This function adds damage to this player from an opponent
+     * if there are marks from the indicated opponent they will be converted into damages
+     * @param opponent who is giving damage
      * @param shots to give
      */
     public void addDamage(Player opponent, int shots){
@@ -190,8 +191,9 @@ public class Player extends Observable {
     }
 
     /**
-     * This function adds marks to an opponent
-     * @param opponent who will receive marks
+     * This function adds marks to this player from an opponent
+     * only if it's possible to add another mark (marks < 3)
+     * @param opponent who is giving marks
      * @param mark number of marks given
      */
     public void addMark(Player opponent, int mark){
@@ -200,14 +202,27 @@ public class Player extends Observable {
         notifyObservers();
     }
 
+    /**
+     * adds single mark from indicated opponent
+     * @param opponent who's giving mark to this player
+     */
     public void addMark(Player opponent){
         this.addMark(opponent, 1);
     }
 
+    /**
+     * this function returns the current marks of this player from an indicated opponent
+     * @param opponent who has given marks to this player
+     * @return marks given to this player by indicated opponent
+     */
     public int getMarks(Player opponent){
         return this.playerBoard.getMarks(opponent);
     }
 
+    /**
+     * This function returns the number of damage received by a player
+     * @return the number of damage received
+     */
     public int getNumDamages(){
         return this.playerBoard.getNumDamages();
     }
@@ -219,11 +234,6 @@ public class Player extends Observable {
      */
     public boolean canView(Player opponent){
         return (playerBoard.getBoard().getBillboard().isVisible(this.pawn.getCell(), opponent.pawn.getCell()));
-    }
-
-    @Override
-    public String toString() {
-        return this.nickname;
     }
 
     /**
