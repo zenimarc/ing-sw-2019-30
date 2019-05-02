@@ -6,6 +6,7 @@ import player.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class is an idea of genertic attack.
@@ -18,22 +19,17 @@ public abstract class Attack_ {
     protected int[] bulletsColor;
     protected int target;
 
-    public boolean attack(Player player, List<Player> opponents){
-        return false;
+    public abstract boolean attack(Player player, List<Player> opponents, Cell newCell);
+
+    public abstract boolean attack(Player player, List<Player> opponents);
+
+    public boolean attack(Player player, Player opponent, Cell newCell){
+        return attack(player,new ArrayList<>(Arrays.asList(opponent)),newCell);
     }
 
-    public boolean attack(Player player, List<Player> opponents, Cell cell){
-        return false;
+    public boolean attack(Player player, Player opponent){
+        return attack(player,new ArrayList<>(Arrays.asList(opponent)));
     }
-
-    public boolean attack(Player player, Player opponents){
-        return attack(player, new ArrayList<>(Arrays.asList(opponents)));
-    }
-
-    public boolean attack(Player player, Player opponents, Cell cell){
-        return attack(player,new ArrayList<>(Arrays.asList(opponents)),cell);
-    }
-
 
 
 

@@ -5,6 +5,7 @@ import deck.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public enum enumWeapon {
     LOCKRIFLE("Lockrifle", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),
@@ -25,7 +26,7 @@ public enum enumWeapon {
 
     public String getName(){return  name;}
 
-    public ArrayList<Bullet> getCost() { return cost;}
+    public List<Bullet> getCost() { return cost;}
 }
 
 

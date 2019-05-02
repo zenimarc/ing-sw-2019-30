@@ -40,7 +40,7 @@ class PlayerControllerTest {
     private static Cell c32 = new NormalCell();
 
     @BeforeEach
-    static void init(){
+    public void init(){
 
         //CREATE A MAP
 

@@ -5,6 +5,7 @@ import board.Cell;
 import player.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MovementWeapon extends WeaponCard {
 
@@ -73,15 +74,16 @@ public class MovementWeapon extends WeaponCard {
      * @return
      */
     @Override
-    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Cell cell) {
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+        if(!cell.isPresent()) return false;
 
         switch (weaponType){
             case TRACTOR_BEAM:
-                return tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell);
+                return tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
             case VORTEX_CANNON:
-                return vortexCannonShoot(typeAttack,shooter,opponents,cell);
+                return vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                default:
+                    return false;
         }
-
-        return false;
     }
 }
