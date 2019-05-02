@@ -127,6 +127,13 @@ public class BoardController {
         return listOfPlayers;
     }
 
+    /**
+     * This function, given the shooter cell, returns a list of players who are possible targets compatible with the attack's target type.
+     * @param shooterCell is the shooter's Cell
+     * @param targetType is the attack's target type, examples: Visible, Same room... (see EnumTargetSet for complete enumeration)
+     * @return a list of players the shooter che hit with the selected targetType
+     */
+
     public List<Player> getPotentialTargets(Cell shooterCell, EnumTargetSet targetType) {
         switch (targetType) {
             case VISIBLE:
@@ -135,6 +142,14 @@ public class BoardController {
                 return listOfPlayers.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_CELL:
                 return listOfPlayers.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toCollection(ArrayList::new));
+            case CARDINAL_WALL_BYPASS:
+                return listOfPlayers.stream().filter(x -> (board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
+                        board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY()).collect(Collectors.toCollection(ArrayList::new));
+            case CARDINAL:
+                return listOfPlayers.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
+                        board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
+                        && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
+
         }
         return null;
     }

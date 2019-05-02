@@ -88,6 +88,36 @@ class BoardControllerTest {
         potentialTargets.add(p3);
         potentialTargets.add(p4);
         assertTrue(controller.getPotentialTargets(c22, SAME_CELL).containsAll(potentialTargets));
+        //Testing cardinal bypass wall
+        potentialTargets.clear();
+        p3.setCell(c21);
+        p4.setCell(c10);
+        potentialTargets.add(p1);
+        potentialTargets.add(p2);
+        potentialTargets.add(p3);
+        potentialTargets.add(p4);
+        assertTrue(controller.getPotentialTargets(c11, CARDINAL_WALL_BYPASS).containsAll(potentialTargets));
+        //Testing Cardinal normal
+        potentialTargets.clear();
+        p1.setCell(c00);
+        p2.setCell(c10);
+        p3.setCell(c02);
+        p4.setCell(c01); //same cell of the shooter case
+        potentialTargets.add(p1);
+        potentialTargets.add(p3);
+        potentialTargets.add(p4);
+        assertTrue(controller.getPotentialTargets(c01, CARDINAL).containsAll(potentialTargets));
+        p2.setCell(c22);
+        assertTrue(controller.getPotentialTargets(c01, CARDINAL).containsAll(potentialTargets));
+        //test2 cardinal with different positions
+        potentialTargets.clear();
+        p1.setCell(c20);
+        p2.setCell(c11);
+        p3.setCell(c22);
+        p4.setCell(c31);
+        potentialTargets.add(p3);
+        potentialTargets.add(p4);
+        assertTrue(controller.getPotentialTargets(c21, CARDINAL).containsAll(potentialTargets));
 
     }
 

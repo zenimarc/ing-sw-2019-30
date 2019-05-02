@@ -94,7 +94,7 @@ public class Billboard {
      * @param c2 the second cell
      * @return distance c1->c2
      */
-    private int cellDistance(Cell c1, Cell c2){
+    public int cellDistance(Cell c1, Cell c2){
         return billboardCell.get(c1).distance(billboardCell.get(c2));
     }
 
@@ -278,6 +278,10 @@ public class Billboard {
 
     public List<Cell> visibleCells(Cell shooterCell){
         return billboardCell.keySet().stream().filter(x -> isVisible(shooterCell, x)).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public Position getCellPosition(Cell cell){
+        return billboardCell.get(cell);
     }
 
 }
