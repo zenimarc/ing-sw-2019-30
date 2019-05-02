@@ -3,7 +3,7 @@ package cardAttack;
 import attack.Attack;
 
 public class Torpedo extends Attack {
-    public int maxTargets = 1;
+    private int maxTargets = 1;
 
     public void baseAttack(){
         //chiama una f per selezionare il target e deve esssere vsisibile

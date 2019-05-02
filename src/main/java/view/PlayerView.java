@@ -7,13 +7,14 @@ import weapon.WeaponCard;
  * 
  */
 public class PlayerView {
-    public Player player;
-    public PlayerBoardView myPlayerBoard;
+    private Player player;
+    private PlayerBoardView myPlayerBoard;
 
     /**
      * Default constructor
      */
     public PlayerView() {
+        //TODO: implement here
     }
 
     public boolean move(Cell cell) {

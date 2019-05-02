@@ -7,19 +7,17 @@ import java.util.*;
  * 
  */
 public class BoardView {
+    private Board board;
 
     /**
      * Default constructor
      */
     public BoardView() {
+        //TODO implement here
     }
 
-
-    public Board board;
-
-
-
     public void drawCLI() {
+        /*
         System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +
@@ -41,7 +39,7 @@ public class BoardView {
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +
                 "|\t\t|\t\t |\t\t  |\t\t  |\n" +
                 "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|");
-
+*/
     }
 
 
@@ -49,5 +47,4 @@ public class BoardView {
         // TODO implement here
 
     }
-
 }
