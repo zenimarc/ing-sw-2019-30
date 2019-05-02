@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 
 public class BillboardGenerator extends Billboard {
-    /**
+
     private static Billboard myBillboard;
     private static HashMap<Cell, Position> mappaProva = new HashMap<>();
     private static ArrayList<Door> doors = new ArrayList<>();
@@ -32,7 +32,7 @@ public class BillboardGenerator extends Billboard {
     private static Cell c22 = new NormalCell(Color.WHITE);
     private static Cell c32 = new NormalCell();
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         mappaProva.put(c00, new Position(0, 0));
         mappaProva.put(c10, new Position(1, 0));
         mappaProva.put(c20, new Position(2, 0));
@@ -56,20 +56,29 @@ public class BillboardGenerator extends Billboard {
         doors.add(new Door(c21, c22));
         doors.add(new Door(c12, c22));
 
-        myBillboard = new Billboard(mappaProva,doors);
+        myBillboard = new Billboard(mappaProva, doors);
         Gson gson = new Gson();
         String billboardjson = gson.toJson(myBillboard);
         try {
-            Files.write(Paths.get("./src/data/billboard.json"), billboardjson.getBytes());
+            Files.write(Paths.get("./src/resources/billboard/billboard.json"), billboardjson.getBytes());
             System.out.println(billboardjson);
-        }catch (IOException ioe){ioe.fillInStackTrace();}
+        } catch (IOException ioe) {
+            ioe.fillInStackTrace();
+        }
+    }
+/*
+        try {
+            BufferedReader br = new BufferedReader(
+                    new FileReader("src/resources/billboard/billboard.json"));
+            Gson gson = new Gson();
 
-        JsonReader reader = new JsonReader(new FileReader(filename));
-        Review data = gson.fromJson(reader, Review.class);
-        data.toScreen(); // prints to screen some values
+            //convert the json string back to object
+            billboard = gson.fromJson(br, Billboard.class);
 
-        System.out.println(gson.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
-     **/
+*/
 }

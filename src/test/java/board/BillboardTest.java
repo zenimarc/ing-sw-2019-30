@@ -3,10 +3,7 @@ package board;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BillboardTest {
@@ -118,5 +115,20 @@ class BillboardTest {
         assertTrue(myBillboard.isVisible(c00, c12));
         assertFalse(myBillboard.isVisible(c12, c00));
     }
+    @Test
+    void visibleCellsTest(){
+        List<Cell> cells =  new ArrayList<>();
+        cells.add(c00);
+        cells.add(c10);
+        cells.add(c20);
+        cells.add(c30);
+        cells.add(c01);
+        cells.add(c02);
+        cells.add(c11);
+        cells.add(c12);
+        assertTrue(myBillboard.visibleCells(c00).containsAll(cells));
+
+    }
+
 
 }

@@ -14,7 +14,6 @@ public class Door {
     /**
      * Constructors
      */
-
     public Door(Cell c1, Cell c2) {
         this.cell1 = c1;
         this.cell2 = c2;

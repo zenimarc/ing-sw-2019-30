@@ -1,9 +1,13 @@
 package controller;
 import board.Board;
+import board.Cell;
 import deck.Deck;
 import player.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static controller.EnumTargetSet.VISIBLE;
 
 /**
  * BoardController controls turns during the game
@@ -121,5 +125,17 @@ public class BoardController {
     }
     public List<Player> getListOfPlayers(){
         return listOfPlayers;
+    }
+
+    public List<Player> getPotentialTargets(Cell shooterCell, EnumTargetSet targetType) {
+        switch (targetType) {
+            case VISIBLE:
+                return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+            case SAME_ROOM:
+                return listOfPlayers.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+            case SAME_CELL:
+                return listOfPlayers.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toCollection(ArrayList::new));
+        }
+        return null;
     }
 }
