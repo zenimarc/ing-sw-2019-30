@@ -4,6 +4,7 @@ import board.Cell;
 import player.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MoveAttack extends Attack_{
 
@@ -35,17 +36,21 @@ public class MoveAttack extends Attack_{
     }
 
     @Override
-    public boolean attack(Player player, Player opponent, Cell cell){
-        opponent.setCell(cell);
-        opponent.addDamage(player,damage);
-        return true;
+    public boolean attack(Player player, List<Player> opponents) {
+        return false;
     }
 
     @Override
-    public boolean attack(Player player, List<Player> opponents, Cell cell) {
+    public boolean attack(Player player, List<Player> opponents, Cell newCell) {
         for(Player p : opponents){
-            attack(player,p,cell);
+            singleAttack(player,p,newCell);
         }
+        return true;
+    }
+
+    public boolean singleAttack(Player player, Player opponent, Cell newCell){
+        opponent.setCell(newCell);
+        opponent.addDamage(player,damage);
         return true;
     }
 

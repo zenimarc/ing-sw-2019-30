@@ -1,9 +1,9 @@
 package attack;
 
+import board.Cell;
 import player.Player;
 
 import java.util.List;
-
 /**
  * Single attack is an attack that hit an opponent and add damage and/or mark to it
  *
@@ -41,6 +41,18 @@ public class SimpleAttack extends Attack_{
      * Add damage and mark to opponent by player
      * @param player Player that attack
      * @param opponents Player hit
+     * @param newCell not used in this attack type
+     * @return true
+     */
+    @Override
+    public boolean attack(Player player, List<Player> opponents, Cell newCell) {
+        return attack(player,opponents);
+    }
+
+    /**
+     * Add damage and mark to opponents list by player
+     * @param player Player who attack
+     * @param opponents Players hit
      * @return true
      */
     @Override
@@ -55,6 +67,13 @@ public class SimpleAttack extends Attack_{
             }
             return true;
     }
+
+    /**
+     * Add damage and mark to single opponent by player
+     * @param player Player who attack
+     * @param opponent Player hit
+     * @return true
+     */
 
     public boolean singleAttack(Player player, Player opponent) {
         opponent.addDamage(player,damage);
