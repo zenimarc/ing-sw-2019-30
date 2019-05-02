@@ -82,8 +82,8 @@ public class MovementWeapon extends WeaponCard {
                 return tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
             case VORTEX_CANNON:
                 return vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                default:
+                    return false;
         }
-
-        return false;
     }
 }
