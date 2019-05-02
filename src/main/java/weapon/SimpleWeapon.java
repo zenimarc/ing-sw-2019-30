@@ -1,9 +1,11 @@
 package weapon;
 
 import attack.SimpleAttack;
+import board.Cell;
 import player.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SimpleWeapon extends WeaponCard{
 
@@ -86,7 +88,7 @@ public class SimpleWeapon extends WeaponCard{
 
 
     @Override
-    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents) {
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
         if(typeAttack>=attacks.size()) return false;
         switch (this.weaponType) {
             case LOCKRIFLE:
