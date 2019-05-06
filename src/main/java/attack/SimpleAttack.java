@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class SimpleAttack extends Attack {
 
-    private int damage;
     private int mark;
 
     //Constructor

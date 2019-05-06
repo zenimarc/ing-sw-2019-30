@@ -9,7 +9,6 @@ import java.util.List;
 public class MoveAttack extends Attack {
 
     private int step;
-    private int damage;
 
     //Costructor
     public MoveAttack(EnumString name, String desc, int step, int damage, int target){

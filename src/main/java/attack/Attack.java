@@ -15,6 +15,7 @@ import java.util.List;
 public abstract class Attack {
 
     protected EnumString name;
+    protected int damage;
     protected String description;
     protected int[] bulletsColor;
     protected int target;
