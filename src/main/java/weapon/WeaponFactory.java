@@ -41,10 +41,10 @@ public class WeaponFactory {
     private WeaponCard getFactory(enumWeapon type) {
 
         switch (type){
-            case LOCKRIFLE:
-                return new SimpleWeapon(enumWeapon.LOCKRIFLE);
-            case MACHINEGUN:
-                return  new SimpleWeapon(enumWeapon.MACHINEGUN);
+            case LOCK_RIFLE:
+                return new SimpleWeapon(enumWeapon.LOCK_RIFLE);
+            case MACHINE_GUN:
+                return  new SimpleWeapon(enumWeapon.MACHINE_GUN);
             case ELECTROSCYTHE:
                 return new SimpleWeapon(enumWeapon.ELECTROSCYTHE);
             case HEATSEEKER:
