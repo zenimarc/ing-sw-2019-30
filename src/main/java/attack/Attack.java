@@ -6,7 +6,6 @@ import player.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This class is an idea of genertic attack.
@@ -30,8 +29,6 @@ public abstract class Attack {
     public boolean attack(Player player, Player opponent){
         return attack(player,new ArrayList<>(Arrays.asList(opponent)));
     }
-
-
 
     /**
      * This return the attack's description
