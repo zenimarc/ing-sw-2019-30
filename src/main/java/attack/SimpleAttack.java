@@ -9,7 +9,7 @@ import java.util.List;
  *
  * target = -1 => no-defined num of target
  */
-public class SimpleAttack extends Attack_{
+public class SimpleAttack extends Attack {
 
     private int damage;
     private int mark;

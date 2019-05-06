@@ -4,9 +4,8 @@ import board.Cell;
 import player.Player;
 
 import java.util.List;
-import java.util.Optional;
 
-public class MoveAttack extends Attack_{
+public class MoveAttack extends Attack {
 
     private int step;
     private int damage;

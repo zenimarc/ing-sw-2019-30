@@ -1,6 +1,6 @@
 package weapon;
 
-import attack.Attack_;
+import attack.Attack;
 import board.Cell;
 import deck.Bullet;
 import deck.Card;
@@ -15,7 +15,7 @@ public abstract class WeaponCard extends Card {
 
     protected String name;
     private List<Bullet> cost;
-    protected List<Attack_> attacks;
+    protected List<Attack> attacks;
     protected boolean isLoaded;
     protected enumWeapon weaponType;
 
@@ -33,7 +33,7 @@ public abstract class WeaponCard extends Card {
         isLoaded = false;
     }
 
-    public WeaponCard(String name, List<Bullet> cost, List<Attack_> attacks) {
+    public WeaponCard(String name, List<Bullet> cost, List<Attack> attacks) {
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
@@ -45,7 +45,7 @@ public abstract class WeaponCard extends Card {
      * @return the list of attacks
      */
 
-    public List<Attack_> getAttacks(){
+    public List<Attack> getAttacks(){
         return this.attacks;
     }
     /**
@@ -62,7 +62,7 @@ public abstract class WeaponCard extends Card {
      */
     public String getName(){return this.name;}
 
-    public Attack_ getAttack(int idAttack) {
+    public Attack getAttack(int idAttack) {
         return attacks.get(idAttack);
     }
 
