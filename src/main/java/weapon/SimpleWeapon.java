@@ -32,9 +32,9 @@ public class SimpleWeapon extends WeaponCard{
             case HEATSEEKER:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 3,0,1));
                 break;
-            case WHISPER:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME,3,2,1));
-                break;
+            case ZX_2:
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,2,1));
+                attacks.add(new SimpleAttack(ZX_2_OP1, 0,1,3));
             default:
                 //TODO ERROR
                 break;
@@ -91,6 +91,22 @@ public class SimpleWeapon extends WeaponCard{
         return true;
     }
 
+    private boolean zx2Shoot(int typeAttack, Player shooter, List<Player> opponents){
+        //Base Attack
+        attacks.get(0).attack(shooter, opponents.get(0));
+        //Optional Attack
+        switch (typeAttack){
+            case 0:
+                break;
+            case 1:
+                attacks.get(1).attack(shooter, opponents);
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
         if(typeAttack>=attacks.size()) return false;
@@ -102,8 +118,9 @@ public class SimpleWeapon extends WeaponCard{
             case ELECTROSCYTHE:
                 return electroscytheShoot(typeAttack,shooter, opponents);
             case HEATSEEKER:
-            case WHISPER:
                 return simpleShoot(shooter, opponents.get(0));
+            case ZX_2:
+                return zx2Shoot(typeAttack, shooter, opponents);
             default:
                 return false;
         }

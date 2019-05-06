@@ -8,7 +8,8 @@ public enum EnumString {
     MACHINEGUN_OP2(""),
     ELECTROSCYHE_OPT1(""),
     TRACTOR_BEAN_OPT1(""),
-    VORTEX_CANNON_OPT1("")
+    VORTEX_CANNON_OPT1(""),
+    ZX_2_OP1("")
     ;
 
     private String string;
