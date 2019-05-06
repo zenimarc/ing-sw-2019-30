@@ -10,7 +10,14 @@ public class MoveAttack extends Attack {
 
     private int step;
 
-    //Costructor
+    /**
+     *
+     * @param name Attack name
+     * @param desc Attack Description
+     * @param step Max step
+     * @param damage Damage
+     * @param target Max Target
+     */
     public MoveAttack(EnumString name, String desc, int step, int damage, int target){
         this.name = name;
         this.description = desc;
