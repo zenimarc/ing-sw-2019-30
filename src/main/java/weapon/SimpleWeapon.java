@@ -91,7 +91,6 @@ public class SimpleWeapon extends WeaponCard{
         return true;
     }
 
-
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
         if(typeAttack>=attacks.size()) return false;
