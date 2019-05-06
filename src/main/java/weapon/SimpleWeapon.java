@@ -35,6 +35,7 @@ public class SimpleWeapon extends WeaponCard{
             case ZX_2:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,2,1));
                 attacks.add(new SimpleAttack(ZX_2_OP1, 0,1,3));
+                break;
             default:
                 //TODO ERROR
                 break;

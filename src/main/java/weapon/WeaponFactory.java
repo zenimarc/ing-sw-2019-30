@@ -51,8 +51,9 @@ public class WeaponFactory {
                 return new SimpleWeapon(enumWeapon.HEATSEEKER);
             case TRACTOR_BEAM:
                 return new MovementWeapon(enumWeapon.TRACTOR_BEAM);
+                default:
+                    return null;
         }
-        return null;
     }
 
     public static void main(String[] arg){
