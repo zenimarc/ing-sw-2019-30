@@ -1,6 +1,7 @@
 package attack;
 
 import board.Cell;
+import constants.EnumString;
 import player.Player;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public abstract class Attack {
 
-    protected String name;
+    protected EnumString name;
     protected String description;
     protected int[] bulletsColor;
     protected int target;
@@ -56,6 +57,6 @@ public abstract class Attack {
      * Get attack's name
      * @return attack's name
      */
-    public String getName(){return this.name;}
+    public EnumString getEnumName(){return this.name;}
 
     }

@@ -1,6 +1,7 @@
 package attack;
 
 import board.Cell;
+import constants.EnumString;
 import player.Player;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class SimpleAttack extends Attack {
     private int mark;
 
     //Constructor
-    public SimpleAttack(String name, String description, int damage, int mark, int target){
+    public SimpleAttack(EnumString name, String description, int damage, int mark, int target){
         this.name = name;
         this.description = description;
         this.damage = damage;
@@ -24,14 +25,14 @@ public class SimpleAttack extends Attack {
 
     }
 
-    public SimpleAttack(String name, int damage, int mark, int target){
+    public SimpleAttack(EnumString name, int damage, int mark, int target){
         this.name =  name;
         this.damage = damage;
         this.mark = mark;
         this.target = target;
     }
 
-    public SimpleAttack(String name, int damage, int mark){
+    public SimpleAttack(EnumString name, int damage, int mark){
         this(name, damage, mark, 1);
     }
 
