@@ -73,5 +73,20 @@ public abstract class WeaponCard extends Card {
     }
 
 
+    protected boolean alternativeSimpleShoot(int typeAttack, Player shooter, List<Player> opponents){
+        switch (typeAttack) {
+            case 0:
+                attacks.get(0).attack(shooter, opponents);
+                break;
+            case 1:
+                attacks.get(1).attack(shooter, opponents);
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+
 
 }

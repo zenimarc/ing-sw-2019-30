@@ -5,6 +5,7 @@ public enum EnumString {
 
     BASE_ATTACK_NAME("Base Attack"),
     SUPPORT_ATTACK("LOREM IPSUM"),
+    TEST_ATTACK("Test attack"),
     LOCKRIFLE_OPT1("LOREM IPSUM"),
     MACHINEGUN_OP1("LOREM IPSUM"),
     MACHINEGUN_OP2("LOREM IPSUM"),
@@ -12,7 +13,8 @@ public enum EnumString {
     TRACTOR_BEAN_OPT1("LOREM IPSUM"),
     VORTEX_CANNON_OPT1("LOREM IPSUM"),
     ZX_2_OP1("LOREM IPSUM"),
-    HELLION_OPT1("LOREM IPSUM")
+    HELLION_OPT1("LOREM IPSUM"),
+    SHOCKWAVE_OPT1("")
     ;
 
     private String string;

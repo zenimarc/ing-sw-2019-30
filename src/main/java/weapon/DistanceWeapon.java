@@ -29,9 +29,15 @@ public class DistanceWeapon extends WeaponCard {
                 attacks.get(1).setCost(new int[]{1,0,0});
                 attacks.add(new SimpleAttack(SUPPORT_ATTACK,0,1,-1));
                 break;
-                default:
-                    //TODO ERROR
-                    break;
+            case SHOCKWAVE:
+                minDistance = 1;
+                maxDistance = 1;
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1, 0 , 3));
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1, 0 , -1));
+                break;
+            default:
+                //TODO ERROR
+                break;
         }
     }
 
@@ -51,6 +57,7 @@ public class DistanceWeapon extends WeaponCard {
         return true;
     }
 
+
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
 
@@ -60,6 +67,8 @@ public class DistanceWeapon extends WeaponCard {
                 return true;
             case HELLION:
                 return hellionShoot(typeAttack, shooter, opponents);
+            case SHOCKWAVE:
+                return alternativeSimpleShoot(typeAttack, shooter, opponents);
             default:
                 return false;
         }

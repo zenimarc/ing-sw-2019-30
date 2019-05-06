@@ -73,24 +73,6 @@ public class SimpleWeapon extends WeaponCard{
         return true;
     }
 
-    private boolean electroscytheShoot(int typeAttack, Player shooter, List<Player> opponents){
-        switch (typeAttack){
-            case 0:
-                attacks.get(0).attack(shooter,opponents);
-                break;
-            case 1:
-                attacks.get(1).attack(shooter,opponents);
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
-
-    private boolean simpleShoot(Player shooter, Player opponent){
-        attacks.get(0).attack(shooter,opponent);
-        return true;
-    }
 
     private boolean zx2Shoot(int typeAttack, Player shooter, List<Player> opponents){
         //Base Attack
@@ -117,9 +99,10 @@ public class SimpleWeapon extends WeaponCard{
             case MACHINEGUN:
                 return machinegunShoot(typeAttack,shooter,opponents);
             case ELECTROSCYTHE:
-                return electroscytheShoot(typeAttack,shooter, opponents);
+                return alternativeSimpleShoot(typeAttack,shooter, opponents);
             case HEATSEEKER:
-                return simpleShoot(shooter, opponents.get(0));
+                attacks.get(0).attack(shooter,opponents.get(0));
+                return true;
             case ZX_2:
                 return zx2Shoot(typeAttack, shooter, opponents);
             default:

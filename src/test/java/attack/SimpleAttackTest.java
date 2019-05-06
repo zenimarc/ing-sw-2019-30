@@ -1,6 +1,7 @@
 package attack;
 
 import board.Board;
+import constants.EnumString;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import player.Player;
@@ -20,7 +21,7 @@ class SimpleAttackTest {
         p1 = new Player("p1", board);
         p2 = new Player("p2", board);
 
-        simpleAttack = new SimpleAttack("Atteck test", "Lorem ipsum",testDamage,testMark,1);
+        simpleAttack = new SimpleAttack(EnumString.TEST_ATTACK, "Lorem ipsum",testDamage,testMark,1);
     }
 
     @Test
