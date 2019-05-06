@@ -201,5 +201,14 @@ public class PlayerController implements Observer {
         return false;
     }
 
+    //il turno è composto da vari momenti:
+    // 1. usare powercard di movimento
+    // 2. decidere azione: -movimento, grab, shoot
+    // 2.1 (se 2=shoot) puoi usare powercard mirino e avversario può usare granata.
+    // 3. same as 1.
+    // 4. ripeti tutti i punti precedenti
+    // 5. ricarica armi
+    // 6. fine, cambio turno.
+
 }
 
