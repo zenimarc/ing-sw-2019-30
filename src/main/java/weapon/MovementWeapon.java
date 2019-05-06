@@ -7,6 +7,8 @@ import player.Player;
 import java.util.List;
 import java.util.Optional;
 
+import static constants.EnumString.*;
+
 public class MovementWeapon extends WeaponCard {
 
     public MovementWeapon(enumWeapon weaponType){
@@ -14,12 +16,12 @@ public class MovementWeapon extends WeaponCard {
 
         switch (weaponType){
             case TRACTOR_BEAM:
-                attacks.add(new MoveAttack("Modalità base",2,1));
-                attacks.add(new MoveAttack("Modalità Punitore",2,3));
+                attacks.add(new MoveAttack(BASE_ATTACK_NAME,2,1));
+                attacks.add(new MoveAttack(TRACTOR_BEAN_OPT1,2,3));
                 break;
             case VORTEX_CANNON:
-                attacks.add(new MoveAttack("Modalità base", 1,2));
-                attacks.add(new MoveAttack("Buco Nero", 1, 1,2));
+                attacks.add(new MoveAttack(BASE_ATTACK_NAME, 1,2));
+                attacks.add(new MoveAttack(VORTEX_CANNON_OPT1, 1, 1,2));
                 break;
                 default:
                     //TODO ERROR
@@ -28,12 +30,12 @@ public class MovementWeapon extends WeaponCard {
     }
 
     /**
-     * Tractor beam shoot function
-     * @param typeAttack
-     * @param shooter
-     * @param opponent
-     * @param cell
-     * @return
+     * Tractor beam shoot function: move opponent in cell than shoot its
+     * @param typeAttack type attack
+     * @param shooter Player who shoot
+     * @param opponent Player hit
+     * @param cell final opponent cell
+     * @return if shoot ok
      */
     private boolean tractorBeamShoot(int typeAttack, Player shooter, Player opponent, Cell cell){
         switch (typeAttack){
@@ -51,11 +53,11 @@ public class MovementWeapon extends WeaponCard {
 
     /**
      * Vortex Cannon shoot function
-     * @param typeAttack
-     * @param shooter
-     * @param opponents
-     * @param cell
-     * @return
+     * @param typeAttack type attack
+     * @param shooter Player who shoot
+     * @param opponents Players hit
+     * @param cell final opponent cell
+     * @return if shoot ok
      */
     private boolean vortexCannonShoot(int typeAttack, Player shooter, List<Player> opponents, Cell cell){
         attacks.get(0).attack(shooter,opponents.get(0),cell);
@@ -67,11 +69,11 @@ public class MovementWeapon extends WeaponCard {
 
     /**
      * Movement Weapon shoot
-     * @param typeAttack
-     * @param shooter
-     * @param opponents
-     * @param cell
-     * @return
+     * @param typeAttack type attack
+     * @param shooter Player who shoot
+     * @param opponents Player hit
+     * @param cell final opponent cell
+     * @return if shoot ok
      */
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
