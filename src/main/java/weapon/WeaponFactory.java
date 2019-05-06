@@ -20,7 +20,10 @@ public class WeaponFactory {
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
             jsonWeapon = gson.toJson(getFactory(weapon));
 
-            File file = new File("src/resources/weapon/" + weapon + ".json");
+            File file = new File("src"+File.separator+
+                    "resources"+File.separator+
+                    "weapon" + File.separator
+                    + weapon + ".json");
 
             try (PrintWriter writer = new PrintWriter(file)) {
                 writer.write(jsonWeapon);
