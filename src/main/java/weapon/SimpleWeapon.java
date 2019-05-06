@@ -15,12 +15,12 @@ public class SimpleWeapon extends WeaponCard{
         this.weaponType = type;
 
         switch (type){
-            case LOCKRIFLE:
+            case LOCK_RIFLE:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 2,1));
                 attacks.add(new SimpleAttack(LOCKRIFLE_OPT1, 0,1));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
-            case MACHINEGUN:
+            case MACHINE_GUN:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,2));
                 attacks.add(new SimpleAttack(MACHINEGUN_OP1, 1,0));
                 attacks.add(new SimpleAttack(MACHINEGUN_OP2, 1,0,2));
@@ -94,9 +94,9 @@ public class SimpleWeapon extends WeaponCard{
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
         if(typeAttack>=attacks.size()) return false;
         switch (this.weaponType) {
-            case LOCKRIFLE:
+            case LOCK_RIFLE:
                 return lockrifleShoot(typeAttack,shooter,opponents);
-            case MACHINEGUN:
+            case MACHINE_GUN:
                 return machinegunShoot(typeAttack,shooter,opponents);
             case ELECTROSCYTHE:
                 return alternativeSimpleShoot(typeAttack,shooter, opponents);

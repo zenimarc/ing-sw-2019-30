@@ -33,7 +33,7 @@ public class DistanceWeapon extends WeaponCard {
                 minDistance = 1;
                 maxDistance = 1;
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1, 0 , 3));
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1, 0 , -1));
+                attacks.add(new SimpleAttack(SHOCKWAVE_OPT1, 1, 0 , -1));
                 break;
             default:
                 //TODO ERROR
