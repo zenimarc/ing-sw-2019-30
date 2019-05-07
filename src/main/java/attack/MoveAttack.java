@@ -2,6 +2,7 @@ package attack;
 
 import board.Cell;
 import constants.EnumString;
+import controller.EnumTargetSet;
 import player.Player;
 
 import java.util.List;
@@ -18,12 +19,9 @@ public class MoveAttack extends Attack {
      * @param damage Damage
      * @param target Max Target
      */
-    public MoveAttack(EnumString name, String desc, int step, int damage, int target){
-        this.name = name;
+    public MoveAttack(EnumTargetSet targetType, EnumString name, String desc, int step, int damage, int target){
+        this(targetType,name, step, damage, target);
         this.description = desc;
-        this.step = step;
-        this.damage = damage;
-        this.target = target;
     }
 
     /**
@@ -33,18 +31,13 @@ public class MoveAttack extends Attack {
      * @param damage Damage
      * @param target Max target
      */
-    public MoveAttack(EnumString name, int step, int damage, int target){
+    public MoveAttack(EnumTargetSet targetType, EnumString name, int step, int damage, int target){
+        this.targetType = targetType;
         this.name = name;
         this.step = step;
         this.damage = damage;
         this.description = getDescription();
         this.target = target;
-    }
-
-    //Costructor
-    public MoveAttack(EnumString name, int step, int damage){
-        this(name,step, damage, 1);
-        this.description = getDescription();
     }
 
     @Override

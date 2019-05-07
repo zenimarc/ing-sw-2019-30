@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumString.*;
+import static controller.EnumTargetSet.*;
+
 public class DistanceWeapon extends WeaponCard {
 
     public DistanceWeapon(EnumWeapon weaponType){
@@ -15,17 +17,17 @@ public class DistanceWeapon extends WeaponCard {
 
         switch (weaponType){
             case WHISPER:
-                attacks.add(new DistanceAttack(BASE_ATTACK_NAME,3,2,1,2,-1));
+                attacks.add(new DistanceAttack(VISIBLE,BASE_ATTACK_NAME,3,2,1,2,-1));
                 break;
             case HELLION:
-                attacks.add(new DistanceAttack(BASE_ATTACK_NAME, 1,0,1,1,-1));
-                attacks.add(new DistanceAttack(SUPPORT_ATTACK, 0,1,-1,1,-1));
-                attacks.add(new DistanceAttack(HELLION_OPT1,0,2,-1,1,-1));
+                attacks.add(new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1,0,1,1,-1));
+                attacks.add(new DistanceAttack(VISIBLE, SUPPORT_ATTACK, 0,1,-1,1,-1));
+                attacks.add(new DistanceAttack(VISIBLE,HELLION_OPT1,0,2,-1,1,-1));
                 attacks.get(2).setCost(new int[]{1,0,0});
                 break;
             case SHOCKWAVE:
-                attacks.add(new DistanceAttack(BASE_ATTACK_NAME, 1, 0 , 3,1,1));
-                attacks.add(new DistanceAttack(SHOCKWAVE_OPT1, 1, 0 , -1,1,1));
+                attacks.add(new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1, 0 , 3,1,1));
+                attacks.add(new DistanceAttack(VISIBLE, SHOCKWAVE_OPT1, 1, 0 , -1,1,1));
                 break;
             default:
                 //TODO ERROR

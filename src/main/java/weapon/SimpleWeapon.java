@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumString.*;
+import static controller.EnumTargetSet.*;
+
 
 public class SimpleWeapon extends WeaponCard{
 
@@ -16,25 +18,29 @@ public class SimpleWeapon extends WeaponCard{
 
         switch (type){
             case LOCK_RIFLE:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 2,1));
-                attacks.add(new SimpleAttack(LOCK_RIFLE_OPT1, 0,1));
+                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 2,1,1));
+                attacks.add(new SimpleAttack(VISIBLE, LOCK_RIFLE_OPT1, 0,1,1));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
             case MACHINE_GUN:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,2));
-                attacks.add(new SimpleAttack(MACHINE_GUN_OP1, 1,0));
-                attacks.add(new SimpleAttack(MACHINE_GUN_OP2, 1,0,2));
+                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 1,0,2));
+                attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP1, 1,0,1));
+                attacks.get(1).setCost(new int[]{0,1,0});
+                attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP2, 1,0,2));
+                attacks.get(2).setCost(new int[]{0,0,1});
                 break;
             case ELECTROSCYTHE:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,-1));
-                attacks.add(new SimpleAttack(ELECTROSCYHE_OPT1, 2,0,-1));
+                attacks.add(new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME, 1,0,-1));
+                attacks.add(new SimpleAttack(SAME_CELL, ELECTROSCYHE_OPT1, 2,0,-1));
+                attacks.get(0).setCost(new int[]{1,0,1});
                 break;
             case HEATSEEKER:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 3,0,1));
+                //TODO: change to no visible - GIO
+                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 3,0,1));
                 break;
             case ZX_2:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,2,1));
-                attacks.add(new SimpleAttack(ZX_2_OP1, 0,1,3));
+                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1));
+                attacks.add(new SimpleAttack(VISIBLE, ZX_2_OP1, 0,1,3));
                 break;
             default:
                 //TODO ERROR

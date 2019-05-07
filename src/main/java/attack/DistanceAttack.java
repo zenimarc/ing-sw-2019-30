@@ -2,6 +2,7 @@ package attack;
 
 import board.Cell;
 import constants.EnumString;
+import controller.EnumTargetSet;
 import player.Player;
 
 import java.util.List;
@@ -21,7 +22,8 @@ public class DistanceAttack extends Attack {
      * @param minDistance
      * @param maxDistance
      */
-    public DistanceAttack(EnumString name, int damage, int mark, int target,int minDistance, int maxDistance){
+    public DistanceAttack(EnumTargetSet targetType, EnumString name, int damage, int mark, int target, int minDistance, int maxDistance){
+        this.targetType = targetType;
         this.name = name;
         this.damage = damage;
         this.mark = mark;
@@ -30,13 +32,6 @@ public class DistanceAttack extends Attack {
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
     }
-
-    //Costructor
-    public DistanceAttack(EnumString name, String desc, int damage, int mark, int target, int minDistance, int maxDistance){
-        this(name, damage, mark, target,minDistance, maxDistance);
-        this.description = desc;
-        }
-
 
     @Override
     public boolean attack(Player player, List<Player> opponents, Cell newCell) {
