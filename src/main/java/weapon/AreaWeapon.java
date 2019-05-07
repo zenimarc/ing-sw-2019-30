@@ -3,7 +3,6 @@ package weapon;
 import attack.DistanceAttack;
 import attack.SimpleAttack;
 import board.Cell;
-import constants.EnumString;
 import player.Player;
 
 import java.util.List;

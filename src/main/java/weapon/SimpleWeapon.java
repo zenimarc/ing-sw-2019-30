@@ -17,13 +17,13 @@ public class SimpleWeapon extends WeaponCard{
         switch (type){
             case LOCK_RIFLE:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 2,1));
-                attacks.add(new SimpleAttack(LOCKRIFLE_OPT1, 0,1));
+                attacks.add(new SimpleAttack(LOCK_RIFLE_OPT1, 0,1));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
             case MACHINE_GUN:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,2));
-                attacks.add(new SimpleAttack(MACHINEGUN_OP1, 1,0));
-                attacks.add(new SimpleAttack(MACHINEGUN_OP2, 1,0,2));
+                attacks.add(new SimpleAttack(MACHINE_GUN_OP1, 1,0));
+                attacks.add(new SimpleAttack(MACHINE_GUN_OP2, 1,0,2));
                 break;
             case ELECTROSCYTHE:
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,-1));

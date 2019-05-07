@@ -35,6 +35,7 @@ public class MovementWeapon extends WeaponCard {
                 attacks.add(new SimpleAttack(BASE_ATTACK_NAME,2,0,1));
                 attacks.add(new MoveAttack(SLEDGE_HAMMER,2,3,1));
                 attacks.get(1).setCost(new int[]{1,0,0});
+                break;
                 default:
                     //TODO ERROR
                     break;
@@ -136,6 +137,8 @@ public class MovementWeapon extends WeaponCard {
                 return vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
             case SHOTGUN:
                 return shotgunShoot(typeAttack,shooter,opponents,cell);
+            case SLEDGEHAMMER:
+                return sledgehammerShot(typeAttack,shooter,opponents,cell);
                 default:
                     return false;
         }

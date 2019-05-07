@@ -1,7 +1,6 @@
 package weapon;
 
 import attack.DistanceAttack;
-import attack.SimpleAttack;
 import board.Cell;
 import player.Player;
 

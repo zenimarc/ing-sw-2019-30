@@ -27,6 +27,8 @@ public class DistanceAttack extends Attack {
         this.mark = mark;
         this.description = getDescription();
         this.target = target;
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
     }
 
     //Costructor
