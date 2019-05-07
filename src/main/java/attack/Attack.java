@@ -2,6 +2,7 @@ package attack;
 
 import board.Cell;
 import constants.EnumString;
+import controller.EnumTargetSet;
 import player.Player;
 
 import java.util.ArrayList;
@@ -16,10 +17,11 @@ public abstract class Attack {
 
     protected EnumString name;
     protected int damage;
-    protected  int mark;
+    protected int mark;
     protected String description;
     protected int[] bulletsColor;
     protected int target;
+    protected EnumTargetSet targetType;
 
     public abstract boolean attack(Player player, List<Player> opponents, Cell newCell);
 
@@ -59,6 +61,23 @@ public abstract class Attack {
      * Get attack's name
      * @return attack's name
      */
-    public EnumString getEnumName(){return this.name;}
+    public EnumString getName() {
+        return name;
+    }
 
+    public int getDamage() {
+        return damage;
+    }
+
+    public int getMark() {
+        return mark;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
+    public EnumTargetSet getTargetType() {
+        return targetType;
+    }
     }
