@@ -2,17 +2,12 @@ package controller;
 import attack.Attack;
 import board.Billboard;
 import board.Cell;
-import deck.AmmoCard;
-import deck.Card;
 import deck.PowerUp;
 import player.Player;
 import view.PlayerView;
 import weapon.WeaponCard;
 
 import java.util.*;
-
-import static controller.PlayerCommand.MOVE;
-import static deck.PowerUp.KINETICRAY;
 
 //TODO finire la shoot e decidere come gestirla, fare overloading di alcune funzioni
 
@@ -211,4 +206,3 @@ public class PlayerController implements Observer {
     }
 
 }
-

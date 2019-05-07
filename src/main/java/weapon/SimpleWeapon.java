@@ -7,28 +7,34 @@ import player.Player;
 import java.util.List;
 import java.util.Optional;
 
+import static constants.EnumString.*;
+
 public class SimpleWeapon extends WeaponCard{
 
-    SimpleWeapon(enumWeapon type){
+    SimpleWeapon(EnumWeapon type){
         this.weaponType = type;
 
         switch (type){
-            case LOCKRIFLE:
-                attacks.add(new SimpleAttack("Effetto base", 2,1));
-                attacks.add(new SimpleAttack("Secondo Aggancio", 0,1));
+            case LOCK_RIFLE:
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 2,1));
+                attacks.add(new SimpleAttack(LOCK_RIFLE_OPT1, 0,1));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
-            case MACHINEGUN:
-                attacks.add(new SimpleAttack("Effetto base", 1,0,2));
-                attacks.add(new SimpleAttack("Colpo focalizzato", 1,0));
-                attacks.add(new SimpleAttack("Tripode di supporto", 1,0,2));
+            case MACHINE_GUN:
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,2));
+                attacks.add(new SimpleAttack(MACHINE_GUN_OP1, 1,0));
+                attacks.add(new SimpleAttack(MACHINE_GUN_OP2, 1,0,2));
                 break;
             case ELECTROSCYTHE:
-                attacks.add(new SimpleAttack("Effetto base", 1,0,-1));
-                attacks.add(new SimpleAttack("Modalità mietitore", 2,0,-1));
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,-1));
+                attacks.add(new SimpleAttack(ELECTROSCYHE_OPT1, 2,0,-1));
                 break;
             case HEATSEEKER:
-                attacks.add(new SimpleAttack("Effetto base", 3,0,1));
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 3,0,1));
+                break;
+            case ZX_2:
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,2,1));
+                attacks.add(new SimpleAttack(ZX_2_OP1, 0,1,3));
                 break;
             default:
                 //TODO ERROR
@@ -58,8 +64,8 @@ public class SimpleWeapon extends WeaponCard{
                 attacks.get(2).attack(shooter,opponents.subList(1,2));
                 break;
             case 12:
-                    attacks.get(1).attack(shooter, opponents.get(0));
-                    attacks.get(2).attack(shooter,opponents.subList(1,2));
+                attacks.get(1).attack(shooter, opponents.get(0));
+                attacks.get(2).attack(shooter,opponents.subList(1,2));
                 break;
             default:
                 return false;
@@ -67,38 +73,38 @@ public class SimpleWeapon extends WeaponCard{
         return true;
     }
 
-    private boolean electroscytheShoot(int typeAttack, Player shooter, List<Player> opponents){
+
+    private boolean zx2Shoot(int typeAttack, Player shooter, List<Player> opponents){
+        //Base Attack
+        attacks.get(0).attack(shooter, opponents.get(0));
+        //Optional Attack
         switch (typeAttack){
             case 0:
-                attacks.get(0).attack(shooter,opponents);
                 break;
             case 1:
-                attacks.get(1).attack(shooter,opponents);
+                attacks.get(1).attack(shooter, opponents);
                 break;
             default:
                 return false;
         }
         return true;
     }
-
-    private boolean heatSeekerShoot(Player shooter, List<Player> opponents){
-        attacks.get(0).attack(shooter,opponents.get(0));
-        return true;
-    }
-
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
         if(typeAttack>=attacks.size()) return false;
         switch (this.weaponType) {
-            case LOCKRIFLE:
+            case LOCK_RIFLE:
                 return lockrifleShoot(typeAttack,shooter,opponents);
-            case MACHINEGUN:
+            case MACHINE_GUN:
                 return machinegunShoot(typeAttack,shooter,opponents);
             case ELECTROSCYTHE:
-                return electroscytheShoot(typeAttack,shooter, opponents);
+                return alternativeSimpleShoot(typeAttack,shooter, opponents);
             case HEATSEEKER:
-                return heatSeekerShoot(shooter, opponents);
+                attacks.get(0).attack(shooter,opponents.get(0));
+                return true;
+            case ZX_2:
+                return zx2Shoot(typeAttack, shooter, opponents);
             default:
                 return false;
         }

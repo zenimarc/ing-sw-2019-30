@@ -32,6 +32,9 @@ public class Billboard {
         this.doors = doors;
     }
 
+    public Map<Cell, Position> getCellMap(){
+        return this.billboardCell;
+    }
     /**
      * Say if exist in this a Door between c1 and c2 (or c2 and c1)
      * @param c1 First Cell

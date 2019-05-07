@@ -1,40 +1,64 @@
 package attack;
 
+import board.Cell;
+import constants.EnumString;
 import player.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * TODO verificare che per ogni attacco dell'arma si soddisfino le condizioni nella rispettiva categoria
- * TODO Implementare la funzione della scelta  della scelta degli attacchi e dei  bersagli
+ * This class is an idea of genertic attack.
+ * Need implements different attack's type.
  */
 public abstract class Attack {
-    protected Player shooter;
-    protected int damage = 0;
-    protected ArrayList<Player> players;
-    protected boolean isvisible;
-    protected int marks = 0;
-    protected boolean isOptional;
-    protected boolean isAlternative;
-    protected boolean isRepetitive;
+
+    protected EnumString name;
+    protected int damage;
+    protected  int mark;
+    protected String description;
+    protected int[] bulletsColor;
+    protected int target;
+
+    public abstract boolean attack(Player player, List<Player> opponents, Cell newCell);
+
+    public abstract boolean attack(Player player, List<Player> opponents);
+
+    public boolean attack(Player player, Player opponent, Cell newCell){
+        return attack(player,new ArrayList<>(Arrays.asList(opponent)),newCell);
+    }
+
+    public boolean attack(Player player, Player opponent){
+        return attack(player,new ArrayList<>(Arrays.asList(opponent)));
+    }
 
     /**
-     * Default constructor
+     * This return the attack's description
+     * @return attack's description
      */
-    public Attack() {
-        this.shooter = null;
-        players = new ArrayList<Player>();
+    public abstract String getDescription();
+
+    /**
+     * set how many bullets need to use this attack
+     * @param bulletsColor int[num of R, num of Y, num of B]
+     */
+    public void setCost(int[] bulletsColor) {
+        this.bulletsColor = bulletsColor;
     }
 
-    public Attack(int damage, boolean is_visible, int marks){
-        this.damage = damage;
-        this.isvisible = is_visible;
-        this.marks = marks;
+    /**
+     * Get how many bullets need to use this attack
+     * @return int[num of R, num of Y, num of B]
+     */
+    public int[] getCost() {
+        return bulletsColor;
     }
 
-    public Player getShooter(){return this.shooter;}
+    /**
+     * Get attack's name
+     * @return attack's name
+     */
+    public EnumString getEnumName(){return this.name;}
 
-    public boolean getOptional(){return this.isOptional;}
-
-    public boolean getAlternative(){return this.isAlternative;}
-}
+    }

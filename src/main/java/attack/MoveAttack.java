@@ -1,18 +1,24 @@
 package attack;
 
 import board.Cell;
+import constants.EnumString;
 import player.Player;
 
 import java.util.List;
-import java.util.Optional;
 
-public class MoveAttack extends Attack_{
+public class MoveAttack extends Attack {
 
     private int step;
-    private int damage;
 
-    //Costructor
-    public MoveAttack(String name, String desc, int step, int damage, int target){
+    /**
+     * MoveAttack Costructor
+     * @param name Attack name
+     * @param desc Attack Description
+     * @param step Max step
+     * @param damage Damage
+     * @param target Max Target
+     */
+    public MoveAttack(EnumString name, String desc, int step, int damage, int target){
         this.name = name;
         this.description = desc;
         this.step = step;
@@ -20,8 +26,14 @@ public class MoveAttack extends Attack_{
         this.target = target;
     }
 
-    //Costructor
-    public MoveAttack(String name, int step, int damage, int target){
+    /**
+     * MoveAttack constructor
+     * @param name Attack name
+     * @param step Max step
+     * @param damage Damage
+     * @param target Max target
+     */
+    public MoveAttack(EnumString name, int step, int damage, int target){
         this.name = name;
         this.step = step;
         this.damage = damage;
@@ -30,7 +42,7 @@ public class MoveAttack extends Attack_{
     }
 
     //Costructor
-    public MoveAttack(String name, int step, int damage){
+    public MoveAttack(EnumString name, int step, int damage){
         this(name,step, damage, 1);
         this.description = getDescription();
     }
