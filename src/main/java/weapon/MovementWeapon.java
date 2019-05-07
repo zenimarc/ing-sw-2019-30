@@ -2,6 +2,7 @@ package weapon;
 
 import attack.DistanceAttack;
 import attack.MoveAttack;
+import attack.SimpleAttack;
 import board.Cell;
 import player.Player;
 
@@ -19,15 +20,21 @@ public class MovementWeapon extends WeaponCard {
             case TRACTOR_BEAM:
                 attacks.add(new MoveAttack(BASE_ATTACK_NAME,2,1));
                 attacks.add(new MoveAttack(TRACTOR_BEAN_OPT1,2,3));
+                attacks.get(1).setCost(new int[]{1,1,0});
                 break;
             case VORTEX_CANNON:
                 attacks.add(new MoveAttack(BASE_ATTACK_NAME, 1,2));
                 attacks.add(new MoveAttack(VORTEX_CANNON_OPT1, 1, 1,2));
+                attacks.get(1).setCost(new int[]{1,0,0});
                 break;
             case SHOTGUN:
                 attacks.add(new MoveAttack(BASE_ATTACK_NAME, 1,3));
                 attacks.add(new DistanceAttack(SHOTGUN_OP1, 2,0,1,1,1));
                 break;
+            case SLEDGEHAMMER:
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME,2,0,1));
+                attacks.add(new MoveAttack(SLEDGE_HAMMER,2,3,1));
+                attacks.get(1).setCost(new int[]{1,0,0});
                 default:
                     //TODO ERROR
                     break;
@@ -95,13 +102,28 @@ public class MovementWeapon extends WeaponCard {
         return true;
     }
 
+    private boolean sledgehammerShot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
+        switch (typeAttack) {
+            case 0:
+                attacks.get(0).attack(shooter,opponents);
+                break;
+            case 1:
+                if(!cell.isPresent()) return false;
+                attacks.get(1).attack(shooter,opponents,cell.get());
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     /**
      * Movement Weapon shoot
      * @param typeAttack type attack
      * @param shooter Player who shoot
      * @param opponents Player hit
      * @param cell final opponent cell
-     * @return if shoot ok
+     * @return if hit return true
      */
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
