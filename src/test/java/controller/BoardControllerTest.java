@@ -118,6 +118,23 @@ class BoardControllerTest {
         potentialTargets.add(p3);
         potentialTargets.add(p4);
         assertTrue(controller.getPotentialTargets(c21, CARDINAL).containsAll(potentialTargets));
+        //test not_visible
+        potentialTargets.clear();
+        p1.setCell(c22);
+        p2.setCell(c11);
+        p3.setCell(c01);
+        p4.setCell(c21);
+        potentialTargets.add(p1);
+        potentialTargets.add(p4);
+        assertTrue(controller.getPotentialTargets(c00, NOT_VISIBLE).containsAll(potentialTargets));
+        //test visible_room (player position not changed)
+        potentialTargets.clear();
+        potentialTargets.add(p2);
+        potentialTargets.add(p3);
+        assertTrue(controller.getPotentialTargets(c00, VISIBLE_ROOM).containsAll(potentialTargets));
+        potentialTargets.clear();
+        assertTrue(controller.getPotentialTargets(c02, VISIBLE_ROOM).containsAll(potentialTargets));
+
 
     }
 
