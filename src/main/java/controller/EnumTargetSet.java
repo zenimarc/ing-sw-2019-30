@@ -15,6 +15,7 @@ package controller;
 public enum EnumTargetSet {
 
     VISIBLE,
+    NOT_VISIBLE,
     SAME_ROOM,
     SAME_CELL,
     CARDINAL,
