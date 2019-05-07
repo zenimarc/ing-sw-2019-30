@@ -4,6 +4,7 @@ import board.Board;
 import board.Cell;
 import board.NormalCell;
 import constants.EnumString;
+import controller.EnumTargetSet;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class MoveAttackTest {
     public static void init(){
         board = new Board();
 
-        moveAttack = new MoveAttack(EnumString.BASE_ATTACK_NAME, "description", 2,damage,1);
+        moveAttack = new MoveAttack(EnumTargetSet.VISIBLE, EnumString.BASE_ATTACK_NAME, "description", 2,damage,1);
 
         p1 = new Player("first",board);
         p2 = new Player("second",board);
