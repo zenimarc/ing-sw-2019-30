@@ -30,13 +30,16 @@ public class BoardController {
     }
 
     public BoardController(List<Player> players, Board board) {
-        this.listOfPlayers = players;
+        this(players);
         this.board = board;
+    }
+
+    public BoardController(List<Player> players){
+        this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
         for (Player player : this.listOfPlayers){
             playerControllers.add(new PlayerController(player));
         }
-
     }
 
     /**
