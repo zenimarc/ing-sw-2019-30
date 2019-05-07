@@ -106,14 +106,13 @@ public class PlayerController implements Observer {
         return false;
     }
 
-    /*overloading
-     public boolean move(Player player, Cell cell, int i){
+     public boolean movePlayer(Player player, Cell cell, int i){
         if (!billboard.canMove(player.getPawn().getCell(), cell, i))
             return false;
-        setCell(player, cell);
+        setOtherCell(player, cell);
         return true;
      }
-*/
+
     /**
      * This function controls the GRAB action
      * @param cell of destination
@@ -141,7 +140,7 @@ public class PlayerController implements Observer {
     }
 
     /**
-     * This function returns the weapon the player chose to use
+     * This function returns the weapon the player chooses to use
      * @param i the number of the weapon
      * @return the weapon desired
      */
@@ -175,6 +174,16 @@ public class PlayerController implements Observer {
         }
 
     /**
+     * This function modifies the position of the pawn of another player
+     * @param player to be moved
+     * @param cell of destination
+     */
+
+    public void setOtherCell(Player player, Cell cell){
+        player.getPawn().setCell(cell);
+    }
+
+    /**
      * This function modifies the position of the pawn
      * @param cell of destination
      */
@@ -186,7 +195,7 @@ public class PlayerController implements Observer {
     public boolean verifyPowerUp(Cell cell, int i) { //TODO gestire la questione costi ed i rimanenti power up
         /* if(player.getPowerups().get(i).getPowerUp() == PowerUp.KINETICRAY){
         chooseTarget(); TODO fare overloading di chooseTarget
-        move(player, cell, 2);
+        movePlayer(player, cell, 2);
         return true;
     }*/
         if(player.getPowerups().get(i).getPowerUp() == PowerUp.TELEPORTER) {

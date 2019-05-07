@@ -2,6 +2,7 @@ package controller;
 
 import board.*;
 import com.google.gson.Gson;
+import deck.AmmoCard;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,6 @@ import java.util.HashMap;
 import static controller.EnumTargetSet.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-//TODO fare i test
 
 class BoardControllerTest {
     private  ArrayList<Player> players = new ArrayList<>();
@@ -224,5 +224,4 @@ class BoardControllerTest {
 
         return new Billboard(mappaProva,doors);
     }
-
 }

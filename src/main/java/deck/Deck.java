@@ -20,6 +20,7 @@ public class Deck {
     public Deck(ArrayList<Card> cards) {
         this.cards = cards;
     }
+
     /**
      * This function returns the cards of the deck
      * @return a list of cards
@@ -61,11 +62,9 @@ public class Deck {
      * this function adds a list of cards to the deck
      * @param cards to be added in the deck
      */
-    public void addAll(List<Card> cards) {
-        for(Card card: cards){
-            this.addCard(card);
+    public void addAll(ArrayList<Card> cards) {
+        this.cards = cards;
         }
-    }
 
     /**
      * this function removes the first card of the deck

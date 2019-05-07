@@ -1,6 +1,7 @@
 package controller;
 
 import board.*;
+import deck.AmmoCard;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,4 +86,14 @@ class PlayerControllerTest {
     }
 
 
+   /* @Test
+
+    void Grab(){
+        player.setCell(c00);
+        c11.setCard(new AmmoCard(new int[]{2, 0, 1}, true));
+        controller.grab(c11, 11);
+        assert;
+    }
+
+*/
 }
