@@ -35,8 +35,7 @@ public class SimpleWeapon extends WeaponCard{
                 attacks.get(0).setCost(new int[]{1,0,1});
                 break;
             case HEATSEEKER:
-                //TODO: change to no visible - GIO
-                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 3,0,1));
+                attacks.add(new SimpleAttack(NOT_VISIBLE, BASE_ATTACK_NAME, 3,0,1));
                 break;
             case ZX_2:
                 attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1));
