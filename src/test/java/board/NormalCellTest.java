@@ -55,4 +55,5 @@ class NormalCellTest {
         //card is not Ammocard && cellAmmocard is full
         assertFalse(normalCell2.setCard(new PowerCard()));
     }
+
 }

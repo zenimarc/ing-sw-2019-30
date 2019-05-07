@@ -20,6 +20,8 @@ public class Board {
     private Deck weaponDeck;
     private Deck ammoDeck;
     private Deck powerUpDeck;
+    private Deck ammoDiscardDeck;
+    private Deck powerUpDiscardDeck;
 
     /**
      * Constructors
@@ -38,15 +40,11 @@ public class Board {
         this.numSkulls = numskull;
         this.playerSkulls = new HashMap<>();
         this.billboard = board;
-    }
-
-    public Board(int numskull, Billboard board, ArrayList<Card> ammoCard, ArrayList<Card> weaponCard, ArrayList<Card> powerUpCard) {
-        this.numSkulls = numskull;
-        this.playerSkulls = new HashMap<>();
-        this.billboard = board;
-        this.weaponDeck= new Deck(weaponCard);
-        this.powerUpDeck= new Deck(powerUpCard);
-        this.ammoDeck= new Deck(ammoCard);
+        this.weaponDeck = new Deck();
+        this.powerUpDeck = new Deck();
+        this.ammoDeck = new Deck();
+        this.ammoDiscardDeck = new Deck();
+        this.powerUpDiscardDeck = new Deck();
     }
 
     /**

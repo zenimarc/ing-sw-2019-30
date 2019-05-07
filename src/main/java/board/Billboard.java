@@ -283,6 +283,11 @@ public class Billboard {
         return billboardCell.keySet().stream().filter(x -> isVisible(shooterCell, x)).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * This function returns the position of a generic cell
+     * @param cell which you want to know the position
+     * @return position (x and y)
+     */
     public Position getCellPosition(Cell cell){
         return billboardCell.get(cell);
     }
