@@ -108,4 +108,10 @@ public class RegenerationCell extends Cell {
         player.addWeapon(this.weaponCard[i]);
     }
 
+
+    @Override
+    public String toString() {
+        return "RegenerationCell";
+    }
+
 }

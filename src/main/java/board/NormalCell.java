@@ -85,4 +85,9 @@ public class NormalCell extends Cell {
         if(this.ammoCard.verifyPowerUp())
             player.addPowerCard();
     }
+
+    @Override
+    public String toString() {
+        return "NormalCell";
+    }
 }

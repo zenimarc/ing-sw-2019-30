@@ -287,4 +287,17 @@ public class Billboard {
         return billboardCell.get(cell);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Cell c : billboardCell.keySet()){
+            stringBuilder.append(c);
+            stringBuilder.append('\t');
+            stringBuilder.append(billboardCell.get(c));
+            stringBuilder.append('\n');
+        }
+
+        return stringBuilder.toString();
+    }
 }
