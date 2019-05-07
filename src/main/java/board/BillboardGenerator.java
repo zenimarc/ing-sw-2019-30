@@ -5,9 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import deck.Color;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,8 +15,8 @@ import java.util.HashMap;
 
 public class BillboardGenerator extends Billboard {
 
-    public static void main(String[] args) {
-        Billboard myBillboard;
+
+    public static Billboard generateBillboard(){
         HashMap<Cell, Position> mappaProva = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
 
@@ -60,7 +58,14 @@ public class BillboardGenerator extends Billboard {
         doors.add(new Door(c21, c22));
         doors.add(new Door(c12, c22));
 
-        myBillboard = new Billboard(mappaProva, doors);
+        return new Billboard(mappaProva, doors);
+
+    }
+
+    public static void main(String[] args) {
+
+        Billboard myBillboard = generateBillboard();
+
         //Gson gson = new Gson();
         //String billboardjson = gson.toJson(myBillboard);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
