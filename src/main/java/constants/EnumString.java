@@ -15,7 +15,8 @@ public enum EnumString {
     ZX_2_OP1("Scanner mode"),
     HELLION_OPT1("Nano-tracer mode"),
     SHOCKWAVE_OPT1("Tsunami mode"),
-    FURNACE_OPT1("")
+    FURNACE_OPT1(""),
+    SHOTGUN_OP1("")
     ;
 
     private String string;
