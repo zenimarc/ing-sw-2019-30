@@ -121,6 +121,29 @@ class BoardControllerTest {
 
     }
 
+    @Test
+    void getPotentialDestinationCellsTest(){
+        p1.setCell(c00);
+        ArrayList<Cell> potentialTargets = new ArrayList<>();
+        potentialTargets.add(c01);
+        potentialTargets.add(c02);
+        potentialTargets.add(c11);
+        potentialTargets.add(c20);
+        potentialTargets.add(c10);
+        potentialTargets.add(c00);
+        assertTrue(potentialTargets.containsAll(controller.getPotentialDestinationCells(p1.getCell(), 2)));
+        potentialTargets.add(c12);
+        potentialTargets.add(c21);
+        potentialTargets.add(c31);
+        potentialTargets.add(c30);
+        potentialTargets.add(c22);
+        potentialTargets.add(c32);
+        assertTrue(potentialTargets.containsAll(controller.getPotentialDestinationCells(p1.getCell(), 4)));
+        assertFalse(controller.getBoard().getBillboard().canMove(p1.getCell(), c32, 5));
+
+    }
+
+    @Test
     void testTurn(){
         assertEquals(p1, controller.getPlayer());
         controller.changeTurn();

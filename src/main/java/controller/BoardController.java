@@ -166,4 +166,7 @@ public class BoardController {
         }
         return Collections.emptyList();
     }
+    public List<Cell> getPotentialDestinationCells(Cell shooterCell, int steps){
+        return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
+    }
 }
