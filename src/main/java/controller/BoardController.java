@@ -78,6 +78,7 @@ public class BoardController {
 
     /**
      * This function changes the value of verifyFinalFrenzyTurns to decide the number of actions of a player during Final Frenzy
+     * TODO: ma playerTurn non serve a tenere il numero del giocatore a cui tocca? e non le azioni che può fare in un turno
      */
     public void setFinalFrenzyTurns(){
         if(this.isFinalFrenzy()){
@@ -166,6 +167,13 @@ public class BoardController {
         }
         return Collections.emptyList();
     }
+
+    /**
+     * This function returns a subset of Cell from billboard where the player can move in tot steps
+     * @param shooterCell is the player's cell
+     * @param steps are the maximum steps available
+     * @return a list of Cell reachable from shooterCell in tot steps
+     */
     public List<Cell> getPotentialDestinationCells(Cell shooterCell, int steps){
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
     }

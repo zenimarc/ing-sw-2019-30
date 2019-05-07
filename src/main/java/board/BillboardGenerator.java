@@ -1,9 +1,13 @@
 package board;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import deck.Color;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,26 +17,26 @@ import java.util.HashMap;
 
 public class BillboardGenerator extends Billboard {
 
-    private static Billboard myBillboard;
-    private static HashMap<Cell, Position> mappaProva = new HashMap<>();
-    private static ArrayList<Door> doors = new ArrayList<>();
-
-    private static Cell c00 = new NormalCell(Color.GREEN);
-    private static Cell c10 = new RegenerationCell(Color.BLUE);
-    private static Cell c20 = new NormalCell(Color.BLUE);
-    private static Cell c30 = new NormalCell(Color.BLUE);
-
-    private static Cell c01 = new NormalCell(Color.YELLOW);
-    private static Cell c11 = new NormalCell(Color.YELLOW);
-    private static Cell c21 = new NormalCell(Color.RED);
-    private static Cell c31 = new RegenerationCell(Color.RED);
-
-    private static Cell c02 = new RegenerationCell(Color.YELLOW);
-    private static Cell c12 = new NormalCell(Color.YELLOW);
-    private static Cell c22 = new NormalCell(Color.WHITE);
-    private static Cell c32 = new NormalCell();
-
     public static void main(String[] args) {
+        Billboard myBillboard;
+        HashMap<Cell, Position> mappaProva = new HashMap<>();
+        ArrayList<Door> doors = new ArrayList<>();
+
+        Cell c00 = new NormalCell(Color.GREEN);
+        Cell c10 = new RegenerationCell(Color.BLUE);
+        Cell c20 = new NormalCell(Color.BLUE);
+        Cell c30 = new NormalCell(Color.BLUE);
+
+        Cell c01 = new NormalCell(Color.YELLOW);
+        Cell c11 = new NormalCell(Color.YELLOW);
+        Cell c21 = new NormalCell(Color.RED);
+        Cell c31 = new RegenerationCell(Color.RED);
+
+        Cell c02 = new RegenerationCell(Color.YELLOW);
+        Cell c12 = new NormalCell(Color.YELLOW);
+        Cell c22 = new NormalCell(Color.WHITE);
+        Cell c32 = new NormalCell();
+
         mappaProva.put(c00, new Position(0, 0));
         mappaProva.put(c10, new Position(1, 0));
         mappaProva.put(c20, new Position(2, 0));
@@ -57,28 +61,27 @@ public class BillboardGenerator extends Billboard {
         doors.add(new Door(c12, c22));
 
         myBillboard = new Billboard(mappaProva, doors);
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
+        //String billboardjson = gson.toJson(myBillboard);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String billboardjson = gson.toJson(myBillboard);
+
         try {
             Files.write(Paths.get("./src/resources/billboard/billboard.json"), billboardjson.getBytes());
             System.out.println(billboardjson);
         } catch (IOException ioe) {
             ioe.fillInStackTrace();
         }
-    }
 /*
-        try {
-            BufferedReader br = new BufferedReader(
-                    new FileReader("src/resources/billboard/billboard.json"));
-            Gson gson = new Gson();
-
-            //convert the json string back to object
-            billboard = gson.fromJson(br, Billboard.class);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    try {
+        FileReader fr = new FileReader("src/resources/billboard/billboard.json");
+        BufferedReader br = new BufferedReader(fr);
+        Gson gson = new Gson();
+        //convert the json string back to object
+        Billboard billboard = gson.fromJson(br, Billboard.class);
+    }
+        catch (FileNotFoundException fnfe)
 
     }
 */
-}
+}}
