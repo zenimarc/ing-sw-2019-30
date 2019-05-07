@@ -1,6 +1,7 @@
 package board;
 
 import deck.Color;
+import javafx.geometry.Pos;
 import player.Player;
 
 import java.util.ArrayList;
@@ -290,6 +291,10 @@ public class Billboard {
      */
     public Position getCellPosition(Cell cell){
         return billboardCell.get(cell);
+    }
+
+    public Cell getCellFromPosition(Position pos){
+        return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
     }
 
 }

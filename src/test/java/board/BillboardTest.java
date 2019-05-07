@@ -129,6 +129,15 @@ class BillboardTest {
         assertTrue(myBillboard.visibleCells(c00).containsAll(cells));
 
     }
-
+    @Test
+    void getCellFromPositionTest(){
+        HashMap<Cell, Position> cellMap = new HashMap<>();
+        cellMap.put(c01, new Position(0,1));
+        cellMap.put(c02, new Position(0,2));
+        Billboard billboard1 = new Billboard(cellMap, doors);
+        assertEquals(billboard1.getCellFromPosition(new Position(0,1)), c01);
+        assertEquals(billboard1.getCellFromPosition(new Position(0,2)), c02);
+        assertNull(billboard1.getCellFromPosition(new Position(0,3)));
+    }
 
 }
