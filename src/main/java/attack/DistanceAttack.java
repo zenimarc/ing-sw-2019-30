@@ -12,7 +12,15 @@ public class DistanceAttack extends Attack {
     private int maxDistance;
 
 
-    //Costructor
+    /**
+     *
+     * @param name
+     * @param damage
+     * @param mark
+     * @param target
+     * @param minDistance
+     * @param maxDistance
+     */
     public DistanceAttack(EnumString name, int damage, int mark, int target,int minDistance, int maxDistance){
         this.name = name;
         this.damage = damage;
