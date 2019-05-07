@@ -147,6 +147,10 @@ public class BoardController {
         switch (targetType) {
             case VISIBLE:
                 return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+            case NOT_VISIBLE:
+                return listOfPlayers.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
+            case VISIBLE_ROOM:
+                return listOfPlayers.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_ROOM:
                 return listOfPlayers.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_CELL:
@@ -166,7 +170,6 @@ public class BoardController {
                 return listOfPlayers.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
                         && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
-
         }
         return Collections.emptyList();
     }
