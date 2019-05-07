@@ -1,0 +1,42 @@
+package weapon;
+
+import attack.DistanceAttack;
+import attack.SimpleAttack;
+import board.Cell;
+import constants.EnumString;
+import player.Player;
+
+import java.util.List;
+import java.util.Optional;
+
+import static constants.EnumString.*;
+
+public class AreaWeapon extends WeaponCard {
+
+    protected AreaWeapon(EnumWeapon weaponType){
+        this.weaponType = weaponType;
+
+        switch (weaponType) {
+            case FURNACE:
+                attacks.add(new SimpleAttack(BASE_ATTACK_NAME,1,0,-1));
+                attacks.add(new DistanceAttack(FURNACE_OPT1,1,1,-1,1,1));
+                break;
+            default:
+                //TODO ERROR
+                break;
+        }
+
+    }
+
+
+    @Override
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+
+        switch (weaponType) {
+            case FURNACE:
+                return alternativeSimpleShoot(typeAttack,shooter,opponents);
+            default:
+                return false;
+        }
+    }
+}

@@ -1,5 +1,6 @@
 package weapon;
 
+import attack.DistanceAttack;
 import attack.SimpleAttack;
 import board.Cell;
 import player.Player;
@@ -10,29 +11,22 @@ import java.util.Optional;
 import static constants.EnumString.*;
 public class DistanceWeapon extends WeaponCard {
 
-    private int minDistance = -1;
-    private int maxDistance = -1;
-
     public DistanceWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
 
         switch (weaponType){
             case WHISPER:
-                minDistance = 2;
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME,3,2,1));
+                attacks.add(new DistanceAttack(BASE_ATTACK_NAME,3,2,1,2,-1));
                 break;
             case HELLION:
-                minDistance = 1;
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1,0,1));
-                attacks.add(new SimpleAttack(HELLION_OPT1, 2,0,1));
-                attacks.get(1).setCost(new int[]{1,0,0});
-                attacks.add(new SimpleAttack(SUPPORT_ATTACK,0,1,-1));
+                attacks.add(new DistanceAttack(BASE_ATTACK_NAME, 1,0,1,1,-1));
+                attacks.add(new DistanceAttack(SUPPORT_ATTACK, 0,1,-1,1,-1));
+                attacks.add(new DistanceAttack(HELLION_OPT1,0,2,-1,1,-1));
+                attacks.get(2).setCost(new int[]{1,0,0});
                 break;
             case SHOCKWAVE:
-                minDistance = 1;
-                maxDistance = 1;
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME, 1, 0 , 3));
-                attacks.add(new SimpleAttack(SHOCKWAVE_OPT1, 1, 0 , -1));
+                attacks.add(new DistanceAttack(BASE_ATTACK_NAME, 1, 0 , 3,1,1));
+                attacks.add(new DistanceAttack(SHOCKWAVE_OPT1, 1, 0 , -1,1,1));
                 break;
             default:
                 //TODO ERROR
@@ -44,10 +38,10 @@ public class DistanceWeapon extends WeaponCard {
         switch (typeAttack){
             case 0:
                 attacks.get(0).attack(shooter,opponents.get(0));
-                attacks.get(2).attack(shooter,opponents);
+                attacks.get(1).attack(shooter,opponents);
                 break;
-            case 1:
-                attacks.get(1).attack(shooter,opponents.get(0));
+            case 2:
+                attacks.get(0).attack(shooter,opponents.get(0));
                 attacks.get(2).attack(shooter,opponents);
                 break;
             default:

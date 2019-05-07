@@ -12,8 +12,6 @@ import java.util.List;
  */
 public class SimpleAttack extends Attack {
 
-    private int mark;
-
     //Constructor
     public SimpleAttack(EnumString name, String description, int damage, int mark, int target){
         this.name = name;

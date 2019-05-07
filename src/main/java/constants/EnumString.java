@@ -14,7 +14,8 @@ public enum EnumString {
     VORTEX_CANNON_OPT1("With black hole"),
     ZX_2_OP1("Scanner mode"),
     HELLION_OPT1("Nano-tracer mode"),
-    SHOCKWAVE_OPT1("Tsunami mode")
+    SHOCKWAVE_OPT1("Tsunami mode"),
+    FURNACE_OPT1("")
     ;
 
     private String string;
