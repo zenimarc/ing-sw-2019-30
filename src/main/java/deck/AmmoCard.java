@@ -15,6 +15,7 @@ public class AmmoCard extends Card {
 
     public AmmoCard() {
         this.cubes = new int[]{0, 0, 0};
+        hasPowerUp = false;
     }
 
     public AmmoCard(int[] cubes, boolean hasPowerUp) {
@@ -34,4 +35,17 @@ public class AmmoCard extends Card {
      */
 
     public boolean verifyPowerUp(){return this.hasPowerUp;}
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("AmmoCard: ");
+        stringBuilder.append(cubes[0] + "(R) ");
+        stringBuilder.append(cubes[1] + "(G) ");
+        stringBuilder.append(cubes[2] + "(B) ");
+        stringBuilder.append(hasPowerUp+"(PowerUp)");
+
+        return stringBuilder.toString();
+    }
 }

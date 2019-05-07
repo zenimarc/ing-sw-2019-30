@@ -14,17 +14,16 @@ import java.util.*;
 public class NormalCell extends Cell {
 
     private AmmoCard ammoCard;
-
     /**
      * Constructors
      */
 
     public NormalCell(){
-        this(null,null);
+        this(Color.values()[new Random().nextInt(3)],new AmmoCard());
     }
 
     public NormalCell(Color color){
-        this(color, null);
+        this(color, new AmmoCard());
     }
 
     public NormalCell(Color color, AmmoCard ammoCard) {
@@ -88,6 +87,11 @@ public class NormalCell extends Cell {
 
     @Override
     public String toString() {
-        return "NormalCell";
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("NrmCell\t");
+        stringBuilder.append(ammoCard.toString());
+
+        return stringBuilder.toString();
     }
 }

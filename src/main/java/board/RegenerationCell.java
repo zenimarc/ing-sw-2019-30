@@ -111,7 +111,15 @@ public class RegenerationCell extends Cell {
 
     @Override
     public String toString() {
-        return "RegenerationCell";
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("RegCell\t");
+        stringBuilder.append("WeapCard: ");
+        stringBuilder.append(weaponCard[0] + "(1) ");
+        stringBuilder.append(weaponCard[1] + "(2) ");
+        stringBuilder.append(weaponCard[2] + "(3) ");
+
+        return stringBuilder.toString();
     }
 
 }

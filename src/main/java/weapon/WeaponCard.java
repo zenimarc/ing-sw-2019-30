@@ -87,6 +87,8 @@ public abstract class WeaponCard extends Card {
         return true;
     }
 
-
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

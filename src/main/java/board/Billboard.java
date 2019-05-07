@@ -292,9 +292,9 @@ public class Billboard {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Cell c : billboardCell.keySet()){
-            stringBuilder.append(c);
-            stringBuilder.append('\t');
             stringBuilder.append(billboardCell.get(c));
+            stringBuilder.append('\t');
+            stringBuilder.append(c);
             stringBuilder.append('\n');
         }
 

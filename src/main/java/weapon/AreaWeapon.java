@@ -18,7 +18,7 @@ public class AreaWeapon extends WeaponCard {
 
         switch (weaponType) {
             case FURNACE:
-                //TODO: NOT VISIBLE ROOM
+                //TODO: other room - gio
                 attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME,1,0,-1));
                 attacks.add(new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1));
                 break;
