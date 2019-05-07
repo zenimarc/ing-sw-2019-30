@@ -1,7 +1,5 @@
 package controller;
 
-import board.Billboard;
-import board.Board;
 import player.Player;
 
 import java.util.ArrayList;
@@ -14,8 +12,6 @@ import java.util.Arrays;
 public class MainLocalGame {
 
     private ArrayList<Player> players;
-    private Billboard billboard;
-    private Board board;
     private BoardController boardController;
 
 
@@ -32,10 +28,9 @@ public class MainLocalGame {
     }
 
     private ArrayList<Player> initializePlayer(){
-        Player p1, p2, p3;
-        p1 = new Player("Aldo");
-        p2 = new Player("Bob");
-        p3 = new Player("Carlo");
+        Player p1 = new Player("Aldo");
+        Player p2 = new Player("Bob");
+        Player p3 = new Player("Carlo");
 
         return new ArrayList<>(Arrays.asList(p1,p2,p3));
     }
