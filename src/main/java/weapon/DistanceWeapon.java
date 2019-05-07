@@ -13,7 +13,7 @@ public class DistanceWeapon extends WeaponCard {
     private int minDistance = -1;
     private int maxDistance = -1;
 
-    public DistanceWeapon(enumWeapon weaponType){
+    public DistanceWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
 
         switch (weaponType){

@@ -17,7 +17,7 @@ public abstract class WeaponCard extends Card {
     private List<Bullet> cost;
     protected List<Attack> attacks;
     protected boolean isLoaded;
-    protected enumWeapon weaponType;
+    protected EnumWeapon weaponType;
 
 
     //Default constructor

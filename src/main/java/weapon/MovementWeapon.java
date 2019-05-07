@@ -11,7 +11,7 @@ import static constants.EnumString.*;
 
 public class MovementWeapon extends WeaponCard {
 
-    public MovementWeapon(enumWeapon weaponType){
+    public MovementWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
 
         switch (weaponType){

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public enum enumWeapon {
+public enum EnumWeapon {
     LOCK_RIFLE("Lockrifle", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),
     WHISPER("Whishper", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE),new Bullet(Color.YELLOW)))),
     MACHINE_GUN("Machinegun", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE), new Bullet(Color.RED)))),
@@ -24,7 +24,7 @@ public enum enumWeapon {
     private String name;
     private ArrayList<Bullet> cost;
 
-    enumWeapon(String name, ArrayList<Bullet> bullets){
+    EnumWeapon(String name, ArrayList<Bullet> bullets){
         this.name = name;
         this.cost = bullets;
     }

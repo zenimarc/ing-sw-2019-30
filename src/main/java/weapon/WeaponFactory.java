@@ -15,7 +15,7 @@ public class WeaponFactory {
         ArrayList<String> jsonWeapons = new ArrayList<>();
         String jsonWeapon;
 
-        for (enumWeapon weapon : enumWeapon.values()) {
+        for (EnumWeapon weapon : EnumWeapon.values()) {
 
             jsonWeapons.add(gson.toJson(getFactory(weapon)));
             jsonWeapon = gson.toJson(getFactory(weapon));
@@ -38,19 +38,19 @@ public class WeaponFactory {
         }
     }
 
-    private WeaponCard getFactory(enumWeapon type) {
+    private WeaponCard getFactory(EnumWeapon type) {
 
         switch (type){
             case LOCK_RIFLE:
-                return new SimpleWeapon(enumWeapon.LOCK_RIFLE);
+                return new SimpleWeapon(EnumWeapon.LOCK_RIFLE);
             case MACHINE_GUN:
-                return  new SimpleWeapon(enumWeapon.MACHINE_GUN);
+                return  new SimpleWeapon(EnumWeapon.MACHINE_GUN);
             case ELECTROSCYTHE:
-                return new SimpleWeapon(enumWeapon.ELECTROSCYTHE);
+                return new SimpleWeapon(EnumWeapon.ELECTROSCYTHE);
             case HEATSEEKER:
-                return new SimpleWeapon(enumWeapon.HEATSEEKER);
+                return new SimpleWeapon(EnumWeapon.HEATSEEKER);
             case TRACTOR_BEAM:
-                return new MovementWeapon(enumWeapon.TRACTOR_BEAM);
+                return new MovementWeapon(EnumWeapon.TRACTOR_BEAM);
                 default:
                     return null;
         }
