@@ -48,7 +48,7 @@ public class DistanceAttack extends Attack {
         for(Player opponent : opponents){
             opponent.addDamage(player, damage);
         }
-        return false;
+        return true;
     }
 
     @Override

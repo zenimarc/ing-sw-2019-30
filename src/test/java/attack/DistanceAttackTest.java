@@ -2,8 +2,7 @@ package attack;
 
 import board.*;
 import constants.EnumString;
-import deck.Color;
-import org.jetbrains.annotations.NotNull;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import player.Player;
@@ -15,9 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class DistanceAttackTest {
     private static Player p1,p2,p3;
     private static Board board;
-    private static Billboard billboard;
     private static DistanceAttack distanceAttack;
-    private static Cell cell1,cell2,cell3;
+    private static Cell cell1;
     private static int damage = 2;
 
     @BeforeAll
@@ -30,11 +28,6 @@ class DistanceAttackTest {
         p2 = new Player("second",board);
         p3 = new Player("third",board);
 
-        cell1 = new NormalCell();
-
-        p1.setCell(cell1);
-        p2.setCell(cell1);
-        p3.setCell(cell1);
     }
 
     @Test
