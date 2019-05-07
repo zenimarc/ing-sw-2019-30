@@ -1,7 +1,6 @@
 package board;
 
 import deck.Color;
-import javafx.geometry.Pos;
 import player.Player;
 
 import java.util.ArrayList;
@@ -297,4 +296,17 @@ public class Billboard {
         return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Cell c : billboardCell.keySet()){
+            stringBuilder.append(billboardCell.get(c));
+            stringBuilder.append('\t');
+            stringBuilder.append(c);
+            stringBuilder.append('\n');
+        }
+
+        return stringBuilder.toString();
+    }
 }

@@ -1,4 +1,5 @@
 package controller;
+import board.BillboardGenerator;
 import board.Board;
 import board.Cell;
 import deck.Deck;
@@ -6,8 +7,6 @@ import player.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static controller.EnumTargetSet.VISIBLE;
 
 /**
  * BoardController controls the table game.
@@ -30,16 +29,23 @@ public class BoardController {
     }
 
     public BoardController(List<Player> players, Board board) {
-        this(players);
+        this(players, 8);
         this.board = board;
     }
 
-    public BoardController(List<Player> players){
+    /**
+     * This genetare a boardcontroller with a default board
+     * @param players
+     * @param numskulls
+     */
+    public BoardController(List<Player> players, int numskulls){
         this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
         for (Player player : this.listOfPlayers){
             playerControllers.add(new PlayerController(player));
         }
+        //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
+        board = new Board(numskulls, BillboardGenerator.generateBillboard());
     }
 
     /**

@@ -28,14 +28,24 @@ public class Player extends Observable {
      * Default constructors
      */
 
-    public Player(String nickname, Board board) {
+
+    public Player(String nickname){
         this.nickname = nickname;
         this.pawn = new Pawn(this);
         this.points = 0; //a new player has 0 points
-        this.playerBoard = new PlayerBoard(board);
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
         this.ammo = new EnumMap<>(Color.class);
+    }
+
+    public Player(String nickname, Board board) {
+        this(nickname);
+        this.playerBoard = new PlayerBoard(board);
+    }
+
+
+    public void setPlayerBoard(PlayerBoard playerBoard) {
+        this.playerBoard = playerBoard;
     }
 
     /**
