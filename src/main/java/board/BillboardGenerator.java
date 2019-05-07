@@ -6,6 +6,9 @@ import com.google.gson.stream.JsonReader;
 import deck.Color;
 
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -77,16 +80,15 @@ public class BillboardGenerator extends Billboard {
         } catch (IOException ioe) {
             ioe.fillInStackTrace();
         }
-/*
+
     try {
-        FileReader fr = new FileReader("src/resources/billboard/billboard.json");
-        BufferedReader br = new BufferedReader(fr);
-        Gson gson = new Gson();
         //convert the json string back to object
-        Billboard billboard = gson.fromJson(br, Billboard.class);
+        Billboard billboard = gson.fromJson(new BufferedReader(new FileReader("src/resources/billboard/billboard.json")), Billboard.class);
     }
-        catch (FileNotFoundException fnfe)
+    catch (FileNotFoundException fnfe){
+        fnfe.fillInStackTrace();
 
     }
-*/
-}}
+
+}
+}

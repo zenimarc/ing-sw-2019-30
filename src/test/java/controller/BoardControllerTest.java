@@ -156,7 +156,6 @@ class BoardControllerTest {
         potentialTargets.add(c22);
         potentialTargets.add(c32);
         assertTrue(potentialTargets.containsAll(controller.getPotentialDestinationCells(p1.getCell(), 4)));
-        assertFalse(controller.getBoard().getBillboard().canMove(p1.getCell(), c32, 5));
 
     }
 
