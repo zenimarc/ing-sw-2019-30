@@ -1,5 +1,7 @@
 package board;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 import static java.lang.Math.abs;
@@ -8,7 +10,7 @@ import static java.lang.Math.abs;
  * This class is used to determine the position of an object
  */
 
-public class Position {
+public class Position implements Comparable {
     private int x;
     private int y;
 
@@ -79,5 +81,14 @@ public class Position {
     @Override
     public String toString() {
         return "("+this.x+","+this.y+")";
+    }
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        Position p = (Position) o;
+        if (this.x > p.x) return 1;
+        if (this.x < p.x) return -1;
+        return this.y > p.y ? 1:-1;
+
     }
 }
