@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumString.*;
+import static controller.EnumTargetSet.*;
 
 public class AreaWeapon extends WeaponCard {
 
@@ -17,8 +18,9 @@ public class AreaWeapon extends WeaponCard {
 
         switch (weaponType) {
             case FURNACE:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME,1,0,-1));
-                attacks.add(new DistanceAttack(FURNACE_OPT1,1,1,-1,1,1));
+                //TODO: NOT VISIBLE ROOM
+                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME,1,0,-1));
+                attacks.add(new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1));
                 break;
             default:
                 //TODO ERROR

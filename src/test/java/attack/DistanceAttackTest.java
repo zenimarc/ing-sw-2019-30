@@ -3,6 +3,7 @@ package attack;
 import board.*;
 import constants.EnumString;
 
+import controller.EnumTargetSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import player.Player;
@@ -22,7 +23,7 @@ class DistanceAttackTest {
     public static void init(){
         board = new Board();
 
-        distanceAttack = new DistanceAttack(EnumString.SUPPORT_ATTACK, damage,1,1,2,3);
+        distanceAttack = new DistanceAttack(EnumTargetSet.VISIBLE, EnumString.SUPPORT_ATTACK, damage,1,1,2,3);
 
         p1 = new Player("first",board);
         p2 = new Player("second",board);

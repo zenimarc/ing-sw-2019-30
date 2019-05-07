@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumString.*;
+import static controller.EnumTargetSet.*;
+
 
 public class MovementWeapon extends WeaponCard {
 
@@ -18,22 +20,22 @@ public class MovementWeapon extends WeaponCard {
 
         switch (weaponType){
             case TRACTOR_BEAM:
-                attacks.add(new MoveAttack(BASE_ATTACK_NAME,2,1));
-                attacks.add(new MoveAttack(TRACTOR_BEAN_OPT1,2,3));
+                attacks.add(new MoveAttack(VISIBLE, BASE_ATTACK_NAME,2,1,1));
+                attacks.add(new MoveAttack(SAME_CELL,TRACTOR_BEAN_OPT1,2,3,1));
                 attacks.get(1).setCost(new int[]{1,1,0});
                 break;
             case VORTEX_CANNON:
-                attacks.add(new MoveAttack(BASE_ATTACK_NAME, 1,2));
-                attacks.add(new MoveAttack(VORTEX_CANNON_OPT1, 1, 1,2));
+                attacks.add(new MoveAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1));
+                attacks.add(new MoveAttack(VISIBLE,VORTEX_CANNON_OPT1, 1, 1,2));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
             case SHOTGUN:
-                attacks.add(new MoveAttack(BASE_ATTACK_NAME, 1,3));
-                attacks.add(new DistanceAttack(SHOTGUN_OP1, 2,0,1,1,1));
+                attacks.add(new MoveAttack(SAME_CELL,BASE_ATTACK_NAME, 1,3,1));
+                attacks.add(new DistanceAttack(VISIBLE,SHOTGUN_OP1, 2,0,1,1,1));
                 break;
             case SLEDGEHAMMER:
-                attacks.add(new SimpleAttack(BASE_ATTACK_NAME,2,0,1));
-                attacks.add(new MoveAttack(SLEDGE_HAMMER,2,3,1));
+                attacks.add(new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME,2,0,1));
+                attacks.add(new MoveAttack(SAME_CELL,SLEDGE_HAMMER,2,3,1));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
                 default:

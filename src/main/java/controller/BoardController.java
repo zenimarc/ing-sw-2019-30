@@ -30,13 +30,16 @@ public class BoardController {
     }
 
     public BoardController(List<Player> players, Board board) {
-        this.listOfPlayers = players;
+        this(players);
         this.board = board;
+    }
+
+    public BoardController(List<Player> players){
+        this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
         for (Player player : this.listOfPlayers){
             playerControllers.add(new PlayerController(player));
         }
-
     }
 
     /**
@@ -78,6 +81,7 @@ public class BoardController {
 
     /**
      * This function changes the value of verifyFinalFrenzyTurns to decide the number of actions of a player during Final Frenzy
+     * TODO: ma playerTurn non serve a tenere il numero del giocatore a cui tocca? e non le azioni che può fare in un turno
      */
     public void setFinalFrenzyTurns(){
         if(this.isFinalFrenzy()){
@@ -143,6 +147,10 @@ public class BoardController {
         switch (targetType) {
             case VISIBLE:
                 return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+            case NOT_VISIBLE:
+                return listOfPlayers.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
+            case VISIBLE_ROOM:
+                return listOfPlayers.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_ROOM:
                 return listOfPlayers.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_CELL:
@@ -162,10 +170,16 @@ public class BoardController {
                 return listOfPlayers.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
                         && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
-
         }
         return Collections.emptyList();
     }
+
+    /**
+     * This function returns a subset of Cell from billboard where the player can move in tot steps
+     * @param shooterCell is the player's cell
+     * @param steps are the maximum steps available
+     * @return a list of Cell reachable from shooterCell in tot steps
+     */
     public List<Cell> getPotentialDestinationCells(Cell shooterCell, int steps){
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
     }
