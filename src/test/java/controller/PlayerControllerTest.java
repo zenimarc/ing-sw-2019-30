@@ -70,11 +70,20 @@ class PlayerControllerTest {
 
         myBillboard = new Billboard(mappaProva,doors);
 
-        myBoard = new Board(0, myBillboard);
+        myBoard = new Board(1, myBillboard);
         player = new Player("Marco", myBoard);
         controller = new PlayerController(player);
+        Player p2 = new Player("Christian", myBoard);
+        Player p3 = new Player("Giovanni", myBoard);
+        Player p4 = new Player("Paolo", myBoard);
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(player);
+        players.add(p2);
+        players.add(p3);
+        players.add(p4);
         control = new BoardController();
         control.setBoard(myBoard);
+        controller.setBoardController(control);
 
     }
 
@@ -86,14 +95,16 @@ class PlayerControllerTest {
     }
 
 
-   /* @Test
+    @Test
 
     void Grab(){
         player.setCell(c00);
+        assertFalse(control.isFinalFrenzy());
         c11.setCard(new AmmoCard(new int[]{2, 0, 1}, true));
-        controller.grab(c11, 11);
-        assert;
+        control.setFinalFrenzyTurns();
+        assertTrue(controller.grab(c11, 11));
+        int[] array = {2, 0, 0};
+        assertTrue(player.useAmmo(array));
     }
 
-*/
 }

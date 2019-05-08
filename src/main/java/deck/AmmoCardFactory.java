@@ -20,6 +20,7 @@ public class AmmoCardFactory {
             String test = bufferedReader.readLine();
             ArrayList<AmmoCard> ammo = gson.fromJson(test, new TypeToken<ArrayList<AmmoCard>>() {
             }.getType());
+
             return ammo;
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();

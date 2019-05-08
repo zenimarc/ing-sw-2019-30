@@ -27,6 +27,8 @@ public class PlayerController implements Observer {
         this.player = player;
     }
 
+    public void setBoardController(BoardController board){this.boardControl = board;}
+
     public Player getPlayer() {
         return player;
     }
@@ -60,7 +62,7 @@ public class PlayerController implements Observer {
     public boolean move(Cell cell, int i) {
         switch(i) {
             case 10: //normal move
-                if (!boardControl.isFinalFrenzy()) {//non final Frenzy
+                if (!this.boardControl.isFinalFrenzy()) {//non final Frenzy
                     if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
                         return false; }
                 else if (!billboard.canMove(player.getPawn().getCell(), cell, 4))
@@ -69,7 +71,7 @@ public class PlayerController implements Observer {
                 return true;
 
             case 11: //move from grab
-                if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
+                if (!this.boardControl.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 2) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
                             return false; }
@@ -82,7 +84,6 @@ public class PlayerController implements Observer {
                     else if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
                         return false;
                 }
-
                 setCell(cell);
                 return true;
 

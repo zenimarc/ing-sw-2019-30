@@ -30,6 +30,8 @@ public abstract class  Cell {
      */
     public Color getColor(){return color;}
 
+    public ArrayList<Pawn> getPawns(){return this.pawns;}
+
     /**
      * This function does nothing because it is implemented by sons
      * @param p variable
@@ -60,5 +62,17 @@ public abstract class  Cell {
      */
     public abstract void giveCard(Player player, int i);
 
+    /**
+     * This function adds a new pawn in the cell
+     * @param pawn to be added
+     */
+    public void addPawn (Pawn pawn){this.pawns.add(pawn);
+    }
 
+    /**
+     * This function removes the presence of a pawn from the cell
+     * @param pawn which has changed position
+     */
+    public void removePawn (Pawn pawn){this.pawns.remove(pawn);
+    }
 }
