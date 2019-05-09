@@ -75,4 +75,6 @@ public abstract class  Cell {
      */
     public void removePawn (Pawn pawn){this.pawns.remove(pawn);
     }
+
+
 }

@@ -1,16 +1,17 @@
 package view;
-import board.Board;
-import board.Position;
+import board.*;
+import weapon.WeaponCard;
 
 import java.util.*;
 
 /**
- * TODO ancora da finire la CLI completa
+ * TODO sistemare gli spazi e le |, in particolare guardare perchè alla fine non printa le |
  */
 public class BoardView {
     private Board board;
-    private int N = 32;
+    private int N = 24;
     private int M = 8;
+    private int L = 5;
 
     /**
      * Default constructor
@@ -21,179 +22,125 @@ public class BoardView {
 
     public void setBoard(Board board){this.board = board;}
 
+    /**
+     * This functions draws a specific map
+     */
+
     public void drawCLI() {
-        printHighBoard();
-        for(int i = 0; i < 3; i++){
-            for(int column = 0; column < M; column++){
-                printThings(column);}
-            printLowBoard();
-        }
     }
-
     public void drawCLI2() {
-        printHighBoard2();
-        for(int column = 0; column < M; column++){
-            printThings2();}
-        printLowBoard2();
-        for(int i = 0; i < 2; i++){
-            for(int column = 0; column < M; column++){
-                printThings(column);}
-            printLowBoard();
-        }
-    }
 
+    }
     public void drawCLI3() {
-        printHighBoard2();
-        for(int column = 0; column < M; column++){
-            printThings2();}
-        printLowBoard2();
 
-        for(int column = 0; column < M; column++)
-            printThings(column);
-         printLowBoard();
-        for(int column = 0; column < M; column++)
-            printThings3();
-        printLowBoard3();
     }
-
-        /*
-        System.out.println
-               colore, il tipo di cella, la lista di giocatori, has ammo card, armi
-*/
 
     /**
      * This function draws the high board of the map
+     * @param column set to 0 if the map has the first cell, else 8
      */
-    public void printHighBoard(){
-        for (int HighBoard = 0; HighBoard < N-2; HighBoard++) {
-            System.out.print(" _ _");
-        }
-        System.out.print("\n");
-    }
-
-
-    public void printHighBoard2(){
-
-        for (int HighBoard = 0; HighBoard < N-M-2; HighBoard++) {
-            System.out.print(" _ _");
-        }
-        System.out.print("\n");
-    }
-
-    /**
-     * This function draws the lower board of a line of cells
-     */
-    public void printLowBoard(){
-        for (int line = 0; line < N; line++) {
-            if (line % M == 0 && line != N - 1)
-                System.out.print("|_");
-            else {
-                if (line == N - 1)
-                    System.out.print(" _ _ |");
-                else System.out.print(" _ _");
-            }
-        }
-        System.out.print("\n");
-    }
-
-    public void printLowBoard2(){
-        for (int line = 0; line < N; line++) {
-            if (line % M == 0 && line != N - 1)
-                System.out.print("|_");
-            else {
-                if (line == N-1 && line != N-1)
-                    System.out.print(" _ _ |");
-                else System.out.print(" _ _");
-            }
-        }
-        System.out.print("\n");
-    }
-
-    public void printLowBoard3() {
-        for(int line = 0; line < M-1; line++){
+    public void printHighBoard(int column){
+        for (int Board = 0; Board < column; Board++) {
             System.out.print("    ");
         }
-        System.out.print("  ");
-        for (int line = M; line < N; line++) {
-            if (line % M == 0 && line != N - 1)
-                System.out.print("|_");
-            else {
-                if (line == N-1)
-                    System.out.print(" _ _ |");
-                else System.out.print(" _ _");
-            }
+        for (int Board = column; Board < N-2; Board++) {
+            System.out.print(" _ _");
         }
         System.out.print("\n");
     }
 
-
     /**
-     * This functions draws the middle of the map and indicates some details of every cell
+     * This function draws the low board of a cell
+     * @param column set to 0 if the map has the last cell, else 8
      */
-    public void printThings(int column){
+    public void printLowBoard(int column){
+        for (int Board =0; Board < N-column-2; Board++) {
+            if(Board%8 == 0)
+                System.out.print("|_ _");
+            else System.out.print(" _ _");
+        }
+        if(column == 0)
+            System.out.print("|");
+        System.out.print("\n");
+    }
 
-        for (int line = 0; line < N; line++) {
-            if (line % M == 0 && line != N - 1) {
-                if(line == 0)
+    public void printThings(int line) {
+        for (int column = 0; column < N; column++) {
+            if (column % M == 0 && column != N - 1) {
+                if (column == 0) {
                     System.out.print("| ");
-                else {if(column%8 == 0)
-                    printColor(line/M, column/M);}
-                printName(line/M, column/M);
-            }
-            else {
-                if (line == N - 1)
-                    printColor(line/M, column);
-                else System.out.print("    ");
-            }
-        }
-        System.out.print("\n");
-    }
+                    printName(line, column / M);
+                    column = column + L;
+                } else {
+                    if (column % 8 == 0 && line % 8 == 0) {
+                        printColor(line, (column / M) - 1);
+                        column = column + L;
+                    }
 
-    public void printThings2(){
-
-        for (int line = 0; line < N-M; line++) {
-            if (line % M == 0 && line != N - 1)
-                System.out.print("| ");
-            else {
-                if (line == N - M - 1)
-                    System.out.print("    |");
-                else System.out.print("    ");
+                    else System.out.print("      |");
+                }
+            } else {
+                if (column == N - 1 && line % 8 == 0) {
+                    if(line % 8 == 0)
+                        printColor(line, column / M);
+                    else System.out.print("           |");
+                } else System.out.print("     ");
             }
         }
         System.out.print("\n");
     }
 
-    public void printThings3() {
-
-        for(int line = 0; line < M-1; line++) {
-            System.out.print("    ");
-        }
-        System.out.print("  ");
-        for (int line = M; line < N; line++) {
-        if (line % M == 0 && line != N - 1)
-            System.out.print("| ");
-        else {
-            if (line == N-1)
-                System.out.print("     |");
-            else System.out.print("    ");
-        }
-    }
-        System.out.print("\n");
+    public void printCards(int line, int column) {
+        if (board.getBillboard().getCellFromPosition(new Position(line / M, column)).getClass() == NormalCell.class)
+            printAmmo((NormalCell) board.getBillboard().getCellFromPosition(new Position(line / M, column)));
+        else printWeapons((RegenerationCell) board.getBillboard().getCellFromPosition(new Position(line / M, column)));
     }
 
-    public void printColor(int i, int j){
-        System.out.print(board.getBillboard().getCellFromPosition(new Position(i, j)).getColor() + "|");
+    public void printColor(int line, int column){
+        for(int i = board.getBillboard().getCellFromPosition(new Position(line/M, column)).getColor().name().length(); i< 10; i++)
+            System.out.print(" ");
+        System.out.print(board.getBillboard().getCellFromPosition(new Position(line/M, column)).getColor() + "|");
     }
 
 
     /**
      * This function prints the name of a player
-     * @param i line at which the player is
-     * @param j column of the position of the player
+     * @param line line at which the player is
+     * @param column column of the position of the player
      */
-    public void printName(int i, int j){
-        if(board.getBillboard().getCellFromPosition(new Position(i, j)).getPawns().size() <= j+1)
-            System.out.print(board.getBillboard().getCellFromPosition(new Position(i, j)).getPawns().get(j).getPlayer().getName());
+    public void printName(int line, int column){
+        if (line + 1 <= board.getBillboard().getCellFromPosition(new Position(line/M, column)).getPawns().size()){
+            System.out.print(board.getBillboard().getCellFromPosition(new Position(line/M, column)).getPawns().get(line).getPlayer().getName());
+            for (int f = board.getBillboard().getCellFromPosition(new Position(line/M, column)).getPawns().get(column).getPlayer().getName().length(); f < 10; f++)
+                System.out.print(" ");}
+        else  for (int f = 0; f < 10; f++)
+            System.out.print(" ");
+    }
+
+    public void printAmmo(Cell cell){
+        if (cell.getCard(0) != null)
+            System.out.print("|Ammo ");
+        else System.out.print("|     ");
+        for(int j = L; j < N; j++)
+            System.out.print(" ");
+        System.out.print("|");
+    }
+    public void printWeapons(Cell cell){
+        for(int i = 0; i < 3; i++) {
+            if (cell.getCard(i) != null){
+                printWeaponName((WeaponCard) cell.getCard(i));
+                if(i != 2)
+                    System.out.print(" ");}
+            else for(int j = 0; j < 10; j++)
+                System.out.print(" ");
+        }
+        System.out.print("|");
+    }
+
+    public void printWeaponName(WeaponCard weapon){
+        System.out.print(weapon.getName() + " ");
+        for(int j = 0; j < weapon.getName().length(); j++)
+            System.out.print(" ");
     }
 
     public void drawGUI() {

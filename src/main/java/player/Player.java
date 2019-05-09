@@ -67,6 +67,16 @@ public class Player extends Observable {
     public void setCell(Cell c){this.pawn.setCell(c);}
 
     /**
+     * This function modifies the cell of the player and changes the pawn list of initial and destination cell
+     * @param cell of destination
+     */
+    public void setPawnCell(Cell cell){
+        this.pawn.getCell().removePawn(this.pawn);
+        setCell(cell);
+        cell.addPawn(this.pawn);
+    }
+
+    /**
      * This function returns the name of the player
      * @return the name of the player
      */

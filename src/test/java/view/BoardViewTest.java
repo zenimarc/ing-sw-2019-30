@@ -1,16 +1,21 @@
 package view;
 
 import board.*;
+import deck.AmmoCard;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
+import weapon.SimpleWeapon;
+import weapon.WeaponCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static weapon.EnumWeapon.LOCK_RIFLE;
+import static weapon.EnumWeapon.MACHINE_GUN;
 
 class BoardViewTest {
     private static Billboard myBillboard;
@@ -71,44 +76,43 @@ class BoardViewTest {
 
     @Test
 
-    public void drawCLI() {
-        Player p = new Player( "Marco");
-        p.setCell(c00);
-        c00.addPawn(p.getPawn());
-        Board board = new Board( 8, myBillboard);
-        boardView.setBoard(board);
-        boardView.drawCLI();
-    }
-
-    @Test
-
-    public void drawMap2() {
-        BoardView boardView = new BoardView();
-        boardView.printThings2();
-    }
-
-    @Test
-
     public void drawCLI2() {
-
-        boardView.drawCLI2();
-    }
-
-    @Test
-
-    public void drawCLI3() {
-
-        boardView.drawCLI3();
-    }
-
-    @Test
-
-    public void testName(){
-        Player p = new Player( "Marco");
-        p.setCell(c00);
-        c00.addPawn(p.getPawn());
-        Board board = new Board( 8, myBillboard);
+        Player p = new Player("Marco");
+        p.setCell(c20);
+        c20.addPawn(p.getPawn());
+        Board board = new Board(8, myBillboard);
         boardView.setBoard(board);
-        boardView.printName(0, 0);
+        boardView.printHighBoard(0);
+        boardView.printThings(0);
+        boardView.printThings(1);
+        boardView.printThings(2);
+        boardView.printThings(3);
+        boardView.printThings(4);
+        boardView.printThings(5);
+        boardView.printThings(6);
+        boardView.printThings(7);
+        boardView.printLowBoard(0);
+        boardView.printThings(8);
+        boardView.printThings(9);
+        boardView.printThings(10);
+        boardView.printThings(11);
+        boardView.printThings(12);
+        boardView.printThings(13);
+        boardView.printThings(14);
+        boardView.printThings(15);
+        boardView.printLowBoard(0);
     }
+
+    @Test
+
+    public void testName() {
+        AmmoCard ammo = new AmmoCard();
+        c00.setCard(ammo);
+        Board board = new Board(8, myBillboard);
+        boardView.setBoard(board);
+        boardView.printAmmo(c00);
+        boardView.printAmmo(c10);
+    }
+
+    //WeaponCard weapon = new SimpleWeapon(LOCK_RIFLE);
 }

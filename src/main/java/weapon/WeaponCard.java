@@ -26,18 +26,22 @@ public abstract class WeaponCard extends Card {
         this.attacks = new ArrayList<>();
     }
 
+    public WeaponCard(String name) {
+        this.name = name;
+        this.cost = new ArrayList<>();
+        this.attacks = new ArrayList<>();
+    }
+
     public WeaponCard(String name,List<Bullet> cost) {
         this.name = name;
         this.cost = cost;
         this.attacks = new ArrayList<>();
-        isLoaded = false;
     }
 
     public WeaponCard(String name, List<Bullet> cost, List<Attack> attacks) {
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
-        isLoaded = false;
     }
 
     /**
