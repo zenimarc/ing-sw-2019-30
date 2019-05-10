@@ -78,8 +78,8 @@ class BoardViewTest {
 
     public void drawCLI2() {
         Player p = new Player("Marco");
-        p.setCell(c20);
-        c20.addPawn(p.getPawn());
+        p.setCell(c00);
+        c00.addPawn(p.getPawn());
         Board board = new Board(8, myBillboard);
         boardView.setBoard(board);
         boardView.printHighBoard(0);

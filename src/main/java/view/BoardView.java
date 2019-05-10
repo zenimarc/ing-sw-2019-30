@@ -44,7 +44,7 @@ public class BoardView {
             System.out.print("    ");
         }
         for (int Board = column; Board < N-2; Board++) {
-            System.out.print(" _ _");
+            System.out.print("____");
         }
         System.out.print("\n");
     }
@@ -56,11 +56,11 @@ public class BoardView {
     public void printLowBoard(int column){
         for (int Board =0; Board < N-column-2; Board++) {
             if(Board%8 == 0)
-                System.out.print("|_ _");
-            else System.out.print(" _ _");
+                System.out.print("│___");
+            else System.out.print("____");
         }
         if(column == 0)
-            System.out.print("|");
+            System.out.print("│");
         System.out.print("\n");
     }
 
@@ -68,7 +68,7 @@ public class BoardView {
         for (int column = 0; column < N; column++) {
             if (column % M == 0 && column != N - 1) {
                 if (column == 0) {
-                    System.out.print("| ");
+                    System.out.print("│ ");
                     printName(line, column / M);
                     column = column + L;
                 } else {
@@ -77,13 +77,13 @@ public class BoardView {
                         column = column + L;
                     }
 
-                    else System.out.print("      |");
+                    else System.out.print("      │");
                 }
             } else {
                 if (column == N - 1 && line % 8 == 0) {
                     if(line % 8 == 0)
                         printColor(line, column / M);
-                    else System.out.print("           |");
+                    else System.out.print("           │");
                 } else System.out.print("     ");
             }
         }
@@ -119,11 +119,11 @@ public class BoardView {
 
     public void printAmmo(Cell cell){
         if (cell.getCard(0) != null)
-            System.out.print("|Ammo ");
-        else System.out.print("|     ");
+            System.out.print("│Ammo ");
+        else System.out.print("│     ");
         for(int j = L; j < N; j++)
             System.out.print(" ");
-        System.out.print("|");
+        System.out.print("│");
     }
     public void printWeapons(Cell cell){
         for(int i = 0; i < 3; i++) {
@@ -134,7 +134,7 @@ public class BoardView {
             else for(int j = 0; j < 10; j++)
                 System.out.print(" ");
         }
-        System.out.print("|");
+        System.out.print("│");
     }
 
     public void printWeaponName(WeaponCard weapon){
@@ -148,3 +148,17 @@ public class BoardView {
 
     }
 }
+
+
+/*
+    ┌──────────────────────────────────────────────────────────────────────────┐
+    │ Table Heading                                                            │
+    ├──────────────────┬──────────────────┬──────────────────┬─────────────────┤
+    │ first row (col1) │ with some        │ and more         │ even more       │
+    │                  │ information      │ information      │                 │
+    ├──────────────────┼──────────────────┼──────────────────┼─────────────────┤
+    │ second row       │ with some        │ and more         │ even more       │
+    │ (col1)           │ information      │ information      │                 │
+    │                  │ (col2)           │ (col3)           │                 │
+    └──────────────────┴──────────────────┴──────────────────┴─────────────────┘
+ */
