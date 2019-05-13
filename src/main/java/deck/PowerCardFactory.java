@@ -10,20 +10,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class PowerCardFactory {
+    private BufferedReader bufferedReader;
 
     public List<PowerCard> PowerCardJson() {
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/resources/cards/powercards.json"));
-            String test = bufferedReader.readLine();
-            ArrayList<PowerCard> power = gson.fromJson(test, new TypeToken<ArrayList<PowerCard>>() {
+            bufferedReader = new BufferedReader(new FileReader("src/resources/cards/powercards.json"));
+            return gson.fromJson(bufferedReader, new TypeToken<ArrayList<PowerCard>>() {
             }.getType());
-            return power;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException ex) {
-            System.out.println("Error reading file");
+            e.fillInStackTrace();
+        } finally {
+            try {bufferedReader.close();}
+            catch(IOException ioe){
+                ioe.fillInStackTrace();
+            }
         }
         return Collections.emptyList();
     }
