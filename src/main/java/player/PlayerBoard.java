@@ -35,6 +35,8 @@ public class PlayerBoard {
         return this.numDeaths;
     }
 
+    public ArrayList<Player> getDamageTrack(){return this.damageTrack;}
+
     /**
      * This function returns the number of damage received by a player
      * @return the number of damage received
