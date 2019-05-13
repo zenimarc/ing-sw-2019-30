@@ -19,6 +19,8 @@ public abstract class  Cell {
      * Constructors
      */
 
+    public Cell(){this.color = null;}
+
     public Cell(Color color) {
         pawns = new ArrayList<>();
         this.color = color;

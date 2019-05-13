@@ -1,6 +1,9 @@
 package view;
 
+import attack.SimpleAttack;
 import board.*;
+import constants.EnumString;
+import controller.EnumTargetSet;
 import deck.AmmoCard;
 import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
@@ -74,33 +77,20 @@ class BoardViewTest {
 
     }
 
-    @Test
+   /* @Test
 
     public void drawCLI2() {
         Player p = new Player("Marco");
         p.setCell(c00);
         c00.addPawn(p.getPawn());
+        Player p2 = new Player("Paolo");
+        p2.setCell(c10);
+        c10.addPawn(p2.getPawn());
         Board board = new Board(8, myBillboard);
         boardView.setBoard(board);
-        boardView.printHighBoard(0);
-        boardView.printThings(0);
-        boardView.printThings(1);
-        boardView.printThings(2);
-        boardView.printThings(3);
-        boardView.printThings(4);
-        boardView.printThings(5);
-        boardView.printThings(6);
-        boardView.printThings(7);
-        boardView.printLowBoard(0);
-        boardView.printThings(8);
-        boardView.printThings(9);
-        boardView.printThings(10);
-        boardView.printThings(11);
-        boardView.printThings(12);
-        boardView.printThings(13);
-        boardView.printThings(14);
-        boardView.printThings(15);
-        boardView.printLowBoard(0);
+        boardView.drawCLI();
+
+
     }
 
     @Test
@@ -110,9 +100,9 @@ class BoardViewTest {
         c00.setCard(ammo);
         Board board = new Board(8, myBillboard);
         boardView.setBoard(board);
-        boardView.printAmmo(c00);
-        boardView.printAmmo(c10);
+        boardView.drawCLI();
     }
 
     //WeaponCard weapon = new SimpleWeapon(LOCK_RIFLE);
+    */
 }
