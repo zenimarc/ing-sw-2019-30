@@ -19,7 +19,8 @@ public class NormalCell extends Cell {
      */
 
     public NormalCell(){
-        this(Color.values()[new Random().nextInt(3)],new AmmoCard());
+        this(null,null);
+      //  this(Color.values()[new Random().nextInt(3)],new AmmoCard());
     }
 
     public NormalCell(Color color){
@@ -90,7 +91,8 @@ public class NormalCell extends Cell {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("NrmCell\t");
-        stringBuilder.append(ammoCard.toString());
+        if(ammoCard!= null) stringBuilder.append(ammoCard.toString());
+        else  stringBuilder.append("no-AmmoCard");
 
         return stringBuilder.toString();
     }
