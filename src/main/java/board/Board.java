@@ -1,9 +1,6 @@
 package board;
 
-import deck.AmmoCard;
-import deck.Card;
-import deck.Deck;
-import deck.PowerCard;
+import deck.*;
 import player.Player;
 import weapon.WeaponCard;
 
@@ -42,9 +39,23 @@ public class Board {
         this.billboard = board;
         this.weaponDeck = new Deck();
         this.powerUpDeck = new Deck();
-        this.ammoDeck = new Deck();
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
+
+
+        this.ammoDeck = new Deck();
+        //TODO: bisognerebbe fare una cosa del genere per ogni Deck, ma abbiamo problemi...
+      //  this.ammoDeck = new Deck((new AmmoCardFactory()).getAmmoCardList());
+      //  setStartAmmoCard();
+
+    }
+
+    private void setStartAmmoCard(){
+        for(Cell c : billboard.getCellMap().keySet()){
+            if(c.getClass() == NormalCell.class){
+                c.setCard(ammoDeck.draw());
+            }
+        }
     }
 
     /**

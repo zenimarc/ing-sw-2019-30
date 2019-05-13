@@ -12,7 +12,7 @@ import java.util.List;
 
 public class AmmoCardFactory {
 
-    public List<AmmoCard> ammoCardJson() {
+   private static List<AmmoCard> ammoCardJson() {
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -28,6 +28,10 @@ public class AmmoCardFactory {
             System.out.println("Error reading file");
         }
     return Collections.emptyList();
+    }
+
+    public List<AmmoCard> getAmmoCardList(){
+        return ammoCardJson();
     }
 }
 
