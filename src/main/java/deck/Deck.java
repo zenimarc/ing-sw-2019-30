@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class Deck {
 
-    private ArrayList<Card> cards;
+    private List<Card> cards;
 
     /**
      * Constructors
@@ -17,7 +17,7 @@ public class Deck {
         this.cards = new ArrayList<>();
     }
 
-    public Deck(ArrayList<Card> cards) {
+    public Deck(List<Card> cards) {
         this.cards = cards;
     }
 
@@ -25,7 +25,7 @@ public class Deck {
      * This function returns the cards of the deck
      * @return a list of cards
      */
-    public ArrayList<Card> getCards(){return this.cards;}
+    public List<Card> getCards(){return this.cards;}
 
     /**
      * This function shuffles the deck
@@ -39,7 +39,9 @@ public class Deck {
      * @return the drawn card
      */
     public Card draw() {
-        return cards.get(0);
+        Card card = cards.get(0);
+        removeCard();
+        return card;
     }
 
     /**
@@ -62,7 +64,7 @@ public class Deck {
      * this function adds a list of cards to the deck
      * @param cards to be added in the deck
      */
-    public void addAll(ArrayList<Card> cards) {
+    public void addAll(List<Card> cards) {
         this.cards = cards;
         }
 
