@@ -1,4 +1,4 @@
-package view;
+/*package view;
 
 import attack.SimpleAttack;
 import board.*;
@@ -38,7 +38,6 @@ class BoardViewTest {
     private static Cell c02 = new RegenerationCell(Color.YELLOW);
     private static Cell c12 = new NormalCell(Color.YELLOW);
     private static Cell c22 = new NormalCell(Color.WHITE);
-    private static Cell c32 = new NormalCell();
     BoardView boardView = new BoardView();
 
 
@@ -61,7 +60,6 @@ class BoardViewTest {
         mappaProva.put(c02, new Position(0, 2));
         mappaProva.put(c12, new Position(1, 2));
         mappaProva.put(c22, new Position(2, 2));
-        mappaProva.put(c32, new Position(3, 2));
 
 
         doors.add(new Door(c00, c01));
@@ -79,18 +77,19 @@ class BoardViewTest {
 
     @Test
 
-    public void drawCLI2() {
+    public void drawCLI() {
         Player p = new Player("Marco");
         p.setCell(c00);
         c00.addPawn(p.getPawn());
         Player p2 = new Player("Paolo");
         p2.setCell(c10);
         c10.addPawn(p2.getPawn());
+        int[] array = {0, 1, 2};
+        AmmoCard ammo = new AmmoCard(array, true);
+        c00.setCard(ammo);
         Board board = new Board(8, myBillboard);
         boardView.setBoard(board);
         boardView.drawCLI();
-
-
     }
 
     @Test
@@ -105,4 +104,18 @@ class BoardViewTest {
 
     //WeaponCard weapon = new SimpleWeapon(LOCK_RIFLE);
 
-}
+}*/
+
+
+/*
+    ┌──────────────────────────────────────────────────────────────────────────┐
+    │ Table Heading                                                            │
+    ├──────────────────┬──────────────────┬──────────────────┬─────────────────┤
+    │ first row (col1) │ with some        │ and more         │ even more       │
+    │                  │ information      │ information      │                 │
+    ├──────────────────┼──────────────────┼──────────────────┼─────────────────┤
+    │ second row       │ with some        │ and more         │ even more       │
+    │ (col1)           │ information      │ information      │                 │
+    │                  │ (col2)           │ (col3)           │                 │
+    └──────────────────┴──────────────────┴──────────────────┴─────────────────┘
+ */

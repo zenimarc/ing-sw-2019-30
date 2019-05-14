@@ -67,7 +67,7 @@ public class NormalCell extends Cell {
      */
     @Override
     public boolean setCard(Card card) {
-        if(card.getClass()==AmmoCard.class && ammoCard==null){
+        if(card.getClass()==AmmoCard.class){
             this.ammoCard = (AmmoCard) card;
             return true;
         }

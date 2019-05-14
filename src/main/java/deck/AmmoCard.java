@@ -30,6 +30,13 @@ public class AmmoCard extends Card {
     public int[] getAmmo(){return this.cubes;}
 
     /**
+     * This function returns the number of cubes of a specific color
+     * @param i number used to choose the color
+     * @return the number of cubes of a specific color
+     */
+    public int getSpecificAmmo(int i){return this.cubes[i];}
+
+    /**
      * This function verifies if the AmmoCard can give a power up
      * @return true if it can, else false
      */
@@ -40,11 +47,13 @@ public class AmmoCard extends Card {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("AmmoCard: ");
-        stringBuilder.append(cubes[0] + "(R) ");
-        stringBuilder.append(cubes[1] + "(G) ");
-        stringBuilder.append(cubes[2] + "(B) ");
-        stringBuilder.append(hasPowerUp+"(PowerUp)");
+        stringBuilder.append("[");
+        stringBuilder.append(cubes[0] + ",");
+        stringBuilder.append(cubes[1] + ",");
+        stringBuilder.append(cubes[2] + "]");
+        if(hasPowerUp)
+            stringBuilder.append("+Power");
+        else stringBuilder.append("      ");
 
         return stringBuilder.toString();
     }

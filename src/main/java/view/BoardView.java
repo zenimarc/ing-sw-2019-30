@@ -1,18 +1,21 @@
 package view;
 import board.*;
+import deck.AmmoCard;
 import weapon.WeaponCard;
 
 import java.util.*;
 
 /**
- * TODO porte, armi e regen
+ * BoardView is used to draw the map of the game. It can draw Cli or GUI version
+ * TODO verificare come printa le armi
  */
 public class BoardView {
     private Board board;
-    private int N = 27;
-    private int M = 9;
-    private int L = 4;
-    private int Z = 3;
+    private int N = 3; //numero di celle orizzontale
+    private int A = 4;  //numero di celle verticale
+    private int M = 8; //grandezza bordo verticale di ogni cella e deve essere minimo > L+2
+    private int L = 4; //varibile usata per gestire le porte
+    private int Z = 3; //variabile per printare meglio le righe orizzontali
 
     public void setBoard(Board board) {
         this.board = board;
@@ -34,7 +37,7 @@ public class BoardView {
 
     public void drawCLI() {
         printHighBoard();
-        for(int i = 0; i < L; i++){
+        for(int i = 0; i < A; i++){
             for(int x = i*M; x < i*M+M; x ++)
                 printThings(x);
             printCards(i);
@@ -47,27 +50,29 @@ public class BoardView {
      * This function draws the high board of the map
      */
     public void printHighBoard() {
-        for (int Board = 0; Board < N/M; Board++) {
-            if(getCell(0, Board).getColor() == null){
+        StringBuilder stream = new StringBuilder();
+        for (int Board = 0; Board < N; Board++) {
+            if(getCell(0, Board) == null){
                 if(Board == 0)
-                    System.out.print(" ");
-                else if (getCell(N/M, Board-1).getColor() != null)
-                    System.out.print("┐");
+                    stream.append(" ");
+                else if (getCell(N, Board-1) != null)
+                    stream.append("┐");
                 for(int i = 0; i < (M+Z)*Z; i++)
-                    System.out.print(" ");
+                    stream.append(" ");
             }
                 else{
                     if (Board == 0)
-                        System.out.print("┌");
-                    else if(getCell(0, Board-1).getColor() != null)
-                        System.out.print("┬");
+                        stream.append("┌");
+                    else if(getCell(0, Board-1) != null)
+                        stream.append("┬");
             for(int i = 0; i < (M+Z)*Z; i++)
-                System.out.print("─");
+                stream.append("─");
                 }
         }
-        if(getCell(0, N/M-1).getColor() != null)
-            System.out.print("┐");
-        System.out.print("\n");
+        if(getCell(0, N-1) != null)
+            stream.append("┐");
+        stream.append("\n");
+        System.out.print(stream);
     }
 
     /**
@@ -75,162 +80,180 @@ public class BoardView {
      * @param x the number of the board to be printed
      */
     public void printMiddleBoard(int x) {
-        for (int Board = 0; Board < N/M; Board++) {
-            if (getCell(x, Board).getColor() == null && getCell(x+1, Board).getColor() == null) //caso sopra e sotto son nulle
+        StringBuilder stream = new StringBuilder();
+        for (int Board = 0; Board < N; Board++) {
+            if (getCell(x, Board) == null && getCell(x+1, Board) == null) //caso sopra e sotto son nulle
                 for (int i = 0; i < (M+Z)*Z + 1; i++)
-                    System.out.print(" ");
+                    stream.append(" ");
 
             else {
                 if(Board == 0) {
-                    if (getCell(x, Board).getColor() != null && getCell(x + 1, Board).getColor() == null)//caso solo sotto sia nulla
-                        System.out.print("┌");
-                    else System.out.print("├");
+                    if (getCell(x, Board) != null && getCell(x + 1, Board) == null)//caso solo sotto sia nulla
+                        stream.append("└");
+                    else if(getCell(x, Board) == null && getCell(x + 1, Board) != null)
+                            stream.append("┌");
+                        else stream.append("├");
                 }
                 for (int i = 0; i < (M+Z)*Z; i++) {
-                    if (i >= M+Z && i <= (M+Z)*2) {
+                    if((getCell(x+1, Board) == null && getCell(x, Board) != null)||(getCell(x+1, Board) != null && getCell(x, Board) == null))
+                        stream.append("─");
+                    else if (i >= M+Z && i <= (M+Z)*2) {
                         if (board.getBillboard().hasDoor(getCell(x, Board), getCell(x+1, Board)) || board.getBillboard().hasSameColor(getCell(x, Board), getCell(x+1, Board)))
-                            System.out.print(" ");
+                            stream.append(" ");
                         else
-                            System.out.print("─");
+                            stream.append("─");
                     }
-                    else System.out.print("─");
+                    else stream.append("─");
                 }
 
-                if (Board == N/M-1) {
-                    if (getCell(x+1, Board).getColor() == null)
-                        System.out.print("┘\n");
-                    else System.out.print("┤\n");
+                if (Board == N-1) {
+                    if (getCell(x+1, Board) == null)
+                        stream.append("┘\n");
+                    else stream.append("┤\n");
                 }
                 else {
-                    if(getCell(x+1, Board).getColor() != null)
-                        System.out.print("┼");
-                    else System.out.print("┬");}
+                    if(getCell(x+1, Board) != null)
+                        stream.append("┼");
+                    else stream.append("┬");}
             }
         }
+        System.out.print(stream);
     }
 
     /**
      * This function draws the low board of the map
-     *
      */
     public void printLowBoard() {
-        for (int Board =0; Board < N/M; Board++) {
-            if(getCell(N/M, Board).getColor() == null){
+        StringBuilder stream = new StringBuilder();
+        for (int Board =0; Board < N; Board++) {
+            if(getCell(N, Board) == null){
                 if(Board == 0)
-                    System.out.print(" ");
-                else if (getCell(N/M, Board-1).getColor() != null)
-                    System.out.print("┘");
+                    stream.append(" ");
+                else if (getCell(N, Board-1) != null)
+                    stream.append("┘");
                 for(int i = 0; i < (M+Z)*Z; i++)
-                    System.out.print(" ");
+                    stream.append(" ");
             }
             else{
                 if (Board == 0)
-                    System.out.print("└");
-                else if(getCell(N/M, Board-1).getColor() != null)
-                    System.out.print("┴");
+                    stream.append("└");
+                else if(getCell(N, Board-1) != null)
+                    stream.append("┴");
                 for(int i = 0; i < (M+Z)*Z; i++)
-                    System.out.print("─");
+                    stream.append("─");
             }
 
         }
-        if(getCell(N/M, N/M-1).getColor() != null)
-            System.out.print("┘");
-        System.out.print("\n");
+        if(getCell(N, N-1) != null)
+            stream.append("┘");
+        stream.append("\n");
+        System.out.print(stream);
     }
 
     /**
      * This function draws all the important things needed to understand better the game
-     * @param x
+     * @param x number of line to be printed
      */
     public void printThings(int x) {
-        for(int square = 0; square < N/M; square++)
-            if(getCell(x/M, square).getColor() == null)
+        StringBuilder stream = new StringBuilder();
+        for(int square = 0; square < N; square++)
+            if(getCell(x/M, square) == null)
                 for(int i = 0; i < N; i++)
-                    System.out.print(" ");
+                    stream.append(" ");
             else{
                 if(square == 0)
-                    System.out.print("│");
-                printName(x, square);
+                    stream.append("│");
+                stream.append(printName(x, square));
                 for(int i = 0; i < M+Z; i++)
-                    System.out.print(" ");
+                    stream.append(" ");
                 if(x%M == 0)
-                    printColor(x, square);
-                else if(square != N/M -1)
-                        printDoors(x, square);
+                    stream.append(printColor(x, square));
+                else if(getCell(x/M, square+1) != null)
+                    stream.append(printDoors(x, square));
                     else {
-                        if(x % M == 1 && getCell(x/M, N/M-1).getClass() == RegenerationCell.class){
+                        if(x % M == 1 && getCell(x/M, square).getClass() == RegenerationCell.class){
                             for (int i = 0; i < M-2; i++)
-                                System.out.print(" ");
-                            System.out.print("Regen│");
+                                stream.append(" ");
+                            stream.append("Regen");
                 }
-                        for (int i = 0; i < M+Z; i++)
-                        System.out.print(" ");}
-                if(getCell(x/M, square+1) == null)
-                    if(!(x % M == 1 && getCell(x/M, N/M-1).getClass() == RegenerationCell.class))
-                        System.out.print("│");
+                       else for (int i = 0; i < M+Z; i++)
+                            stream.append(" ");
+                    stream.append("│");}
+
             }
-        System.out.print("\n");
+        stream.append("\n");
+        System.out.print(stream);
     }
 
     /**
      * This function prints the name of a player
      * @param x coordinate
      * @param y coordinate
+     * @return a stream with infos
      */
-    public void printName(int x, int y){
+    public StringBuilder printName(int x, int y){
+        StringBuilder stream = new StringBuilder();
         if(getCell(x/M, y).getPawns().size() > x%M){
-            System.out.print(getCell(x/M, y).getPawns().get(x%M).getPlayer().getName());
-            for (int f = getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().length(); f < M+Z; f++)
-                System.out.print(" ");
+            String name = (getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().substring(0, Math.min(getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().length(),M+Z-1)));
+            stream.append(name);
+            for (int f = name.length(); f < M+Z; f++)
+                stream.append(" ");
         }
         else for (int f = 0; f < M+Z; f++)
-            System.out.print(" ");
+            stream.append(" ");
+        return stream;
     }
 
     /**
-     * This function prints the nacolor of the cell
+     * This function prints the color of the cell
      * @param x coordinate
      * @param y coordinate
+     * @return a stream with infos
      */
-    public void printColor(int x, int y){
-        if(getCell(x/M, y).getColor() == null){
+    public StringBuilder printColor(int x, int y){
+        StringBuilder stream = new StringBuilder();
+        if(getCell(x/M, y) == null){
             for(int i = 0; i< M+Z; i++)
-                System.out.print(" ");
+                stream.append(" ");
         }
         else {
             for(int i = getCell(x/M, y).getColor().name().length(); i< M+Z; i++)
-                System.out.print(" ");
-            System.out.print(getCell(x/M, y).getColor());
-            if(y != N/M - 1)
-                System.out.print("│");
+                stream.append(" ");
+            stream.append(getCell(x/M, y).getColor());
+
+                stream.append("│");
         }
+        return stream;
     }
 
     /**
      * This function prints the doors between two adjancent cells with the same x coordinate
      * @param x coordinate
      * @param square y coordinate
+     * @return a stream with infos
      */
-    private void printDoors(int x, int square) {
+    private StringBuilder printDoors(int x, int square) {
+        StringBuilder stream = new StringBuilder();
         if (x % M == 1 && getCell(x/M, square).getClass() == RegenerationCell.class){
             for (int i = 0; i < M-2; i++)
-                System.out.print(" ");
-            System.out.print("Regen│");}
+                stream.append(" ");
+            stream.append("Regen│");}
         else if (x%M > L / 2 && x%M < M - L / 2) {
             if (board.getBillboard().hasDoor(getCell(x/M , square), getCell(x/M , square+1))|| board.getBillboard().hasSameColor(getCell(x/M , square), getCell(x/M , square+1)))
                 for (int i = 0; i < M+Z+1; i++)
-                    System.out.print(" ");
+                    stream.append(" ");
             else {
                 for (int i = 0; i < M+Z; i++)
-                    System.out.print(" ");
-                System.out.print("│");
+                    stream.append(" ");
+                stream.append("│");
             }
         }
         else {
             for (int i = 0; i < M+Z; i++)
-                System.out.print(" ");
-            System.out.print("│");
+                stream.append(" ");
+            stream.append("│");
         }
+        return stream;
     }
 
     /**
@@ -238,85 +261,97 @@ public class BoardView {
      * @param x coordinate
      */
     public void printCards(int x) {
-        for (int y = 0; y < N/M; y++) {
-            if (getCell(x, y).getColor() == null){
+        StringBuilder stream = new StringBuilder();
+        for (int y = 0; y < N; y++) {
+            if (getCell(x, y) == null){
                 if(y == 0)
-                    System.out.print(" ");
+                    stream.append(" ");
                 for(int i = 0; i < (Z+M)*Z; i++)
-                    System.out.print(" ");
-            if(y != N/M - 1)
-                if(getCell(x, y+1).getColor() != null)
-                    System.out.print("│");
+                    stream.append(" ");
+            if(y != N - 1)
+                if(getCell(x, y+1) != null)
+                    stream.append("│");
             }
             else {
                 if (y == 0)
-                    System.out.print("│");
+                    stream.append("│");
                 if (getCell(x, y).getClass() == NormalCell.class)
-                    printAmmo(getCell(x, y));
-                else printWeapons(getCell(x, y));
+                    stream.append(printAmmo(getCell(x, y)));
+                else  stream.append(printWeapons(getCell(x, y)));
             }
         }
-        System.out.print("\n");
+        stream.append("\n");
+        System.out.print(stream);
     }
 
     /**
      * This function prints Ammo if the cell has an ammo, else nothing
      * @param cell with needed information
+     * @return a stream with infos
      */
-    public void printAmmo(Cell cell){
+    public StringBuilder printAmmo(Cell cell){
+        StringBuilder stream = new StringBuilder();
         if (cell.getCard(0) != null){
-            System.out.print("Ammo");
-            for (int i = 0; i < Z*2 - 4; i++)
-                System.out.print(" ");
+            stream.append(printAmmoThings((AmmoCard)cell.getCard(0)));
+            stream.append("  ");
         }
         else
-            for (int i = 0; i < Z*2; i++)
-                System.out.print(" ");
+            for (int i = 0; i < 15; i++)
+                stream.append(" ");
 
-        for(int j = Z*2; j < (M+Z)*Z; j++)
-            System.out.print(" ");
-        System.out.print("│");
+        for(int j = 15; j < (M+Z)*Z; j++)
+            stream.append(" ");
+        stream.append("│");
+        return stream;
+    }
+
+    /**
+     * This function prints the information of the AmmoCard:
+     * It will print in order the number of red, yellow and blu cubes it gives
+     * it prints "+Power" if it gives a power up, else null spaces
+     * @param ammo with needed information
+     * @return a stream with infos
+     */
+    public StringBuilder printAmmoThings(AmmoCard ammo){
+        StringBuilder stream = new StringBuilder();
+        stream.append(ammo.toString());
+        return stream;
     }
 
     /**
      * This function verifies if a Regeneration cell has weapons
      * @param cell with needed information
+     * @return a stream with infos
      */
-    public void printWeapons(Cell cell){
+    public StringBuilder printWeapons(Cell cell){
+        StringBuilder stream = new StringBuilder();
         for(int i = 0; i < Z; i++) {
             if (cell.getCard(i) != null)
-                printWeaponName((WeaponCard) cell.getCard(i));
+                stream.append(printWeaponName((WeaponCard) cell.getCard(i)));
             else for(int j = 0; j < M+Z; j++)
-                System.out.print(" ");
+                stream.append(" ");
         }
-        System.out.print("│");
+        stream.append("│");
+        return stream;
     }
 
     /**
      * This function prints the name of the weapon
      * @param weapon name to be printed
+     * @return a stream with infos
      */
-    public void printWeaponName(WeaponCard weapon){
-        System.out.print(weapon.getName().substring(0, Math.min(weapon.getName().length(), M+2)) + " ");
+    public StringBuilder printWeaponName(WeaponCard weapon){
+        StringBuilder stream = new StringBuilder();
+        String name = weapon.getName().substring(0, Math.min(weapon.getName().length(), M+2));
+        stream.append(name);
+        stream.append(name);
+        stream.append(" ");
         for(int j = 0; j < weapon.getName().length(); j++)
-            System.out.print(" ");
+            stream.append(" ");
+        return stream;
     }
 
     public void drawGUI() {
         // TODO implement here
     }
 }
-
-
-/*
-    ┌──────────────────────────────────────────────────────────────────────────┐
-    │ Table Heading                                                            │
-    ├──────────────────┬──────────────────┬──────────────────┬─────────────────┤
-    │ first row (col1) │ with some        │ and more         │ even more       │
-    │                  │ information      │ information      │                 │
-    ├──────────────────┼──────────────────┼──────────────────┼─────────────────┤
-    │ second row       │ with some        │ and more         │ even more       │
-    │ (col1)           │ information      │ information      │                 │
-    │                  │ (col2)           │ (col3)           │                 │
-    └──────────────────┴──────────────────┴──────────────────┴─────────────────┘
- */
