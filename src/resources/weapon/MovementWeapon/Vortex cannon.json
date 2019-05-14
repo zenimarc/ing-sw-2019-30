@@ -1,0 +1,1 @@
+{"weaponType":"VORTEX_CANNON","cost":[],"attacks":[{"step":1,"name":"BASE_ATTACK_NAME","damage":2,"mark":0,"description":"Sposta un avversario di 1 caselle.","target":1,"targetType":"VISIBLE"},{"step":1,"name":"VORTEX_CANNON_OPT1","damage":1,"mark":0,"description":"Sposta un avversario di 1 caselle.","bulletsColor":[1,0,0],"target":2,"targetType":"VISIBLE"}],"isLoaded":false}

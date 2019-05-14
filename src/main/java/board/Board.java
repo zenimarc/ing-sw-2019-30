@@ -3,6 +3,7 @@ package board;
 import deck.*;
 import player.Player;
 import weapon.WeaponCard;
+import weapon.WeaponFactory;
 
 import java.util.*;
 
@@ -37,17 +38,26 @@ public class Board {
         this.numSkulls = numskull;
         this.playerSkulls = new HashMap<>();
         this.billboard = board;
-        this.weaponDeck = new Deck();
         this.powerUpDeck = new Deck();
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
 
+        this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        setStartAmmoCard();
 
-        this.ammoDeck = new Deck();
-        //TODO: bisognerebbe fare una cosa del genere per ogni Deck, ma abbiamo problemi...
-      //  this.ammoDeck = new Deck((new AmmoCardFactory()).getAmmoCardList());
-      //  setStartAmmoCard();
+        this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
+        setStartWeaponCard();
 
+    }
+
+    private void setStartWeaponCard(){
+        for(Cell c : billboard.getCellMap().keySet()){
+            if(c.getClass() == RegenerationCell.class) {
+                for (int i = 0; i < 3; i++) {
+                    c.setCard(weaponDeck.draw());
+                }
+            }
+        }
     }
 
     private void setStartAmmoCard(){

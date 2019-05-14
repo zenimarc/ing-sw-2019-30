@@ -25,6 +25,9 @@ public class MainLocalGame {
         //print board
         System.out.println(boardController.getBoard().getBillboard().toString());
 
+        boardController.getBoardViewToString();
+
+
     }
 
     private ArrayList<Player> initializePlayer(){

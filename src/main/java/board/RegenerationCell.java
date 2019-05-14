@@ -21,11 +21,11 @@ public class RegenerationCell extends Cell {
      */
 
     public RegenerationCell() {
-        this(null, new WeaponCard[3]);
+        this(null, new WeaponCard[]{null,null,null});
     }
 
     public RegenerationCell(Color color) {
-        this(color, new WeaponCard[3]);
+        this(color, new WeaponCard[]{null,null,null});
     }
 
     public RegenerationCell(Color color, WeaponCard[] weaponCard){
@@ -75,6 +75,18 @@ public class RegenerationCell extends Cell {
             }
         }
         return false;
+    }
+
+    /**
+     * This adds 3 cards in the RegenerationCell
+     * @param weaponCards
+     * @return
+     */
+    public boolean setCards(WeaponCard[] weaponCards){
+        for(int i=0;i<3;i++){
+            this.weaponCard[i] = weaponCards[i];
+        }
+        return true;
     }
 
     /**

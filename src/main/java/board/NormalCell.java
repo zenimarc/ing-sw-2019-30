@@ -61,8 +61,8 @@ public class NormalCell extends Cell {
     }
 
     /**
-     * This function verifies if there is already an ammoCard and, in case, it sets a new one if there is none
-     * @param card the card to bet set
+     * This set an AmmoCard in this cell
+     * @param card the card to be set
      * @return true if there was not an ammoCard, else false
      */
     @Override

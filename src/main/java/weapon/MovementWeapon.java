@@ -15,7 +15,10 @@ import static controller.EnumTargetSet.*;
 
 public class MovementWeapon extends WeaponCard {
 
-    public MovementWeapon(EnumWeapon weaponType){
+    protected EnumMovementWeapon weaponType;
+
+
+    public MovementWeapon(EnumMovementWeapon weaponType){
         this.weaponType = weaponType;
 
         switch (weaponType){

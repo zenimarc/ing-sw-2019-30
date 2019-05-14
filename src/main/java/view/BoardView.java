@@ -17,6 +17,12 @@ public class BoardView {
     private int L = 4; //varibile usata per gestire le porte
     private int Z = 3; //variabile per printare meglio le righe orizzontali
 
+    public BoardView(){}
+
+    public BoardView(Board board){
+        this.board = board;
+    }
+
     public void setBoard(Board board) {
         this.board = board;
     }

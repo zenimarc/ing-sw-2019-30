@@ -49,8 +49,6 @@ class NormalCellTest {
         assertFalse(normalCell2.setCard(new PowerCard()));
         //card is Ammocard && cellAmmocard is null
         assertTrue(normalCell2.setCard(ammoCard));
-        //card is Ammocard && cellAmmocard is full
-        assertFalse(normalCell1.setCard(ammoCard));
         normalCell2.removeCard();
         //card is not Ammocard && cellAmmocard is full
         assertFalse(normalCell2.setCard(new PowerCard()));

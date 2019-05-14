@@ -13,7 +13,9 @@ import static controller.EnumTargetSet.*;
 
 public class AreaWeapon extends WeaponCard {
 
-    protected AreaWeapon(EnumWeapon weaponType){
+    protected EnumAreaWeapon weaponType;
+
+    protected AreaWeapon(EnumAreaWeapon weaponType){
         this.weaponType = weaponType;
 
         switch (weaponType) {
