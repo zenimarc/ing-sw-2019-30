@@ -12,28 +12,50 @@ import java.util.List;
 
 public class WeaponFactory {
 
+    private static File weaponFolder;
+
     public WeaponFactory() {
+        weaponFolder = new File("src"+File.separator+
+                "resources"+File.separator+
+                "weapon" + File.separator);
     }
 
-    private static List<WeaponCard> loadWeaponCardFromJSon() {
+
+    private WeaponCard loadWeaponCardFromJSon(){
+
+        WeaponCard weaponCard;
+
+
+
+
+
+
+
+        return null;
+    }
+
+
+    private static List<WeaponCard> loadWeaponCards() {
 
         List<WeaponCard> weaponCards = new ArrayList<>();
 
         try {
-
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
 
-            File weaponFolder = new File("src"+File.separator+
-                    "resources"+File.separator+
-                    "weapon" + File.separator);
-
             BufferedReader bufferedReader;
 
-            for(final File weaponFile : weaponFolder.listFiles()){
-                bufferedReader = new BufferedReader(new FileReader(weaponFile));
-                weaponCards.add(gson.fromJson(bufferedReader, new TypeToken<WeaponCard>(){}.getType()));
+            for(final File folder : weaponFolder.listFiles()){
+                if (folder.getName().equals(EnumWeaponType.SIMPLE_WEAPON.getName())){
+
+                    for(final File weaponFile : folder.listFiles()){
+
+                        bufferedReader = new BufferedReader(new FileReader(weaponFile));
+                        weaponCards.add(gson.fromJson(bufferedReader, new TypeToken<SimpleWeapon>(){}.getType()));
+                    }
+                }
             }
+            return weaponCards;
 
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
@@ -42,7 +64,7 @@ public class WeaponFactory {
     }
 
     public List<WeaponCard> getWeaponCardList(){
-        return loadWeaponCardFromJSon();
+        return loadWeaponCards();
     }
 
 
@@ -114,7 +136,9 @@ public class WeaponFactory {
 
     public static void main(String[] arg){
         WeaponFactory factory = new WeaponFactory();
-        factory.storeWeapons();
+        factory.getWeaponCardList().stream().forEach(x -> System.out.println(x));
+
+
     }
 
 }
