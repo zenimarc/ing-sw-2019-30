@@ -77,7 +77,7 @@ class BoardViewTest {
 
     }
 
-   /* @Test
+    @Test
 
     public void drawCLI2() {
         Player p = new Player("Marco");
@@ -104,5 +104,5 @@ class BoardViewTest {
     }
 
     //WeaponCard weapon = new SimpleWeapon(LOCK_RIFLE);
-    */
+
 }

@@ -1,15 +1,13 @@
 package view;
 import player.Player;
 
-import static java.lang.Boolean.TRUE;
-
 /**
  * 
  */
 public class PlayerBoardView {
     private Player player;
-    private static int CELL_LENGTH=12;
-    private static int CELL_HEIGHT=6;
+    private static int CELL_LENGTH=8;
+    private static int CELL_HEIGHT=8;
     private static int COLS=12;
     private static int ROWS=2;
     private static char H_SEPARATOR = '─';
@@ -20,8 +18,9 @@ public class PlayerBoardView {
     private static char BOTTOM_RIGHT_SEPARATOR = '┘';
     private static char NEW_ROW_LEFT_SEPARATOR = '├';
     private static char NEW_ROW_RIGHT_SEPARATOR = '┤';
-    private static char NEW_COL_SEPARATOR1 = '┬';
-    private static char NEW_COL_SEPARATOR2 = '┼';
+    private static char NEW_COL_SEPARATOR_TOP = '┬';
+    private static char NEW_COL_SEPARATOR_MIDDLE = '┼';
+    private static char NEW_COL_SEPARATOR_BOTTOM = '┴';
 
 
 
@@ -34,74 +33,68 @@ public class PlayerBoardView {
     }
 
     public void drawDamageTrack() {
-        printBordCell(TOP_LEFT_SEPARATOR, NEW_COL_SEPARATOR1);
+        //HEADER
+        System.out.println(player.getName()+"'s damage track:");
+        //TOP BORDER
+        printBordCell(TOP_LEFT_SEPARATOR, NEW_COL_SEPARATOR_TOP);
         for (int i=0; i<COLS-2; i++ ){
-            printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR1);
+            printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_TOP);
         }
         printBordCell(H_SEPARATOR, TOP_RIGHT_SEPARATOR);
+
+        //CELL BODY
         System.out.print(System.getProperty("line.separator"));
-        printBodyCell(V_SEPARATOR, V_SEPARATOR, 1+"test");
-        for (int i=0; i<COLS-2; i++)
-            printBodyCell(' ', V_SEPARATOR, (i+2)+"test");
-        printBodyCell(' ', V_SEPARATOR, COLS+1+"test");
+        //First element
+        if(!player.getPlayerBoard().getDamageTrack().isEmpty())
+            printBodyCell(V_SEPARATOR, V_SEPARATOR, 1+" "+player.getPlayerBoard().getDamageTrack().get(0).getName());
+        else
+            printBodyCell(' ', V_SEPARATOR, "X");
+        //other elements
+        for (int i=1; i<COLS-1; i++)
+            if(player.getPlayerBoard().getDamageTrack().size() > i)
+                printBodyCell(' ', V_SEPARATOR, (i+1)+" "+player.getPlayerBoard().getDamageTrack().get(i).getName());
+            else
+                printBodyCell(' ', V_SEPARATOR, "X");
+        //last element
+        if(player.getPlayerBoard().getDamageTrack().size() > COLS-1)
+            printBodyCell(' ', V_SEPARATOR, COLS+" "+player.getPlayerBoard().getDamageTrack().get(COLS-1).getName());
+        else
+            printBodyCell(' ', V_SEPARATOR, "X");
+
+        //BOTTOM BORDER
+        System.out.print(System.getProperty("line.separator"));
+        printBordCell(BOTTOM_LEFT_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM);
+        for (int i=0; i<COLS-2; i++ ){
+            printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM);
+        }
+        printBordCell(H_SEPARATOR, BOTTOM_RIGHT_SEPARATOR);
 
 
 
 
     }
-    public void printBodyCell(char left, char right, String text){
-        System.out.print(left);
+    public void printBodyCell(char leftChar, char rightChar, String text){
+        System.out.print(leftChar);
         if (text == null || text.equals(""))
-            for(int i=0; i<CELL_LENGTH-2; i++)
+            for(int i=0; i<CELL_LENGTH-1; i++)
                 System.out.print(' ');
         else {
-            System.out.print(text.substring(0, Math.min(CELL_LENGTH - 2, text.length())));
-            for(int i=0; i<CELL_LENGTH-text.length();i++)
+            System.out.print(text.substring(0, Math.min(CELL_LENGTH - 1, text.length())));
+            for(int i=0; i<CELL_LENGTH-Math.min(CELL_LENGTH - 1, text.length());i++)
                 System.out.print(' ');
         }
-        System.out.print(right);
+        System.out.print(rightChar);
     }
 
-    public void printBordCell(char left, char right){
-        System.out.print(left);
+    public void printBordCell(char leftChar, char rightChar){
+        System.out.print(leftChar);
         for(int i=0; i<CELL_LENGTH; i++)
             System.out.print(H_SEPARATOR);
-        System.out.print(right);
+        System.out.print(rightChar);
     }
-
-    public void drawCLI() {
-        System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
-                "| \t\t|\t       \t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ | _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _|\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|_ _ _ _ _ _ _ _| _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|\t\t|\t\t |\t\t  |\t\t  |\n" +
-                "|_ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _ |_ _ _ _ _ _ _ _|");
-//TODO implement here
-    }
-
 
     public void drawGUI() {
         // TODO implement here
 
-    }
-
-    public static void main (String[] args){
-        PlayerBoardView playerBoardView = new PlayerBoardView(new Player("Marco"));
-        playerBoardView.drawDamageTrack();
     }
 }

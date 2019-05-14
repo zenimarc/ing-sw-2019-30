@@ -16,8 +16,8 @@ class PlayerBoardViewTest {
     void setUp() {
         gameBoard = new Board(1);
         p1 = new Player("Marco", gameBoard);
-        p1.addDamage(new Player("Paolo"), 3);
-        p1.addDamage(new Player("Luca"));
+        p1.addDamage(new Player("Alberto"), 8);
+        p1.addDamage(new Player("L"), 6);
         p1view = new PlayerBoardView(p1);
     }
 

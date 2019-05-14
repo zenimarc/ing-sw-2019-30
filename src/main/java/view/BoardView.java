@@ -9,8 +9,8 @@ import java.util.*;
  */
 public class BoardView {
     private Board board;
-    private int N = 24;
-    private int M = 8;
+    private int N = 27;
+    private int M = 9;
     private int L = 4;
     private int Z = 3;
 
