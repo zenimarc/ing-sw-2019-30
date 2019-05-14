@@ -33,9 +33,33 @@ public class PlayerBoardView {
     }
 
     public void drawDamageTrack() {
-        //HEADER
+        //NAME
         System.out.println(player.getName()+"'s damage track:");
         //TOP BORDER
+        printBordCell(TOP_LEFT_SEPARATOR, H_SEPARATOR);
+        for (int i=0; i<COLS-2; i++ ){
+            printBordCell(H_SEPARATOR, H_SEPARATOR);
+        }
+        printBordCell(H_SEPARATOR, TOP_RIGHT_SEPARATOR);
+
+        //HEADER
+        System.out.print(System.getProperty("line.separator"));
+        printBodyCell(V_SEPARATOR, '\u0000', "");
+        for (int i=1; i<COLS-1; i++)
+            switch(i) {
+                case 2:
+                    printBodyCell(V_SEPARATOR, ' ', "GRAB+>");
+                    break;
+                case 5:
+                    printBodyCell(V_SEPARATOR, ' ', "SHOOT+>");
+                    break;
+                default:
+                    printBodyCell(' ', ' ', "");
+            }
+        printBodyCell(' ', ' ', "");
+        System.out.print(V_SEPARATOR);
+
+        System.out.print(System.getProperty("line.separator"));
         printBordCell(TOP_LEFT_SEPARATOR, NEW_COL_SEPARATOR_TOP);
         for (int i=0; i<COLS-2; i++ ){
             printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_TOP);
@@ -76,7 +100,7 @@ public class PlayerBoardView {
     public void printBodyCell(char leftChar, char rightChar, String text){
         System.out.print(leftChar);
         if (text == null || text.equals(""))
-            for(int i=0; i<CELL_LENGTH-1; i++)
+            for(int i=0; i<CELL_LENGTH; i++)
                 System.out.print(' ');
         else {
             System.out.print(text.substring(0, Math.min(CELL_LENGTH - 1, text.length())));

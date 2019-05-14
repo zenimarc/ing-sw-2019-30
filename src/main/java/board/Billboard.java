@@ -292,6 +292,12 @@ public class Billboard {
         return billboardCell.get(cell);
     }
 
+    /**
+     * this function return a Cell from a Position
+     * if there isn't any Cell in the indicated Position returns null
+     * @param pos of the Cell you want to know
+     * @return the Cell in the indicated Position or null if doesn't exists
+     */
     public Cell getCellFromPosition(Position pos){
         return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
     }
