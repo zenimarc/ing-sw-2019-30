@@ -14,6 +14,12 @@ public class BoardView {
     private int L = 4;
     private int Z = 3;
 
+    public BoardView(){}
+
+    public BoardView(Board board){
+        this.board = board;
+    }
+
     public void setBoard(Board board) {
         this.board = board;
     }
