@@ -33,65 +33,97 @@ public class PlayerBoardView {
     }
 
     public void drawDamageTrack() {
-        //HEADER
-        System.out.println(player.getName()+"'s damage track:");
+        StringBuilder stringBuilder = new StringBuilder();
+        //NAME
+        stringBuilder.append(player.getName()+"'s damage track:"+System.getProperty("line.separator"));
         //TOP BORDER
-        printBordCell(TOP_LEFT_SEPARATOR, NEW_COL_SEPARATOR_TOP);
+        stringBuilder.append(printBordCell(TOP_LEFT_SEPARATOR, H_SEPARATOR));
         for (int i=0; i<COLS-2; i++ ){
-            printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_TOP);
+            stringBuilder.append(printBordCell(H_SEPARATOR, H_SEPARATOR));
         }
-        printBordCell(H_SEPARATOR, TOP_RIGHT_SEPARATOR);
+        stringBuilder.append(printBordCell(H_SEPARATOR, TOP_RIGHT_SEPARATOR));
+
+        //HEADER
+        stringBuilder.append(System.getProperty("line.separator"));
+        stringBuilder.append(printBodyCell(V_SEPARATOR, '\u0000', ""));
+        for (int i=1; i<COLS-1; i++)
+            switch(i) {
+                case 2:
+                    stringBuilder.append(printBodyCell(V_SEPARATOR, ' ', "GRAB+>"));
+                    break;
+                case 5:
+                    stringBuilder.append(printBodyCell(V_SEPARATOR, ' ', "SHOOT+>"));
+                    break;
+                default:
+                    stringBuilder.append(printBodyCell(' ', ' ', ""));
+            }
+        stringBuilder.append(printBodyCell(' ', ' ', ""));
+        stringBuilder.append(V_SEPARATOR);
+
+        stringBuilder.append(System.getProperty("line.separator"));
+        stringBuilder.append(printBordCell(TOP_LEFT_SEPARATOR, NEW_COL_SEPARATOR_TOP));
+        for (int i=0; i<COLS-2; i++ ){
+            stringBuilder.append(printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_TOP));
+        }
+        stringBuilder.append(printBordCell(H_SEPARATOR, TOP_RIGHT_SEPARATOR));
 
         //CELL BODY
-        System.out.print(System.getProperty("line.separator"));
+        stringBuilder.append(System.getProperty("line.separator"));
         //First element
         if(!player.getPlayerBoard().getDamageTrack().isEmpty())
-            printBodyCell(V_SEPARATOR, V_SEPARATOR, 1+" "+player.getPlayerBoard().getDamageTrack().get(0).getName());
+            stringBuilder.append(printBodyCell(V_SEPARATOR, V_SEPARATOR, 1+" "+player.getPlayerBoard().getDamageTrack().get(0).getName()));
         else
-            printBodyCell(' ', V_SEPARATOR, "X");
+            stringBuilder.append(printBodyCell(' ', V_SEPARATOR, "X"));
         //other elements
         for (int i=1; i<COLS-1; i++)
             if(player.getPlayerBoard().getDamageTrack().size() > i)
-                printBodyCell(' ', V_SEPARATOR, (i+1)+" "+player.getPlayerBoard().getDamageTrack().get(i).getName());
+                stringBuilder.append(printBodyCell(' ', V_SEPARATOR, (i+1)+" "+player.getPlayerBoard().getDamageTrack().get(i).getName()));
             else
-                printBodyCell(' ', V_SEPARATOR, "X");
+                stringBuilder.append(printBodyCell(' ', V_SEPARATOR, "X"));
         //last element
         if(player.getPlayerBoard().getDamageTrack().size() > COLS-1)
-            printBodyCell(' ', V_SEPARATOR, COLS+" "+player.getPlayerBoard().getDamageTrack().get(COLS-1).getName());
+            stringBuilder.append(printBodyCell(' ', V_SEPARATOR, COLS+" "+player.getPlayerBoard().getDamageTrack().get(COLS-1).getName()));
         else
-            printBodyCell(' ', V_SEPARATOR, "X");
+            stringBuilder.append(printBodyCell(' ', V_SEPARATOR, "X"));
 
         //BOTTOM BORDER
-        System.out.print(System.getProperty("line.separator"));
-        printBordCell(BOTTOM_LEFT_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM);
+        stringBuilder.append(System.getProperty("line.separator"));
+        stringBuilder.append(printBordCell(BOTTOM_LEFT_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM));
         for (int i=0; i<COLS-2; i++ ){
-            printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM);
+            stringBuilder.append(printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM));
         }
-        printBordCell(H_SEPARATOR, BOTTOM_RIGHT_SEPARATOR);
+        stringBuilder.append(printBordCell(H_SEPARATOR, BOTTOM_RIGHT_SEPARATOR));
+
+        System.out.print(stringBuilder.toString());
 
 
 
 
     }
-    public void printBodyCell(char leftChar, char rightChar, String text){
-        System.out.print(leftChar);
+    public String printBodyCell(char leftChar, char rightChar, String text){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(leftChar);
         if (text == null || text.equals(""))
-            for(int i=0; i<CELL_LENGTH-1; i++)
-                System.out.print(' ');
+            for(int i=0; i<CELL_LENGTH; i++)
+                stringBuilder.append(' ');
         else {
-            System.out.print(text.substring(0, Math.min(CELL_LENGTH - 1, text.length())));
+            stringBuilder.append(text.substring(0, Math.min(CELL_LENGTH - 1, text.length())));
             for(int i=0; i<CELL_LENGTH-Math.min(CELL_LENGTH - 1, text.length());i++)
-                System.out.print(' ');
+                stringBuilder.append(' ');
         }
-        System.out.print(rightChar);
+        stringBuilder.append(rightChar);
+        return stringBuilder.toString();
     }
 
-    public void printBordCell(char leftChar, char rightChar){
-        System.out.print(leftChar);
+    public String printBordCell(char leftChar, char rightChar){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(leftChar);
         for(int i=0; i<CELL_LENGTH; i++)
-            System.out.print(H_SEPARATOR);
-        System.out.print(rightChar);
+            stringBuilder.append(H_SEPARATOR);
+        stringBuilder.append(rightChar);
+        return stringBuilder.toString();
     }
+
 
     public void drawGUI() {
         // TODO implement here
