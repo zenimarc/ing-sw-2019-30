@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * This class is an idea of genertic attack.
  * Need implements different attack's type.

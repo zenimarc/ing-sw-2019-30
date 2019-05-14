@@ -13,7 +13,10 @@ import static controller.EnumTargetSet.*;
 
 public class SimpleWeapon extends WeaponCard{
 
-    SimpleWeapon(EnumWeapon type){
+    private EnumSimpleWeapon weaponType;
+
+
+    SimpleWeapon(EnumSimpleWeapon type){
         this.weaponType = type;
 
         switch (type){

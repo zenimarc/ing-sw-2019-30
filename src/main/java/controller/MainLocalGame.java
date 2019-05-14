@@ -27,6 +27,7 @@ public class MainLocalGame {
 
         boardController.getBoardViewToString();
 
+
     }
 
     private ArrayList<Player> initializePlayer(){

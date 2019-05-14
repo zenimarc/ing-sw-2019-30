@@ -12,7 +12,10 @@ import static controller.EnumTargetSet.*;
 
 public class DistanceWeapon extends WeaponCard {
 
-    public DistanceWeapon(EnumWeapon weaponType){
+    protected EnumDistanceWeapon weaponType;
+
+
+    public DistanceWeapon(EnumDistanceWeapon weaponType){
         this.weaponType = weaponType;
 
         switch (weaponType){
