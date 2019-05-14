@@ -42,12 +42,10 @@ public class Board {
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
 
+        this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        setStartAmmoCard();
 
-        this.ammoDeck = new Deck();
-        //TODO: bisognerebbe fare una cosa del genere per ogni Deck, ma abbiamo problemi...
-      //  this.ammoDeck = new Deck((new AmmoCardFactory()).getAmmoCardList());
-      //  setStartAmmoCard();
-
+        //TODO: bisognerebbe fare una cosa del genere per ogni Deck
     }
 
     private void setStartAmmoCard(){

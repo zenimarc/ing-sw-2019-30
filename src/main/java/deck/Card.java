@@ -14,7 +14,13 @@ public abstract class Card {
     }
 
 
+    public static List<Card> ammoCardsToCards(List<AmmoCard> ammoCards){
 
-
+        List<Card> cards = new ArrayList<>();
+        for (AmmoCard ammoCard : ammoCards) {
+            cards.add(ammoCard);
+        }
+        return cards;
+    }
 
 }
