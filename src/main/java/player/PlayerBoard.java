@@ -59,6 +59,14 @@ public class PlayerBoard {
     }
 
     /**
+     * This function returns a Map with all players and the marks they've given to this PlayerBoard
+     * @return a Map<Player, Integer> with players and their marks.
+     */
+    public Map<Player, Integer> getMarks(){
+        return this.marks;
+    }
+
+    /**
      * This function returns the boardof the player
      * @return the board of the player
      */
