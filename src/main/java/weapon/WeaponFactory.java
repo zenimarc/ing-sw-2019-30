@@ -1,9 +1,11 @@
 package weapon;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import deck.AmmoCard;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -26,17 +28,11 @@ public class WeaponFactory {
 
         WeaponCard weaponCard;
 
-
-
-
-
-
-
         return null;
     }
 
 
-    private static List<WeaponCard> loadWeaponCards() {
+    private static List<WeaponCard> loadWeaponCardsGSON() {
 
         List<WeaponCard> weaponCards = new ArrayList<>();
 
@@ -64,17 +60,41 @@ public class WeaponFactory {
         return Collections.emptyList();
     }
 
+    private List<WeaponCard> loadWeaponCards(){
+        List<WeaponCard> weaponCards = new ArrayList<>();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        File folder = new File("src"+File.separator+
+                "resources"+File.separator+
+                "weapon" + File.separator+
+                "test_jackson");
+        if(!folder.exists()) return weaponCards;
+
+        for (File file : folder.listFiles()){
+
+            try {
+                weaponCards.add(
+                        objectMapper.readValue(file, WeaponCard.class));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return weaponCards;
+    }
+
     public List<WeaponCard> getWeaponCardList(){
         return loadWeaponCards();
     }
 
 
 
-    private void storeWeapon(String jsonWeapon, String weaponType, String weaponName){
+    private void storeWeapon(String jsonWeapon, String weaponFolderName, String weaponName){
         File file = new File("src"+File.separator+
                 "resources"+File.separator+
                 "weapon" + File.separator+
-                weaponType + File.separator +
+                weaponFolderName + File.separator +
                 weaponName + ".json");
 
         try (PrintWriter writer = new PrintWriter(file)) {
@@ -90,36 +110,29 @@ public class WeaponFactory {
     }
 
 
-    public void storeWeapons(){
-        Gson gson = new Gson();
-        File folder;
+        public void storeWeaponJackson(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        for(EnumWeaponType type : EnumWeaponType.values()){
-
-            folder = new File("src"+File.separator+
+        File folder = new File("src"+File.separator+
                     "resources"+File.separator+
                     "weapon" + File.separator+
-                    type.getName());
-            if(!folder.exists()) folder.mkdir();
+                    "test_jackson");
+        if(!folder.exists()) folder.mkdir();
+
+        for(EnumSimpleWeapon weapon : EnumSimpleWeapon.values()) {
+            try {
+                storeWeapon(objectMapper.writeValueAsString(getSimpleWeapon(weapon)),
+                        "test_jackson", weapon.getName());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
 
-        for(EnumSimpleWeapon weapon : EnumSimpleWeapon.values()){
-            storeWeapon(gson.toJson(getSimpleWeapon(weapon)), "SimpleWeapon", weapon.getName());
+
         }
 
-        for(EnumDistanceWeapon weapon : EnumDistanceWeapon.values()){
-            storeWeapon(gson.toJson(getDistanceWeapon(weapon)), "DistanceWeapon", weapon.getName());
-        }
 
-        for(EnumAreaWeapon weapon : EnumAreaWeapon.values()){
-            storeWeapon(gson.toJson(getAreaWeapon(weapon)), "AreaWeapon", weapon.getName());
-        }
-
-        for(EnumMovementWeapon weapon : EnumMovementWeapon.values()){
-            storeWeapon(gson.toJson(getMovementWeapon(weapon)), "MovementWeapon", weapon.getName());
-        }
-
-    }
 
     private WeaponCard getSimpleWeapon(EnumSimpleWeapon type) {
         return new SimpleWeapon(type);
@@ -135,11 +148,12 @@ public class WeaponFactory {
         return new MovementWeapon(type);
     }
 
-   /* public static void main(String[] arg){
+    public static void main(String[] arg) {
         WeaponFactory factory = new WeaponFactory();
-        factory.getWeaponCardList().stream().forEach(x -> System.out.println(x));
+        //   factory.getWeaponCardList().stream().forEach(x -> System.out.println(x));
+        factory.storeWeaponJackson();
+        System.out.println(factory.loadWeaponCards().size());
 
-
-    }*/
+    }
 
 }
