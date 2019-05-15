@@ -115,7 +115,7 @@ public class Billboard {
     }
 
     /**
-     * This function return an ArrayList of Door attainable from //TODO finire Javadoc
+     * This function returns an ArrayList of Door attainable from //TODO finire Javadoc
      * @param startAttainableDoor
      * @param goalAttainableDoor
      * @return
@@ -202,7 +202,6 @@ public class Billboard {
 
     /**
      * This function verify if a player can move from a cell "start" to a cell "goal" in a number of steps <= "steps"
-     *
      * @param start start's cell
      * @param goal goal's cell
      * @param step max steps number
@@ -238,10 +237,9 @@ public class Billboard {
 
             //Not near room (pass two doors)
             HashMap<Door,Door> doubleDoors = doubleDoorsPlayerCanPass(startCellsDoor,goalCellsDoor);
-            if(thereIsWalkableComplexWay(start,goal,doubleDoors,step)) return true;
+            return(thereIsWalkableComplexWay(start,goal,doubleDoors,step));
 
         }
-        return false;
     }
 
     /**
@@ -279,6 +277,11 @@ public class Billboard {
         return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
     }
 
+    /**
+     * This function returns a list of cells the  shooter can see from his position
+     * @param shooterCell the cell in which the shooter is
+     * @return a list of visible cells
+     */
     public List<Cell> visibleCells(Cell shooterCell){
         return billboardCell.keySet().stream().filter(x -> isVisible(shooterCell, x)).collect(Collectors.toCollection(ArrayList::new));
     }
@@ -302,6 +305,10 @@ public class Billboard {
         return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
     }
 
+    /**
+     * TODO JAVADOC
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

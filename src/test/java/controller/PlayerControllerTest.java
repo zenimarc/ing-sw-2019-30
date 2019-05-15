@@ -87,7 +87,6 @@ class PlayerControllerTest {
 
     }
 
-    /* TODO: fix tests
     @Test
     void move(){
         player.getPawn().setCell(c00);
@@ -108,6 +107,6 @@ class PlayerControllerTest {
         assertTrue(player.useAmmo(array));
     }
 
-     */
+
 
 }

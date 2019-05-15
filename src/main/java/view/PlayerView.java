@@ -13,8 +13,9 @@ public class PlayerView {
     /**
      * Default constructor
      */
-    public PlayerView() {
-        //TODO: implement here
+    public PlayerView(Player player, PlayerBoardView view) {
+        this.player = player;
+        this.myPlayerBoard = view;
     }
 
     public boolean move(Cell cell) {
@@ -40,9 +41,8 @@ public class PlayerView {
         //TODO implement here
     }
 
-    public void drawCLI() {
-        // TODO implement here
-
+    public void drawCLI(BoardView map) {
+        map.drawCLI();
     }
 
 

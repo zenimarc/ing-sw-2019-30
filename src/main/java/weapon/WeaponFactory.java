@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//TODO ho commentato il main di questa classe e gli inizializzatori di deck nella classe Board
 public class WeaponFactory {
 
     private static File weaponFolder;
@@ -134,11 +135,11 @@ public class WeaponFactory {
         return new MovementWeapon(type);
     }
 
-    public static void main(String[] arg){
+   /* public static void main(String[] arg){
         WeaponFactory factory = new WeaponFactory();
         factory.getWeaponCardList().stream().forEach(x -> System.out.println(x));
 
 
-    }
+    }*/
 
 }

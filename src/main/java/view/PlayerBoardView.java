@@ -22,9 +22,6 @@ public class PlayerBoardView {
     private static char NEW_COL_SEPARATOR_MIDDLE = '┼';
     private static char NEW_COL_SEPARATOR_BOTTOM = '┴';
 
-
-
-
     /**
      * Default constructor
      */

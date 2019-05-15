@@ -32,6 +32,10 @@ public abstract class  Cell {
      */
     public Color getColor(){return color;}
 
+    /**
+     * This function returns the pawns in the cell
+     * @return a list of pawns
+     */
     public ArrayList<Pawn> getPawns(){return this.pawns;}
 
     /**

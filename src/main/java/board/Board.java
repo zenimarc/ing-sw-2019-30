@@ -42,14 +42,17 @@ public class Board {
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
 
-        this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        /*this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
         setStartAmmoCard();
 
         this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
-        setStartWeaponCard();
+        setStartWeaponCard();*/
 
     }
 
+    /**
+     * This function sets the weapon cards in every RegenerationCell at the beginning of the game
+     */
     private void setStartWeaponCard(){
         for(Cell c : billboard.getCellMap().keySet()){
             if(c.getClass() == RegenerationCell.class) {
@@ -60,6 +63,9 @@ public class Board {
         }
     }
 
+    /**
+     * This function sets the ammo cards in every NormalCell at the beginning of the game
+     */
     private void setStartAmmoCard(){
         for(Cell c : billboard.getCellMap().keySet()){
             if(c.getClass() == NormalCell.class){

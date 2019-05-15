@@ -11,8 +11,8 @@ import java.util.*;
  */
 public class BoardView {
     private Board board;
-    private int N = 3; //numero di celle orizzontale
-    private int A = 4;  //numero di celle verticale
+    private int N = 4; //numero di celle orizzontale
+    private int A = 3;  //numero di celle verticale
     private int M = 8; //grandezza bordo verticale di ogni cella e deve essere minimo > L+2
     private int L = 4; //varibile usata per gestire le porte
     private int Z = 3; //variabile per printare meglio le righe orizzontali
@@ -47,7 +47,7 @@ public class BoardView {
             for(int x = i*M; x < i*M+M; x ++)
                 printThings(x);
             printCards(i);
-            if(i < L-1)
+            if(i < A-1)
                 printMiddleBoard(i);
             else printLowBoard();}
     }
@@ -61,22 +61,23 @@ public class BoardView {
             if(getCell(0, Board) == null){
                 if(Board == 0)
                     stream.append(" ");
-                else if (getCell(N, Board-1) != null)
-                    stream.append("┐");
+                else if(getCell(0, Board-1) == null)
+                    stream.append(" ");
                 for(int i = 0; i < (M+Z)*Z; i++)
                     stream.append(" ");
             }
-                else{
-                    if (Board == 0)
-                        stream.append("┌");
-                    else if(getCell(0, Board-1) != null)
-                        stream.append("┬");
-            for(int i = 0; i < (M+Z)*Z; i++)
-                stream.append("─");
-                }
+            else{
+                if (Board == 0)
+                    stream.append("┌");
+                else if(getCell(0, Board-1) == null)
+                    stream.append(" ");
+                for(int i = 0; i < (M+Z)*Z; i++)
+                    stream.append("─");
+                if(getCell(0, Board+1) == null)
+                    stream.append("┐");
+                else stream.append("┬");
+            }
         }
-        if(getCell(0, N-1) != null)
-            stream.append("┐");
         stream.append("\n");
         System.out.print(stream);
     }
@@ -87,42 +88,80 @@ public class BoardView {
      */
     public void printMiddleBoard(int x) {
         StringBuilder stream = new StringBuilder();
+
+        if (getCell(x, 0) == null) //Cell is null
+            if(getCell(x+1, 0) == null)
+                stream.append(" ");
+            else stream.append("┌");
+        else //cell is not null
+            if(getCell(x+1, 0) == null)
+                stream.append("└");
+            else stream.append("├");
+
         for (int Board = 0; Board < N; Board++) {
-            if (getCell(x, Board) == null && getCell(x+1, Board) == null) //caso sopra e sotto son nulle
-                for (int i = 0; i < (M+Z)*Z + 1; i++)
+
+            for (int i = 0; i < (M + Z) * Z; i++) {
+                if (getCell(x + 1, Board) == null && getCell(x, Board) == null)
                     stream.append(" ");
-
-            else {
-                if(Board == 0) {
-                    if (getCell(x, Board) != null && getCell(x + 1, Board) == null)//caso solo sotto sia nulla
-                        stream.append("└");
-                    else if(getCell(x, Board) == null && getCell(x + 1, Board) != null)
-                            stream.append("┌");
-                        else stream.append("├");
-                }
-                for (int i = 0; i < (M+Z)*Z; i++) {
-                    if((getCell(x+1, Board) == null && getCell(x, Board) != null)||(getCell(x+1, Board) != null && getCell(x, Board) == null))
+                else if (getCell(x + 1, Board) == null || getCell(x, Board) == null)
                         stream.append("─");
-                    else if (i >= M+Z && i <= (M+Z)*2) {
-                        if (board.getBillboard().hasDoor(getCell(x, Board), getCell(x+1, Board)) || board.getBillboard().hasSameColor(getCell(x, Board), getCell(x+1, Board)))
-                            stream.append(" ");
-                        else
-                            stream.append("─");
+                     else {
+                        if (i >= M + Z && i <= (M + Z) * 2) {
+                            if (board.getBillboard().hasDoor(getCell(x, Board), getCell(x + 1, Board)) || board.getBillboard().hasSameColor(getCell(x, Board), getCell(x + 1, Board)))
+                                stream.append(" ");
+                            else
+                                stream.append("─");
+                         }
+                        else stream.append("─");
                     }
-                    else stream.append("─");
                 }
 
-                if (Board == N-1) {
-                    if (getCell(x+1, Board) == null)
-                        stream.append("┘\n");
-                    else stream.append("┤\n");
-                }
-                else {
-                    if(getCell(x+1, Board) != null)
+            if(Board != N-1){
+                if(getCell(x, Board) == null){//cella in cui si è è nulla
+                    if(getCell(x,Board+1) != null && getCell(x+1,Board) != null) //cella in diagonale nulla
                         stream.append("┼");
-                    else stream.append("┬");}
+                    else if(getCell(x+1,Board+1) != null){
+                        if(getCell(x+1,Board) == null){
+                            if(getCell(x,Board+1) == null)
+                                    stream.append("┌");
+                                else stream.append("┬");
+                            }
+                            else stream.append("├");
+
+                        }
+                         else if(getCell(x+1,Board) != null)
+                             stream.append("┐");
+                             else if(getCell(x,Board+1) != null)
+                                stream.append("┘");
+                                    else stream.append(" ");
+                }
+
+                else{
+                    if(getCell(x+1,Board+1) != null ||(getCell(x+1,Board) != null && getCell(x,Board+1) != null))
+                        stream.append("┼");
+                    else{
+                        if(getCell(x,Board+1) != null)
+                            stream.append("┴");
+                        else if (getCell(x+1,Board) != null)
+                            stream.append("┤");
+                        else
+                            stream.append("┌");
+                    }
+                }
             }
         }
+
+        if(getCell(x,N-1) != null){
+            if(getCell(x+1,N-1) != null)
+                stream.append("┤");
+            else  stream.append("┘");}
+        else {
+            if (getCell(x + 1, N-1) != null)
+                stream.append("┐");
+            else stream.append(" ");
+        }
+
+        stream.append("\n");
         System.out.print(stream);
     }
 
@@ -131,30 +170,31 @@ public class BoardView {
      */
     public void printLowBoard() {
         StringBuilder stream = new StringBuilder();
-        for (int Board =0; Board < N; Board++) {
-            if(getCell(N, Board) == null){
-                if(Board == 0)
-                    stream.append(" ");
-                else if (getCell(N, Board-1) != null)
-                    stream.append("┘");
-                for(int i = 0; i < (M+Z)*Z; i++)
-                    stream.append(" ");
-            }
-            else{
-                if (Board == 0)
-                    stream.append("└");
-                else if(getCell(N, Board-1) != null)
-                    stream.append("┴");
-                for(int i = 0; i < (M+Z)*Z; i++)
-                    stream.append("─");
-            }
-
+        for (int Board = 0; Board < N; Board++) {
+        if(getCell(A-1, Board) == null){
+            if(Board == 0)
+                stream.append(" ");
+            else if(getCell(A-1, Board-1) == null)
+                stream.append(" ");
+            for(int i = 0; i < (M+Z)*Z; i++)
+                stream.append(" ");
         }
-        if(getCell(N, N-1) != null)
-            stream.append("┘");
+        else{
+            if (Board == 0)
+                stream.append("└");
+            else if(getCell(A-1, Board-1) == null)
+                stream.append("└");
+
+            for(int i = 0; i < (M+Z)*Z; i++)
+                stream.append("─");
+            if(getCell(A-1, Board+1) == null)
+                stream.append("┘");
+            else stream.append("┴");
+        }
+    }
         stream.append("\n");
         System.out.print(stream);
-    }
+}
 
     /**
      * This function draws all the important things needed to understand better the game
@@ -163,9 +203,13 @@ public class BoardView {
     public void printThings(int x) {
         StringBuilder stream = new StringBuilder();
         for(int square = 0; square < N; square++)
-            if(getCell(x/M, square) == null)
-                for(int i = 0; i < N; i++)
+            if(getCell(x/M, square) == null){
+                for(int i = 0; i < (M+Z)*Z+1; i++)
                     stream.append(" ");
+                if (getCell(x/M, square+1) != null)
+                    stream.append("│");
+                else stream.append(" ");
+            }
             else{
                 if(square == 0)
                     stream.append("│");
