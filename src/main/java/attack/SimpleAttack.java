@@ -1,6 +1,8 @@
 package attack;
 
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import constants.EnumString;
 import controller.EnumTargetSet;
 import player.Player;
@@ -21,7 +23,13 @@ public class SimpleAttack extends Attack {
         this.target = target;
     }
 
-    public SimpleAttack(EnumTargetSet targetType, EnumString name, String description, int damage, int mark, int target) {
+    @JsonCreator
+    public SimpleAttack(@JsonProperty("targetType") EnumTargetSet targetType,
+                        @JsonProperty("name") EnumString name,
+                        @JsonProperty("description") String description,
+                        @JsonProperty("damage") int damage,
+                        @JsonProperty("mark") int mark,
+                        @JsonProperty("target") int target) {
         this(targetType, name, damage, mark, target);
         this.description = description;
     }

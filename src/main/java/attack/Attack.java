@@ -1,6 +1,8 @@
 package attack;
 
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import constants.EnumString;
 import controller.EnumTargetSet;
 import player.Player;
@@ -10,10 +12,21 @@ import java.util.Arrays;
 import java.util.List;
 
 
+
 /**
  * This class is an idea of genertic attack.
  * Need implements different attack's type.
  */
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
+        property = "type")
+
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = DistanceAttack.class),
+        @JsonSubTypes.Type(value = MoveAttack.class),
+        @JsonSubTypes.Type(value = SimpleAttack.class)
+})
+
 public abstract class Attack {
 
     protected EnumString name;

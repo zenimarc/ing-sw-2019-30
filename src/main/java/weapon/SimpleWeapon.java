@@ -1,7 +1,11 @@
 package weapon;
 
+import attack.Attack;
 import attack.SimpleAttack;
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import deck.Bullet;
 import player.Player;
 
 import java.util.List;
@@ -15,9 +19,9 @@ public class SimpleWeapon extends WeaponCard{
 
     private EnumSimpleWeapon weaponType;
 
-
     SimpleWeapon(EnumSimpleWeapon type){
         this.weaponType = type;
+        this.name = type.getName();
 
         switch (type){
             case LOCK_RIFLE:
@@ -48,6 +52,16 @@ public class SimpleWeapon extends WeaponCard{
                 //TODO ERROR
                 break;
         }
+    }
+
+    @JsonCreator
+    protected SimpleWeapon(@JsonProperty("name") String name,
+                 @JsonProperty("cost") List<Bullet> cost,
+                 @JsonProperty("attacks")List<Attack> attacks){
+        this.name = name;
+        this.cost = cost;
+        this.attacks = attacks;
+        this.isLoaded = false;
     }
 
     private boolean lockrifleShoot(int typeAttack, Player shooter, List<Player> opponents){

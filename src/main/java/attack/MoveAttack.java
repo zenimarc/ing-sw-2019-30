@@ -1,6 +1,8 @@
 package attack;
 
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import constants.EnumString;
 import controller.EnumTargetSet;
 import player.Player;
@@ -19,7 +21,13 @@ public class MoveAttack extends Attack {
      * @param damage Damage
      * @param target Max Target
      */
-    public MoveAttack(EnumTargetSet targetType, EnumString name, String desc, int step, int damage, int target){
+    @JsonCreator
+    public MoveAttack(@JsonProperty("targetType") EnumTargetSet targetType,
+                      @JsonProperty("name") EnumString name,
+                      @JsonProperty("description") String desc,
+                      @JsonProperty("step") int step,
+                      @JsonProperty("damage") int damage,
+                      @JsonProperty("target") int target){
         this(targetType,name, step, damage, target);
         this.description = desc;
     }

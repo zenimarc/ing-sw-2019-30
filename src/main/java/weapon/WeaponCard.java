@@ -2,6 +2,8 @@ package weapon;
 
 import attack.Attack;
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import deck.Bullet;
 import deck.Card;
 import player.Player;
@@ -11,10 +13,24 @@ import java.util.*;
 /**
  * WeaponCard is the card which represent a weapon.
  */
-public abstract class WeaponCard extends Card {//TODO se è astratta, non è possibile inizializzare la classe e quindi creare le carte, si può fare anche se è abstract in un altro modo? -Christian
+
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
+        property = "type")
+
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SimpleWeapon.class),
+        @JsonSubTypes.Type(value = MovementWeapon.class),
+        @JsonSubTypes.Type(value = DistanceWeapon.class),
+        @JsonSubTypes.Type(value = AreaWeapon.class)
+})
+
+public abstract class WeaponCard extends Card {
+    //TODO se è astratta, non è possibile inizializzare la classe e quindi creare le carte,
+    // si può fare anche se è abstract in un altro modo? -Christian
 
     protected String name;
-    private List<Bullet> cost;
+    protected List<Bullet> cost;
     protected List<Attack> attacks;
     protected boolean isLoaded;
 
