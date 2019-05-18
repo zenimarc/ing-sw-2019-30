@@ -17,13 +17,7 @@ public class BoardView {
     private int L = 3; //varibile usata per gestire le porte
     private int Z = 3; //variabile per printare meglio le righe orizzontali
 
-    public BoardView(){}
-
     public BoardView(Board board){
-        this.board = board;
-    }
-
-    public void setBoard(Board board) {
         this.board = board;
     }
 
@@ -392,11 +386,9 @@ public class BoardView {
      */
     public StringBuilder printWeaponName(WeaponCard weapon){
         StringBuilder stream = new StringBuilder();
-        String name = weapon.getName().substring(0, Math.min(weapon.getName().length(), M+2));
+        String name = weapon.getName().substring(0, Math.min(weapon.getName().length(),M+Z-1));
         stream.append(name);
-        stream.append(name);
-        stream.append(" ");
-        for(int j = 0; j < weapon.getName().length(); j++)
+        for(int i = name.length(); i < M+Z; i++)
             stream.append(" ");
         return stream;
     }

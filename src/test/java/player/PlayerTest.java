@@ -1,6 +1,8 @@
 package player;
 
 import board.Board;
+import board.Cell;
+import board.NormalCell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -105,6 +107,19 @@ class PlayerTest {
         assertEquals(3, p1.getBullets().get(RED));
         assertEquals(3, p1.getBullets().get(YELLOW));
         assertEquals(3, p1.getBullets().get(BLUE));
+    }
+
+    @Test
+
+    void changePosition(){
+        Cell cell = new NormalCell(RED);
+        Cell cell2 = new NormalCell(RED);
+        p1.setCell(cell);
+        cell.addPawn(p1.getPawn());
+        assertEquals(cell.getPawns().get(0), p1.getPawn());
+        p1.setPawnCell(cell2);
+        assertEquals(cell2.getPawns().get(0), p1.getPawn());
+        assertEquals(0, cell.getPawns().size());
     }
 
     @Test

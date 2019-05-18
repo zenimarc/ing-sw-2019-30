@@ -14,6 +14,7 @@ import java.util.*;
 public class NormalCell extends Cell {
 
     private AmmoCard ammoCard;
+
     /**
      * Constructors
      */
@@ -75,7 +76,7 @@ public class NormalCell extends Cell {
     }
 
     /**
-     * This function adds ammo from the ammo card to a player and, in case, also a power card
+     * This function adds ammo from the ammo card to a player and, in case, it gives a power card
      * @param player to receive a card
      * @param i not used
      */

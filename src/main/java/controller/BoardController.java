@@ -37,6 +37,13 @@ public class BoardController {
         this.boardView = new BoardView(board);
     }
 
+    public BoardController(List<Player> players, Board board, List<PlayerController> controllers) {
+        this(players, 8);
+        this.board = board;
+        this.boardView = new BoardView(board);
+        this.playerControllers = controllers;
+    }
+
     /**
      * This genetare a boardcontroller with a default board
      * @param players
@@ -64,6 +71,8 @@ public class BoardController {
      * @return the player
      */
     public Player getPlayer(){return this.listOfPlayers.get(playerTurn);}
+
+    public int getFrenzyturns (){return this.verifyFinalFrenzyTurns;}
 
     /**
      * This function returns the board associated with this controller
@@ -98,7 +107,6 @@ public class BoardController {
 
     /**
      * This function changes the value of verifyFinalFrenzyTurns to decide the number of actions of a player during Final Frenzy
-     * TODO: ma playerTurn non serve a tenere il numero del giocatore a cui tocca? e non le azioni che può fare in un turno
      */
     public void setFinalFrenzyTurns(){
         if(this.isFinalFrenzy()){

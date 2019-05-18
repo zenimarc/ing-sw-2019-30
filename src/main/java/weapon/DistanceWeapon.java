@@ -17,6 +17,8 @@ public class DistanceWeapon extends WeaponCard {
 
     public DistanceWeapon(EnumDistanceWeapon weaponType){
         this.weaponType = weaponType;
+        this.name = weaponType.getName();
+        this.cost = weaponType.getCost();
 
         switch (weaponType){
             case WHISPER:

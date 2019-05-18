@@ -1,7 +1,5 @@
 package board;
 
-import java.util.*;
-
 /**
  * Door is a class used to know if two adjacent cells are connected
  */

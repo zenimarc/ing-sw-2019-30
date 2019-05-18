@@ -15,9 +15,10 @@ public class SimpleWeapon extends WeaponCard{
 
     private EnumSimpleWeapon weaponType;
 
-
     public SimpleWeapon(EnumSimpleWeapon type){
         this.weaponType = type;
+        this.name = type.getName();
+        this.cost = type.getCost();
 
         switch (type){
             case LOCK_RIFLE:
@@ -49,6 +50,8 @@ public class SimpleWeapon extends WeaponCard{
                 break;
         }
     }
+
+    public EnumSimpleWeapon getType(){return this.weaponType;}
 
     private boolean lockrifleShoot(int typeAttack, Player shooter, List<Player> opponents){
         attacks.get(0).attack(shooter, opponents.get(0));

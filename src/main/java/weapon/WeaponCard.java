@@ -11,10 +11,10 @@ import java.util.*;
 /**
  * WeaponCard is the card which represent a weapon.
  */
-public abstract class WeaponCard extends Card {//TODO se è astratta, non è possibile inizializzare la classe e quindi creare le carte, si può fare anche se è abstract in un altro modo? -Christian
+public abstract class WeaponCard extends Card {
 
     protected String name;
-    private List<Bullet> cost;
+    List<Bullet> cost;
     protected List<Attack> attacks;
     protected boolean isLoaded;
 
@@ -63,6 +63,8 @@ public abstract class WeaponCard extends Card {//TODO se è astratta, non è pos
      * @return weapon name
      */
     public String getName(){return this.name;}
+
+    public boolean isReady(){return this.isLoaded;}
 
     public Attack getAttack(int idAttack) {
         return attacks.get(idAttack);

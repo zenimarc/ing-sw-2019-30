@@ -32,9 +32,9 @@ public class Position implements Comparable {
     }
 
     /**
-     * This function verifies if two objects have the same position
-      * @param obj
-     * @return
+     * This function verifies if two objects have the same position//TODO JAVADOC
+      * @param obj to verify the position
+     * @return false if it is null or position is different, else true
      */
     @Override
     public boolean equals(Object obj) {
@@ -63,7 +63,7 @@ public class Position implements Comparable {
     }
 
     /**
-     * This function returs the x coordinate of an object
+     * This function returns the x coordinate of an object
      * @return x position
      */
     public int getX() {
@@ -71,7 +71,7 @@ public class Position implements Comparable {
     }
 
     /**
-     * This function returs the x coordinate of an object
+     * This function returns the x coordinate of an object
      * @return y position
      */
     public int getY() {

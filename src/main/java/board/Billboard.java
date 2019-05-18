@@ -1,7 +1,6 @@
 package board;
 
 import deck.Color;
-import player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Billboards' instance is a billboardCell's astraction, know cell position
+ * Billboards' instance is a billboardCell's abstraction and knows cells position
  */
 
 public class Billboard {
@@ -35,11 +34,31 @@ public class Billboard {
     public Map<Cell, Position> getCellMap(){
         return this.billboardCell;
     }
+
     /**
-     * Say if exist in this a Door between c1 and c2 (or c2 and c1)
+     * This function returns the position of a generic cell
+     * @param cell which you want to know the position
+     * @return position (x and y)
+     */
+    public Position getCellPosition(Cell cell){
+        return billboardCell.get(cell);
+    }
+
+    /**
+     * This function return a Cell from a Position.
+     * If there is no Cell in the indicated Position it returns null
+     * @param pos of the Cell you want to know
+     * @return the Cell in the indicated Position or null if doesn't exists
+     */
+    public Cell getCellFromPosition(Position pos){
+        return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
+    }
+
+    /**
+     * Says if exists a Door between c1 and c2 (or c2 and c1)
      * @param c1 First Cell
      * @param c2 Second Cell
-     * @return true if exist door(c1, c2) else false
+     * @return true if exists a door(c1, c2) else false
      */
     public boolean hasDoor(Cell c1, Cell c2) {
         return doors.stream()
@@ -47,7 +66,7 @@ public class Billboard {
     }
 
     /**
-     * This function verify if player can do a 1 step movement
+     * This function verifies if player can do a 1 step movement
      * start && goal same Position => false
      * start && goal distance == 1 && same color => true
      * start && goal distance == 1 && there is a door => true
@@ -69,7 +88,7 @@ public class Billboard {
     }
 
     /**
-     * This function return a list of same color's cells
+     * This function returns a list of cells with same color
      * @param color the color of cells
      * @return a list of Cell
      */
@@ -78,9 +97,9 @@ public class Billboard {
     }
 
     /**
-     * This function return a list of same color's cell with a door
+     * This function returns a list of same color's cell with a door
      * @param color the color of cells
-     * @return a list of cell
+     * @return a list of Cell
      */
     private ArrayList<Cell> sameColorDoor(Color color){
         ArrayList<Cell> sameColor = sameColorCell(color);
@@ -102,7 +121,7 @@ public class Billboard {
     }
 
     /**
-     * This return a sub-List, from cells, attainable from c in step number of steps
+     * It returns a sub-List of cells attainable from c in step number of steps
      * @param cells list of cells
      * @param c start cell
      * @param step max num of steps
@@ -166,12 +185,12 @@ public class Billboard {
     }
 
     /**
-     * Find way from start room to goal room without passing in other room
+     * Finds a way from start room to goal room without passing in another room
      * @param sc start cell
      * @param gc goal cell
      * @param possibleDoors linking door from start cell to goal cell
      * @param step max step number that player can do
-     * @return true if there is one (or more) way to go from startCell to goalCell
+     * @return true if there is at least one way to go from startCell to goalCell
      */
     private boolean thereIsWalkableSimpleWay(Cell sc, Cell gc, ArrayList<Door> possibleDoors, int step){
         for (Door door : possibleDoors) {
@@ -182,12 +201,12 @@ public class Billboard {
     }
 
     /**
-     * Find way from start room to goal room passing in other room
+     * Finds a way from start room to goal room by passing in another room
      * @param sc start cell
      * @param gc goal cell
-     * @param possibleDoors couple from start room to goal room passing in other room
+     * @param possibleDoors couple from start room to goal room passing in another room
      * @param step max step number that player can do
-     * @return true if there is one (or more) way to go from startCell to goalCell
+     * @return true if there is at least one way to go from startCell to goalCell
      */
     private boolean thereIsWalkableComplexWay(Cell sc, Cell gc, HashMap<Door,Door> possibleDoors, int step){
 
@@ -201,11 +220,11 @@ public class Billboard {
     }
 
     /**
-     * This function verify if a player can move from a cell "start" to a cell "goal" in a number of steps <= "steps"
-     * @param start start's cell
-     * @param goal goal's cell
+     * This function verifies if a player can move from a cell "start" to a cell "goal" in a number of steps <= "steps"
+     * @param start start cell
+     * @param goal goal cell
      * @param step max steps number
-     * @return true if can move else false, if start cell == goal cell return false
+     * @return true if player can move else false, if start cell == goal cell returns false
      */
     public boolean canMove(Cell start, Cell goal, int step){
 
@@ -253,10 +272,10 @@ public class Billboard {
     }
 
     /**
-     * This function verifies if I can see a specific cell in a different room from another cell
-     * @param cell1 the cell from which I want to see
-     * @param cell2 the cell which I want to see
-     * @return true if I can see the other cell, else false
+     * This function verifies if a player can see a specific cell in a different room from another cell
+     * @param cell1 the cell from which a player wants to see
+     * @param cell2 the cell which a player wants to see
+     * @return true if the player can see the other cell, else false
      */
     public boolean canSeeThroughDoor(Cell cell1, Cell cell2){
         ArrayList<Cell> cellsWithDoor;
@@ -269,9 +288,9 @@ public class Billboard {
 
     /**
      * This function verifies if a player can see another one
-     * @param cell1 the cell from which I want to see
-     * @param cell2 the cell which I want to see
-     * @return true if they have the same color, else false
+     * @param cell1 the cell from which a player wants to see
+     * @param cell2 the cell which a player wants to see
+     * @return true if the player can see another player, else false
      */
     public boolean isVisible(Cell cell1, Cell cell2){
         return (hasSameColor(cell1, cell2) || canSeeThroughDoor(cell1, cell2));
@@ -284,25 +303,6 @@ public class Billboard {
      */
     public List<Cell> visibleCells(Cell shooterCell){
         return billboardCell.keySet().stream().filter(x -> isVisible(shooterCell, x)).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    /**
-     * This function returns the position of a generic cell
-     * @param cell which you want to know the position
-     * @return position (x and y)
-     */
-    public Position getCellPosition(Cell cell){
-        return billboardCell.get(cell);
-    }
-
-    /**
-     * this function return a Cell from a Position
-     * if there isn't any Cell in the indicated Position returns null
-     * @param pos of the Cell you want to know
-     * @return the Cell in the indicated Position or null if doesn't exists
-     */
-    public Cell getCellFromPosition(Position pos){
-        return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
     }
 
     /**
