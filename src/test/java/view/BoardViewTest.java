@@ -1,4 +1,4 @@
-/*package view;
+package view;
 
 import board.*;
 import deck.AmmoCard;
@@ -6,11 +6,16 @@ import deck.Color;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import player.Player;
+import weapon.SimpleWeapon;
+import weapon.WeaponCard;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static weapon.EnumSimpleWeapon.ELECTROSCYTHE;
 
 class BoardViewTest {
     private static Billboard myBillboard;
@@ -34,9 +39,8 @@ class BoardViewTest {
     BoardView boardView = new BoardView();
 
 
-
     @BeforeEach
-    public void init(){
+    public void init() {
 
         //CREATE A MAP
 
@@ -61,7 +65,7 @@ class BoardViewTest {
         doors.add(new Door(c12, c13));
         doors.add(new Door(c22, c23));
 
-        myBillboard = new Billboard(mappaProva,doors);
+        myBillboard = new Billboard(mappaProva, doors);
     }
 
     @Test
@@ -76,6 +80,11 @@ class BoardViewTest {
         int[] array = {0, 1, 2};
         AmmoCard ammo = new AmmoCard(array, true);
         c00.setCard(ammo);
+        WeaponCard weapon1 = new SimpleWeapon(ELECTROSCYTHE);
+        c23.setCard(weapon1);
+        c23.setCard(weapon1);
+        c23.setCard(weapon1);
+        assertNotNull(c23.getCard(0));
         Board board = new Board(8, myBillboard);
         boardView.setBoard(board);
         boardView.drawCLI();
@@ -93,7 +102,7 @@ class BoardViewTest {
 
     //WeaponCard weapon = new SimpleWeapon(LOCK_RIFLE);
 
-}*/
+}
 
 
 /*

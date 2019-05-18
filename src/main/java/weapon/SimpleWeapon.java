@@ -16,7 +16,7 @@ public class SimpleWeapon extends WeaponCard{
     private EnumSimpleWeapon weaponType;
 
 
-    SimpleWeapon(EnumSimpleWeapon type){
+    public SimpleWeapon(EnumSimpleWeapon type){
         this.weaponType = type;
 
         switch (type){
