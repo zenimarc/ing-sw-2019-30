@@ -27,8 +27,6 @@ import java.util.*;
 })
 
 public abstract class WeaponCard extends Card {
-    //TODO se è astratta, non è possibile inizializzare la classe e quindi creare le carte,
-    // si può fare anche se è abstract in un altro modo? -Christian
 
     protected String name;
     protected List<Bullet> cost;

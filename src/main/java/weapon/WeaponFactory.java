@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//TODO ho commentato il main di questa classe e gli inizializzatori di deck nella classe Board
 public class WeaponFactory {
 
     private static File weaponFolder;
@@ -52,12 +51,17 @@ public class WeaponFactory {
         return Collections.emptyList();
     }
 
+    /**
+     * This return a list of weapon stored in weaponResourcesAddress, if weapons don't exist create them
+     * @return list of weapon stored in local
+     */
     private List<WeaponCard> loadWeaponCards(){
         List<WeaponCard> weaponCards = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
         File folder = new File(weaponResourcesAddress);
-        if(!folder.exists()) return weaponCards;
+        //if folder doesn't exist store all weapon
+        if(!folder.exists()){storeAllWeapons();}
 
         for (File file : folder.listFiles()){
             try {
@@ -95,7 +99,7 @@ public class WeaponFactory {
     /**
      * Store All weapon in  EnumWeapon in "weapon" in resoures
      */
-    public void storeAllWeaponJackson() {
+    public void storeAllWeapons() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         WeaponCard wp;
