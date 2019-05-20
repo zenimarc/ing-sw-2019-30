@@ -10,6 +10,8 @@ public class PlayerView {
     private Player player;
     private PlayerBoardView myPlayerBoard;
 
+    //TODO perchè la view della plancia giocatore vuole il riferimento alla tabellone= - Gio'
+
     /**
      * Default constructor
      */
