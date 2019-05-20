@@ -8,7 +8,7 @@ import weapon.WeaponFactory;
 import java.util.*;
 
 /**
- * Board is a class which //TODO Java doc
+ * Board is a class which saves all information about the state of game
  */
 public class Board {
 
@@ -83,22 +83,34 @@ public class Board {
     }
 
     /**
-     * This function returns the power up deck
+     * This function returns power up deck
      * @return the deck
      */
     public Deck getPowerUpDeck(){return this.powerUpDeck;}
 
     /**
-     * This function returns the weapon card deck
+     * This function returns weapon card deck
      * @return the deck
      */
     public Deck getWeaponCardDeck(){return this.weaponDeck;}
 
     /**
-     * This function returns the ammo card deck
+     * This function returns ammo card deck
      * @return the deck
      */
     public Deck getAmmoCardDeck(){return this.ammoDeck;}
+
+    /**
+     * This function returns discard power up card deck
+     * @return the deck
+     */
+    public Deck getDiscardPowerUpDeck(){return this.powerUpDiscardDeck;}
+
+    /**
+     * This function returns discard ammo card deck
+     * @return the deck
+     */
+    public Deck getDiscardAmmoCardDeck(){return this.ammoDiscardDeck;}
 
     /**
      * This function returns the billboard used

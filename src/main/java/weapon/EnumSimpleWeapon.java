@@ -11,7 +11,7 @@ public enum EnumSimpleWeapon {
 
     LOCK_RIFLE("Lockrifle", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),
     MACHINE_GUN("Machinegun", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE), new Bullet(Color.RED)))),
-    ELECTROSCYTHE("Electroscyte", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE)))),
+    ELECTROSCYTHE("Electroscythe", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE)))),
     HEATSEEKER("Heatseeker", new ArrayList<>(Arrays.asList(new Bullet(Color.RED),new Bullet(Color.RED),new Bullet(Color.YELLOW)))),
     ZX_2("ZX-2",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.RED))) );
 
@@ -24,7 +24,7 @@ public enum EnumSimpleWeapon {
         this.cost = bullets;
     }
 
-    public String getName(){return  name;}
+    public String getName(){return name;}
 
-    public List<Bullet> getCost() { return cost;}
+    public List<Bullet> getCost() {return cost;}
 }

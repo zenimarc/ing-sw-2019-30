@@ -17,6 +17,8 @@ public class AreaWeapon extends WeaponCard {
 
     protected AreaWeapon(EnumAreaWeapon weaponType){
         this.weaponType = weaponType;
+        this.name = weaponType.getName();
+        this.cost = weaponType.getCost();
 
         switch (weaponType) {
             case FURNACE:

@@ -1,4 +1,4 @@
-/*package view;
+package view;
 
 import board.*;
 import deck.AmmoCard;
@@ -6,7 +6,12 @@ import deck.Color;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static weapon.EnumSimpleWeapon.*;
+
 import player.Player;
+import weapon.SimpleWeapon;
+import weapon.WeaponCard;
 
 
 import java.util.ArrayList;
@@ -31,12 +36,10 @@ class BoardViewTest {
 
     private static Cell c13 = new NormalCell(Color.YELLOW);
     private static Cell c23 = new RegenerationCell(Color.YELLOW);
-    BoardView boardView = new BoardView();
-
 
 
     @BeforeEach
-    public void init(){
+    public void init() {
 
         //CREATE A MAP
 
@@ -61,40 +64,34 @@ class BoardViewTest {
         doors.add(new Door(c12, c13));
         doors.add(new Door(c22, c23));
 
-        myBillboard = new Billboard(mappaProva,doors);
+        myBillboard = new Billboard(mappaProva, doors);
     }
 
     @Test
 
     public void drawCLI() {
+
         Player p = new Player("Marco");
         p.setCell(c00);
         c00.addPawn(p.getPawn());
-        Player p2 = new Player("Paolo");
+        Player p2 = new Player("Paolofdvsgfdrgrehgerh");
         p2.setCell(c10);
         c10.addPawn(p2.getPawn());
         int[] array = {0, 1, 2};
         AmmoCard ammo = new AmmoCard(array, true);
         c00.setCard(ammo);
+        WeaponCard weapon1 = new SimpleWeapon(ELECTROSCYTHE);
+        WeaponCard weapon2 = new SimpleWeapon(ZX_2);
+        WeaponCard weapon3 = new SimpleWeapon(LOCK_RIFLE);
+        c23.setCard(weapon1);
+        c23.setCard(weapon2);
+        c23.setCard(weapon3);
+        assertNotNull(c23.getCard(0));
         Board board = new Board(8, myBillboard);
-        boardView.setBoard(board);
+        BoardView boardView = new BoardView(board);
         boardView.drawCLI();
     }
-
-    @Test
-
-    public void testName() {
-        AmmoCard ammo = new AmmoCard();
-        c00.setCard(ammo);
-        Board board = new Board(8, myBillboard);
-        boardView.setBoard(board);
-        boardView.drawCLI();
-    }
-
-    //WeaponCard weapon = new SimpleWeapon(LOCK_RIFLE);
-
-}*/
-
+}
 
 /*
     ┌──────────────────────────────────────────────────────────────────────────┐

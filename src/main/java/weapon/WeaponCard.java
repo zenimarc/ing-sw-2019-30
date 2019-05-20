@@ -14,7 +14,6 @@ import java.util.*;
  * WeaponCard is the card which represent a weapon.
  */
 
-
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
         property = "type")
 
@@ -31,6 +30,7 @@ public abstract class WeaponCard extends Card {
 
     protected String name;
     protected List<Bullet> cost;
+
     protected List<Attack> attacks;
     protected boolean isLoaded;
 
@@ -79,6 +79,8 @@ public abstract class WeaponCard extends Card {
      * @return weapon name
      */
     public String getName(){return this.name;}
+
+    public boolean isReady(){return this.isLoaded;}
 
     public Attack getAttack(int idAttack) {
         return attacks.get(idAttack);

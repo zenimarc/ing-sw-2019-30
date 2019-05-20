@@ -20,6 +20,8 @@ public class MovementWeapon extends WeaponCard {
 
     public MovementWeapon(EnumMovementWeapon weaponType){
         this.weaponType = weaponType;
+        this.name = weaponType.getName();
+        this.cost = weaponType.getCost();
 
         switch (weaponType){
             case TRACTOR_BEAM:

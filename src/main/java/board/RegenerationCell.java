@@ -65,7 +65,7 @@ public class RegenerationCell extends Cell {
     @Override
     public boolean setCard(Card card) {
         //check card is a weaponCard
-        if(card.getClass() != WeaponCard.class){return false;}
+        //if(card.getClass() != WeaponCard.class){return false;} TODO: getClass prende la classe a runtime, mentre WeaponCard.class è statica
 
         //if weaponCard[] has a free slot => insert card
         for(int i=0; i<weaponCard.length;i++){
@@ -78,15 +78,14 @@ public class RegenerationCell extends Cell {
     }
 
     /**
-     * This adds 3 cards in the RegenerationCell
-     * @param weaponCards
+     * This adds 3 cards in the RegenerationCell at the beginning of the game
+     * @param weaponCards to be added
      * @return
      */
-    public boolean setCards(WeaponCard[] weaponCards){
+    public void setCards(WeaponCard[] weaponCards){
         for(int i=0;i<3;i++){
             this.weaponCard[i] = weaponCards[i];
         }
-        return true;
     }
 
     /**
@@ -97,7 +96,7 @@ public class RegenerationCell extends Cell {
     @Override
     public Card removeCard(Card card) {
         //Check card is WeaponCard
-        if(card.getClass()!=WeaponCard.class){return null;}
+        //if(card.getClass()!=WeaponCard.class){return null;}
         WeaponCard wc = (WeaponCard) card;
 
         //if card in weaponCards => remove its
