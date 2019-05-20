@@ -35,14 +35,17 @@ public class Deck {
     }
 
     /**
-     * This function picks the first card from the deck
+     * This function picks a random card from the deck
      * @return the drawn card
      */
     public Card draw() {
-        Card card = cards.get(0);
-        removeCard();
+        Random r = new Random();
+        int index = r.nextInt(cards.size());
+        Card card = cards.get(index);
+        removeCard(index);
         return card;
     }
+
 
     /**
      * this function adds a card at the end of the card list.
@@ -69,10 +72,11 @@ public class Deck {
         }
 
     /**
-     * this function removes the first card of the deck
+     * this function removes card in position "index"
+     * @param index index of card to remove
      */
-    public void removeCard(){
-        this.cards.remove(0);
+    public void removeCard(int index){
+        this.cards.remove(index);
     }
 
 }
