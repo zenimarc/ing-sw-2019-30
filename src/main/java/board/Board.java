@@ -49,7 +49,7 @@ public class Board {
         this.powerUpDeck = new Deck(new AmmoCardFactory().PowerCardsToCards((new AmmoCardFactory()).getPowerCardList()));
 
         //this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
-        setStartWeaponCard();
+        //setStartWeaponCard();
     }
 
     /**

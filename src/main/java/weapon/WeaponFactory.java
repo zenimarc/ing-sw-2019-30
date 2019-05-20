@@ -26,7 +26,7 @@ public class WeaponFactory {
    /* /**
      *
      * @return
-     
+
     @Deprecated
     private static List<WeaponCard> loadWeaponCardsGSON() {
         List<WeaponCard> weaponCards = new ArrayList<>();
