@@ -1,4 +1,4 @@
-package deck;
+package powerup;
 
 /**
  * PowerUp is an enumeration to distinguish the different power ups
