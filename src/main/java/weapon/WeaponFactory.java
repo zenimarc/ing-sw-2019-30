@@ -23,7 +23,6 @@ public class WeaponFactory {
                 "weapon" + File.separator);
     }
 
-
     private WeaponCard loadWeaponCardFromJSon(){
 
         WeaponCard weaponCard;
@@ -31,11 +30,8 @@ public class WeaponFactory {
         return null;
     }
 
-
     private static List<WeaponCard> loadWeaponCardsGSON() {
-
         List<WeaponCard> weaponCards = new ArrayList<>();
-
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -44,16 +40,13 @@ public class WeaponFactory {
 
             for(final File folder : weaponFolder.listFiles()){
                 if (folder.getName().equals(EnumWeaponType.SIMPLE_WEAPON.getName())){
-
                     for(final File weaponFile : folder.listFiles()){
-
                         bufferedReader = new BufferedReader(new FileReader(weaponFile));
                         weaponCards.add(gson.fromJson(bufferedReader, new TypeToken<SimpleWeapon>(){}.getType()));
                     }
                 }
             }
             return weaponCards;
-
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
         }
@@ -62,7 +55,6 @@ public class WeaponFactory {
 
     private List<WeaponCard> loadWeaponCards(){
         List<WeaponCard> weaponCards = new ArrayList<>();
-
         ObjectMapper objectMapper = new ObjectMapper();
 
         File folder = new File("src"+File.separator+
@@ -72,7 +64,6 @@ public class WeaponFactory {
         if(!folder.exists()) return weaponCards;
 
         for (File file : folder.listFiles()){
-
             try {
                 weaponCards.add(
                         objectMapper.readValue(file, WeaponCard.class));
@@ -80,15 +71,12 @@ public class WeaponFactory {
                 e.printStackTrace();
             }
         }
-
         return weaponCards;
     }
 
     public List<WeaponCard> getWeaponCardList(){
         return loadWeaponCards();
     }
-
-
 
     private void storeWeapon(String jsonWeapon, String weaponFolderName, String weaponName){
         File file = new File("src"+File.separator+
@@ -106,21 +94,19 @@ public class WeaponFactory {
         }catch (NullPointerException npe){
             System.out.println(npe.getLocalizedMessage());
         }
-
     }
 
-
-        public void storeWeaponJackson(){
+    public void storeWeaponJackson() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        File folder = new File("src"+File.separator+
-                    "resources"+File.separator+
-                    "weapon" + File.separator+
-                    "test_jackson");
-        if(!folder.exists()) folder.mkdir();
+        File folder = new File("src" + File.separator +
+                "resources" + File.separator +
+                "weapon" + File.separator +
+                "test_jackson");
+        if (!folder.exists()) folder.mkdir();
 
-        for(EnumSimpleWeapon weapon : EnumSimpleWeapon.values()) {
+        for (EnumSimpleWeapon weapon : EnumSimpleWeapon.values()) {
             try {
                 storeWeapon(objectMapper.writeValueAsString(getSimpleWeapon(weapon)),
                         "test_jackson", weapon.getName());
@@ -128,11 +114,7 @@ public class WeaponFactory {
                 e.printStackTrace();
             }
         }
-
-
-        }
-
-
+    }
 
     private WeaponCard getSimpleWeapon(EnumSimpleWeapon type) {
         return new SimpleWeapon(type);
@@ -141,9 +123,11 @@ public class WeaponFactory {
     private WeaponCard getDistanceWeapon(EnumDistanceWeapon type) {
         return new DistanceWeapon(type);
     }
+
     private WeaponCard getAreaWeapon(EnumAreaWeapon type) {
         return new AreaWeapon(type);
     }
+
     private WeaponCard getMovementWeapon(EnumMovementWeapon type) {
         return new MovementWeapon(type);
     }
@@ -153,7 +137,5 @@ public class WeaponFactory {
         //   factory.getWeaponCardList().stream().forEach(x -> System.out.println(x));
         factory.storeWeaponJackson();
         System.out.println(factory.loadWeaponCards().size());
-
     }
-
 }
