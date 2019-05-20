@@ -352,4 +352,25 @@ public class Player extends Observable {
 
         return sb.toString();
     }
+
+    public boolean usePowerUp(PowerCard power, boolean discard){
+        if(discard){
+            powerups.remove(power);
+            return true;}
+        else return(canPayPowerUp(power));
+    }
+
+    public boolean canPayPowerUp(PowerCard power){
+        if(ammo.get(power.getColor()) >= 1){
+            ammo.replace(power.getColor(), ammo.get(power.getColor()) -1);
+        return true;}
+        else return false;
+    }
+
+    public boolean canPayGunsight(Color color){
+        if(ammo.get(color) >= 1){
+            ammo.replace(color, ammo.get(color)-1);
+            return true;}
+        else return false;
+    }
 }

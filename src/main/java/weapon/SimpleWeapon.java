@@ -57,9 +57,9 @@ public class SimpleWeapon extends WeaponCard{
 
     @JsonCreator
     protected SimpleWeapon(@JsonProperty("name") String name,
-                 @JsonProperty("cost") List<Bullet> cost,
-                 @JsonProperty("attacks")List<Attack> attacks,
-                 @JsonProperty("type") EnumWeapon weaponType){
+                           @JsonProperty("cost") List<Bullet> cost,
+                           @JsonProperty("attacks")List<Attack> attacks,
+                           @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;

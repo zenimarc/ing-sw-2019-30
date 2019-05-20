@@ -13,14 +13,18 @@ import java.util.List;
 
 
 public class AmmoCardFactory {
-
     private static BufferedReader bufferedReader;
     private static final String ammoResourcesAddress = "src" + File.separator +
             "resources"+ File.separator +
             "cards" + File.separator +
             "ammocards.json";
 
-    private static List<AmmoCard> ammoCardsGson() {
+    /**
+     * This function creates an ammoCard deck from a Json file
+     * @return an ammoCard deck
+     */
+
+   private static List<AmmoCard> ammoCardJson() {
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -52,8 +56,19 @@ public class AmmoCardFactory {
         }
     }
 
+    /**
+     * This function adds the remaining cards which where not saved in Json file since they were clones in ammoCard deck
+     * @return definitive ammoCard deck
+     */
     public List<AmmoCard> getAmmoCardList(){
-        return ammoCardsJackson();
+        List<AmmoCard> ammoCard = ammoCardsJackson();
+        for(int i = 0; i < 12; i++)
+            ammoCard.add(ammoCard.get(i));
+        for(int i = 0; i < 9; i++)
+            ammoCard.add(ammoCard.get(i));
+        for(int i = 6; i < 9; i++)
+            ammoCard.add(ammoCard.get(i));
+        return ammoCard;
     }
 }
 

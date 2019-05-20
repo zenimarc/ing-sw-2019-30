@@ -27,11 +27,18 @@ public class Board {
     public Board(){
         this(8);
     }
-
+    //TODO Ma ha senso un creatore di Board che crea mazzi e tutto, ma non ha un tabellone di gioco? - Gio'
     public Board(int numskull) {
         this.numSkulls = numskull;
         this.playerSkulls = new HashMap<>();
         this.billboard = new Billboard();
+        this.powerUpDeck = new Deck(Card.powerCardsToCards((new PowerCardFactory().getPowerCardsList())));
+
+        this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        setStartAmmoCard();
+
+        this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
+        setStartWeaponCard();
     }
 
     public Board(int numskull, Billboard board) {

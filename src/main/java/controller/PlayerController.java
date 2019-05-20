@@ -1,7 +1,7 @@
 package controller;
 import board.Billboard;
 import board.Cell;
-import powerup.PowerUp;
+import powerup.PowerCard;
 import player.Player;
 import view.PlayerView;
 
@@ -45,9 +45,9 @@ public class PlayerController implements Observer {
             case SHOOT: //TODO verificare come implementarlo per bene
                 shoot(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
                 break;
-            case POWERUP:
-                verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
-                break;
+           // case POWERUP:
+                //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
+                //break;
             case END_TURN:
                 boardControl.changeTurn();
                 break;
@@ -116,10 +116,7 @@ public class PlayerController implements Observer {
     }
 
      public boolean movePlayer(Player player, Cell cell, int i){
-        if (!billboard.canMove(player.getPawn().getCell(), cell, i))
-            return false;
-        setOtherCell(player, cell);
-        return true;
+        return (!billboard.canMove(player.getPawn().getCell(), cell, i));
      }
 
     /**
@@ -179,12 +176,10 @@ public class PlayerController implements Observer {
      * @return true if the attack was successful, false otherwise
      */
    /* public boolean chooseTarget(Attack attack, Object obj){
-            switch(attack) {
-                case attack.getClass() = SimpleAttack.class:
 
-                    return false;
-            }
         }*/
+
+
 
     /**
      * This function modifies the position of the pawn of another player
@@ -193,7 +188,9 @@ public class PlayerController implements Observer {
      */
 
     public void setOtherCell(Player player, Cell cell){
+        player.getCell().removePawn(player.getPawn());
         player.getPawn().setCell(cell);
+        cell.addPawn(player.getPawn());
     }
 
     /**
@@ -203,19 +200,54 @@ public class PlayerController implements Observer {
 
     public void setCell(Cell cell){
         this.player.setCell(cell);
+        this.player.getCell().removePawn(player.getPawn());
+        this.player.getPawn().setCell(cell);
+        cell.addPawn(player.getPawn());
     }
 
-    public boolean verifyPowerUp(Cell cell, int i) { //TODO gestire la questione costi ed i rimanenti power up
-        /* if(player.getPowerups().get(i).getPowerUp() == PowerUp.KINETICRAY){
-        chooseTarget(); TODO fare overloading di chooseTarget
-        movePlayer(player, cell, 2);
-        return true;
-    }*/
-        if(player.getPowerups().get(i).getPowerUp() == PowerUp.TELEPORTER) {
-            setCell(cell);
-            return true;
+    public boolean verifyPowerUp(PowerCard power, Object object, int i) {
+        if(!player.usePowerUp(power, false))
+            return false; //chiederà al giocatore se vuole scartarla o meno
+
+        switch(power.getPowerUp()) {
+            case KINETICRAY:
+                return(useKineticRay(player, (Cell)object)); //verrà chiesta la cella di destinazione nel caso
+            case GUNSIGHT:
+                if(player.canPayGunsight(power.getColor())) {
+                    useGunsight((Player) object);
+                    return true;
+                }
+                else return false;
+            case VENOMGRANADE:
+                useGranade((Player) object);
+                return true;
+            case TELEPORTER:
+                useTeleporter((Cell) object);
+                return true;
         }
         return false;
+    }
+
+    public boolean useKineticRay(Player player, Cell cell){
+        if(!movePlayer(player, cell, 2))
+            return false;
+        if((billboard.getCellPosition(player.getCell()).getX() == billboard.getCellPosition(cell).getX())|| (billboard.getCellPosition(player.getCell()).getY() == billboard.getCellPosition(cell).getY())) {
+            setOtherCell(player, cell);
+            return true;
+        }
+        else return false;
+    }
+
+    public void useGranade(Player player){
+        player.addMark(this.player);
+    }
+
+    public void useGunsight(Player player){
+        player.addDamage(this.player);
+    }
+
+    public void useTeleporter(Cell cell){
+        setCell(cell);
     }
 
 }

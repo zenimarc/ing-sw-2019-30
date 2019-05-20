@@ -67,6 +67,7 @@ public class Deck {
      * this function adds a list of cards to the deck
      * @param cards to be added in the deck
      */
+
     public void addAll(List<Card> cards) {
         this.cards = cards;
         }

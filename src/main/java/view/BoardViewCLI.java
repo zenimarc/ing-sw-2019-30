@@ -3,21 +3,19 @@ import board.*;
 import deck.AmmoCard;
 import weapon.WeaponCard;
 
-import java.util.*;
 
 /**
- * BoardView is used to draw the map of the game. It can draw Cli or GUI version
- * TODO verificare come printa le armi
+ * BoardViewCLI is used to draw the map of the game. It can draw Cli or GUI version
  */
-public class BoardView {
+public class BoardViewCLI {
     private Board board;
-    private int N = 4; //numero di celle orizzontale
-    private int A = 3;  //numero di celle verticale
-    private int M = 6; //grandezza bordo verticale di ogni cella e deve essere minimo > L+2
-    private int L = 3; //varibile usata per gestire le porte
-    private int Z = 3; //variabile per printare meglio le righe orizzontali
+    private int N = 4; //Number of horizontal cells
+    private int A = 3;  //Number of vertical cells
+    private int M = 6; //Size of vertical board and at least it must be > L+2
+    private int L = 3; //variable used for drawing doors
+    private int Z = 3; //variable used to print in a proportional way
 
-    public BoardView(Board board){
+    public BoardViewCLI(Board board){
         this.board = board;
     }
 
@@ -27,7 +25,7 @@ public class BoardView {
      * @param y coordinate
      * @return cell with x and y coordinate
      */
-    public Cell getCell(int x, int y) {
+    private Cell getCell(int x, int y) {
         return board.getBillboard().getCellFromPosition(new Position(x, y));
     }
 
@@ -49,7 +47,7 @@ public class BoardView {
     /**
      * This function draws the high board of the map
      */
-    public void printHighBoard() {
+    private void printHighBoard() {
         StringBuilder stream = new StringBuilder();
         for (int Board = 0; Board < N; Board++) {
             if(getCell(0, Board) == null){
@@ -80,7 +78,7 @@ public class BoardView {
      * This function draws the low board of the cells in the middle of the map
      * @param x the number of the board to be printed
      */
-    public void printMiddleBoard(int x) {
+    private void printMiddleBoard(int x) {
         StringBuilder stream = new StringBuilder();
 
         if (getCell(x, 0) == null) //Cell is null
@@ -162,7 +160,7 @@ public class BoardView {
     /**
      * This function draws the low board of the map
      */
-    public void printLowBoard() {
+    private void printLowBoard() {
         StringBuilder stream = new StringBuilder();
         for (int Board = 0; Board < N; Board++) {
         if(getCell(A-1, Board) == null){
@@ -194,7 +192,7 @@ public class BoardView {
      * This function draws all the important things needed to understand better the game
      * @param x number of line to be printed
      */
-    public void printThings(int x) {
+    private void printThings(int x) {
         StringBuilder stream = new StringBuilder();
         for(int square = 0; square < N; square++)
             if(getCell(x/M, square) == null){
@@ -235,7 +233,7 @@ public class BoardView {
      * @param y coordinate
      * @return a stream with infos
      */
-    public StringBuilder printName(int x, int y){
+    private StringBuilder printName(int x, int y){
         StringBuilder stream = new StringBuilder();
         if(getCell(x/M, y).getPawns().size() > x%M){
             String name = (getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().substring(0, Math.min(getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().length(),M+Z-1)));
@@ -254,7 +252,7 @@ public class BoardView {
      * @param y coordinate
      * @return a stream with infos
      */
-    public StringBuilder printColor(int x, int y){
+    private StringBuilder printColor(int x, int y){
         StringBuilder stream = new StringBuilder();
         if(getCell(x/M, y) == null){
             for(int i = 0; i< M+Z; i++)
@@ -304,7 +302,7 @@ public class BoardView {
      * This function is used to decide what to print based on the type of the cell
      * @param x coordinate
      */
-    public void printCards(int x) {
+    private void printCards(int x) {
         StringBuilder stream = new StringBuilder();
         for (int y = 0; y < N; y++) {
             if (getCell(x, y) == null){
@@ -333,7 +331,7 @@ public class BoardView {
      * @param cell with needed information
      * @return a stream with infos
      */
-    public StringBuilder printAmmo(Cell cell){
+    private StringBuilder printAmmo(Cell cell){
         StringBuilder stream = new StringBuilder();
         if (cell.getCard(0) != null){
             stream.append(printAmmoThings((AmmoCard)cell.getCard(0)));
@@ -356,7 +354,7 @@ public class BoardView {
      * @param ammo with needed information
      * @return a stream with infos
      */
-    public StringBuilder printAmmoThings(AmmoCard ammo){
+    private StringBuilder printAmmoThings(AmmoCard ammo){
         StringBuilder stream = new StringBuilder();
         stream.append(ammo.toString());
         return stream;
@@ -367,7 +365,7 @@ public class BoardView {
      * @param cell with needed information
      * @return a stream with infos
      */
-    public StringBuilder printWeapons(Cell cell){
+    private StringBuilder printWeapons(Cell cell){
         StringBuilder stream = new StringBuilder();
         for(int i = 0; i < Z; i++) {
             if (cell.getCard(i) != null)
@@ -384,7 +382,7 @@ public class BoardView {
      * @param weapon name to be printed
      * @return a stream with infos
      */
-    public StringBuilder printWeaponName(WeaponCard weapon){
+    private StringBuilder printWeaponName(WeaponCard weapon){
         StringBuilder stream = new StringBuilder();
         String name = weapon.getName().substring(0, Math.min(weapon.getName().length(),M+Z-1));
         stream.append(name);
@@ -393,7 +391,4 @@ public class BoardView {
         return stream;
     }
 
-    public void drawGUI() {
-        // TODO implement here
-    }
 }

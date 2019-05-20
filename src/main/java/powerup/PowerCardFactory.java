@@ -45,8 +45,13 @@ public class PowerCardFactory {
 
         if(powerUpFile.exists()) {
             try {
-                return objectMapper.readValue(powerUpFile, new TypeReference<ArrayList<PowerCard>>() {
-                });
+                ArrayList<PowerCard> powerCardsList =
+                        objectMapper.readValue(powerUpFile, new TypeReference<ArrayList<PowerCard>>() {});
+
+                powerCardsList.addAll(objectMapper.readValue(powerUpFile, new TypeReference<ArrayList<PowerCard>>() {}));
+
+                return powerCardsList;
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -43,7 +43,7 @@ public class PlayerView {
         //TODO implement here
     }
 
-    public void drawCLI(BoardView map) {
+    public void drawCLI(BoardViewCLI map) {
         map.drawCLI();
     }
 

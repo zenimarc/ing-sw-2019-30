@@ -17,7 +17,7 @@ import weapon.WeaponCard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class BoardViewTest {
+class BoardViewCLITest {
     private static Billboard myBillboard;
     private static HashMap<Cell, Position> mappaProva = new HashMap<>();
     private static ArrayList<Door> doors = new ArrayList<>();
@@ -88,8 +88,8 @@ class BoardViewTest {
         c23.setCard(weapon3);
         assertNotNull(c23.getCard(0));
         Board board = new Board(8, myBillboard);
-        BoardView boardView = new BoardView(board);
-        boardView.drawCLI();
+        BoardViewCLI boardViewCLI = new BoardViewCLI(board);
+        boardViewCLI.drawCLI();
     }
 }
 
