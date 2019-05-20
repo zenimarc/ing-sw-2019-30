@@ -1,13 +1,9 @@
 package controller;
-import attack.Attack;
-import attack.SimpleAttack;
 import board.Billboard;
 import board.Cell;
-import deck.PowerUp;
+import powerup.PowerUp;
 import player.Player;
 import view.PlayerView;
-import weapon.SimpleWeapon;
-import weapon.WeaponCard;
 
 import java.util.*;
 
