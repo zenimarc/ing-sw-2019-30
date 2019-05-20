@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static weapon.EnumSimpleWeapon.ELECTROSCYTHE;
+import static weapon.EnumWeapon.ELECTROSCYTHE;
 
 //TODO fare i test
 

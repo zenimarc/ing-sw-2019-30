@@ -7,7 +7,7 @@ import deck.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static weapon.EnumSimpleWeapon.*;
+import static weapon.EnumWeapon.*;
 
 import player.Player;
 import weapon.SimpleWeapon;
