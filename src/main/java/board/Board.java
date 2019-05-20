@@ -2,7 +2,7 @@ package board;
 
 import deck.*;
 import player.Player;
-import weapon.WeaponCard;
+import powerup.PowerCardFactory;
 import weapon.WeaponFactory;
 
 import java.util.*;
@@ -38,9 +38,10 @@ public class Board {
         this.numSkulls = numskull;
         this.playerSkulls = new HashMap<>();
         this.billboard = board;
-        this.powerUpDeck = new Deck();
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
+
+        this.powerUpDeck = new Deck(Card.powerCardsToCards((new PowerCardFactory().getPowerCardsList())));
 
         this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
         setStartAmmoCard();
