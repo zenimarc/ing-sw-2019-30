@@ -1,9 +1,14 @@
 package weapon;
 
+import attack.Attack;
 import attack.DistanceAttack;
 import attack.MoveAttack;
 import attack.SimpleAttack;
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import deck.Bullet;
 import player.Player;
 
 import java.util.List;
@@ -13,12 +18,12 @@ import static constants.EnumString.*;
 import static controller.EnumTargetSet.*;
 
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class MovementWeapon extends WeaponCard {
 
-    protected EnumWeapon weaponType;
-
-    public MovementWeapon(EnumWeapon weaponType){
-        this.weaponType = weaponType;
+    public MovementWeapon(EnumWeapon type){
+        this.weaponType = type;
         this.name = weaponType.getName();
         this.cost = weaponType.getCost();
 
@@ -46,6 +51,18 @@ public class MovementWeapon extends WeaponCard {
                     //TODO ERROR
                     break;
         }
+    }
+
+    @JsonCreator
+    protected MovementWeapon(@JsonProperty("name") String name,
+                             @JsonProperty("cost") List<Bullet> cost,
+                             @JsonProperty("attacks")List<Attack> attacks,
+                             @JsonProperty("type") EnumWeapon weaponType){
+        this.name = name;
+        this.cost = cost;
+        this.attacks = attacks;
+        this.weaponType = weaponType;
+        this.isLoaded = false;
     }
 
     /**

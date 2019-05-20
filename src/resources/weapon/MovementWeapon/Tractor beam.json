@@ -1,1 +1,0 @@
-{"weaponType":"TRACTOR_BEAM","cost":[],"attacks":[{"step":2,"name":"BASE_ATTACK_NAME","damage":1,"mark":0,"description":"Sposta un avversario di 2 caselle.","target":1,"targetType":"VISIBLE"},{"step":2,"name":"TRACTOR_BEAN_OPT1","damage":3,"mark":0,"description":"Sposta un avversario di 2 caselle.","bulletsColor":[1,1,0],"target":1,"targetType":"SAME_CELL"}],"isLoaded":false}

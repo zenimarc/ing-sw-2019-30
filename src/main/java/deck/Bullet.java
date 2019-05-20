@@ -1,5 +1,8 @@
 package deck;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.*;
 
 /**
@@ -13,8 +16,13 @@ public class Bullet {
      * Constructors
      */
 
-    public Bullet(Color color) {
+    @JsonCreator
+    public Bullet(@JsonProperty("cost") Color color) {
         this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     /**
@@ -41,5 +49,4 @@ public class Bullet {
         }
         return colorArray;
     }
-
 }

@@ -1,1 +1,0 @@
-{"weaponType":"SHOTGUN","cost":[],"attacks":[{"step":1,"name":"BASE_ATTACK_NAME","damage":3,"mark":0,"description":"Sposta un avversario di 1 caselle.","target":1,"targetType":"SAME_CELL"},{"minDistance":1,"maxDistance":1,"name":"SHOTGUN_OP1","damage":2,"mark":0,"description":"Attacca un avversario che si trova a 0 step.","target":1,"targetType":"VISIBLE"}],"isLoaded":false}

@@ -10,13 +10,13 @@ import player.Player;
 
 import java.util.*;
 
+
 /**
  * WeaponCard is the card which represent a weapon.
  */
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+        property = "WeaponClass")
 
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SimpleWeapon.class),
@@ -31,6 +31,7 @@ public abstract class WeaponCard extends Card {
 
     protected String name;
     protected List<Bullet> cost;
+    protected EnumWeapon weaponType;
 
     protected List<Attack> attacks;
     protected boolean isLoaded;

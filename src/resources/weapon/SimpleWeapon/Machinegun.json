@@ -1,1 +1,0 @@
-{"weaponType":"MACHINE_GUN","cost":[],"attacks":[{"name":"BASE_ATTACK_NAME","damage":1,"mark":0,"target":2,"targetType":"VISIBLE"},{"name":"MACHINE_GUN_OP1","damage":1,"mark":0,"bulletsColor":[0,1,0],"target":1,"targetType":"VISIBLE"},{"name":"MACHINE_GUN_OP2","damage":1,"mark":0,"bulletsColor":[0,0,1],"target":2,"targetType":"VISIBLE"}],"isLoaded":false}

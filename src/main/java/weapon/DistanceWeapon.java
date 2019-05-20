@@ -1,7 +1,12 @@
 package weapon;
 
+import attack.Attack;
 import attack.DistanceAttack;
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import deck.Bullet;
 import player.Player;
 
 import java.util.List;
@@ -10,10 +15,9 @@ import java.util.Optional;
 import static constants.EnumString.*;
 import static controller.EnumTargetSet.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class DistanceWeapon extends WeaponCard {
-
-    protected EnumWeapon weaponType;
-
 
     public DistanceWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
@@ -38,6 +42,18 @@ public class DistanceWeapon extends WeaponCard {
                 //TODO ERROR
                 break;
         }
+    }
+
+    @JsonCreator
+    protected DistanceWeapon(@JsonProperty("name") String name,
+                             @JsonProperty("cost") List<Bullet> cost,
+                             @JsonProperty("attacks")List<Attack> attacks,
+                             @JsonProperty("type") EnumWeapon weaponType){
+        this.name = name;
+        this.cost = cost;
+        this.attacks = attacks;
+        this.weaponType = weaponType;
+        this.isLoaded = false;
     }
 
     private boolean hellionShoot(int typeAttack, Player shooter, List<Player> opponents){

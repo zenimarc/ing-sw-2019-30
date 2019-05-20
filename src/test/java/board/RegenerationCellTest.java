@@ -3,12 +3,9 @@ package board;
 import deck.Color;
 import org.junit.jupiter.api.Test;
 import player.Player;
-import weapon.EnumSimpleWeapon;
 import weapon.EnumWeapon;
 import weapon.SimpleWeapon;
 import weapon.WeaponCard;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

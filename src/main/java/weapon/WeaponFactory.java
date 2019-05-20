@@ -16,20 +16,19 @@ import java.util.List;
 public class WeaponFactory {
 
     private static File weaponFolder;
+    private final static String weaponResourcesAddress = "src"+File.separator+
+            "resources"+File.separator+
+            "weapon" + File.separator;
 
     public WeaponFactory() {
-        weaponFolder = new File("src"+File.separator+
-                "resources"+File.separator+
-                "weapon" + File.separator);
+        weaponFolder = new File(weaponResourcesAddress);
     }
 
-    private WeaponCard loadWeaponCardFromJSon(){
-
-        WeaponCard weaponCard;
-
-        return null;
-    }
-
+    /**
+     *
+     * @return
+     */
+    @Deprecated
     private static List<WeaponCard> loadWeaponCardsGSON() {
         List<WeaponCard> weaponCards = new ArrayList<>();
         try {
@@ -57,10 +56,7 @@ public class WeaponFactory {
         List<WeaponCard> weaponCards = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        File folder = new File("src"+File.separator+
-                "resources"+File.separator+
-                "weapon" + File.separator+
-                "test_jackson");
+        File folder = new File(weaponResourcesAddress);
         if(!folder.exists()) return weaponCards;
 
         for (File file : folder.listFiles()){
@@ -74,16 +70,16 @@ public class WeaponFactory {
         return weaponCards;
     }
 
-    public List<WeaponCard> getWeaponCardList(){
-        return loadWeaponCards();
-    }
-
-    private void storeWeapon(String jsonWeapon, String weaponFolderName, String weaponName){
-        File file = new File("src"+File.separator+
-                "resources"+File.separator+
-                "weapon" + File.separator+
-                weaponFolderName + File.separator +
+    /**
+     * Store json weapon in weponResourcesAddress if doesn't exist
+     * @param jsonWeapon weapons's json String
+     * @param weaponName file's name
+     */
+    private void storeWeapon(String jsonWeapon, String weaponName){
+        File file = new File(weaponResourcesAddress +
                 weaponName + ".json");
+
+        if(file.exists()) return;
 
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.write(jsonWeapon);
@@ -96,46 +92,66 @@ public class WeaponFactory {
         }
     }
 
-    public void storeWeaponJackson() {
+    /**
+     * Store All weapon in  EnumWeapon in "weapon" in resoures
+     */
+    public void storeAllWeaponJackson() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        WeaponCard wp;
 
-        File folder = new File("src" + File.separator +
-                "resources" + File.separator +
-                "weapon" + File.separator +
-                "test_jackson");
+        File folder = new File(weaponResourcesAddress);
         if (!folder.exists()) folder.mkdir();
 
-        for (EnumSimpleWeapon weapon : EnumSimpleWeapon.values()) {
-            try {
-                storeWeapon(objectMapper.writeValueAsString(getSimpleWeapon(weapon)),
-                        "test_jackson", weapon.getName());
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+        for (EnumWeapon weapon : EnumWeapon.values()) {
+            wp = null;
+
+            if(EnumWeapon.AreaWeaponSet.contains(weapon)){
+                wp = getAreaWeapon(weapon);
+            }
+            if(EnumWeapon.DistanceWeaponSet.contains(weapon)){
+                wp = getDistanceWeapon(weapon);
+            }
+            if(EnumWeapon.MovementWeaponSet.contains(weapon)){
+                wp = getMovementWeapon(weapon);
+            }
+            if(EnumWeapon.SimpleWeaponSet.contains(weapon))
+                wp = getSimpleWeapon(weapon);
+
+            if(wp !=null) {
+                try {
+                    storeWeapon(objectMapper.writeValueAsString(wp), weapon.getName());
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private WeaponCard getSimpleWeapon(EnumSimpleWeapon type) {
-        return new SimpleWeapon(type);
-    }
+    private WeaponCard getSimpleWeapon(EnumWeapon type) {return new SimpleWeapon(type);}
 
-    private WeaponCard getDistanceWeapon(EnumDistanceWeapon type) {
+    private WeaponCard getDistanceWeapon(EnumWeapon type) {
         return new DistanceWeapon(type);
     }
 
-    private WeaponCard getAreaWeapon(EnumAreaWeapon type) {
+    private WeaponCard getAreaWeapon(EnumWeapon type) {
         return new AreaWeapon(type);
     }
 
-    private WeaponCard getMovementWeapon(EnumMovementWeapon type) {
+    private WeaponCard getMovementWeapon(EnumWeapon type) {
         return new MovementWeapon(type);
     }
 
+    public List<WeaponCard> getWeaponCardList(){
+        return loadWeaponCards();
+    }
+
+
     public static void main(String[] arg) {
         WeaponFactory factory = new WeaponFactory();
-        //   factory.getWeaponCardList().stream().forEach(x -> System.out.println(x));
-        factory.storeWeaponJackson();
-        System.out.println(factory.loadWeaponCards().size());
+
+        factory.storeAllWeaponJackson();
+
+        factory.getWeaponCardList().stream().forEach(x -> System.out.println(x+"\ttype: "+x.weaponType));
     }
 }

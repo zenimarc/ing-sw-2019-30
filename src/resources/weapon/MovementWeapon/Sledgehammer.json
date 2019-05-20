@@ -1,1 +1,0 @@
-{"weaponType":"SLEDGEHAMMER","cost":[],"attacks":[{"name":"BASE_ATTACK_NAME","damage":2,"mark":0,"target":1,"targetType":"SAME_CELL"},{"step":2,"name":"SLEDGE_HAMMER","damage":3,"mark":0,"description":"Sposta un avversario di 2 caselle.","bulletsColor":[1,0,0],"target":1,"targetType":"SAME_CELL"}],"isLoaded":false}

@@ -1,1 +1,0 @@
-{"weaponType":"FURNACE","cost":[],"attacks":[{"name":"BASE_ATTACK_NAME","damage":1,"mark":0,"target":-1,"targetType":"VISIBLE"},{"minDistance":1,"maxDistance":1,"name":"FURNACE_OPT1","damage":1,"mark":1,"description":"Attacca un avversario che si trova a 0 step.","target":-1,"targetType":"VISIBLE"}],"isLoaded":false}
