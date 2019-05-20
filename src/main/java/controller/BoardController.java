@@ -2,6 +2,7 @@ package controller;
 import board.BillboardGenerator;
 import board.Board;
 import board.Cell;
+import board.RegenerationCell;
 import deck.Deck;
 import player.Player;
 import view.BoardView;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * BoardController controls the table game.
+ *
  */
 public class BoardController {
 
@@ -207,5 +209,19 @@ public class BoardController {
      */
     public List<Cell> getPotentialDestinationCells(Cell shooterCell, int steps){
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
+    }
+
+    public boolean setRegenerationCell(Player player, int powerUpIndex){
+        RegenerationCell regenerationCell = board.getBillboard().getRegenerationCell()
+                .stream()
+                .filter(x -> x.getColor() == player.getPowerups().get(powerUpIndex).getColor())
+                .findFirst()
+                .orElse(null);
+
+        if(regenerationCell!=null){
+            player.setCell(regenerationCell);
+            return true;
+        }
+        return false;
     }
 }
