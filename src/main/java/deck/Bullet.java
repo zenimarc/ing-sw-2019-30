@@ -1,5 +1,6 @@
 package deck;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import constants.Color;
@@ -32,9 +33,7 @@ public class Bullet {
      * @return
      */
     public int[] toIntArray(ArrayList<Bullet> bullets){
-
         int[] colorArray = new int[]{0,0,0};
-
         for(Bullet bullet : bullets){
             switch (bullet.color){
                 case RED:
@@ -49,5 +48,24 @@ public class Bullet {
             }
         }
         return colorArray;
+    }
+
+    public static String intArrayToString(int cubes[]){
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("[");
+        stringBuilder.append(cubes[0] + ",");
+        stringBuilder.append(cubes[1] + ",");
+        stringBuilder.append(cubes[2] + "]");
+
+        return stringBuilder.toString();
+    }
+
+    public static String mapToString(Map<Color, Integer> map){
+
+        int bullets[] = new  int[]{map.get(Color.RED), map.get(Color.YELLOW),map.get(Color.BLUE)};
+
+        return intArrayToString(bullets);
     }
 }

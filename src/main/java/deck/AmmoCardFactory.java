@@ -34,11 +34,11 @@ public class AmmoCardFactory {
         return Collections.emptyList();
     }
 
-    private static void storeAmmoCardsJson() {
+    private static void storeAmmoCardsJackson() {
         //TODO ha senso fare load e store nella stessa factory - Gio'
     }
 
-    private static List<AmmoCard> ammoCardsJson(){
+    private static List<AmmoCard> ammoCardsJackson(){
        ObjectMapper objectMapper = new ObjectMapper();
 
        File ammoFile = new File(ammoResourcesAddress);
@@ -53,7 +53,7 @@ public class AmmoCardFactory {
     }
 
     public List<AmmoCard> getAmmoCardList(){
-        return ammoCardsJson();
+        return ammoCardsJackson();
     }
 }
 
