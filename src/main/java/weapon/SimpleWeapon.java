@@ -4,7 +4,6 @@ import attack.Attack;
 import attack.SimpleAttack;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import deck.Bullet;
 import player.Player;
@@ -15,16 +14,18 @@ import java.util.Optional;
 import static constants.EnumString.*;
 import static controller.EnumTargetSet.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 
 public class SimpleWeapon extends WeaponCard{
 
-    public SimpleWeapon(EnumWeapon type){
+    private EnumSimpleWeapon weaponType;
+
+
+    public SimpleWeapon(EnumSimpleWeapon type){
         this.weaponType = type;
         this.name = type.getName();
-        this.cost = type.getCost();
 
-        switch (weaponType){
+
+        switch (type){
             case LOCK_RIFLE:
                 attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 2,1,1));
                 attacks.add(new SimpleAttack(VISIBLE, LOCK_RIFLE_OPT1, 0,1,1));
@@ -55,19 +56,18 @@ public class SimpleWeapon extends WeaponCard{
         }
     }
 
+
     @JsonCreator
     protected SimpleWeapon(@JsonProperty("name") String name,
                  @JsonProperty("cost") List<Bullet> cost,
-                 @JsonProperty("attacks")List<Attack> attacks,
-                 @JsonProperty("type") EnumWeapon weaponType){
+                 @JsonProperty("attacks")List<Attack> attacks){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
-        this.weaponType = weaponType;
         this.isLoaded = false;
     }
 
-    public EnumWeapon getType(){return this.weaponType;}
+    public EnumSimpleWeapon getType(){return this.weaponType;}
 
 
     private boolean lockrifleShoot(int typeAttack, Player shooter, List<Player> opponents){

@@ -271,4 +271,26 @@ public class Player extends Observable {
         return false;
 
     }
+
+    public boolean usePowerUp(PowerCard power, boolean discard){
+        if(discard){
+            powerups.remove(power);
+            return true;}
+        else return(canPayPowerUp(power));
+
+    }
+
+    public boolean canPayPowerUp(PowerCard power){
+        if(ammo.get(power.getBullet().getColor()) >= 1){
+            ammo.replace(power.getBullet().getColor(), ammo.get(power.getBullet().getColor()) -1);
+        return true;}
+        else return false;
+    }
+
+    public boolean canPayGunsight(Color color){
+        if(ammo.get(color) >= 1){
+            ammo.replace(color, ammo.get(color)-1);
+            return true;}
+        else return false;
+    }
 }

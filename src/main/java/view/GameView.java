@@ -1,5 +1,4 @@
 package view;
-import view.BoardView;
 
 import java.util.*;
 
@@ -7,7 +6,7 @@ import java.util.*;
  * 
  */
 public class GameView {
-    private BoardView boardView;
+    private BoardViewCLI boardViewCLI;
     private PlayerView playerView;
     private List<PlayerBoardView> opponentsPlayerBoards;
 

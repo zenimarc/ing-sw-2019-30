@@ -27,4 +27,5 @@ public class PowerCard extends Card {
      */
     public PowerUp getPowerUp(){return this.cardType;}
 
+    public Bullet getBullet(){return this.bullet;}
 }

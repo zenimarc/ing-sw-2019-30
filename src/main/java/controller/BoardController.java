@@ -4,7 +4,7 @@ import board.Board;
 import board.Cell;
 import deck.Deck;
 import player.Player;
-import view.BoardView;
+import view.BoardViewCLI;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public class BoardController {
     private List<PlayerController> playerControllers;
     private Board board;
 
-    private BoardView boardView;
+    private BoardViewCLI boardViewCLI;
 
     /**
      * Default constructor
@@ -34,13 +34,13 @@ public class BoardController {
     public BoardController(List<Player> players, Board board) {
         this(players, 8);
         this.board = board;
-        this.boardView = new BoardView(board);
+        this.boardViewCLI = new BoardViewCLI(board);
     }
 
     public BoardController(List<Player> players, Board board, List<PlayerController> controllers) {
         this(players, 8);
         this.board = board;
-        this.boardView = new BoardView(board);
+        this.boardViewCLI = new BoardViewCLI(board);
         this.playerControllers = controllers;
     }
 
@@ -58,12 +58,12 @@ public class BoardController {
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
         board = new Board(numskulls, BillboardGenerator.generateBillboard());
 
-        boardView = new BoardView(board);
+        boardViewCLI = new BoardViewCLI(board);
     }
 
     //TODO da sistemare, deve diventare un return String
     public void getBoardViewToString(){
-        boardView.drawCLI();
+        boardViewCLI.drawCLI();
     }
 
     /**
