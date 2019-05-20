@@ -1,6 +1,8 @@
 package attack;
 
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import constants.EnumString;
 import controller.EnumTargetSet;
 import player.Player;
@@ -22,7 +24,14 @@ public class DistanceAttack extends Attack {
      * @param minDistance
      * @param maxDistance
      */
-    public DistanceAttack(EnumTargetSet targetType, EnumString name, int damage, int mark, int target, int minDistance, int maxDistance){
+    @JsonCreator
+    public DistanceAttack(@JsonProperty("targetType") EnumTargetSet targetType,
+                          @JsonProperty("name") EnumString name,
+                          @JsonProperty("damage") int damage,
+                          @JsonProperty("mark") int mark,
+                          @JsonProperty("target") int target,
+                          @JsonProperty("minDistance") int minDistance,
+                          @JsonProperty("maxDistance") int maxDistance){
         this.targetType = targetType;
         this.name = name;
         this.damage = damage;
