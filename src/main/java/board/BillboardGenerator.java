@@ -37,7 +37,7 @@ public class BillboardGenerator extends Billboard {
         Cell c12 = new NormalCell(Color.YELLOW);
         Cell c22 = new NormalCell(Color.WHITE);
         //questa cella non esiste
-        Cell c32 = new NormalCell(null);
+    //    Cell c32 = new NormalCell(null);
 
         mappaProva.put(c00, new Position(0, 0));
         mappaProva.put(c10, new Position(1, 0));
@@ -53,7 +53,7 @@ public class BillboardGenerator extends Billboard {
         mappaProva.put(c12, new Position(1, 2));
         mappaProva.put(c22, new Position(2, 2));
         // questa cella non deve esistere
-        mappaProva.put(c32, new Position(3, 2));
+      //  mappaProva.put(c32, new Position(3, 2));
 
 
         doors.add(new Door(c00, c01));
