@@ -302,7 +302,18 @@ public class Billboard {
      * @return a list of visible cells
      */
     public List<Cell> visibleCells(Cell shooterCell){
-        return billboardCell.keySet().stream().filter(x -> isVisible(shooterCell, x)).collect(Collectors.toCollection(ArrayList::new));
+        return billboardCell.keySet()
+                .stream()
+                .filter(x -> isVisible(shooterCell, x))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public ArrayList<RegenerationCell> getRegenerationCell(){
+        return billboardCell.keySet()
+                .stream()
+                .filter(x -> x.getClass() == RegenerationCell.class)
+                .map(x -> (RegenerationCell) x)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
