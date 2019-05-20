@@ -6,10 +6,7 @@ import board.NormalCell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
-import static deck.Color.*;
+import static constants.Color.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {

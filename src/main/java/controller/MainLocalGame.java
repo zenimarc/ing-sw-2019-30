@@ -22,11 +22,10 @@ public class MainLocalGame {
         players = initializePlayer();
         boardController = new BoardController(players, 8);
 
-        //print board
+        //print board (text description)
         System.out.println(boardController.getBoard().getBillboard().toString());
-
+        //print board (drawCLI)
         boardController.getBoardViewToString();
-
 
     }
 
@@ -37,7 +36,6 @@ public class MainLocalGame {
 
         return new ArrayList<>(Arrays.asList(p1,p2,p3));
     }
-
 
 
     public static void main(String[] args) {

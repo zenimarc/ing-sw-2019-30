@@ -1,17 +1,12 @@
 package controller;
 
 import board.*;
-import com.google.gson.Gson;
-import deck.AmmoCard;
-import deck.Color;
+import constants.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 

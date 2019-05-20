@@ -2,8 +2,7 @@ package board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
-import deck.Color;
+import constants.Color;
 
 
 import java.io.BufferedReader;

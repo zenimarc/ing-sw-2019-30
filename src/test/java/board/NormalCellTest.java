@@ -1,7 +1,7 @@
 package board;
 
 import deck.AmmoCard;
-import deck.Color;
+import constants.Color;
 import deck.PowerCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

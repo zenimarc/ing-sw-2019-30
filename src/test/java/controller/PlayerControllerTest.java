@@ -2,12 +2,10 @@ package controller;
 
 import board.*;
 import deck.AmmoCard;
-import deck.Color;
-import org.junit.jupiter.api.BeforeAll;
+import constants.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
-import weapon.EnumWeapon;
 import weapon.SimpleWeapon;
 import weapon.WeaponCard;
 

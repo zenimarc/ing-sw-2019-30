@@ -1,6 +1,6 @@
 package board;
 
-import deck.Color;
+import constants.Color;
 import org.junit.jupiter.api.Test;
 import player.Player;
 import weapon.EnumWeapon;

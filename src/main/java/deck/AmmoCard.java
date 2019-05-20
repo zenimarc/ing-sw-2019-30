@@ -1,5 +1,8 @@
 package deck;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.*;
 
 /**
@@ -18,7 +21,9 @@ public class AmmoCard extends Card {
         hasPowerUp = false;
     }
 
-    public AmmoCard(int[] cubes, boolean hasPowerUp) {
+    @JsonCreator
+    public AmmoCard(@JsonProperty("cubes") int[] cubes,
+                    @JsonProperty("hasPowerUp") boolean hasPowerUp) {
         this.cubes = cubes;
         this.hasPowerUp = hasPowerUp;
     }

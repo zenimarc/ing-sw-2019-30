@@ -1,6 +1,6 @@
 package board;
 
-import deck.Color;
+import constants.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.util.*;

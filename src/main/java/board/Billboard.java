@@ -1,6 +1,6 @@
 package board;
 
-import deck.Color;
+import constants.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -315,6 +315,8 @@ public class Billboard {
 
         for (Cell c : billboardCell.keySet()){
             stringBuilder.append(billboardCell.get(c));
+            stringBuilder.append('\t');
+            stringBuilder.append(c.getColor().getAbbreviation());
             stringBuilder.append('\t');
             stringBuilder.append(c);
             stringBuilder.append('\n');

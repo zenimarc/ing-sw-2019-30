@@ -42,12 +42,11 @@ public class Board {
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
 
-        /*this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
         setStartAmmoCard();
 
         this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
-        setStartWeaponCard();*/
-
+        setStartWeaponCard();
     }
 
     /**

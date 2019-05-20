@@ -5,7 +5,6 @@ import board.Cell;
 import board.NormalCell;
 import constants.EnumString;
 import controller.EnumTargetSet;
-import deck.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import player.Player;

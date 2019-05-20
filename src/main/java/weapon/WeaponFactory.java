@@ -55,7 +55,7 @@ public class WeaponFactory {
      * This return a list of weapon stored in weaponResourcesAddress, if weapons don't exist create them
      * @return list of weapon stored in local
      */
-    private List<WeaponCard> loadWeaponCards(){
+    private List<WeaponCard> loadWeaponCardsJackson(){
         List<WeaponCard> weaponCards = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -147,7 +147,7 @@ public class WeaponFactory {
     }
 
     public List<WeaponCard> getWeaponCardList(){
-        return loadWeaponCards();
+        return loadWeaponCardsJackson();
     }
 
 

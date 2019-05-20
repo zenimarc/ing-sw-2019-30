@@ -2,10 +2,8 @@ package board;
 
 import deck.AmmoCard;
 import deck.Card;
-import deck.Color;
+import constants.Color;
 import player.Player;
-
-import java.util.*;
 
 /**
  * A NormalCell is a cell which can have an ammoCard

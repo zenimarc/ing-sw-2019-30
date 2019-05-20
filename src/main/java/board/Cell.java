@@ -1,7 +1,7 @@
 package board;
 
 import deck.Card;
-import deck.Color;
+import constants.Color;
 import player.Pawn;
 import player.Player;
 

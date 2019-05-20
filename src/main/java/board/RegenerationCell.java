@@ -2,7 +2,7 @@ package board;
 
 import constants.Constants;
 import deck.Card;
-import deck.Color;
+import constants.Color;
 import player.Player;
 import weapon.WeaponCard;
 

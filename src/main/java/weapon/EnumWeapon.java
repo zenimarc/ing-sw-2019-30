@@ -1,7 +1,7 @@
 package weapon;
 
 import deck.Bullet;
-import deck.Color;
+import constants.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -52,12 +52,12 @@ public class BoardController {
     public BoardController(List<Player> players, int numskulls){
         this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
+        //Create player controller for each player
         for (Player player : this.listOfPlayers){
             playerControllers.add(new PlayerController(player));
         }
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
         board = new Board(numskulls, BillboardGenerator.generateBillboard());
-
         boardView = new BoardView(board);
     }
 

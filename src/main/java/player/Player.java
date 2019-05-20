@@ -3,13 +3,13 @@ package player;
 import board.Board;
 import board.Cell;
 import constants.Constants;
-import deck.Color;
+import constants.Color;
 import deck.PowerCard;
 import weapon.WeaponCard;
 
 import java.util.*;
 
-import static deck.Color.*;
+import static constants.Color.*;
 
 /**
  * Player saves all information about a player
