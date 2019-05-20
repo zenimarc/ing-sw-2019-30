@@ -1,0 +1,30 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "Lockrifle",
+  "cost" : [ {
+    "color" : "BLUE"
+  }, {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Dai 2 danni e 1 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 2,
+    "mark" : 1,
+    "target" : 1,
+    "cost" : null
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "LOCK_RIFLE_OPT1",
+    "description" : "Dai 0 danni e 1 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 0,
+    "mark" : 1,
+    "target" : 1,
+    "cost" : [ 1, 0, 0 ]
+  } ],
+  "type" : "LOCK_RIFLE",
+  "weaponType" : "LOCK_RIFLE"
+}

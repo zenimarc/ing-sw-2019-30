@@ -1,0 +1,29 @@
+{
+  "WeaponClass" : "weapon.MovementWeapon",
+  "name" : "Vortex cannon",
+  "cost" : [ {
+    "color" : "RED"
+  }, {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Sposta un avversario di 1 caselle.",
+    "damage" : 2,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : null
+  }, {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "VORTEX_CANNON_OPT1",
+    "description" : "Sposta un avversario di 1 caselle.",
+    "damage" : 1,
+    "target" : 2,
+    "mark" : 0,
+    "cost" : [ 1, 0, 0 ]
+  } ],
+  "weaponType" : "VORTEX_CANNON"
+}

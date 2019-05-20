@@ -1,0 +1,22 @@
+{
+  "WeaponClass" : "weapon.DistanceWeapon",
+  "name" : "Whishper",
+  "cost" : [ {
+    "color" : "BLUE"
+  }, {
+    "color" : "BLUE"
+  }, {
+    "color" : "YELLOW"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "damage" : 3,
+    "mark" : 2,
+    "target" : 1,
+    "description" : "Attaca un avversario che si trova a minimo 2 step e maximo -1 step.",
+    "cost" : null
+  } ],
+  "weaponType" : "WHISPER"
+}

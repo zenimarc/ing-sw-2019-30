@@ -1,0 +1,27 @@
+{
+  "WeaponClass" : "weapon.DistanceWeapon",
+  "name" : "Shockwave",
+  "cost" : [ {
+    "color" : "YELLOW"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 3,
+    "description" : "Attacca un avversario che si trova a 1 step.",
+    "cost" : null
+  }, {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "SHOCKWAVE_OPT1",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : -1,
+    "description" : "Attacca un avversario che si trova a 1 step.",
+    "cost" : null
+  } ],
+  "weaponType" : "SHOCKWAVE"
+}

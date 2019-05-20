@@ -1,0 +1,29 @@
+{
+  "WeaponClass" : "weapon.MovementWeapon",
+  "name" : "Shotgun",
+  "cost" : [ {
+    "color" : "YELLOW"
+  }, {
+    "color" : "RED"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.MoveAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Sposta un avversario di 1 caselle.",
+    "damage" : 3,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : null
+  }, {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "SHOTGUN_OP1",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : 1,
+    "description" : "Attacca un avversario che si trova a 1 step.",
+    "cost" : null
+  } ],
+  "weaponType" : "SHOTGUN"
+}

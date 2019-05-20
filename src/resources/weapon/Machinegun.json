@@ -1,0 +1,39 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "Machinegun",
+  "cost" : [ {
+    "color" : "BLUE"
+  }, {
+    "color" : "RED"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Dai 1 danni e 0 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 2,
+    "cost" : null
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "MACHINE_GUN_OP1",
+    "description" : "Dai 1 danni e 0 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 1,
+    "cost" : [ 0, 1, 0 ]
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "MACHINE_GUN_OP2",
+    "description" : "Dai 1 danni e 0 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 2,
+    "cost" : [ 0, 0, 1 ]
+  } ],
+  "type" : "MACHINE_GUN",
+  "weaponType" : "MACHINE_GUN"
+}

@@ -1,0 +1,27 @@
+{
+  "WeaponClass" : "weapon.MovementWeapon",
+  "name" : "Sledgehammer",
+  "cost" : [ {
+    "color" : "YELLOW"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Dai 2 danni e 0 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : 1,
+    "cost" : null
+  }, {
+    "type" : "attack.MoveAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "SLEDGE_HAMMER",
+    "description" : "Sposta un avversario di 2 caselle.",
+    "damage" : 3,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : [ 1, 0, 0 ]
+  } ],
+  "weaponType" : "SLEDGEHAMMER"
+}

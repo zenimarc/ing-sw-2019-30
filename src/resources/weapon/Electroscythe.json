@@ -1,0 +1,28 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "Electroscythe",
+  "cost" : [ {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Dai 1 danni e 0 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : -1,
+    "cost" : [ 1, 0, 1 ]
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "ELECTROSCYHE_OPT1",
+    "description" : "Dai 2 danni e 0 marchio/i a 1 bersaglio che puoi vedere.",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : -1,
+    "cost" : null
+  } ],
+  "type" : "ELECTROSCYTHE",
+  "weaponType" : "ELECTROSCYTHE"
+}

@@ -1,0 +1,27 @@
+{
+  "WeaponClass" : "weapon.MovementWeapon",
+  "name" : "Tractor beam",
+  "cost" : [ {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "Sposta un avversario di 2 caselle.",
+    "damage" : 1,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : null
+  }, {
+    "type" : "attack.MoveAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "TRACTOR_BEAN_OPT1",
+    "description" : "Sposta un avversario di 2 caselle.",
+    "damage" : 3,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : [ 1, 1, 0 ]
+  } ],
+  "weaponType" : "TRACTOR_BEAM"
+}
