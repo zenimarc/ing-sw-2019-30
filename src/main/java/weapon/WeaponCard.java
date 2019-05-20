@@ -2,6 +2,7 @@ package weapon;
 
 import attack.Attack;
 import board.Cell;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import deck.Bullet;
@@ -82,6 +83,7 @@ public abstract class WeaponCard extends Card {
      */
     public String getName(){return this.name;}
 
+    @JsonIgnore
     public boolean isReady(){return this.isLoaded;}
 
     public Attack getAttack(int idAttack) {
@@ -94,6 +96,9 @@ public abstract class WeaponCard extends Card {
         return shoot(typeAttack, shooter, new ArrayList<>(Arrays.asList(opponent)), cell);
     }
 
+    public EnumWeapon getWeaponType() {
+        return weaponType;
+    }
 
     protected boolean alternativeSimpleShoot(int typeAttack, Player shooter, List<Player> opponents){
         switch (typeAttack) {

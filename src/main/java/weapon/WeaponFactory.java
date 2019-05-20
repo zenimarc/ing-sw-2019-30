@@ -150,8 +150,9 @@ public class WeaponFactory {
     public static void main(String[] arg) {
         WeaponFactory factory = new WeaponFactory();
 
-        factory.storeAllWeaponJackson();
 
-        factory.getWeaponCardList().stream().forEach(x -> System.out.println(x+"\ttype: "+x.weaponType));
+        factory.getWeaponCardList()
+                .stream()
+                .forEach(x -> System.out.println(x.toString().substring(0,3)+"\ttype: "+x.weaponType));
     }
 }
