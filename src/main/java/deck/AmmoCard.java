@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 
+import static deck.Bullet.intArrayToString;
+
 /**
  * AmmoCard are cards found in a NormalCell
  */
@@ -52,10 +54,8 @@ public class AmmoCard extends Card {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("[");
-        stringBuilder.append(cubes[0] + ",");
-        stringBuilder.append(cubes[1] + ",");
-        stringBuilder.append(cubes[2] + "]");
+        stringBuilder.append(intArrayToString(cubes));
+
         if(hasPowerUp)
             stringBuilder.append("+Power");
         else stringBuilder.append("      ");
