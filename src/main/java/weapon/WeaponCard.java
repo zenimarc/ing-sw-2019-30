@@ -15,6 +15,7 @@ import java.util.*;
  */
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
+        include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 
 @JsonSubTypes({

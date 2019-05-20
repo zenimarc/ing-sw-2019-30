@@ -15,10 +15,9 @@ import static controller.EnumTargetSet.*;
 
 public class MovementWeapon extends WeaponCard {
 
-    protected EnumMovementWeapon weaponType;
+    protected EnumWeapon weaponType;
 
-
-    public MovementWeapon(EnumMovementWeapon weaponType){
+    public MovementWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
         this.name = weaponType.getName();
         this.cost = weaponType.getCost();
