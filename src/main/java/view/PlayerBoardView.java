@@ -2,7 +2,7 @@ package view;
 import player.Player;
 
 /**
- * 
+ *
  */
 public class PlayerBoardView {
     private Player player;
@@ -173,7 +173,7 @@ public class PlayerBoardView {
             for (int i = 0; i < (size - string.length()); i++)
                 stringBuilder.append(' ');
         }
-    return stringBuilder.toString();
+        return stringBuilder.toString();
     }
 
     public void drawGUI() {

@@ -121,10 +121,7 @@ public class PlayerController implements Observer {
     }
 
      public boolean movePlayer(Player player, Cell cell, int i){
-        if (!billboard.canMove(player.getPawn().getCell(), cell, i))
-            return false;
-        setOtherCell(player, cell);
-        return true;
+        return (!billboard.canMove(player.getPawn().getCell(), cell, i));
      }
 
     /**
@@ -184,12 +181,10 @@ public class PlayerController implements Observer {
      * @return true if the attack was successful, false otherwise
      */
    /* public boolean chooseTarget(Attack attack, Object obj){
-            switch(attack) {
-                case attack.getClass() = SimpleAttack.class:
 
-                    return false;
-            }
         }*/
+
+
 
     /**
      * This function modifies the position of the pawn of another player
@@ -220,39 +215,43 @@ public class PlayerController implements Observer {
 
         switch(power.getPowerUp()) {
             case KINETICRAY:
-                useKineticRay(player, (Cell)object);
+                return(useKineticRay(player, (Cell)object)); //verrà chiesta la cella di destinazione nel caso
             case GUNSIGHT:
-                if(player.canPayGunsight(power.getBullet().getColor()))
+                if(player.canPayGunsight(power.getBullet().getColor())) {
                     useGunsight((Player) object);
+                    return true;
+                }
                 else return false;
             case VENOMGRANADE:
                 useGranade((Player) object);
+                return true;
             case TELEPORTER:
                 useTeleporter((Cell) object);
-
+                return true;
         }
-        return true;
+        return false;
     }
 
     public boolean useKineticRay(Player player, Cell cell){
-        if(!billboard.canMove(player.getPawn().getCell(), cell, 2))
+        if(!movePlayer(player, cell, 2))
             return false;
-        return((billboard.getCellPosition(player.getCell()).getX() == billboard.getCellPosition(cell).getX())|| (billboard.getCellPosition(player.getCell()).getY() == billboard.getCellPosition(cell).getY()));
+        if((billboard.getCellPosition(player.getCell()).getX() == billboard.getCellPosition(cell).getX())|| (billboard.getCellPosition(player.getCell()).getY() == billboard.getCellPosition(cell).getY())) {
+            setOtherCell(player, cell);
+            return true;
+        }
+        else return false;
     }
 
-    public boolean useGranade(Player player){
+    public void useGranade(Player player){
         player.addMark(this.player);
-        return true;
     }
 
-    public  boolean useGunsight(Player player){
+    public void useGunsight(Player player){
         player.addDamage(this.player);
-        return true;
     }
 
-    public boolean useTeleporter(Cell cell){
+    public void useTeleporter(Cell cell){
         setCell(cell);
-        return true;
-}
+    }
 
 }

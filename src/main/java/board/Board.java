@@ -32,6 +32,8 @@ public class Board {
         this.numSkulls = numskull;
         this.playerSkulls = new HashMap<>();
         this.billboard = new Billboard();
+        this.ammoDeck = new Deck(new AmmoCardFactory().ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        this.powerUpDeck = new Deck(new AmmoCardFactory().PowerCardsToCards((new AmmoCardFactory()).getPowerCardList()));
     }
 
     public Board(int numskull, Billboard board) {
@@ -42,12 +44,12 @@ public class Board {
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
 
-        /*this.ammoDeck = new Deck(Card.ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
+        this.ammoDeck = new Deck(new AmmoCardFactory().ammoCardsToCards((new AmmoCardFactory()).getAmmoCardList()));
         setStartAmmoCard();
+        this.powerUpDeck = new Deck(new AmmoCardFactory().PowerCardsToCards((new AmmoCardFactory()).getPowerCardList()));
 
-        this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
-        setStartWeaponCard();*/
-
+        //this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
+        setStartWeaponCard();
     }
 
     /**
@@ -138,6 +140,5 @@ public class Board {
     public boolean isFinalFrenzy() {
         return (this.numSkulls == 0);
     }
-
 
 }

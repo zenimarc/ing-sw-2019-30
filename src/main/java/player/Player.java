@@ -277,7 +277,6 @@ public class Player extends Observable {
             powerups.remove(power);
             return true;}
         else return(canPayPowerUp(power));
-
     }
 
     public boolean canPayPowerUp(PowerCard power){

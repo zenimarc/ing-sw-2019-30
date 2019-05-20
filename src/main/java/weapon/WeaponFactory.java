@@ -23,10 +23,10 @@ public class WeaponFactory {
         weaponFolder = new File(weaponResourcesAddress);
     }
 
-    /**
+   /* /**
      *
      * @return
-     */
+     
     @Deprecated
     private static List<WeaponCard> loadWeaponCardsGSON() {
         List<WeaponCard> weaponCards = new ArrayList<>();
@@ -49,7 +49,7 @@ public class WeaponFactory {
             e.fillInStackTrace();
         }
         return Collections.emptyList();
-    }
+    }*/
 
     /**
      * This return a list of weapon stored in weaponResourcesAddress, if weapons don't exist create them

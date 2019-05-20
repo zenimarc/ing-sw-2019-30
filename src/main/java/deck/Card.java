@@ -15,16 +15,7 @@ public abstract class Card {
     public Card() {
     }
 
-
-    public static List<Card> ammoCardsToCards(List<AmmoCard> ammoCards){
-        List<Card> cards = new ArrayList<>();
-        for (AmmoCard ammoCard : ammoCards) {
-            cards.add(ammoCard);
-        }
-        return cards;
-    }
-
-    public static List<Card> weponCardsToCards(List<WeaponCard> weaponCards){
+    public List<Card> weponCardsToCards(List<WeaponCard> weaponCards){
 
         List<Card> cards = new ArrayList<>();
         for (WeaponCard weaponCard : weaponCards) {

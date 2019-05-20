@@ -1,7 +1,5 @@
 package deck;
 
-import java.util.*;
-
 /**
  * PowerCard is the card which represent which ammo you can receive and if you can pick a power up
  */
@@ -27,5 +25,9 @@ public class PowerCard extends Card {
      */
     public PowerUp getPowerUp(){return this.cardType;}
 
+    /**
+     * This function returns the bullet which characterizes the Power Card
+     * @return a bullet
+     */
     public Bullet getBullet(){return this.bullet;}
 }
