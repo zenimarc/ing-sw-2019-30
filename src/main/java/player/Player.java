@@ -75,7 +75,7 @@ public class Player extends Observable {
      *
      * @param c
      */
-    public void setCell(Cell c) {
+    private void setCell(Cell c) {
         this.pawn.setCell(c);
     }
 
@@ -85,7 +85,9 @@ public class Player extends Observable {
      * @param cell of destination
      */
     public void setPawnCell(Cell cell) {
-        this.pawn.getCell().removePawn(this.pawn);
+        if(pawn.getCell()!=null) {
+            this.pawn.getCell().removePawn(this.pawn);
+        }
         setCell(cell);
         cell.addPawn(this.pawn);
     }

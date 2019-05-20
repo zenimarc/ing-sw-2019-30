@@ -111,8 +111,7 @@ class PlayerTest {
     void changePosition(){
         Cell cell = new NormalCell(RED);
         Cell cell2 = new NormalCell(RED);
-        p1.setCell(cell);
-        cell.addPawn(p1.getPawn());
+        p1.setPawnCell(cell);
         assertEquals(cell.getPawns().get(0), p1.getPawn());
         p1.setPawnCell(cell2);
         assertEquals(cell2.getPawns().get(0), p1.getPawn());

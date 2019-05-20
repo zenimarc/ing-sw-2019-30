@@ -199,7 +199,7 @@ public class PlayerController implements Observer {
      */
 
     public void setCell(Cell cell){
-        this.player.setCell(cell);
+        this.player.setPawnCell(cell);
         this.player.getCell().removePawn(player.getPawn());
         this.player.getPawn().setCell(cell);
         cell.addPawn(player.getPawn());

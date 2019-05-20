@@ -67,10 +67,10 @@ class BoardControllerTest {
     }
     @Test
     void getPotentialTargetsTest(){
-        p1.setCell(c01);
-        p2.setCell(c12);
-        p3.setCell(c22);
-        p4.setCell(c22);
+        p1.setPawnCell(c01);
+        p2.setPawnCell(c12);
+        p3.setPawnCell(c22);
+        p4.setPawnCell(c22);
         ArrayList<Player> potentialTargets = new ArrayList<>();
         potentialTargets.add(p1);
         potentialTargets.add(p2);
@@ -85,8 +85,8 @@ class BoardControllerTest {
         assertTrue(controller.getPotentialTargets(c22, SAME_CELL).containsAll(potentialTargets));
         //Testing cardinal bypass wall
         potentialTargets.clear();
-        p3.setCell(c21);
-        p4.setCell(c10);
+        p3.setPawnCell(c21);
+        p4.setPawnCell(c10);
         potentialTargets.add(p1);
         potentialTargets.add(p2);
         potentialTargets.add(p3);
@@ -94,31 +94,31 @@ class BoardControllerTest {
         assertTrue(controller.getPotentialTargets(c11, CARDINAL_WALL_BYPASS).containsAll(potentialTargets));
         //Testing Cardinal normal
         potentialTargets.clear();
-        p1.setCell(c00);
-        p2.setCell(c10);
-        p3.setCell(c02);
-        p4.setCell(c01); //same cell of the shooter case
+        p1.setPawnCell(c00);
+        p2.setPawnCell(c10);
+        p3.setPawnCell(c02);
+        p4.setPawnCell(c01); //same cell of the shooter case
         potentialTargets.add(p1);
         potentialTargets.add(p3);
         potentialTargets.add(p4);
         assertTrue(controller.getPotentialTargets(c01, CARDINAL).containsAll(potentialTargets));
-        p2.setCell(c22);
+        p2.setPawnCell(c22);
         assertTrue(controller.getPotentialTargets(c01, CARDINAL).containsAll(potentialTargets));
         //test2 cardinal with different positions
         potentialTargets.clear();
-        p1.setCell(c20);
-        p2.setCell(c11);
-        p3.setCell(c22);
-        p4.setCell(c31);
+        p1.setPawnCell(c20);
+        p2.setPawnCell(c11);
+        p3.setPawnCell(c22);
+        p4.setPawnCell(c31);
         potentialTargets.add(p3);
         potentialTargets.add(p4);
         assertTrue(controller.getPotentialTargets(c21, CARDINAL).containsAll(potentialTargets));
         //test not_visible
         potentialTargets.clear();
-        p1.setCell(c22);
-        p2.setCell(c11);
-        p3.setCell(c01);
-        p4.setCell(c21);
+        p1.setPawnCell(c22);
+        p2.setPawnCell(c11);
+        p3.setPawnCell(c01);
+        p4.setPawnCell(c21);
         potentialTargets.add(p1);
         potentialTargets.add(p4);
         assertTrue(controller.getPotentialTargets(c00, NOT_VISIBLE).containsAll(potentialTargets));
@@ -135,7 +135,7 @@ class BoardControllerTest {
 
     @Test
     void getPotentialDestinationCellsTest(){
-        p1.setCell(c00);
+        p1.setPawnCell(c00);
         ArrayList<Cell> potentialTargets = new ArrayList<>();
         potentialTargets.add(c01);
         potentialTargets.add(c02);

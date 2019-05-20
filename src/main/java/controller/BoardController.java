@@ -219,7 +219,7 @@ public class BoardController {
                 .orElse(null);
 
         if(regenerationCell!=null){
-            player.setCell(regenerationCell);
+            player.setPawnCell(regenerationCell);
             return true;
         }
         return false;

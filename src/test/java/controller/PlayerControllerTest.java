@@ -158,7 +158,7 @@ class PlayerControllerTest {
     @Test
 
     void Grab(){
-        player.setCell(c00);
+        player.setPawnCell(c00);
         assertFalse(control.isFinalFrenzy());
         c01.setCard(new AmmoCard(new int[]{2, 0, 1}, false));
         assertTrue(controller.grab(c01, 0));

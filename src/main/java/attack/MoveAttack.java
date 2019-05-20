@@ -62,7 +62,7 @@ public class MoveAttack extends Attack {
     }
 
     public boolean singleAttack(Player player, Player opponent, Cell newCell){
-        opponent.setCell(newCell);
+        opponent.setPawnCell(newCell);
         opponent.addDamage(player,damage);
         return true;
     }

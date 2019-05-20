@@ -42,9 +42,9 @@ class MoveAttackTest {
 
     @Test
     void attack1() {
-        p1.setCell(cell1);
-        p2.setCell(cell1);
-        p3.setCell(cell1);
+        p1.setPawnCell(cell1);
+        p2.setPawnCell(cell1);
+        p3.setPawnCell(cell1);
 
         assertTrue(moveAttack.attack(p1,new ArrayList<>(Arrays.asList(p2,p3)), cell2));
         assertTrue(p1.getCell()==cell1);
