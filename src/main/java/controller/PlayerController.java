@@ -202,7 +202,7 @@ public class PlayerController implements Observer {
      */
 
     public void setCell(Cell cell){
-        this.player.getPawn().setCell(cell);
+        this.player.setCell(cell);
     }
 
     public boolean verifyPowerUp(Cell cell, int i) { //TODO gestire la questione costi ed i rimanenti power up
