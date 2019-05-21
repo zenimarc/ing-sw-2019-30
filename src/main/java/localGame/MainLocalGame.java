@@ -1,6 +1,7 @@
 package localGame;
 
 import controller.BoardController;
+import controller.PlayerCommand;
 import player.Player;
 import powerup.PowerCard;
 
@@ -19,6 +20,7 @@ public class MainLocalGame {
     private BoardController boardController;
     private Scanner reader = new Scanner(System.in);
     private Player playerWhoPlay;
+    private int action;
 
     private MainLocalGame(){
 
@@ -41,14 +43,13 @@ public class MainLocalGame {
         int i=0;
         while (i<5) {
             playerWhoPlay = boardController.getPlayer();
-            System.out.println(playerWhoPlay);
+      //      System.out.println(playerWhoPlay);
 
-            if(playerWhoPlay.getCell()==null){
-               int index = choosePowerUp4Regeneration();
-               boardController.setRegenerationCell(playerWhoPlay, index);
-            }
-
-
+            boardController.playerPlay(playerWhoPlay);
+/*
+            //Action to do
+            action = choosePlayerAction();
+*/
             boardController.changeTurn();
             i++;
         }
@@ -68,39 +69,32 @@ public class MainLocalGame {
         return new ArrayList<>(Arrays.asList(p1,p2,p3));
     }
 
-    /**
-     * This ask player what powerUpCard wants discard to be regenerated
-     * @return
-     */
-    private int choosePowerUp4Regeneration(){
-        int slt;
-        List<PowerCard> powerUps = playerWhoPlay.getPowerups();
 
-        while (true) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(getPlayerToPrint());
-            sb.append("Set your RegeneretionCell. Your PowerUpCard are:\n");
-            for (PowerCard pc : powerUps) {
-                sb.append(powerUps.indexOf(pc));
-                sb.append(") ");
-                sb.append(pc);
-                sb.append('\n');
-            }
-            sb.append("What RegenerationCell color you want? (Enter number)[0] ");
-
-            System.out.print(sb.toString());
-
-            slt = reader.nextInt();
-            if (slt < powerUps.size()) return slt;
-        }
-    }
 
     private String getPlayerToPrint(){
         StringBuilder sb = new StringBuilder();
         sb.append("----- Current player: ");
         sb.append(playerWhoPlay.getName());
-        sb.append(" -----");
+        sb.append(" -----\n");
         return sb.toString();
+    }
+
+    private String getPlayerAction(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Possible Action: ");
+        for(PlayerCommand action : PlayerCommand.PlayerAction){
+            sb.append(action.ordinal());
+            sb.append(") ");
+            sb.append(action.getName());
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
+    private int choosePlayerAction(){
+        System.out.println(getPlayerAction());
+        System.out.println("What do you want?");
+        return reader.nextInt();
     }
 
 

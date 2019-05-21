@@ -1,6 +1,7 @@
 package controller;
 
 import board.Cell;
+import constants.Color;
 
 /**
 è un oggetto utile al fine di move e grab e shoot per il controller in particolare
@@ -11,6 +12,7 @@ TODO: è giusto mettere questa classe in questo package o meglio di no? -Marco
 public class CommandObj {
     private PlayerCommand cmd;
     private int weaponSelector;
+    private Color cellColor;
     private Cell cell;
 
     public CommandObj(PlayerCommand cmd, Cell cell, int sel){
@@ -18,6 +20,12 @@ public class CommandObj {
         this.weaponSelector = sel;
         this.cell = cell;
     }
+
+    public CommandObj(PlayerCommand cmd, Color color){
+        this.cmd = cmd;
+        this.cellColor = color;
+    }
+
 
     public int getWeaponSelector() {
         return weaponSelector;
@@ -29,5 +37,9 @@ public class CommandObj {
 
     public PlayerCommand getCmd() {
         return cmd;
+    }
+
+    public Color getCellColor() {
+        return cellColor;
     }
 }
