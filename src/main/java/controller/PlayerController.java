@@ -65,6 +65,8 @@ public class PlayerController implements Observer {
             case REG_CELL:
                 boardController.setRegenerationCell(player, (Color) ((CommandObj) obj).getCellColor());
                 break;
+            case GET_DESTINATION_CELL:
+
             default: 
                 break;
         }

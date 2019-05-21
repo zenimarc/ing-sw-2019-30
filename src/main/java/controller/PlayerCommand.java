@@ -11,7 +11,9 @@ public enum PlayerCommand {
     SHOOT("Shoot", "..."),
     POWERUP("PowerUp", "..."),
     END_TURN("End Turn", "End your turn"),
-    REG_CELL("Regeneration Cell", "Choose Regeneration cell");
+    REG_CELL("Regeneration Cell", "Choose Regeneration cell"),
+    GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell")
+    ;
 
     public static EnumSet<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
 
@@ -31,4 +33,10 @@ public enum PlayerCommand {
         return description;
     }
 
+    public static PlayerCommand getPlayerActionFromIndex(int i){
+        for(PlayerCommand command : PlayerCommand.PlayerAction){
+            if(i==command.ordinal()) return command;
+        }
+        return null;
+    }
 }
