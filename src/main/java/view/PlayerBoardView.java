@@ -86,7 +86,9 @@ public class PlayerBoardView {
         //HEADER
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
-        stringBuilder.append(printBodyCell(V_SEPARATOR, '\u0000', ""));
+        stringBuilder.append(V_SEPARATOR);
+        for(int i=0; i<CELL_LENGTH; i++)
+            stringBuilder.append(' ');
         for (int i=1; i<COLS-1; i++)
             switch(i) {
                 case 2:
