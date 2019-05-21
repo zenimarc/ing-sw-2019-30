@@ -1,8 +1,10 @@
 package controller;
 import board.Billboard;
 import board.Cell;
+import constants.Color;
 import powerup.PowerCard;
 import player.Player;
+import view.PlayerBoardView;
 import view.PlayerView;
 
 import java.util.*;
@@ -13,9 +15,10 @@ import java.util.*;
  * PlayerController is used to control if a player can do certain actions
  */
 public class PlayerController implements Observer {
-    private BoardController boardControl;
+    private BoardController boardController;
     private Billboard billboard;
     private PlayerView playerView;
+    private PlayerBoardView playerBoardView;
     private Player player;
 
     /**
@@ -23,11 +26,18 @@ public class PlayerController implements Observer {
      */
     public PlayerController(Player player) {
         this.player = player;
+        this.playerView = new PlayerView(player, this);
+        this.playerBoardView = new PlayerBoardView(player);
+    }
+
+    public PlayerController(Player player, BoardController boardController) {
+        this(player);
+        this.boardController = boardController;
     }
 
     public void setBillboard(Billboard board){this.billboard = board;}
 
-    public void setBoardController(BoardController board){this.boardControl = board;}
+    public void setBoardController(BoardController board){this.boardController = board;}
 
     public Player getPlayer() {
         return player;
@@ -37,19 +47,25 @@ public class PlayerController implements Observer {
     public void update(Observable view, Object obj){
         switch (((CommandObj)obj).getCmd()) {
             case MOVE:
-                move(((CommandObj)obj).getCell(), 10);
+                move(((CommandObj) obj).getCell(), 10);
                 break;
             case GRAB:
-                grab(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
+                grab(((CommandObj) obj).getCell(), ((CommandObj) obj).getWeaponSelector());
                 break;
-            case SHOOT: //TODO verificare come implementarlo per bene
-                shoot(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
+            case SHOOT:
+                //TODO verificare come implementarlo per bene
+                shoot(((CommandObj) obj).getCell(), ((CommandObj) obj).getWeaponSelector());
                 break;
-           // case POWERUP:
-                //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
-                //break;
+            // case POWERUP:
+            //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
+            //break;
             case END_TURN:
-                boardControl.changeTurn();
+                boardController.changeTurn();
+                break;
+            case REG_CELL:
+                boardController.setRegenerationCell(player, (Color) ((CommandObj) obj).getCellColor());
+                break;
+            default: 
                 break;
         }
     }
@@ -64,10 +80,10 @@ public class PlayerController implements Observer {
             case 10: //normal move
                 if(cell == player.getCell())
                     return true;
-                if (!this.boardControl.isFinalFrenzy()) {//non final Frenzy
+                if (!this.boardController.isFinalFrenzy()) {//non final Frenzy
                     if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
                         return false; }
-                else if (!billboard.canMove(player.getPawn().getCell(), cell, 4) || !boardControl.verifyTwoTurnsFrenzy())
+                else if (!billboard.canMove(player.getPawn().getCell(), cell, 4) || !boardController.verifyTwoTurnsFrenzy())
                     return false;
                 setCell(cell);
                 return true;
@@ -75,14 +91,14 @@ public class PlayerController implements Observer {
             case 11: //move from grab
                 if(cell == player.getCell())
                     return true;
-                if (!this.boardControl.isFinalFrenzy()) { //not FinalFrenzy
+                if (!this.boardController.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 2) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
                             return false; }
                     else if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
                         return false; }
                 else {//Final Frenzy
-                    if (boardControl.verifyTwoTurnsFrenzy()) {
+                    if (boardController.verifyTwoTurnsFrenzy()) {
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
                             return false; }
                     else if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
@@ -94,14 +110,14 @@ public class PlayerController implements Observer {
             case 12: //move from shoot
                 if(cell == player.getCell())
                     return true;
-                if (!boardControl.isFinalFrenzy()) { //not FinalFrenzy
+                if (!boardController.isFinalFrenzy()) { //not FinalFrenzy
                     if (player.getPlayerBoard().getNumDamages() > 5){
                         if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
                             return false;}
                     else return false;
                     }
                 else {//Final Frenzy
-                        if (boardControl.verifyTwoTurnsFrenzy()) {
+                        if (boardController.verifyTwoTurnsFrenzy()) {
                             if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
                                 return false; }
                         else if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
@@ -248,6 +264,10 @@ public class PlayerController implements Observer {
 
     public void useTeleporter(Cell cell){
         setCell(cell);
+    }
+
+    public void myTurn(){
+        playerView.myTurn();
     }
 
 }

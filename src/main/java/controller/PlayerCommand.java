@@ -1,11 +1,34 @@
 package controller;
+
+import java.util.EnumSet;
+
 /**
  * 
  */
 public enum PlayerCommand {
-    MOVE,
-    GRAB,
-    SHOOT,
-    POWERUP,
-    END_TURN
+    MOVE("Move", "Move your pawn"),
+    GRAB("Grab", "..."),
+    SHOOT("Shoot", "..."),
+    POWERUP("PowerUp", "..."),
+    END_TURN("End Turn", "End your turn"),
+    REG_CELL("Regeneration Cell", "Choose Regeneration cell");
+
+    public static EnumSet<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+
+    private String name;
+    private String description;
+
+    PlayerCommand(String name, String desc){
+        this.name = name;
+        this.description = desc;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }

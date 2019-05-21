@@ -3,6 +3,7 @@ import board.BillboardGenerator;
 import board.Board;
 import board.Cell;
 import board.RegenerationCell;
+import constants.Color;
 import deck.Deck;
 import player.Player;
 import view.BoardViewCLI;
@@ -55,7 +56,7 @@ public class BoardController {
         this.playerControllers = new ArrayList<>();
         //Create player controller for each player
         for (Player player : this.listOfPlayers){
-            playerControllers.add(new PlayerController(player));
+            playerControllers.add(new PlayerController(player, this));
         }
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
         board = new Board(numskulls, BillboardGenerator.generateBillboard());
@@ -211,10 +212,10 @@ public class BoardController {
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
     }
 
-    public boolean setRegenerationCell(Player player, int powerUpIndex){
+    public boolean setRegenerationCell(Player player, Color color){
         RegenerationCell regenerationCell = board.getBillboard().getRegenerationCell()
                 .stream()
-                .filter(x -> x.getColor() == player.getPowerups().get(powerUpIndex).getColor())
+                .filter(x -> x.getColor() == color)
                 .findFirst()
                 .orElse(null);
 
@@ -223,5 +224,12 @@ public class BoardController {
             return true;
         }
         return false;
+    }
+
+    public void playerPlay(Player player){
+        PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
+        if(pc!=null){
+            pc.myTurn();
+        }
     }
 }
