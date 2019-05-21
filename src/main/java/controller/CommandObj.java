@@ -26,6 +26,10 @@ public class CommandObj {
         this.cellColor = color;
     }
 
+    public CommandObj(PlayerCommand cmd){
+        this.cmd = cmd;
+    }
+
 
     public int getWeaponSelector() {
         return weaponSelector;
