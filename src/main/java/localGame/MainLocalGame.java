@@ -69,8 +69,6 @@ public class MainLocalGame {
         return new ArrayList<>(Arrays.asList(p1,p2,p3));
     }
 
-
-
     private String getPlayerToPrint(){
         StringBuilder sb = new StringBuilder();
         sb.append("----- Current player: ");
@@ -79,23 +77,8 @@ public class MainLocalGame {
         return sb.toString();
     }
 
-    private String getPlayerAction(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("Possible Action: ");
-        for(PlayerCommand action : PlayerCommand.PlayerAction){
-            sb.append(action.ordinal());
-            sb.append(") ");
-            sb.append(action.getName());
-            sb.append('\n');
-        }
-        return sb.toString();
-    }
 
-    private int choosePlayerAction(){
-        System.out.println(getPlayerAction());
-        System.out.println("What do you want?");
-        return reader.nextInt();
-    }
+
 
 
     public static void main(String[] args) {
