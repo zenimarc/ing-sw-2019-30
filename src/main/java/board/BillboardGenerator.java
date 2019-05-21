@@ -45,13 +45,13 @@ public class BillboardGenerator extends Billboard {
         mappaProva.put(c21, new Position(2, 1));
 
 
-        mappaProva.put(c03, new Position(0, 2));
-        mappaProva.put(c13, new Position(1, 2));
-        mappaProva.put(c23, new Position(2, 2));
+        mappaProva.put(c02, new Position(0, 2));
+        mappaProva.put(c12, new Position(1, 2));
+        mappaProva.put(c22, new Position(2, 2));
 
-        mappaProva.put(c02, new Position(0, 3));
-        mappaProva.put(c12, new Position(1, 3));
-        mappaProva.put(c22, new Position(2, 3));
+        mappaProva.put(c03, new Position(0, 3));
+        mappaProva.put(c13, new Position(1, 3));
+        mappaProva.put(c23, new Position(2, 3));
 
 
         doors.add(new Door(c00, c10));
