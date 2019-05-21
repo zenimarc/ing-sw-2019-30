@@ -1,6 +1,7 @@
 package controller;
 
 import board.Cell;
+import board.Position;
 import constants.Color;
 
 /**
@@ -14,6 +15,7 @@ public class CommandObj {
     private int weaponSelector;
     private Color cellColor;
     private Cell cell;
+    private Object object;
 
     public CommandObj(PlayerCommand cmd, Cell cell, int sel){
         this.cmd = cmd;
@@ -21,9 +23,15 @@ public class CommandObj {
         this.cell = cell;
     }
 
+
     public CommandObj(PlayerCommand cmd, Color color){
         this.cmd = cmd;
         this.cellColor = color;
+    }
+
+    public CommandObj(PlayerCommand cmd, Object o){
+        this.cmd = cmd;
+        this.object = o;
     }
 
     public CommandObj(PlayerCommand cmd){
@@ -45,5 +53,9 @@ public class CommandObj {
 
     public Color getCellColor() {
         return cellColor;
+    }
+
+    public Object getObject() {
+        return object;
     }
 }
