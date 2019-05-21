@@ -1,5 +1,6 @@
 package view;
 import board.Cell;
+import board.Position;
 import constants.Constants;
 import controller.CommandObj;
 import controller.PlayerCommand;
@@ -8,6 +9,7 @@ import powerup.PowerCard;
 import weapon.WeaponCard;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 
@@ -27,44 +29,53 @@ public class PlayerView extends Observable {
         this.addObserver(playerController);
     }
 
-    public void myTurn(){
+    public void myTurn() {
         int index;
         Cell cell;
         int cmdSel;
 
         //Set cell if pawn not in billboard
-        if(player.getCell()==null){
+        if (player.getCell() == null) {
             index = choosePowerUp4Regeneration();
             setChanged();
             notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index).getColor()));
         }
 
-        int numAction = 0;
-        while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()){
-            index = choosePlayerAction();
-
-            switch (index){
-                case 0:
-                    move();
-                    break;
-                case 4:
-                    numAction = ACTION_PER_TURN_NORMAL_MODE.getValue();
-                    break;
-                    default:
-                        break;
-            }
-
-        //    setChanged();
-        //    notifyObservers(new CommandObj(PlayerCommand.getPlayerActionFromIndex(index), ---, ---)); //TODO scelta cella e slt
+        index = choosePlayerAction();
+        switch (index) {
+            case 0:
+                move();
+                break;
+            case 4:
+                setChanged();
+                notifyObservers(new CommandObj(PlayerCommand.END_TURN));
+            default:
+                break;
         }
+
     }
 
 
     public boolean move() {
-        System.out.println("In che cella vuoi andare? ");
+        String positionString;
+        while (true) {
+            System.out.println("In che cella vuoi andare? ");
+            positionString = reader.next();
+            if(positionString.matches("[0-3]+,+[0-3]")){
+                break;
+            }
+            if(positionString.equals("canc"));
+            return false;
+        }
 
+        Position newPosition = new Position(
+                Integer.valueOf(positionString.split(",")[0]),
+                Integer.valueOf(positionString.split(",")[1]));
 
-        return false;
+        setChanged();
+        notifyObservers(new CommandObj(PlayerCommand.MOVE, newPosition));
+
+        return true;
     }
 
     public boolean grab(Cell cell) {
@@ -134,10 +145,13 @@ public class PlayerView extends Observable {
     }
 
     private int choosePlayerAction(){
-        System.out.println(getStringPlayerAction());
-        System.out.println("What do you want?");
-        return reader.nextInt();
+        int slt;
+        while(true) {
+            System.out.println(getStringPlayerAction());
+            System.out.println("What do you want?");
+            slt = reader.nextInt();
+            if(slt<PlayerCommand.PlayerAction.size()){ return slt;}
+        }
     }
-
 
 }

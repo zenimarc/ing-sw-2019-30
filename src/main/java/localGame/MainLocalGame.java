@@ -46,11 +46,10 @@ public class MainLocalGame {
             System.out.println(playerWhoPlay);
 
             boardController.playerPlay(playerWhoPlay);
-/*
-            //Action to do
-            action = choosePlayerAction();
-*/
-            boardController.changeTurn();
+
+            if(boardController.changeTurn()==0){
+                boardController.getBoardViewToString();
+            }
             i++;
         }
         boardController.getBoardViewToString();
@@ -60,13 +59,14 @@ public class MainLocalGame {
     private ArrayList<Player> initializePlayer(){
         Player p1 = new Player("Aldo");
         Player p2 = new Player("Bob");
-        Player p3 = new Player("Carlo");
+     //   Player p3 = new Player("Carlo");
 
         p1.addAmmo(new int[]{1,1,1});
         p2.addAmmo(new int[]{1,1,1});
-        p3.addAmmo(new int[]{1,1,1});
+       // p3.addAmmo(new int[]{1,1,1});
 
-        return new ArrayList<>(Arrays.asList(p1,p2,p3));
+        return new ArrayList<>(Arrays.asList(p1,p2));
+       // return new ArrayList<>(Arrays.asList(p1,p2,p3));
     }
 
     private String getPlayerToPrint(){

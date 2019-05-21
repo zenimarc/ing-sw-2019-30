@@ -1,6 +1,7 @@
 package controller;
 import board.Billboard;
 import board.Cell;
+import board.Position;
 import constants.Color;
 import powerup.PowerCard;
 import player.Player;
@@ -8,6 +9,8 @@ import view.PlayerBoardView;
 import view.PlayerView;
 
 import java.util.*;
+
+import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 
 //TODO finire la shoot e decidere come gestirla, fare overloading di alcune funzioni
 
@@ -20,6 +23,8 @@ public class PlayerController implements Observer {
     private PlayerView playerView;
     private PlayerBoardView playerBoardView;
     private Player player;
+    private int numAction = 0;
+
 
     /**
      * Default constructor
@@ -28,11 +33,13 @@ public class PlayerController implements Observer {
         this.player = player;
         this.playerView = new PlayerView(player, this);
         this.playerBoardView = new PlayerBoardView(player);
+
     }
 
     public PlayerController(Player player, BoardController boardController) {
         this(player);
         this.boardController = boardController;
+        this.billboard = boardController.getBoard().getBillboard();
     }
 
     public void setBillboard(Billboard board){this.billboard = board;}
@@ -47,7 +54,11 @@ public class PlayerController implements Observer {
     public void update(Observable view, Object obj){
         switch (((CommandObj)obj).getCmd()) {
             case MOVE:
-                move(((CommandObj) obj).getCell(), 10);
+                if(move(billboard.getCellFromPosition((Position) ((CommandObj)obj).getObject()), 10)){
+                    numAction++;
+                }else{
+                    printError();
+                }
                 break;
             case GRAB:
                 grab(((CommandObj) obj).getCell(), ((CommandObj) obj).getWeaponSelector());
@@ -60,7 +71,7 @@ public class PlayerController implements Observer {
             //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
             //break;
             case END_TURN:
-                boardController.changeTurn();
+                numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
             case REG_CELL:
                 boardController.setRegenerationCell(player, (Color) ((CommandObj) obj).getCellColor());
@@ -269,7 +280,14 @@ public class PlayerController implements Observer {
     }
 
     public void myTurn(){
-        playerView.myTurn();
+        while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
+            playerView.myTurn();
+        }
+        numAction = 0;
+    }
+
+    public void printError(){
+        System.out.println("Error: Illegal Action");
     }
 
 }

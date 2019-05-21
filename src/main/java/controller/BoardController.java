@@ -54,14 +54,16 @@ public class BoardController {
     public BoardController(List<Player> players, int numskulls){
         this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
+
+        this.board = new Board(numskulls, BillboardGenerator.generateBillboard());
+        this.boardViewCLI = new BoardViewCLI(board);
+
         //Create player controller for each player
         for (Player player : this.listOfPlayers){
             playerControllers.add(new PlayerController(player, this));
         }
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
-        board = new Board(numskulls, BillboardGenerator.generateBillboard());
 
-        boardViewCLI = new BoardViewCLI(board);
     }
 
     //TODO da sistemare, deve diventare un return String
@@ -94,10 +96,12 @@ public class BoardController {
     /**
      * This function changes the number to decide which turn is
      */
-    public void changeTurn() {
+    public int changeTurn() {
         if(playerTurn == listOfPlayers.size()-1)
             playerTurn = 0;
         else playerTurn++;
+
+        return playerTurn;
     }
 
     /**
