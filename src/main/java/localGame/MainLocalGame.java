@@ -43,7 +43,7 @@ public class MainLocalGame {
         int i=0;
         while (i<5) {
             playerWhoPlay = boardController.getPlayer();
-      //      System.out.println(playerWhoPlay);
+            System.out.println(playerWhoPlay);
 
             boardController.playerPlay(playerWhoPlay);
 /*

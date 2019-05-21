@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 
 public class BillboardGenerator extends Billboard {
-
+//TODO eliminare codice ripetuto - Gio'
 //one blank cell
     public static Billboard generateBillboard(){
         HashMap<Cell, Position> mappaProva = new HashMap<>();
@@ -49,9 +49,9 @@ public class BillboardGenerator extends Billboard {
         mappaProva.put(c13, new Position(1, 2));
         mappaProva.put(c23, new Position(2, 2));
 
-        mappaProva.put(c02, new Position(0, 2));
-        mappaProva.put(c12, new Position(1, 2));
-        mappaProva.put(c22, new Position(2, 2));
+        mappaProva.put(c02, new Position(0, 3));
+        mappaProva.put(c12, new Position(1, 3));
+        mappaProva.put(c22, new Position(2, 3));
 
 
         doors.add(new Door(c00, c10));
@@ -65,8 +65,8 @@ public class BillboardGenerator extends Billboard {
 
     }
 
-    /*
-    2 blank cells
+/*
+    //2 blank cells
     public static Billboard generateBillboard2() {
         HashMap<Cell, Position> mappaProva = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
@@ -107,17 +107,17 @@ public class BillboardGenerator extends Billboard {
             doors.add(new Door(c22, c23));
 
         return new Billboard(mappaProva, doors);
-    }*/
+    }
 
-    /*
-    No blank cells
+
+    //No blank cells
     public static Billboard generateBillboard3() {
         HashMap<Cell, Position> mappaProva = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
 
         Cell c00 = new NormalCell(Color.RED);
         Cell c10 = new RegenerationCell(Color.RED);
-        Cell c20 = new NormalnCell(Color.WHITE);
+        Cell c20 = new NormalCell(Color.WHITE);
 
         Cell c01 = new NormalCell(Color.BLUE);
         Cell c11 = new NormalCell(Color.PURPLE);
@@ -154,13 +154,13 @@ public class BillboardGenerator extends Billboard {
             doors.add(new Door(c03, c13));
 
             doors.add(new Door(c00, c01));
-            doors.add(new Door(c002, c03));
+            doors.add(new Door(c02, c03));
             doors.add(new Door(c21, c22));
 
         return new Billboard(mappaProva, doors);
     }
 
-     */
+*/
 
     public static void main(String[] args) {
 
