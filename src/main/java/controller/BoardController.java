@@ -212,6 +212,17 @@ public class BoardController {
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
     }
 
+    public String getPotentialDestinationCellsString(Cell shooterCell, int steps){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Potential destination cell: ");
+        for(Cell c: getPotentialDestinationCells(shooterCell,steps)){
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+
     public boolean setRegenerationCell(Player player, Color color){
         RegenerationCell regenerationCell = board.getBillboard().getRegenerationCell()
                 .stream()
