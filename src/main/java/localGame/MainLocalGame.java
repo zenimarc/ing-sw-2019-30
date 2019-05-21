@@ -1,5 +1,6 @@
-package controller;
+package localGame;
 
+import controller.BoardController;
 import player.Player;
 import powerup.PowerCard;
 
@@ -38,7 +39,7 @@ public class MainLocalGame {
         }
 
         int i=0;
-        while (i<3) {
+        while (i<5) {
             playerWhoPlay = boardController.getPlayer();
             System.out.println(playerWhoPlay);
 
@@ -76,8 +77,8 @@ public class MainLocalGame {
         List<PowerCard> powerUps = playerWhoPlay.getPowerups();
 
         while (true) {
-
             StringBuilder sb = new StringBuilder();
+            sb.append(getPlayerToPrint());
             sb.append("Set your RegeneretionCell. Your PowerUpCard are:\n");
             for (PowerCard pc : powerUps) {
                 sb.append(powerUps.indexOf(pc));
@@ -92,6 +93,14 @@ public class MainLocalGame {
             slt = reader.nextInt();
             if (slt < powerUps.size()) return slt;
         }
+    }
+
+    private String getPlayerToPrint(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("----- Current player: ");
+        sb.append(playerWhoPlay.getName());
+        sb.append(" -----");
+        return sb.toString();
     }
 
 
