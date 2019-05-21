@@ -55,6 +55,7 @@ public class Board {
 
         this.weaponDeck = new Deck(Card.weponCardsToCards((new WeaponFactory()).getWeaponCardList()));
         setStartWeaponCard();
+
     }
 
     /**
