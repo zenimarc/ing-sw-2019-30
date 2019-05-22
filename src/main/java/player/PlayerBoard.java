@@ -20,11 +20,15 @@ public class PlayerBoard {
     /**
      * Constructors
      */
-    public PlayerBoard(Board board) {
-        this.board = board;
+    public PlayerBoard(){
         this.damageTrack = new ArrayList<>();
         this.marks = new HashMap<>();
         this.numDeaths = 0;
+    }
+
+    public PlayerBoard(Board board) {
+        this();
+        this.board = board;
     }
 
     /**

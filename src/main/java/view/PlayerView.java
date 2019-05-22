@@ -52,7 +52,7 @@ public class PlayerView extends Observable {
         while (true) {
             System.out.println("In che cella vuoi andare? ");
             positionString = reader.next();
-            if(positionString.matches("[0-3]+,+[0-3]")){
+            if(positionString.matches("[0-2]+,+[0-3]")){
                 break;
             }
             if(positionString.equals("canc"));
@@ -108,7 +108,7 @@ public class PlayerView extends Observable {
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
         setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index).getColor()));
+        notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index)));
         return true;
     }
 

@@ -43,6 +43,7 @@ public class PlayerController implements Observer {
         this(player);
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
+
     }
 
     public void setBillboard(Billboard board){this.billboard = board;}
@@ -84,7 +85,11 @@ public class PlayerController implements Observer {
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
             case REG_CELL:
-                boardController.setRegenerationCell(player, cmdObj.getCellColor());
+                PowerCard pc = (PowerCard) cmdObj.getObject();
+                if(boardController.setRegenerationCell(player, pc.getColor())){
+                    player.usePowerUp(pc, true);
+                    boardController.getBoard().addPowerUpDiscardDeck(pc);
+                }
                 break;
             case GET_DESTINATION_CELL:
 

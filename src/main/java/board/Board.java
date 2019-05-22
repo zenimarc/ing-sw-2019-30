@@ -2,6 +2,7 @@ package board;
 
 import deck.*;
 import player.Player;
+import powerup.PowerCard;
 import powerup.PowerCardFactory;
 import weapon.WeaponFactory;
 
@@ -148,4 +149,7 @@ public class Board {
         this.ammoDiscardDeck.addCard(ammoCard);
 }
 
+    public  void addPowerUpDiscardDeck(PowerCard powerCard) {
+        this.powerUpDiscardDeck.addCard(powerCard);
+    }
 }

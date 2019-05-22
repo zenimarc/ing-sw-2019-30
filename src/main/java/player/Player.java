@@ -33,6 +33,7 @@ public class Player extends Observable {
     public Player(String nickname) {
         this.nickname = nickname;
         this.pawn = new Pawn(this);
+        this.playerBoard = new PlayerBoard();
         this.points = 0; //a new player has 0 points
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
@@ -357,7 +358,8 @@ public class Player extends Observable {
     public boolean usePowerUp(PowerCard power, boolean discard){
         if(discard){
             powerups.remove(power);
-            return true;}
+            return true;
+        }
         else return(canPayPowerUp(power));
     }
 
