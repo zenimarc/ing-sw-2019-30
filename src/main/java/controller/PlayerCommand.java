@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * 
@@ -18,7 +19,7 @@ public enum PlayerCommand {
     OPTIONAL_MOVE("Move","Move and do something else")
     ;
 
-    public static EnumSet<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+    public static final Set<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
 
     private String name;
     private String description;

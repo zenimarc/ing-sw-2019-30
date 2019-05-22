@@ -132,6 +132,13 @@ public class PlayerController implements Observer {
         return false;
     }
 
+    /**
+     *
+     * @param cell
+     * @param i
+     * @return
+     * @deprecated
+     */
     @Deprecated
     public boolean move(Cell cell, int i) {
         switch(i) {

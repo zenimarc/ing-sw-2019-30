@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import deck.AmmoCard;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class PowerCardFactory {
     private BufferedReader bufferedReader;
-    private static final String powercardResourcesAddress = "src" + File.separator +
+    private static final String POWERCARD_RESOURCES_ADDRESS = "src" + File.separator +
             "resources"+ File.separator +
             "cards" + File.separator +
             "powercards.json";
@@ -23,7 +22,7 @@ public class PowerCardFactory {
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
-            bufferedReader = new BufferedReader(new FileReader(powercardResourcesAddress));
+            bufferedReader = new BufferedReader(new FileReader(POWERCARD_RESOURCES_ADDRESS));
             return gson.fromJson(bufferedReader, new TypeToken<ArrayList<PowerCard>>() {
             }.getType());
         } catch (FileNotFoundException e) {
@@ -41,7 +40,7 @@ public class PowerCardFactory {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        File powerUpFile = new File(powercardResourcesAddress);
+        File powerUpFile = new File(POWERCARD_RESOURCES_ADDRESS);
 
         if(powerUpFile.exists()) {
             try {

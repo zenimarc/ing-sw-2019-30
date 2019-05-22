@@ -1,15 +1,11 @@
-package localGame;
+package local_game;
 
 import controller.BoardController;
-import controller.PlayerCommand;
 import player.Player;
 import powerup.PowerCard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-
 /**
  * This class is a local demo of Adrenaline, for test the game.
  */
@@ -18,9 +14,7 @@ public class MainLocalGame {
 
     private ArrayList<Player> players;
     private BoardController boardController;
-    private Scanner reader = new Scanner(System.in);
     private Player playerWhoPlay;
-    private int action;
 
     private MainLocalGame(){
 
@@ -61,14 +55,6 @@ public class MainLocalGame {
 
         return new ArrayList<>(Arrays.asList(p1,p2));
        // return new ArrayList<>(Arrays.asList(p1,p2,p3));
-    }
-
-    private String getPlayerToPrint(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("----- Current player: ");
-        sb.append(playerWhoPlay.getName());
-        sb.append(" -----\n");
-        return sb.toString();
     }
 
 

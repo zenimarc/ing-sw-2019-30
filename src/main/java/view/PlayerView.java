@@ -37,6 +37,7 @@ public class PlayerView extends Observable {
                 break;
             case 1:
                 grab();
+                break;
             case 4:
                 setChanged();
                 notifyObservers(new CommandObj(PlayerCommand.END_TURN));
@@ -140,7 +141,6 @@ public class PlayerView extends Observable {
 
         while (true) {
             StringBuilder sb = new StringBuilder();
-          //  sb.append(getPlayerToPrint());
             sb.append("Set your RegenerationCell. Your PowerUpCard are:\n");
             for (PowerCard pc : powerUps) {
                 sb.append(powerUps.indexOf(pc));

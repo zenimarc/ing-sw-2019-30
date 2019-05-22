@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import constants.Color;
 import deck.Bullet;
 import deck.Card;
-import powerup.PowerUp;
 
 /**
  * PowerCard is the card which represent which ammo you can receive and if you can pick a power up

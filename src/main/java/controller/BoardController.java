@@ -4,7 +4,6 @@ import constants.Color;
 import deck.Deck;
 import player.Player;
 import view.BoardViewCLI;
-import weapon.WeaponCard;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -224,7 +223,12 @@ public class BoardController {
         return sb.toString();
     }
 
-
+    /**
+     * Set RegenerationCell of a player hasn't pawn in billboard
+     * @param player Player out of game
+     * @param color Color of Regeneration Cell
+     * @return
+     */
     public boolean setRegenerationCell(Player player, Color color){
         RegenerationCell regenerationCell = board.getBillboard().getRegenerationCell()
                 .stream()
@@ -239,21 +243,24 @@ public class BoardController {
         return false;
     }
 
+    /**
+     * Say to playerController of player to start his turn
+     * @param player Player how can play
+     */
     public void playerPlay(Player player){
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
-        if(pc!=null){
+        if(pc!=null) {
             pc.myTurn();
+            restoreCell(pc.getModifyCell());
+            getBoardViewToString();
         }
-        restoreCell(pc.getModifyCell());
-        getBoardViewToString();
-
     }
 
     /**
-     *
-     * @param cells
+     * Restore NormalCell and/or RegenerationCell that player modify in his turn
+     * @param cells modify cells
      */
-    public void restoreCell(ArrayList<Cell> cells){
+    public void restoreCell(List<Cell> cells){
         for(Cell cell : cells){
             if(cell.getClass()== NormalCell.class){
                 NormalCell nc = (NormalCell) cell;
