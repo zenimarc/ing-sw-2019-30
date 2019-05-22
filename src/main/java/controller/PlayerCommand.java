@@ -14,7 +14,8 @@ public enum PlayerCommand {
     REG_CELL("Regeneration Cell", "Choose Regeneration cell"),
     GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell"),
     GRAB_WEAPON("Grab", "..."),
-    GRAB_AMMO("Grab", "...")
+    GRAB_AMMO("Grab", "..."),
+    OPTIONAL_MOVE("Move","Move and do something else")
     ;
 
     public static EnumSet<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);

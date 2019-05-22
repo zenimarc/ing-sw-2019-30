@@ -1,7 +1,5 @@
 package controller;
-import board.Billboard;
-import board.Cell;
-import board.Position;
+import board.*;
 import constants.Color;
 import constants.EnumActionParam;
 import powerup.PowerCard;
@@ -27,7 +25,7 @@ public class PlayerController implements Observer {
     private PlayerBoardView playerBoardView;
     private Player player;
     private int numAction = 0;
-
+    private ArrayList<Cell> modifyCell;
 
     /**
      * Default constructor
@@ -58,17 +56,20 @@ public class PlayerController implements Observer {
         CommandObj cmdObj = (CommandObj) obj;
         switch (cmdObj.getCmd()) {
             case MOVE:
+            case OPTIONAL_MOVE:
                 if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), MOVE)){
-                    numAction++;
-                }else{
-                    if(view.getClass() == PlayerView.class) {
-                        ((PlayerView) view).printError();
-                    }
+                    if(cmdObj.getCmd()==MOVE) numAction++;
+                }else {
+                    viewPrintError(view);
                 }
                 break;
             case GRAB_AMMO:
             case GRAB_WEAPON:
-                grab(cmdObj.getCell(), cmdObj.getWeaponSelector());
+                if(grab(cmdObj.getCell(), cmdObj.getWeaponSelector())){
+                    numAction++;
+                }else {
+                    viewPrintError(view);
+                }
                 break;
             case SHOOT:
                 //TODO verificare come implementarlo per bene
@@ -192,6 +193,7 @@ public class PlayerController implements Observer {
      */
     public boolean grab(Cell cell, int val) {
         cell.giveCard(this.player, val); //TODO se non si può prendere la carta lancia errore, stessa cosa per il movimento
+        modifyCell.add(cell);
             return true;
     }
 
@@ -299,6 +301,10 @@ public class PlayerController implements Observer {
         else return false;
     }
 
+    public ArrayList<Cell> getModifyCell() {
+        return modifyCell;
+    }
+
     public void useGranade(Player player){
         player.addMark(this.player);
     }
@@ -312,10 +318,21 @@ public class PlayerController implements Observer {
     }
 
     public void myTurn(){
+        modifyCell = new ArrayList<>();
+
+        if(player.getCell()==null) playerView.regPawn();
+
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
             playerView.myTurn();
+            boardController.getBoardViewToString();
         }
         numAction = 0;
+    }
+
+    private void viewPrintError(Observable view){
+        if(view.getClass() == PlayerView.class) {
+            ((PlayerView) view).printError();
+        }
     }
 
 }

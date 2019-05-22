@@ -28,20 +28,16 @@ public class MainLocalGame {
         players = initializePlayer();
         boardController = new BoardController(players, 8);
 
-        //print board (text description)
-        System.out.println(boardController.getBoard().getBillboard().toString());
-
-        //print board (drawCLI)
-        //boardController.getBoardViewToString();
-        //print PlayerBoard for each player
-
         for (Player p : players) {
             p.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
             p.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
         }
 
+        //Print board
+        boardController.getBoardViewToString();
+
         int i=0;
-        while (i<5) {
+        while (i<10) {
             playerWhoPlay = boardController.getPlayer();
             System.out.println(playerWhoPlay);
 
@@ -52,8 +48,6 @@ public class MainLocalGame {
             }
             i++;
         }
-        boardController.getBoardViewToString();
-
     }
 
     private ArrayList<Player> initializePlayer(){

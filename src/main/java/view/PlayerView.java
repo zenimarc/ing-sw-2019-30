@@ -28,16 +28,8 @@ public class PlayerView extends Observable {
     }
 
     public void myTurn() {
-        int index;
 
-        //Set cell if pawn not in billboard
-        if (player.getCell() == null) {
-            index = choosePowerUp4Regeneration();
-            setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index).getColor()));
-        }
-
-        index = choosePlayerAction();
+        int index = choosePlayerAction();
 
         switch (index) {
             case 0:
@@ -52,7 +44,6 @@ public class PlayerView extends Observable {
             default:
                 break;
         }
-
     }
 
 
@@ -79,7 +70,7 @@ public class PlayerView extends Observable {
     }
 
     private boolean grab() {
-        move(PlayerCommand.GRAB);
+        move(PlayerCommand.OPTIONAL_MOVE);
 
         if(player.getCell().getClass() == NormalCell.class) return grabAmmo();
         else if (player.getCell().getClass()== RegenerationCell.class) return grabWeapon();
@@ -110,6 +101,13 @@ public class PlayerView extends Observable {
 
     private boolean grabAmmo(){
         return false;
+    }
+
+    public boolean regPawn(){
+        int index = choosePowerUp4Regeneration();
+        setChanged();
+        notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index).getColor()));
+        return true;
     }
 
     public boolean shoot(Cell cell, WeaponCard weapon) {

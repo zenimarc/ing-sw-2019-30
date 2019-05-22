@@ -1,12 +1,10 @@
 package controller;
-import board.BillboardGenerator;
-import board.Board;
-import board.Cell;
-import board.RegenerationCell;
+import board.*;
 import constants.Color;
 import deck.Deck;
 import player.Player;
 import view.BoardViewCLI;
+import weapon.WeaponCard;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -245,6 +243,26 @@ public class BoardController {
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null){
             pc.myTurn();
+        }
+        restoreCell(pc.getModifyCell());
+    }
+
+    public void restoreCell(ArrayList<Cell> cells){
+        for(Cell cell : cells){
+            if(cell.getClass()== NormalCell.class){
+                NormalCell nc = (NormalCell) cell;
+                if(nc.getCard(0)==null) nc.setCard(board.getAmmoCardDeck().draw());
+            }
+            else if(cell.getClass() == RegenerationCell.class) {
+                //If no weaponCard in deck return
+                if (board.getWeaponCardDeck().getSize() == 0) return;
+                //else
+                RegenerationCell rc = (RegenerationCell) cell;
+                if (rc.getCards().contains(null)) {
+                    rc.setCard(board.getWeaponCardDeck().draw());
+                }
+            }
+
         }
     }
 }
