@@ -79,10 +79,13 @@ public class NormalCell extends Cell {
      * @param i not used
      */
     @Override
-    public void giveCard(Player player, int i){
-        player.addAmmo(this.ammoCard.getAmmo());
-        if(this.ammoCard.verifyPowerUp())
-            player.addPowerCard();
+    public Card giveCard(Player player, int i){
+        AmmoCard ac = this.ammoCard;
+        player.addAmmo(ac.getAmmo());
+
+        this.ammoCard = new AmmoCard();
+
+        return ac;
     }
 
     @Override

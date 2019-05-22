@@ -245,22 +245,26 @@ public class BoardController {
             pc.myTurn();
         }
         restoreCell(pc.getModifyCell());
+        getBoardViewToString();
+
     }
 
+    /**
+     *
+     * @param cells
+     */
     public void restoreCell(ArrayList<Cell> cells){
         for(Cell cell : cells){
             if(cell.getClass()== NormalCell.class){
                 NormalCell nc = (NormalCell) cell;
-                if(nc.getCard(0)==null) nc.setCard(board.getAmmoCardDeck().draw());
+                nc.setCard(board.getAmmoCardDeck().draw());
             }
             else if(cell.getClass() == RegenerationCell.class) {
                 //If no weaponCard in deck return
                 if (board.getWeaponCardDeck().getSize() == 0) return;
                 //else
                 RegenerationCell rc = (RegenerationCell) cell;
-                if (rc.getCards().contains(null)) {
-                    rc.setCard(board.getWeaponCardDeck().draw());
-                }
+                rc.setCard(board.getWeaponCardDeck().draw());
             }
 
         }

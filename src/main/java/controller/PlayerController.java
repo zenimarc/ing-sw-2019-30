@@ -2,6 +2,8 @@ package controller;
 import board.*;
 import constants.Color;
 import constants.EnumActionParam;
+import deck.AmmoCard;
+import deck.Card;
 import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
@@ -192,9 +194,18 @@ public class PlayerController implements Observer {
      * @return true if the action was successful, else false
      */
     public boolean grab(Cell cell, int val) {
-        cell.giveCard(this.player, val); //TODO se non si può prendere la carta lancia errore, stessa cosa per il movimento
+        //TODO se non si può prendere la carta lancia errore, stessa cosa per il movimento
+        Card card = cell.giveCard(this.player, val);
         modifyCell.add(cell);
-            return true;
+
+        if(card.getClass() == AmmoCard.class){
+            AmmoCard ac = (AmmoCard) card;
+            if(ac.verifyPowerUp())
+                player.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
+            boardController.getBoard().addAmmoDiscardDeck(ac);
+        }
+
+        return true;
     }
 
     /**

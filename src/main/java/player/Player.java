@@ -295,7 +295,6 @@ public class Player extends Observable {
      * @return true if it was possible, else false
      */
 
-    //TODO siamo sicuri che il player si debba andare a prendere la carta? Non è meglio che gli venga passata? - Gio'
     public boolean addPowerCard() {
         return addPowerCard((PowerCard) playerBoard.getBoard().getPowerUpDeck().draw());
     }

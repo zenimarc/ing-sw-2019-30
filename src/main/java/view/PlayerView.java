@@ -100,6 +100,8 @@ public class PlayerView extends Observable {
     }
 
     private boolean grabAmmo(){
+        setChanged();
+        notifyObservers(new CommandObj(PlayerCommand.GRAB_AMMO, player.getCell(),0));
         return false;
     }
 

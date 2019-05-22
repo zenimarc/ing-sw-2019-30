@@ -140,5 +140,12 @@ public class Board {
         return (this.numSkulls == 0);
     }
 
+    /**
+     * Add AmmoCard to discard deck
+     * @param ammoCard to discard
+     */
+    public void addAmmoDiscardDeck(AmmoCard ammoCard){
+        this.ammoDiscardDeck.addCard(ammoCard);
+}
 
 }

@@ -66,7 +66,7 @@ public abstract class  Cell {
      * @param player to receive a card
      * @param i card to pick
      */
-    public abstract void giveCard(Player player, int i);
+    public abstract Card giveCard(Player player, int i);
 
     /**
      * This function adds a new pawn in the cell

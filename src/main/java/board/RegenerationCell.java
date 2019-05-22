@@ -115,11 +115,12 @@ public class RegenerationCell extends Cell {
      * @param i card to pick
      */
     @Override
-    public void giveCard(Player player, int i){
-        player.addWeapon(this.weaponCard[i]);
+    public Card giveCard(Player player, int i){
+        WeaponCard wc = this.weaponCard[i];
+        player.addWeapon(wc);
         this.weaponCard[i] = null;
+        return wc;
     }
-
 
     @Override
     public String toString() {
