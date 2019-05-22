@@ -11,7 +11,7 @@ class CardFactoryTest {
     @Test
 
     void AmmoCardFactory(){
-        Board board= new Board(8);
+        Board board= new Board(8, new Billboard());
         assertEquals(36, board.getAmmoCardDeck().getSize());
         assertEquals(board.getAmmoCardDeck().getCards().get(0),board.getAmmoCardDeck().getCards().get(12));
         assertEquals(board.getAmmoCardDeck().getCards().get(8),board.getAmmoCardDeck().getCards().get(35));
