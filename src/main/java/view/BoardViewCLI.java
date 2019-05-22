@@ -210,18 +210,8 @@ public class BoardViewCLI {
                     stream.append(" ");
                 if(x%M == 0)
                     stream.append(printColor(x, square));
-                else if(getCell(x/M, square+1) != null)
+                else
                     stream.append(printDoors(x, square));
-                    else {
-                        if(x % M == 1 && getCell(x/M, square).getClass() == RegenerationCell.class){
-                            for (int i = 0; i < M-2; i++)
-                                stream.append(" ");
-                            stream.append("Regen");
-                }
-                       else for (int i = 0; i < M+Z; i++)
-                            stream.append(" ");
-                    stream.append("│");}
-
             }
         stream.append("\n");
         System.out.print(stream);
@@ -276,25 +266,43 @@ public class BoardViewCLI {
      */
     private StringBuilder printDoors(int x, int square) {
         StringBuilder stream = new StringBuilder();
-        if (x % M == 1 && getCell(x/M, square).getClass() == RegenerationCell.class){
-            for (int i = 0; i < M-2; i++)
+        if (x % M == 1){
+            for(int i = 0; i < M+Z-board.getBillboard().getCellPosition(getCell(x/M, square)).toString().length(); i++)
                 stream.append(" ");
-            stream.append("Regen│");}
-        else if (x%M > L / 2 && x%M < M - L / 2) {
-            if (board.getBillboard().hasDoor(getCell(x/M , square), getCell(x/M , square+1))|| board.getBillboard().hasSameColor(getCell(x/M , square), getCell(x/M , square+1)))
-                for (int i = 0; i < M+Z+1; i++)
-                    stream.append(" ");
-            else {
-                for (int i = 0; i < M+Z; i++)
-                    stream.append(" ");
-                stream.append("│");
+            stream.append(printCoordinates(x, square));
+            stream.append("│");
             }
+        else if (x%M > L / 2 && x%M < M - L / 2) {
+            if(x % M == 2 && getCell(x/M, square).getClass() == RegenerationCell.class){
+                for (int i = 0; i < M-2; i++)
+                    stream.append(" ");
+                stream.append("Regen");}
+            else for (int i = 0; i < M+Z; i++)
+                stream.append(" ");
+            if(square == N|| getCell(x/M, square+1) == null)
+                stream.append("│");
+            else if (board.getBillboard().hasDoor(getCell(x/M , square), getCell(x/M , square+1))|| board.getBillboard().hasSameColor(getCell(x/M , square), getCell(x/M , square+1)))
+                stream.append(" ");
+            else
+                stream.append("│");
         }
         else {
             for (int i = 0; i < M+Z; i++)
                 stream.append(" ");
             stream.append("│");
         }
+        return stream;
+    }
+
+    /**
+     * This function prints the coordinates of the cell
+     * @param x coordinate
+     * @param y coordinate
+     * @return a stream
+     */
+    private StringBuilder printCoordinates(int x, int y){
+        StringBuilder stream = new StringBuilder();
+        stream.append(board.getBillboard().getCellPosition(getCell(x/M, y)).toString());
         return stream;
     }
 
@@ -335,13 +343,12 @@ public class BoardViewCLI {
         StringBuilder stream = new StringBuilder();
         if (cell.getCard(0) != null){
             stream.append(printAmmoThings((AmmoCard)cell.getCard(0)));
-            stream.append("  ");
         }
         else
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < cell.getCard(0).toString().length(); i++)
                 stream.append(" ");
 
-        for(int j = 15; j < (M+Z)*Z; j++)
+        for(int j = cell.getCard(0).toString().length(); j < (M+Z)*Z; j++)
             stream.append(" ");
         stream.append("│");
         return stream;

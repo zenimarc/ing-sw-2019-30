@@ -55,9 +55,9 @@ public class Bullet {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("[");
-        stringBuilder.append(cubes[0] + ",");
-        stringBuilder.append(cubes[1] + ",");
-        stringBuilder.append(cubes[2] + "]");
+        stringBuilder.append("R:" + cubes[0] + ",");
+        stringBuilder.append("Y:"+ cubes[1] + ",");
+        stringBuilder.append("B:" + cubes[2] + "]");
 
         return stringBuilder.toString();
     }

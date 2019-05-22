@@ -70,12 +70,9 @@ class BoardViewCLITest {
     @Test
 
     public void drawCLI() {
-
         Player p = new Player("Marco");
-        p.setPawnCell(c00);
         c00.addPawn(p.getPawn());
         Player p2 = new Player("Paolofdvsgfdrgrehgerh");
-        p2.setPawnCell(c10);
         c10.addPawn(p2.getPawn());
         int[] array = {0, 1, 2};
         AmmoCard ammo = new AmmoCard(array, true);
