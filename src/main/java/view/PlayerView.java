@@ -1,7 +1,8 @@
 package view;
 import board.Cell;
+import board.NormalCell;
 import board.Position;
-import constants.Constants;
+import board.RegenerationCell;
 import controller.CommandObj;
 import controller.PlayerCommand;
 import player.Player;
@@ -9,9 +10,6 @@ import powerup.PowerCard;
 import weapon.WeaponCard;
 
 import java.util.*;
-import java.util.regex.Pattern;
-
-import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 
 /**
  * 
@@ -31,8 +29,6 @@ public class PlayerView extends Observable {
 
     public void myTurn() {
         int index;
-        Cell cell;
-        int cmdSel;
 
         //Set cell if pawn not in billboard
         if (player.getCell() == null) {
@@ -42,13 +38,17 @@ public class PlayerView extends Observable {
         }
 
         index = choosePlayerAction();
+
         switch (index) {
             case 0:
-                move();
+                move(PlayerCommand.MOVE);
                 break;
+            case 1:
+                grab();
             case 4:
                 setChanged();
                 notifyObservers(new CommandObj(PlayerCommand.END_TURN));
+                break;
             default:
                 break;
         }
@@ -56,7 +56,7 @@ public class PlayerView extends Observable {
     }
 
 
-    public boolean move() {
+    public boolean move(PlayerCommand playerCommand) {
         String positionString;
         while (true) {
             System.out.println("In che cella vuoi andare? ");
@@ -73,17 +73,42 @@ public class PlayerView extends Observable {
                 Integer.valueOf(positionString.split(",")[1]));
 
         setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.MOVE, newPosition));
+        notifyObservers(new CommandObj(playerCommand, newPosition));
 
         return true;
     }
 
-    public boolean grab(Cell cell) {
-        /**if(player.Playerboard.damageTrack[2)!= null)
-         *  player.move(cell);
-         * getCard(int i);
-         * player.turns--;
-         */
+    private boolean grab() {
+        move(PlayerCommand.GRAB);
+
+        if(player.getCell().getClass() == NormalCell.class) return grabAmmo();
+        else if (player.getCell().getClass()== RegenerationCell.class) return grabWeapon();
+        return false;
+    }
+
+    private boolean grabWeapon(){
+        String askString = stringForChooseWeaponCard();
+        String answerRegex = "[0-"+((((RegenerationCell) player.getCell()).getCards().size())-1) +"]";
+        String answer;
+        int index;
+
+        System.out.println(askString);
+        while (true){
+            answer = reader.next();
+            if(answer.matches(answerRegex)) {
+                index = Integer.valueOf(answer);
+                break;
+            }
+            printError();
+        }
+
+        setChanged();
+        notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, player.getCell() ,index));
+
+        return true;
+    }
+
+    private boolean grabAmmo(){
         return false;
     }
 
@@ -132,9 +157,9 @@ public class PlayerView extends Observable {
         }
     }
 
-    private String getStringPlayerAction(){
+    private String stringForPlayerAction(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Possible Action: ");
+        sb.append("Possible Action: \n");
         for(PlayerCommand action : PlayerCommand.PlayerAction){
             sb.append(action.ordinal());
             sb.append(") ");
@@ -146,12 +171,34 @@ public class PlayerView extends Observable {
 
     private int choosePlayerAction(){
         int slt;
+        String read;
+        String formatString = "[0-"+PlayerCommand.PlayerAction.size()+"]";
+
         while(true) {
-            System.out.println(getStringPlayerAction());
+            System.out.println(stringForPlayerAction());
             System.out.println("What do you want?");
-            slt = reader.nextInt();
+            read =reader.next();
+            slt = read.matches(formatString) ? Integer.valueOf(read) : PlayerCommand.PlayerAction.size();
             if(slt<PlayerCommand.PlayerAction.size()){ return slt;}
         }
+    }
+
+    private String stringForChooseWeaponCard(){
+        RegenerationCell cell = (RegenerationCell) player.getCell();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Weapon card in this cell are:");
+        for(WeaponCard weaponCard : cell.getCards()){
+            sb.append('\t');
+            sb.append(cell.getCards().indexOf(weaponCard));
+            sb.append(") ");
+            sb.append(weaponCard);
+        }
+        sb.append("\nWhich do you want? ");
+        return sb.toString();
+    }
+
+    public void printError(){
+        System.out.println("----- !! Error: Illegal Action !! -----");
     }
 
 }

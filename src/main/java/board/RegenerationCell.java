@@ -117,6 +117,7 @@ public class RegenerationCell extends Cell {
     @Override
     public void giveCard(Player player, int i){
         player.addWeapon(this.weaponCard[i]);
+        this.weaponCard[i] = null;
     }
 
 

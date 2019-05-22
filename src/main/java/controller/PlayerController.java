@@ -3,6 +3,7 @@ import board.Billboard;
 import board.Cell;
 import board.Position;
 import constants.Color;
+import constants.EnumActionParam;
 import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
@@ -11,6 +12,8 @@ import view.PlayerView;
 import java.util.*;
 
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
+import static constants.EnumActionParam.*;
+import static controller.PlayerCommand.MOVE;
 
 //TODO finire la shoot e decidere come gestirla, fare overloading di alcune funzioni
 
@@ -52,20 +55,24 @@ public class PlayerController implements Observer {
 
     @Override
     public void update(Observable view, Object obj){
-        switch (((CommandObj)obj).getCmd()) {
+        CommandObj cmdObj = (CommandObj) obj;
+        switch (cmdObj.getCmd()) {
             case MOVE:
-                if(move(billboard.getCellFromPosition((Position) ((CommandObj)obj).getObject()), 10)){
+                if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), MOVE)){
                     numAction++;
                 }else{
-                    printError();
+                    if(view.getClass() == PlayerView.class) {
+                        ((PlayerView) view).printError();
+                    }
                 }
                 break;
-            case GRAB:
-                grab(((CommandObj) obj).getCell(), ((CommandObj) obj).getWeaponSelector());
+            case GRAB_AMMO:
+            case GRAB_WEAPON:
+                grab(cmdObj.getCell(), cmdObj.getWeaponSelector());
                 break;
             case SHOOT:
                 //TODO verificare come implementarlo per bene
-                shoot(((CommandObj) obj).getCell(), ((CommandObj) obj).getWeaponSelector());
+                shoot(cmdObj.getCell(), cmdObj.getWeaponSelector());
                 break;
             // case POWERUP:
             //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
@@ -74,7 +81,7 @@ public class PlayerController implements Observer {
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
             case REG_CELL:
-                boardController.setRegenerationCell(player, (Color) ((CommandObj) obj).getCellColor());
+                boardController.setRegenerationCell(player, cmdObj.getCellColor());
                 break;
             case GET_DESTINATION_CELL:
 
@@ -88,6 +95,36 @@ public class PlayerController implements Observer {
      * @param cell of destination
      * @return if the player can move, else false
      */
+
+    public boolean move(Cell cell, PlayerCommand playerCommand){
+        if(player.getCell() == cell) return true;
+
+        EnumActionParam actionParam;
+        if(!boardController.isFinalFrenzy()) {
+            //NOT FINAL FREZY
+            switch (playerCommand) {
+                case MOVE: //normal mode
+                    actionParam = NORMAL_MOVE;
+                    break;
+                case GRAB_WEAPON:// move from grab
+                case GRAB_AMMO:
+                    actionParam = player.getNumDamages()<ADRENALINIC_FIRST_STEP.getNum() ? NORMAL_GRAB_MOVE : ADRENALINIC_GRAB_MOVE;
+                    break;
+                case SHOOT: //move from shoot
+                    actionParam = player.getNumDamages()<ADRENALINIC_SECOND_STEP.getNum() ? NORMAL_SHOOT_MOVE : ADRENALINIC_SHOOT_MOVE;
+                    break;
+                default:
+                    return false;
+            }
+            if(billboard.canMove(player.getCell(), cell, actionParam.getNum())){
+                setCell(cell);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Deprecated
     public boolean move(Cell cell, int i) {
         switch(i) {
             case 10: //normal move
@@ -154,8 +191,6 @@ public class PlayerController implements Observer {
      * @return true if the action was successful, else false
      */
     public boolean grab(Cell cell, int val) {
-        if(!this.move(cell, 11))
-            return false;
         cell.giveCard(this.player, val); //TODO se non si può prendere la carta lancia errore, stessa cosa per il movimento
             return true;
     }
@@ -194,7 +229,7 @@ public class PlayerController implements Observer {
         if(player.canPay(player.getWeapons().get(weaponNumber).getAttack(attack).getCost()))
 
             //chooseTarget(attack, oggetto da colpire); si fa un switch case
-        return false;
+        {return false;}
         return false;
     }
 
@@ -229,9 +264,6 @@ public class PlayerController implements Observer {
 
     public void setCell(Cell cell){
         this.player.setPawnCell(cell);
-        this.player.getCell().removePawn(player.getPawn());
-        this.player.getPawn().setCell(cell);
-        cell.addPawn(player.getPawn());
     }
 
     public boolean verifyPowerUp(PowerCard power, Object object, int i) {
@@ -284,10 +316,6 @@ public class PlayerController implements Observer {
             playerView.myTurn();
         }
         numAction = 0;
-    }
-
-    public void printError(){
-        System.out.println("Error: Illegal Action");
     }
 
 }

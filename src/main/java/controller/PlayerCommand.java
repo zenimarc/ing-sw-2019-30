@@ -12,7 +12,9 @@ public enum PlayerCommand {
     POWERUP("PowerUp", "..."),
     END_TURN("End Turn", "End your turn"),
     REG_CELL("Regeneration Cell", "Choose Regeneration cell"),
-    GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell")
+    GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell"),
+    GRAB_WEAPON("Grab", "..."),
+    GRAB_AMMO("Grab", "...")
     ;
 
     public static EnumSet<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);

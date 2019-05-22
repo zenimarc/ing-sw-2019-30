@@ -111,7 +111,7 @@ class PlayerControllerTest {
         controller3.setBoardController(control);
     }
 
-    @Test
+  /*  @Test
     void move(){
         player.getPawn().setCell(c00);
         p3.getPawn().setCell(c00);
@@ -173,6 +173,6 @@ class PlayerControllerTest {
 
     }
 
-
+*/
 
 }
