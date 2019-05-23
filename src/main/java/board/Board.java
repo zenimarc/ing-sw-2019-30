@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Board is a class which saves all information about the state of game
  */
-public class Board {
+public class Board{
 
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;

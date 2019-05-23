@@ -2,17 +2,15 @@ package board;
 
 import constants.Color;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 /**
  * Billboards' instance is a billboardCell's abstraction and knows cells position
  */
 
-public class Billboard {
+public class Billboard{
 
     private HashMap<Cell, Position> billboardCell;
     private List<Door> doors;

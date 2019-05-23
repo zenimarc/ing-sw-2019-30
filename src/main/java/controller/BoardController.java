@@ -3,6 +3,7 @@ import board.*;
 import constants.Color;
 import deck.Deck;
 import player.Player;
+import powerup.PowerCard;
 import view.BoardViewCLI;
 
 import java.util.*;
@@ -55,9 +56,14 @@ public class BoardController {
         this.board = new Board(numskulls, BillboardGenerator.generateBillboard());
         this.boardViewCLI = new BoardViewCLI(board);
 
-        //Create player controller for each player
         for (Player player : this.listOfPlayers){
+            //Create player controller
             playerControllers.add(new PlayerController(player, this));
+            //Draw 2 PowerCard
+            player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
+            player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
+            //set Observers
+            player.addObserver(boardViewCLI);
         }
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
 
@@ -250,9 +256,9 @@ public class BoardController {
     public void playerPlay(Player player){
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
+            getBoardViewToString();
             pc.myTurn();
             restoreCell(pc.getModifyCell());
-            getBoardViewToString();
         }
     }
 

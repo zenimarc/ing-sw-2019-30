@@ -22,13 +22,6 @@ public class MainLocalGame {
         players = initializePlayer();
         boardController = new BoardController(players, 8);
 
-        for (Player p : players) {
-            p.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
-            p.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
-        }
-
-        //Print board
-        boardController.getBoardViewToString();
 
         int i=0;
         while (i<10) {
@@ -37,10 +30,11 @@ public class MainLocalGame {
 
             boardController.playerPlay(playerWhoPlay);
 
-            if(boardController.changeTurn()==0){
+            boardController.changeTurn();
+          /*  if(boardController.changeTurn()==0){
                 boardController.getBoardViewToString();
             }
-            i++;
+            */i++;
         }
     }
 

@@ -1,13 +1,17 @@
 package view;
 import board.*;
+import constants.EnumObsMessage;
 import deck.AmmoCard;
+import player.Player;
 import weapon.WeaponCard;
 
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * BoardViewCLI is used to draw the map of the game. It can draw Cli or GUI version
  */
-public class BoardViewCLI {
+public class BoardViewCLI implements Observer {
     private Board board;
     private int N = 4; //Number of horizontal cells
     private int A = 3;  //Number of vertical cells
@@ -398,4 +402,12 @@ public class BoardViewCLI {
         return stream;
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o.getClass()== Player.class){
+            if(arg == EnumObsMessage.CHANGE_POSITION) {
+                drawCLI();
+            }
+        }
+    }
 }

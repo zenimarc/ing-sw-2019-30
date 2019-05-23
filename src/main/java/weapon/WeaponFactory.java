@@ -14,19 +14,16 @@ import java.util.List;
 
 public class WeaponFactory {
 
-    private static File weaponFolder;
-    private final static String weaponResourcesAddress = "src"+File.separator+
+    private static final String WEAPON_RESOURCES_ADDRESS = "src"+File.separator+
             "resources"+File.separator+
             "weapon" + File.separator;
+    private static File weaponFolder = new File(WEAPON_RESOURCES_ADDRESS);
 
-    public WeaponFactory() {
-        weaponFolder = new File(weaponResourcesAddress);
-    }
-
-   /* /**
+    /**
      *
      * @return
-
+     * @deprecated cause decided to use Jackson
+*/
     @Deprecated
     private static List<WeaponCard> loadWeaponCardsGSON() {
         List<WeaponCard> weaponCards = new ArrayList<>();
@@ -49,17 +46,17 @@ public class WeaponFactory {
             e.fillInStackTrace();
         }
         return Collections.emptyList();
-    }*/
+    }
 
     /**
-     * This return a list of weapon stored in weaponResourcesAddress, if weapons don't exist create them
+     * This return a list of weapon stored in WEAPON_RESOURCES_ADDRESS, if weapons don't exist create them
      * @return list of weapon stored in local
      */
     private List<WeaponCard> loadWeaponCardsJackson(){
         List<WeaponCard> weaponCards = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        File folder = new File(weaponResourcesAddress);
+        File folder = new File(WEAPON_RESOURCES_ADDRESS);
         //if folder doesn't exist store all weapon
         if(!folder.exists()){storeAllWeapons();}
 
@@ -80,7 +77,7 @@ public class WeaponFactory {
      * @param weaponName file's name
      */
     private void storeWeapon(String jsonWeapon, String weaponName){
-        File file = new File(weaponResourcesAddress +
+        File file = new File(WEAPON_RESOURCES_ADDRESS +
                 weaponName + ".json");
 
         if(file.exists()) return;
@@ -104,7 +101,7 @@ public class WeaponFactory {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         WeaponCard wp;
 
-        File folder = new File(weaponResourcesAddress);
+        File folder = new File(WEAPON_RESOURCES_ADDRESS);
         if (!folder.exists()) folder.mkdir();
 
         for (EnumWeapon weapon : EnumWeapon.values()) {

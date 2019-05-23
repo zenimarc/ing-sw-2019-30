@@ -4,6 +4,7 @@ import board.Board;
 import board.Cell;
 import constants.Constants;
 import constants.Color;
+import constants.EnumObsMessage;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
@@ -24,7 +25,6 @@ public class Player extends Observable {
     private ArrayList<WeaponCard> weapons;
     private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
-
     /**
      * Default constructors
      */
@@ -75,7 +75,9 @@ public class Player extends Observable {
      * This set player cell
      *
      * @param c
+     * @deprecated use setPawnCell
      */
+    @Deprecated
     private void setCell(Cell c) {
         this.pawn.setCell(c);
     }
@@ -89,8 +91,10 @@ public class Player extends Observable {
         if(pawn.getCell()!=null) {
             this.pawn.getCell().removePawn(this.pawn);
         }
-        setCell(cell);
+        this.pawn.setCell(cell);
         cell.addPawn(this.pawn);
+        setChanged();
+        notifyObservers(EnumObsMessage.CHANGE_POSITION);
     }
 
     /**

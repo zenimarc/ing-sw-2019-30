@@ -347,7 +347,7 @@ public class PlayerController implements Observer {
 
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
             playerView.myTurn();
-            boardController.getBoardViewToString();
+          //  boardController.getBoardViewToString();
         }
         numAction = 0;
     }
