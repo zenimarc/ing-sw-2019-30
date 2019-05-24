@@ -288,7 +288,7 @@ public class PlayerController implements Observer {
      */
 
     public void setCell(Cell cell){
-        this.player.setPawnCell(cell);
+        this.boardController.getBoard().setPlayerCell(this.player,cell);
     }
 
     public boolean verifyPowerUp(PowerCard power, Object object, int i) {
