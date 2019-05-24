@@ -3,6 +3,7 @@ package board;
 import board.Cell.Cell;
 import board.Cell.NormalCell;
 import board.Cell.RegenerationCell;
+import board.billboard.Billboard;
 import constants.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

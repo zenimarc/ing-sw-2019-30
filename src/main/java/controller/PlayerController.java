@@ -1,6 +1,7 @@
 package controller;
 import board.*;
 import board.Cell.Cell;
+import board.billboard.Billboard;
 import constants.EnumActionParam;
 import deck.AmmoCard;
 import deck.Card;

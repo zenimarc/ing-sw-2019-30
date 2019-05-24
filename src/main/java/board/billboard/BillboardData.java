@@ -1,8 +1,10 @@
-package board;
+package board.billboard;
 
 import board.Cell.Cell;
 import board.Cell.NormalCell;
 import board.Cell.RegenerationCell;
+import board.Door;
+import board.Position;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 //import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;

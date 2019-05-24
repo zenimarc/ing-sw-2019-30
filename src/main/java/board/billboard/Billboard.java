@@ -1,7 +1,9 @@
-package board;
+package board.billboard;
 
 import board.Cell.Cell;
 import board.Cell.RegenerationCell;
+import board.Door;
+import board.Position;
 import constants.Color;
 
 import java.util.*;

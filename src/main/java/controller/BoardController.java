@@ -3,6 +3,7 @@ import board.*;
 import board.Cell.Cell;
 import board.Cell.NormalCell;
 import board.Cell.RegenerationCell;
+import board.billboard.BillboardGenerator;
 import constants.Color;
 import deck.Deck;
 import player.Player;
