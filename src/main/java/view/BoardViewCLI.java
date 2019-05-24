@@ -1,8 +1,9 @@
 package view;
 import board.*;
-import constants.EnumObsMessage;
+import board.Cell.Cell;
+import board.Cell.NormalCell;
+import board.Cell.RegenerationCell;
 import deck.AmmoCard;
-import player.Player;
 import weapon.WeaponCard;
 
 import java.util.Observable;

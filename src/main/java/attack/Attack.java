@@ -1,6 +1,6 @@
 package attack;
 
-import board.Cell;
+import board.Cell.Cell;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import constants.EnumString;

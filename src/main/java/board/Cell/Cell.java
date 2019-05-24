@@ -1,4 +1,4 @@
-package board;
+package board.Cell;
 
 import deck.Card;
 import constants.Color;

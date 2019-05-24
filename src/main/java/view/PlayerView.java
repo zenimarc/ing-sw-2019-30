@@ -1,8 +1,8 @@
 package view;
-import board.Cell;
-import board.NormalCell;
+import board.Cell.Cell;
+import board.Cell.NormalCell;
 import board.Position;
-import board.RegenerationCell;
+import board.Cell.RegenerationCell;
 import controller.CommandObj;
 import controller.PlayerCommand;
 import player.Player;
@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * 
  */
-public class PlayerView extends Observable {
+public class PlayerView extends Observable{
     private Player player;
     private PlayerBoardView myPlayerBoard;
     private Scanner reader = new Scanner(System.in);

@@ -1,5 +1,8 @@
 package board;
 
+import board.Cell.Cell;
+import board.Cell.NormalCell;
+import board.Cell.RegenerationCell;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import constants.Color;

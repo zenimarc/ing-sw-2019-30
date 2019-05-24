@@ -1,5 +1,7 @@
 package board;
 
+import board.Cell.Cell;
+
 /**
  * Door is a class used to know if two adjacent cells are connected
  */

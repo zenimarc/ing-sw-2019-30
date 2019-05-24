@@ -1,8 +1,8 @@
 package player;
 
 import board.Board;
-import board.Cell;
-import board.RegenerationCell;
+import board.Cell.Cell;
+import board.Cell.RegenerationCell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

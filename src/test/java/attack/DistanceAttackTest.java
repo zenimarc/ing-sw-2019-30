@@ -1,6 +1,7 @@
 package attack;
 
 import board.*;
+import board.Cell.Cell;
 import constants.EnumString;
 
 import controller.EnumTargetSet;

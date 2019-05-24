@@ -1,7 +1,7 @@
 package weapon;
 
 import attack.Attack;
-import board.Cell;
+import board.Cell.Cell;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

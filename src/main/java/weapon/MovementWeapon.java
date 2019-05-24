@@ -4,7 +4,7 @@ import attack.Attack;
 import attack.DistanceAttack;
 import attack.MoveAttack;
 import attack.SimpleAttack;
-import board.Cell;
+import board.Cell.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,6 +1,9 @@
 package view;
 
 import board.*;
+import board.Cell.Cell;
+import board.Cell.NormalCell;
+import board.Cell.RegenerationCell;
 import deck.AmmoCard;
 import constants.Color;
 

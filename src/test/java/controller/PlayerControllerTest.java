@@ -1,20 +1,16 @@
 package controller;
 
 import board.*;
-import deck.AmmoCard;
+import board.Cell.Cell;
+import board.Cell.NormalCell;
+import board.Cell.RegenerationCell;
 import constants.Color;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import player.Player;
-import weapon.SimpleWeapon;
-import weapon.WeaponCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static weapon.EnumWeapon.ELECTROSCYTHE;
 
 //TODO fare i test
 

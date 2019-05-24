@@ -1,10 +1,9 @@
 package player;
 
 import board.Board;
-import board.Cell;
+import board.Cell.Cell;
 import constants.Constants;
 import constants.Color;
-import constants.EnumObsMessage;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 

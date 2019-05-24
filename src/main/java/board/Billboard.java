@@ -1,5 +1,7 @@
 package board;
 
+import board.Cell.Cell;
+import board.Cell.RegenerationCell;
 import constants.Color;
 
 import java.util.*;
@@ -79,7 +81,7 @@ public class Billboard{
         Position goalPosition = billboardCell.get(goal);
 
         if(startPosition.isNear(goalPosition)) {
-            if (start.color == goal.color) return true;
+            if (start.getColor() == goal.getColor()) return true;
             return (hasDoor(start, goal));
         }
         return false;
@@ -91,7 +93,7 @@ public class Billboard{
      * @return a list of Cell
      */
     private ArrayList<Cell> sameColorCell(Color color){
-        return billboardCell.keySet().stream().filter(x -> x.color == color).collect(Collectors.toCollection(ArrayList::new));
+        return billboardCell.keySet().stream().filter(x -> x.getColor() == color).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -145,7 +147,7 @@ public class Billboard{
                                 (goalAttainableDoor.contains(x.getCell2()) && startAttainableDoor.contains(x.getCell1()))
                 )//attainable
                 .map(x -> {
-                    if(x.getCell1().color == startAttainableDoor.get(0).color) return x;
+                    if(x.getCell1().getColor() == startAttainableDoor.get(0).getColor()) return x;
                     return new Door(x.getCell2(), x.getCell1());
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -230,7 +232,7 @@ public class Billboard{
 
         if(step==1) return canMoveSingleStep(start,goal);
 
-        if(start.color == goal.color){
+        if(start.getColor() == goal.getColor()){
             //Start and Goal same color so distance = num of cell
             return step>= cellDistance(start, goal);
         }else{
@@ -238,11 +240,11 @@ public class Billboard{
             //Near room
 
             //Select only doorCell attainable in step-1 steps from goalCell, if not exist return false
-            ArrayList<Cell> goalCellsDoor = attainableCell(sameColorDoor(goal.color), goal, step-1);
+            ArrayList<Cell> goalCellsDoor = attainableCell(sameColorDoor(goal.getColor()), goal, step-1);
             if(goalCellsDoor.isEmpty()) return false;
 
             //select only doorCell attainable in step-1 steps from startCell, if not exist return false
-            ArrayList<Cell> startCellsDoor = attainableCell(sameColorDoor(start.color), start, step-1);
+            ArrayList<Cell> startCellsDoor = attainableCell(sameColorDoor(start.getColor()), start, step-1);
             if(startCellsDoor.isEmpty()) return false;
 
             //select door that player can pass to arrive in goalCell

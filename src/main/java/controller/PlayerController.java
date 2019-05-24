@@ -1,6 +1,6 @@
 package controller;
 import board.*;
-import constants.Color;
+import board.Cell.Cell;
 import constants.EnumActionParam;
 import deck.AmmoCard;
 import deck.Card;
