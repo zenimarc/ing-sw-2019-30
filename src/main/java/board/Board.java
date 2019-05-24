@@ -1,8 +1,5 @@
 package board;
 
-import board.Cell.Cell;
-import board.Cell.NormalCell;
-import board.Cell.RegenerationCell;
 import board.billboard.Billboard;
 import deck.*;
 import player.Player;
@@ -163,4 +160,16 @@ public class Board extends Observable{
         notifyObservers(this.cloneBoard());
     }
 
+    public Card giveCardFromCell(Cell cell, Player player, int val){
+        Card card = cell.giveCard(player, val);
+        setChanged();
+        notifyObservers(this.cloneBoard());
+        return card;
+    }
+
+    public Card giveCardFromPowerUpDeck(Player player){
+        PowerCard pc = (PowerCard) powerUpDeck.draw();
+        player.addPowerCard(pc);
+        return pc;
+    }
 }

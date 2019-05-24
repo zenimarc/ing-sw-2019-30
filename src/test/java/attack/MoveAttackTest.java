@@ -1,8 +1,8 @@
 package attack;
 
 import board.Board;
-import board.Cell.Cell;
-import board.Cell.NormalCell;
+import board.Cell;
+import board.NormalCell;
 import constants.EnumString;
 import controller.EnumTargetSet;
 import org.junit.jupiter.api.BeforeAll;

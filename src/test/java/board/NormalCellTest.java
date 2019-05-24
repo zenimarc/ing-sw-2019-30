@@ -1,6 +1,5 @@
 package board;
 
-import board.Cell.NormalCell;
 import deck.AmmoCard;
 import constants.Color;
 import powerup.PowerCard;

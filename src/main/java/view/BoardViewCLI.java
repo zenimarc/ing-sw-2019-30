@@ -1,8 +1,8 @@
 package view;
 import board.*;
-import board.Cell.Cell;
-import board.Cell.NormalCell;
-import board.Cell.RegenerationCell;
+import board.Cell;
+import board.NormalCell;
+import board.RegenerationCell;
 import deck.AmmoCard;
 import weapon.WeaponCard;
 
@@ -409,5 +409,9 @@ public class BoardViewCLI implements Observer {
             this.board = (Board) o;
             drawCLI();
         }
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 }

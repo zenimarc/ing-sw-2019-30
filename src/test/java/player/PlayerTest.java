@@ -1,8 +1,8 @@
 package player;
 
 import board.Board;
-import board.Cell.Cell;
-import board.Cell.NormalCell;
+import board.Cell;
+import board.NormalCell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

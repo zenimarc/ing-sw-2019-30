@@ -1,6 +1,6 @@
 package controller;
 
-import board.Cell.Cell;
+import board.Cell;
 import constants.Color;
 
 /**

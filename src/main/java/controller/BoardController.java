@@ -1,8 +1,8 @@
 package controller;
 import board.*;
-import board.Cell.Cell;
-import board.Cell.NormalCell;
-import board.Cell.RegenerationCell;
+import board.Cell;
+import board.NormalCell;
+import board.RegenerationCell;
 import board.billboard.BillboardGenerator;
 import constants.Color;
 import deck.Deck;
@@ -46,6 +46,7 @@ public class BoardController{
         this.board = board;
         this.boardViewCLI = new BoardViewCLI(board);
         this.playerControllers = controllers;
+
     }
 
     /**
@@ -67,7 +68,9 @@ public class BoardController{
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             //set Observers
+
             this.board.addObserver(boardViewCLI);
+
         }
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
 

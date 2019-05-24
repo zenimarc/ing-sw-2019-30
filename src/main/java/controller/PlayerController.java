@@ -1,6 +1,6 @@
 package controller;
 import board.*;
-import board.Cell.Cell;
+import board.Cell;
 import board.billboard.Billboard;
 import constants.EnumActionParam;
 import deck.AmmoCard;
@@ -208,13 +208,13 @@ public class PlayerController implements Observer {
      */
     public boolean grab(Cell cell, int val) {
         //TODO se non si può prendere la carta lancia errore, stessa cosa per il movimento
-        Card card = cell.giveCard(this.player, val);
+        Card card = boardController.getBoard().giveCardFromCell(cell, player, val);
         modifyCell.add(cell);
 
         if(card.getClass() == AmmoCard.class){
             AmmoCard ac = (AmmoCard) card;
             if(ac.verifyPowerUp())
-                player.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
+                boardController.getBoard().giveCardFromPowerUpDeck(player);
             boardController.getBoard().addAmmoDiscardDeck(ac);
         }
 

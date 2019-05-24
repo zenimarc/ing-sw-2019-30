@@ -1,6 +1,6 @@
-package board.Cell;
+package board;
 
-import board.Cell.Cell;
+import board.Cell;
 import constants.Constants;
 import deck.Card;
 import constants.Color;

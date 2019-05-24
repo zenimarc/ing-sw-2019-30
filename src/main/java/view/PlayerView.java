@@ -1,8 +1,8 @@
 package view;
-import board.Cell.Cell;
-import board.Cell.NormalCell;
+import board.Cell;
+import board.NormalCell;
 import board.Position;
-import board.Cell.RegenerationCell;
+import board.RegenerationCell;
 import controller.CommandObj;
 import controller.PlayerCommand;
 import player.Player;

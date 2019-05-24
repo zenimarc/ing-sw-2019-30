@@ -1,7 +1,7 @@
 package player;
 
 import board.Board;
-import board.Cell.Cell;
+import board.Cell;
 import constants.Constants;
 import constants.Color;
 import powerup.PowerCard;

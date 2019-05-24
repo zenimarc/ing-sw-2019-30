@@ -1,6 +1,5 @@
 package board;
 
-import board.Cell.RegenerationCell;
 import constants.Color;
 import org.junit.jupiter.api.Test;
 import player.Player;

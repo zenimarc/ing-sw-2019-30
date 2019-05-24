@@ -1,6 +1,6 @@
 package player;
 
-import board.Cell.Cell;
+import board.Cell;
 
 /**
  * Pawn is an association between player and position

@@ -1,7 +1,7 @@
 package board.billboard;
 
-import board.Cell.Cell;
-import board.Cell.RegenerationCell;
+import board.Cell;
+import board.RegenerationCell;
 import board.Door;
 import board.Position;
 import constants.Color;
