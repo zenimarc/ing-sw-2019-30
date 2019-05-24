@@ -93,8 +93,6 @@ public class Player extends Observable {
         }
         this.pawn.setCell(cell);
         cell.addPawn(this.pawn);
-        setChanged();
-        notifyObservers(EnumObsMessage.CHANGE_POSITION);
     }
 
     /**

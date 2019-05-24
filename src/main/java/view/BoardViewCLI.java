@@ -404,10 +404,9 @@ public class BoardViewCLI implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(o.getClass()== Player.class){
-            if(arg == EnumObsMessage.CHANGE_POSITION) {
-                drawCLI();
-            }
+        if(o.getClass()== Board.class){
+            this.board = (Board) o;
+            drawCLI();
         }
     }
 }
