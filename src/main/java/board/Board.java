@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Board is a class which saves all information about the state of game
  */
-public class Board{
+public class Board extends Observable{
 
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;
@@ -152,4 +152,11 @@ public class Board{
     public  void addPowerUpDiscardDeck(PowerCard powerCard) {
         this.powerUpDiscardDeck.addCard(powerCard);
     }
+
+    public void setPlayerCell(Player p, Cell c){
+        p.setPawnCell(c);
+        setChanged();
+        notifyObservers(this.cloneBoard());
+    }
+
 }
