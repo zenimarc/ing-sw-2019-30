@@ -12,7 +12,6 @@ TODO: è giusto mettere questa classe in questo package o meglio di no? -Marco
 public class CommandObj {
     private PlayerCommand cmd;
     private int weaponSelector;
-    private Color cellColor;
     private Cell cell;
     private Object object;
 
@@ -22,11 +21,12 @@ public class CommandObj {
         this.cell = cell;
     }
 
-
-    public CommandObj(PlayerCommand cmd, Color color){
+    public CommandObj(PlayerCommand cmd, Cell cell, int[] sel){
         this.cmd = cmd;
-        this.cellColor = color;
+        this.cell = cell;
+        this.object = sel;
     }
+
 
     public CommandObj(PlayerCommand cmd, Object o){
         this.cmd = cmd;
@@ -48,10 +48,6 @@ public class CommandObj {
 
     public PlayerCommand getCmd() {
         return cmd;
-    }
-
-    public Color getCellColor() {
-        return cellColor;
     }
 
     public Object getObject() {

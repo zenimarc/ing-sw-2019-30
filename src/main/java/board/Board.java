@@ -5,6 +5,7 @@ import deck.*;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerCardFactory;
+import weapon.WeaponCard;
 import weapon.WeaponFactory;
 
 import java.util.*;
@@ -166,6 +167,9 @@ public class Board extends Observable{
         notifyObservers(this.cloneBoard());
         return card;
     }
+
+    //TODO add addCardInCell(cell, card) sostituire metodo in playercontroller.grabweapon
+
 
     public Card giveCardFromPowerUpDeck(Player player){
         PowerCard pc = (PowerCard) powerUpDeck.draw();
