@@ -4,7 +4,8 @@ import client.Client;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 public interface Lobby extends Remote {
-    void login(String username, Client client) throws RemoteException;
+    UUID register(String username, Client remoteClient) throws RemoteException;
 }
