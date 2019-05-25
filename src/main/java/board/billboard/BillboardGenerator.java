@@ -1,5 +1,10 @@
-package board;
+package board.billboard;
 
+import board.Cell;
+import board.NormalCell;
+import board.RegenerationCell;
+import board.Door;
+import board.Position;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import constants.Color;

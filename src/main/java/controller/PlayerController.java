@@ -1,13 +1,17 @@
 package controller;
 import board.*;
-import constants.Color;
+import board.Cell;
+import board.billboard.Billboard;
+import constants.Constants;
 import constants.EnumActionParam;
 import deck.AmmoCard;
 import deck.Card;
+import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
 import view.PlayerView;
+import weapon.WeaponCard;
 
 import java.util.*;
 
@@ -67,11 +71,31 @@ public class PlayerController implements Observer {
                 }
                 break;
             case GRAB_AMMO:
-            case GRAB_WEAPON:
                 if(grab(cmdObj.getCell(), cmdObj.getWeaponSelector())){
                     numAction++;
                 }else {
                     viewPrintError(view);
+                }
+                break;
+            case GRAB_WEAPON:
+                if(cmdObj.getObject().getClass() == int[].class){
+                    Card wp = null;
+                    //indexes[0] = card to draw, indexes[1] = card to discard
+                    int indexes[] = (int[]) cmdObj.getObject();
+
+                    if(indexes[1] != -1){
+                        //No weapon to discard
+                        wp = player.rmWeapon(indexes[1]);
+                    }
+                    if(grab(cmdObj.getCell(), indexes[0])){
+                        if(wp!=null) {
+                            //card that discard on board
+                            cmdObj.getCell().setCard(wp);}
+                        numAction++;
+                    }else {
+                        viewPrintError(view);
+                    }
+
                 }
                 break;
             case SHOOT:
@@ -91,8 +115,9 @@ public class PlayerController implements Observer {
                     boardController.getBoard().addPowerUpDiscardDeck(pc);
                 }
                 break;
-            case GET_DESTINATION_CELL:
-
+            case DISCARD_WEAPON:
+                player.rmWeapon((int) cmdObj.getObject());
+                break;
             default: 
                 break;
         }
@@ -196,7 +221,7 @@ public class PlayerController implements Observer {
         return false;
     }
 
-     public boolean movePlayer(Player player, Cell cell, int i){
+     public boolean movePlayer(@NotNull Player player, Cell cell, int i){
         return (!billboard.canMove(player.getPawn().getCell(), cell, i));
      }
 
@@ -205,15 +230,20 @@ public class PlayerController implements Observer {
      * @param cell of destination
      * @return true if the action was successful, else false
      */
-    public boolean grab(Cell cell, int val) {
-        //TODO se non si può prendere la carta lancia errore, stessa cosa per il movimento
-        Card card = cell.giveCard(this.player, val);
+    public boolean grab(@NotNull Cell cell, int val) {
+        if(cell.getClass() == RegenerationCell.class){
+            if(player.getWeapons().size()>=Constants.MAX_WEAPON_HAND_SIZE.getValue()){
+                return false;
+            }
+        }
+
+        Card card = boardController.getBoard().giveCardFromCell(cell, player, val);
         modifyCell.add(cell);
 
         if(card.getClass() == AmmoCard.class){
             AmmoCard ac = (AmmoCard) card;
             if(ac.verifyPowerUp())
-                player.addPowerCard((PowerCard) boardController.getBoard().getPowerUpDeck().draw());
+                boardController.getBoard().giveCardFromPowerUpDeck(player);
             boardController.getBoard().addAmmoDiscardDeck(ac);
         }
 
@@ -288,7 +318,7 @@ public class PlayerController implements Observer {
      */
 
     public void setCell(Cell cell){
-        this.player.setPawnCell(cell);
+        this.boardController.getBoard().setPlayerCell(this.player,cell);
     }
 
     public boolean verifyPowerUp(PowerCard power, Object object, int i) {

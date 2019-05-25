@@ -1,9 +1,11 @@
 package board;
 
+import board.billboard.Billboard;
 import deck.*;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerCardFactory;
+import weapon.WeaponCard;
 import weapon.WeaponFactory;
 
 import java.util.*;
@@ -11,7 +13,7 @@ import java.util.*;
 /**
  * Board is a class which saves all information about the state of game
  */
-public class Board{
+public class Board extends Observable{
 
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;
@@ -151,5 +153,27 @@ public class Board{
 
     public  void addPowerUpDiscardDeck(PowerCard powerCard) {
         this.powerUpDiscardDeck.addCard(powerCard);
+    }
+
+    public void setPlayerCell(Player p, Cell c){
+        p.setPawnCell(c);
+        setChanged();
+        notifyObservers(this.cloneBoard());
+    }
+
+    public Card giveCardFromCell(Cell cell, Player player, int val){
+        Card card = cell.giveCard(player, val);
+        setChanged();
+        notifyObservers(this.cloneBoard());
+        return card;
+    }
+
+    //TODO add addCardInCell(cell, card) sostituire metodo in playercontroller.grabweapon
+
+
+    public Card giveCardFromPowerUpDeck(Player player){
+        PowerCard pc = (PowerCard) powerUpDeck.draw();
+        player.addPowerCard(pc);
+        return pc;
     }
 }

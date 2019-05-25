@@ -1,5 +1,9 @@
 package controller;
 import board.*;
+import board.Cell;
+import board.NormalCell;
+import board.RegenerationCell;
+import board.billboard.BillboardGenerator;
 import constants.Color;
 import deck.Deck;
 import player.Player;
@@ -12,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * BoardController controls the table game.
  */
-public class BoardController {
+public class BoardController{
 
     private int playerTurn = 0;
     private int verifyFinalFrenzyTurns = 0;
@@ -42,6 +46,7 @@ public class BoardController {
         this.board = board;
         this.boardViewCLI = new BoardViewCLI(board);
         this.playerControllers = controllers;
+
     }
 
     /**
@@ -63,7 +68,9 @@ public class BoardController {
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             //set Observers
-            player.addObserver(boardViewCLI);
+
+            this.board.addObserver(boardViewCLI);
+
         }
         //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
 
@@ -236,14 +243,14 @@ public class BoardController {
      * @return
      */
     public boolean setRegenerationCell(Player player, Color color){
-        RegenerationCell regenerationCell = board.getBillboard().getRegenerationCell()
+        Cell regenerationCell = board.getBillboard().getRegenerationCell()
                 .stream()
                 .filter(x -> x.getColor() == color)
                 .findFirst()
                 .orElse(null);
 
         if(regenerationCell!=null){
-            player.setPawnCell(regenerationCell);
+            board.setPlayerCell(player, regenerationCell);
             return true;
         }
         return false;
@@ -282,4 +289,5 @@ public class BoardController {
 
         }
     }
+
 }

@@ -1,6 +1,6 @@
 package deck;
 
-import board.Billboard;
+import board.billboard.Billboard;
 import board.Board;
 import org.junit.jupiter.api.Test;
 

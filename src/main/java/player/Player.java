@@ -4,7 +4,7 @@ import board.Board;
 import board.Cell;
 import constants.Constants;
 import constants.Color;
-import constants.EnumObsMessage;
+import deck.Card;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
@@ -93,8 +93,6 @@ public class Player extends Observable {
         }
         this.pawn.setCell(cell);
         cell.addPawn(this.pawn);
-        setChanged();
-        notifyObservers(EnumObsMessage.CHANGE_POSITION);
     }
 
     /**
@@ -224,6 +222,13 @@ public class Player extends Observable {
             return true;
         }
         return false;
+    }
+
+    public Card rmWeapon(int index){
+        if(index < weapons.size()){
+            return weapons.remove(index);
+        }
+        return null;
     }
 
     /**

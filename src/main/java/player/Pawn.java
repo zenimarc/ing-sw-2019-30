@@ -2,8 +2,6 @@ package player;
 
 import board.Cell;
 
-import java.util.*;
-
 /**
  * Pawn is an association between player and position
  */

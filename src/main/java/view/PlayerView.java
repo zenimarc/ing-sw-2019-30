@@ -3,6 +3,7 @@ import board.Cell;
 import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
+import constants.Constants;
 import controller.CommandObj;
 import controller.PlayerCommand;
 import player.Player;
@@ -14,7 +15,7 @@ import java.util.*;
 /**
  * 
  */
-public class PlayerView extends Observable {
+public class PlayerView extends Observable{
     private Player player;
     private PlayerBoardView myPlayerBoard;
     private Scanner reader = new Scanner(System.in);
@@ -79,23 +80,18 @@ public class PlayerView extends Observable {
     }
 
     private boolean grabWeapon(){
-        String askString = stringForChooseWeaponCard();
-        String answerRegex = "[0-"+((((RegenerationCell) player.getCell()).getCards().size())-1) +"]";
-        String answer;
-        int index;
+        int discardIndex = -1;
+        int drawIndex;
 
-        System.out.println(askString);
-        while (true){
-            answer = reader.next();
-            if(answer.matches(answerRegex)) {
-                index = Integer.valueOf(answer);
-                break;
-            }
-            printError();
+        drawIndex = chooseWeaponCard();
+
+        if(player.getWeapons().size()==Constants.MAX_WEAPON_HAND_SIZE.getValue()){
+            discardIndex = chooseWeaponToDiscard();
+            if(discardIndex ==-1) return true;
         }
 
         setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, player.getCell() ,index));
+        notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, player.getCell() , new int[]{drawIndex, discardIndex}));
 
         return true;
     }
@@ -183,6 +179,40 @@ public class PlayerView extends Observable {
         }
     }
 
+    private String stringForChooseWeaponToDiscard(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("You have just three weapon in your hand. You have:\n");
+        for(WeaponCard weaponCard : player.getWeapons()){
+            sb.append((player.getWeapons().indexOf(weaponCard))+1);
+            sb.append(") ");
+            sb.append(weaponCard);
+            sb.append("\t");
+        }
+        sb.append("\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ");
+
+        return sb.toString();
+    }
+
+    /**
+     * This ask player what WeaponCard want to discard
+     * @return index of WeaponCard to Discard, -1 if don't want to discard
+     */
+    private int chooseWeaponToDiscard(){
+        String read;
+        String formatString = "[0-"+ Constants.MAX_WEAPON_HAND_SIZE.getValue()+"]";
+
+        while (true){
+            System.out.println(stringForChooseWeaponToDiscard());
+            read = reader.next();
+
+            if(read.matches(formatString)){
+                return Integer.valueOf(read)-1;
+            }else {
+                printError();
+            }
+        }
+    }
+
     private String stringForChooseWeaponCard(){
         RegenerationCell cell = (RegenerationCell) player.getCell();
         StringBuilder sb = new StringBuilder();
@@ -195,6 +225,24 @@ public class PlayerView extends Observable {
         }
         sb.append("\nWhich do you want? ");
         return sb.toString();
+    }
+
+    /**
+     * This ask player which WeaponCard want to draw in a RegenerationCell
+     * @return index of chosen WeaponCard
+     */
+    private int chooseWeaponCard(){
+        String read;
+        String formatString = "[0-"+((((RegenerationCell) player.getCell()).getCards().size())-1) +"]";
+
+        System.out.println(stringForChooseWeaponCard());
+        while (true){
+            read = reader.next();
+            if(read.matches(formatString)) {
+                return Integer.valueOf(read);
+            }
+            printError();
+        }
     }
 
     public void printError(){

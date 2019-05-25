@@ -1,5 +1,6 @@
 package board;
 
+import board.billboard.Billboard;
 import constants.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
