@@ -8,10 +8,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MINPLAYERS = 3;
-    private static final int MAXPLAYERS = 6;
+    private static final int MAXPLAYERS = 5;
     private int port;
     private int minPlayers;
     private int maxPlayers;
@@ -41,16 +44,11 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         }
     }
 
-    private GameServerImpl createGame(){
-        try {
-            GameServerImpl game = new GameServerImpl(MINPLAYERS, MAXPLAYERS);
-            gamesList.put(game.getGameToken(), game);
-            return game;
-        }catch (RemoteException re){
-            System.out.println(re.toString());
-            re.fillInStackTrace();
-        }
-        return null;
+    private GameServerImpl createGame(Client client) throws RemoteException{
+        GameServerImpl game = new GameServerImpl(MINPLAYERS, MAXPLAYERS);
+        gamesList.put(game.getGameToken(), game);
+        game.addClient(client);
+        return game;
     }
 
     public synchronized UUID register(String username, Client remoteClient) throws RemoteException {
@@ -58,8 +56,9 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
             GameServerImpl gameServer = getFreeGameServer();
             if (gameServer != null) {
                 remoteClient.setGameServer(gameServer);
+                gameServer.addClient(remoteClient);
             } else {
-                gameServer = createGame();
+                gameServer = createGame(remoteClient);
                 remoteClient.setGameServer(gameServer);
             }
             UUID userToken = UUID.randomUUID();
@@ -89,7 +88,13 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      */
     private boolean checkNickname(String nick){
         System.out.println("checking if "+nick+" already exist");
-        return (!registeredClients.containsKey(nick));
+        return (!registeredClients.containsKey(nick) && validateNickname(nick));
+    }
+
+    private boolean validateNickname(String nick){
+        String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
+        Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
+        return (pattern.matcher(nick).matches());
     }
 
     public static void main(String[] args){

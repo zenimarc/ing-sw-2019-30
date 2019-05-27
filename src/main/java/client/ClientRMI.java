@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class ClientRMI extends UnicastRemoteObject implements Client {
     private String nickname;
-    private Registry registry;
+    private transient Registry registry;
     private transient Lobby lobby;
     private transient GameServer gameServer;
 
@@ -79,7 +79,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
             ClientRMI clientRMI = new ClientRMI();
             clientRMI.connect("127.0.0.1", 1099);
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter username");
+            System.out.println("Enter username (min 3 chars max 15 chars)");
             String userName = scanner.nextLine();
             clientRMI.setNickname(userName);
             while (!clientRMI.register()) {

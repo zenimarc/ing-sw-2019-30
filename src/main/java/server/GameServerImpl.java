@@ -27,9 +27,13 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     public boolean isFull(){
+        System.out.println("ci sono "+clients.size()+" players" +" e il max e: "+ maxPlayer);
         return (clients.size() >= maxPlayer);
     }
     public UUID getGameToken(){
         return this.gameToken;
+    }
+    public void addClient(Client client){
+        this.clients.add(client);
     }
 }

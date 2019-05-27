@@ -24,6 +24,7 @@ public class WeaponFactory {
      * @return
      * @deprecated cause decided to use Jackson
 */
+    /*
     @Deprecated
     private static List<WeaponCard> loadWeaponCardsGSON() {
         List<WeaponCard> weaponCards = new ArrayList<>();
@@ -47,6 +48,8 @@ public class WeaponFactory {
         }
         return Collections.emptyList();
     }
+
+     */
 
     /**
      * This return a list of weapon stored in WEAPON_RESOURCES_ADDRESS, if weapons don't exist create them
