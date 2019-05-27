@@ -23,7 +23,6 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
         //new generic client RMI
     }
 
-
     public void connect(String host) throws RemoteException {
         connect(host, 1099);
     }
@@ -37,6 +36,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
             System.out.println(nbe.toString());
             nbe.fillInStackTrace();
         }
+    }
+
+    public boolean isActive() throws RemoteException{
+        return true;
     }
 
     public boolean register() {
@@ -60,6 +63,9 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+    public String getNickname(){
+        return this.nickname;
+    }
 
     public void setGameServer(GameServer gameServer) {
         this.gameServer = gameServer;
@@ -72,6 +78,11 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
 
     public String getName() {
         return this.nickname;
+    }
+
+    @Override
+    public void timeExpired() throws RemoteException {
+
     }
 
     public static void main(String[] args) {

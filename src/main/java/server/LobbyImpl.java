@@ -14,7 +14,8 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MINPLAYERS = 3;
-    private static final int MAXPLAYERS = 5;
+    private static final int MAXPLAYERS = 2;
+    private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
     private int port;
     private int minPlayers;
     private int maxPlayers;
@@ -32,12 +33,17 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         gamesList = new HashMap<>();
     }
 
+    public int getNumGameserver(){
+        return this.gamesList.size();
+    }
+
     public void start() {
         try {
             registry = LocateRegistry.createRegistry(port);
             LobbyImpl lobby = new LobbyImpl();
             registry.rebind("lobby", lobby);
             System.out.println("Server running");
+
         }
         catch (RemoteException re){
             System.err.println("Server exception: " + re.toString());
@@ -48,6 +54,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         GameServerImpl game = new GameServerImpl(MINPLAYERS, MAXPLAYERS);
         gamesList.put(game.getGameToken(), game);
         game.addClient(client);
+        game.start();
         return game;
     }
 
@@ -62,7 +69,8 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
                 remoteClient.setGameServer(gameServer);
             }
             UUID userToken = UUID.randomUUID();
-            System.out.println("generated token: " + userToken + " for client: " + username);
+            System.out.println("generated token: " + userToken + " for client: " + username );
+            System.out.println("now there are: "+getNumGameserver()+" active games");
             ClientInfo clientInfo = new ClientInfo(remoteClient, userToken, gameServer.getGameToken());
             registeredClients.put(username, clientInfo);
             return userToken;
@@ -87,21 +95,20 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      * @return true if indicted nick is available, false if it's already used.
      */
     private boolean checkNickname(String nick){
-        System.out.println("checking if "+nick+" already exist");
+        System.out.println("checking if "+nick+" already exist and if it's valid");
         return (!registeredClients.containsKey(nick) && validateNickname(nick));
     }
 
     private boolean validateNickname(String nick){
-        String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
         Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
         return (pattern.matcher(nick).matches());
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         try {
             LobbyImpl lobby = new LobbyImpl();
             lobby.start();
-        }catch (RemoteException re){
+        } catch (RemoteException re) {
             re.fillInStackTrace();
         }
     }
