@@ -37,6 +37,9 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         return this.gamesList.size();
     }
 
+    /**
+     * this function start the server and let the server be able to accept new connections
+     */
     public void start() {
         try {
             registry = LocateRegistry.createRegistry(port);
@@ -50,42 +53,83 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         }
     }
 
-    private GameServerImpl createGame(Client client) throws RemoteException{
+    /**
+     * this funcrion create a new gameserver and add the first client
+     * @param clientInfo to be added to the newly created game
+     * @return the newly created gameserver
+     * @throws RemoteException
+     */
+    private GameServerImpl createGame(ClientInfo clientInfo) throws RemoteException{
+        System.out.println("provo a generare un nuovo gameserver");
         GameServerImpl game = new GameServerImpl(MINPLAYERS, MAXPLAYERS);
         gamesList.put(game.getGameToken(), game);
-        game.addClient(client);
+        clientInfo.setGameToken(game.getGameToken());
+        game.addClient(clientInfo);
         game.start();
         return game;
     }
 
+    /**
+     * this funcrion is called by remote clients for registering to the lobby and to get personal userToken
+     * @param username of the client who wants to connect
+     * @param remoteClient remote client reference
+     * @return a new unique userToken to the client
+     * @throws RemoteException
+     */
     public synchronized UUID register(String username, Client remoteClient) throws RemoteException {
+        System.out.println("_____________________________________________________________________");
+        System.out.println("nuova richiesta di registrazione");
         if (checkNickname(username)) {
-            GameServerImpl gameServer = getFreeGameServer();
-            if (gameServer != null) {
-                remoteClient.setGameServer(gameServer);
-                gameServer.addClient(remoteClient);
-            } else {
-                gameServer = createGame(remoteClient);
-                remoteClient.setGameServer(gameServer);
-            }
             UUID userToken = UUID.randomUUID();
             System.out.println("generated token: " + userToken + " for client: " + username );
-            System.out.println("now there are: "+getNumGameserver()+" active games");
-            ClientInfo clientInfo = new ClientInfo(remoteClient, userToken, gameServer.getGameToken());
+            ClientInfo clientInfo = new ClientInfo(remoteClient, userToken, null);
+            System.out.println("ho generato new client info: "+clientInfo);
+            GameServerImpl gameServer = getFreeGameServer();
+            if (gameServer != null) {
+                clientInfo.setGameToken(gameServer.getGameToken());
+                remoteClient.setGameServer(gameServer);
+                gameServer.addClient(clientInfo);
+            } else {
+                gameServer = createGame(clientInfo);
+                remoteClient.setGameServer(gameServer);
+                clientInfo.setGameToken(gameServer.getGameToken());
+            }
             registeredClients.put(username, clientInfo);
+            System.out.println("now there are: "+getNumGameserver()+" active games");
             return userToken;
         }else{
             return null;
         }
     }
-    public synchronized GameServer reconnect(String nickname, UUID userToken){
+
+    /**
+     * this function is called by remote clients for reconnecting to a prevoius gameserver.
+     * @param nickname of the client who wants to reconnect
+     * @param userToken prevoiusly given to the clients who wants to reconnect
+     * @param newRemoteClient remote client new reference
+     * @return last gameserver the client was playing in, or null if reconnecting isn't available
+     */
+    public synchronized GameServer reconnect(String nickname, UUID userToken, Client newRemoteClient){
         if(registeredClients.containsKey(nickname))
-            return gamesList.get(registeredClients.get(nickname).getGameToken());
-        else
-            return null;
+            if(registeredClients.get(nickname).getUserToken().equals(userToken)) {
+                System.out.println("inizio processo di riconnessione");
+                registeredClients.get(nickname).setClient(newRemoteClient);
+                if(gamesList.get(registeredClients.get(nickname).getGameToken()).updateClient(newRemoteClient, userToken))
+                    return gamesList.get(registeredClients.get(nickname).getGameToken());
+                else
+                    return null;
+            }
+            else
+                return null;
+        return null;
     }
 
+    /**
+     * this function search a free server from games list.
+     * @return the gameserver if it finds a free server, else null.
+     */
     private GameServerImpl getFreeGameServer(){
+        System.out.println("cerco server liberi");
         return gamesList.values().stream().filter(x -> !(x.isFull())).findFirst().orElse(null);
     }
 
@@ -99,6 +143,13 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         return (!registeredClients.containsKey(nick) && validateNickname(nick));
     }
 
+    /**
+     * This function validate nickname
+     * valid chars: a-z, A-Z, 0-9, '.' '_' '-',
+     * min lenght: 3, max length: 15
+     * @param nick
+     * @return
+     */
     private boolean validateNickname(String nick){
         Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
         return (pattern.matcher(nick).matches());
