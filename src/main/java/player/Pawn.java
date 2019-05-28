@@ -13,9 +13,6 @@ public class Pawn {
     /**
      * Constructors
      */
-    public Pawn(){
-        this(null, null);
-    }
 
     public Pawn(Player player){
         this(player, null);

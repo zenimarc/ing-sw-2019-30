@@ -48,14 +48,8 @@ public class Player extends Observable {
         this.playerBoard = new PlayerBoard(board);
     }
 
-
-    public void setPlayerBoard(PlayerBoard playerBoard) {
-        this.playerBoard = playerBoard;
-    }
-
     /**
      * This function returns the pawn of the player
-     *
      * @return pawn of the player
      */
     public Pawn getPawn() {
