@@ -61,8 +61,8 @@ public class PlayerController implements Observer {
         CommandObj cmdObj = (CommandObj) obj;
         switch (cmdObj.getCmd()) {
             case MOVE:
-            case OPTIONAL_MOVE:
-                if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), MOVE)){
+            case GRAB_MOVE:
+                if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
                     if(cmdObj.getCmd()==MOVE) numAction++;
                 }else {
                     viewPrintError(view);
@@ -119,11 +119,10 @@ public class PlayerController implements Observer {
                 case MOVE: //normal mode
                     actionParam = NORMAL_MOVE;
                     break;
-                case GRAB_WEAPON:// move from grab
-                case GRAB_AMMO:
+                case GRAB_MOVE:// move for grab
                     actionParam = player.getNumDamages()<ADRENALINIC_FIRST_STEP.getNum() ? NORMAL_GRAB_MOVE : ADRENALINIC_GRAB_MOVE;
                     break;
-                case SHOOT: //move from shoot
+                case SHOOT_MOVE: //move from shoot
                     actionParam = player.getNumDamages()<ADRENALINIC_SECOND_STEP.getNum() ? NORMAL_SHOOT_MOVE : ADRENALINIC_SHOOT_MOVE;
                     break;
                 default:
@@ -230,13 +229,15 @@ public class PlayerController implements Observer {
         return true;
     }
 
-    private void grabWapon(Observable view, CommandObj cmdObj){
-        WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(cmdObj.getWeaponSelector()));
+    private void grabWapon(Observable view, @NotNull CommandObj cmdObj){
+
+        int weaponIndex = (int) cmdObj.getObject();
+        WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(weaponIndex));
         Card discardWeapon = null;
 
         //Player can play this weaponCard?
-        int test[] = Bullet.toIntArray(grabWeapon.getGrabCost());
-        if(player.canPay(test)) {
+        int grabCost[] = Bullet.toIntArray(grabWeapon.getGrabCost());
+        if(player.canPay(grabCost)) {
             //Player can draw an other WeaponCard?
             if (player.getWeapons().size() == Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
                 //He can't
@@ -245,11 +246,12 @@ public class PlayerController implements Observer {
                 discardWeapon = player.rmWeapon(discardIndex);
             }
             //Draw weaponCard
-            if (grab(player.getCell(), cmdObj.getWeaponSelector())) {
+            if (grab(player.getCell(), weaponIndex)) {
                 if (discardWeapon != null) {
                     boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
                 }
                 numAction++;
+                player.useAmmo(grabCost);
             } else {
                 viewPrintError(view, "You can't draw an other WeaponCard");
             }
@@ -314,7 +316,7 @@ public class PlayerController implements Observer {
      * @param cell of destination
      */
 
-    public void setOtherCell(Player player, Cell cell){
+    public void setOtherCell(@NotNull Player player, Cell cell){
         player.getCell().removePawn(player.getPawn());
         player.getPawn().setCell(cell);
         cell.addPawn(player.getPawn());
@@ -366,11 +368,11 @@ public class PlayerController implements Observer {
         return modifyCell;
     }
 
-    public void useGranade(Player player){
+    public void useGranade(@NotNull Player player){
         player.addMark(this.player);
     }
 
-    public void useGunsight(Player player){
+    public void useGunsight(@NotNull Player player){
         player.addDamage(this.player);
     }
 
@@ -394,14 +396,13 @@ public class PlayerController implements Observer {
      * @param view
      * @deprecated use viewPrintErro(Observable, String)
      */
-    @Deprecated
-    private void viewPrintError(Observable view){
+    private void viewPrintError(@NotNull Observable view){
         if(view.getClass() == PlayerView.class) {
             ((PlayerView) view).printError();
         }
     }
 
-    private void viewPrintError(Observable view, String mex){
+    private void viewPrintError(@NotNull Observable view, String mex){
         if(view.getClass() == PlayerView.class) {
             ((PlayerView) view).printError(mex);
         }

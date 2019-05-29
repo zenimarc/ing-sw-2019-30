@@ -54,11 +54,10 @@ public class PlayerView extends Observable{
         while (true) {
             System.out.println("In che cella vuoi andare? ");
             positionString = reader.next();
+
             if(positionString.matches("[0-2]+,+[0-3]")){
                 break;
             }
-            if(positionString.equals("canc"));
-            return false;
         }
 
         Position newPosition = new Position(
@@ -67,12 +66,11 @@ public class PlayerView extends Observable{
 
         setChanged();
         notifyObservers(new CommandObj(playerCommand, newPosition));
-
         return true;
     }
 
     private boolean grab() {
-        move(PlayerCommand.OPTIONAL_MOVE);
+        move(PlayerCommand.GRAB_MOVE);
 
         if(player.getCell().getClass() == NormalCell.class) return grabAmmo();
         else if (player.getCell().getClass()== RegenerationCell.class) return grabWeapon();
@@ -80,9 +78,7 @@ public class PlayerView extends Observable{
     }
 
     private boolean grabWeapon(){
-        int drawIndex;
-
-        drawIndex = chooseWeaponCard();
+        int drawIndex = chooseWeaponCard();
 
         setChanged();
         notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, drawIndex));
