@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerCardFactory;
-import weapon.WeaponCard;
 import weapon.WeaponFactory;
 
 import java.util.*;
@@ -14,7 +13,7 @@ import java.util.*;
 /**
  * Board is a class which saves all information about the state of game
  */
-public class Board extends Observable{
+public class Board extends Observable implements Cloneable {
 
     private int numSkulls;
     private HashMap<Player, Integer> playerSkulls;
@@ -83,8 +82,11 @@ public class Board extends Observable{
      * @return
      */
     public Board cloneBoard() {
-        // TODO implement here
-        return null;
+        try{
+            return (Board) this.clone();
+        }catch (CloneNotSupportedException err){
+             return null;
+        }
     }
 
     /**
