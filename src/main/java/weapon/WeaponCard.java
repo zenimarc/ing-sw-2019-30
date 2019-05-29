@@ -75,25 +75,52 @@ public abstract class WeaponCard extends Card {
         return this.cost;
     }
 
+    //TODO da rivedere, restituisce cose sbagliate (mi sa)
+    public List<Bullet> getGrabCost(){
+        if (this.cost.size() > 1) {
+            return this.cost.subList(1,this.cost.size()-1);
+        }else{
+            return Collections.EMPTY_LIST;
+        }
+    }
+
     /**
      * Get the weapon name
      * @return weapon name
      */
     public String getName(){return this.name;}
 
+
     @JsonIgnore
     public boolean isReady(){return this.isLoaded;}
 
+    /**
+     * Getter, return the attack in position idAttack
+     * @param idAttack attack's index
+     * @return attack in position idAttack
+     */
     public Attack getAttack(int idAttack) {
         return attacks.get(idAttack);
     }
 
+    /**
+     * Attack all player in @param opponents by the attack in position typeAttack
+     * @param typeAttack attack's index
+     * @param shooter Player who shoot
+     * @param opponents Player hit
+     * @param cell
+     * @return
+     */
     public abstract boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell);
 
     public boolean shoot(int typeAttack, Player shooter, Player opponent, Optional<Cell> cell){
         return shoot(typeAttack, shooter, new ArrayList<>(Arrays.asList(opponent)), cell);
     }
 
+    /**
+     * Get WeaponType of this weapon
+     * @return Weapontype of this weapon
+     */
     public EnumWeapon getWeaponType() {
         return weaponType;
     }

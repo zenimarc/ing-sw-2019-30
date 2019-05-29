@@ -80,19 +80,12 @@ public class PlayerView extends Observable{
     }
 
     private boolean grabWeapon(){
-        int discardIndex = -1;
         int drawIndex;
 
         drawIndex = chooseWeaponCard();
 
-        if(player.getWeapons().size()==Constants.MAX_WEAPON_HAND_SIZE.getValue()){
-            discardIndex = chooseWeaponToDiscard();
-            if(discardIndex ==-1) return true;
-        }
-
         setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, player.getCell() , new int[]{drawIndex, discardIndex}));
-
+        notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, drawIndex));
         return true;
     }
 
@@ -197,7 +190,7 @@ public class PlayerView extends Observable{
      * This ask player what WeaponCard want to discard
      * @return index of WeaponCard to Discard, -1 if don't want to discard
      */
-    private int chooseWeaponToDiscard(){
+    public int chooseWeaponToDiscard(){
         String read;
         String formatString = "[0-"+ Constants.MAX_WEAPON_HAND_SIZE.getValue()+"]";
 
@@ -245,8 +238,29 @@ public class PlayerView extends Observable{
         }
     }
 
+    /**
+     * Print default error
+     */
     public void printError(){
-        System.out.println("----- !! Error: Illegal Action !! -----");
+        printError("");
     }
+    /**
+     * Print error in error format
+     * @param mex error message
+     */
+    public void printError(String mex){
+        StringBuilder sb = new StringBuilder();
+        sb.append("----- ERR: ");
+        if(mex==""){
+            sb.append("Illegal Action");
+        }
+        else{
+            sb.append(mex);
+        }
+        sb.append(" -----");
+        System.out.println(sb.toString());
+    }
+
+
 
 }

@@ -5,11 +5,11 @@ import board.billboard.Billboard;
 import constants.Constants;
 import constants.EnumActionParam;
 import deck.AmmoCard;
+import deck.Bullet;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
 import player.Player;
-import view.PlayerBoardView;
 import view.PlayerView;
 import weapon.WeaponCard;
 
@@ -28,7 +28,6 @@ public class PlayerController implements Observer {
     private BoardController boardController;
     private Billboard billboard;
     private PlayerView playerView;
-    private PlayerBoardView playerBoardView;
     private Player player;
     private int numAction = 0;
     private ArrayList<Cell> modifyCell;
@@ -39,7 +38,6 @@ public class PlayerController implements Observer {
     public PlayerController(Player player) {
         this.player = player;
         this.playerView = new PlayerView(player, this);
-        this.playerBoardView = new PlayerBoardView(player);
 
     }
 
@@ -78,26 +76,9 @@ public class PlayerController implements Observer {
                 }
                 break;
             case GRAB_WEAPON:
-                if(cmdObj.getObject().getClass() == int[].class){
-                    Card wp = null;
-                    //indexes[0] = card to draw, indexes[1] = card to discard
-                    int indexes[] = (int[]) cmdObj.getObject();
-
-                    if(indexes[1] != -1){
-                        //No weapon to discard
-                        wp = player.rmWeapon(indexes[1]);
-                    }
-                    if(grab(cmdObj.getCell(), indexes[0])){
-                        if(wp!=null) {
-                            //card that discard on board
-                            cmdObj.getCell().setCard(wp);}
-                        numAction++;
-                    }else {
-                        viewPrintError(view);
-                    }
-
-                }
+                grabWapon(view, cmdObj);
                 break;
+
             case SHOOT:
                 //TODO verificare come implementarlo per bene
                 shoot(cmdObj.getCell(), cmdObj.getWeaponSelector());
@@ -128,7 +109,6 @@ public class PlayerController implements Observer {
      * @param cell of destination
      * @return if the player can move, else false
      */
-
     public boolean move(Cell cell, PlayerCommand playerCommand){
         if(player.getCell() == cell) return true;
 
@@ -221,7 +201,7 @@ public class PlayerController implements Observer {
         return false;
     }
 
-     public boolean movePlayer(@NotNull Player player, Cell cell, int i){
+    public boolean movePlayer(@NotNull Player player, Cell cell, int i){
         return (!billboard.canMove(player.getPawn().getCell(), cell, i));
      }
 
@@ -230,11 +210,11 @@ public class PlayerController implements Observer {
      * @param cell of destination
      * @return true if the action was successful, else false
      */
-    public boolean grab(@NotNull Cell cell, int val) {
-        if(cell.getClass() == RegenerationCell.class){
-            if(player.getWeapons().size()>=Constants.MAX_WEAPON_HAND_SIZE.getValue()){
+    private boolean grab(@NotNull Cell cell, int val) {
+        //If you want give a weaponCard but you have 3(or more) in your hand, return false
+        if(cell.getClass() == RegenerationCell.class &&
+                player.getWeapons().size()>=Constants.MAX_WEAPON_HAND_SIZE.getValue()){
                 return false;
-            }
         }
 
         Card card = boardController.getBoard().giveCardFromCell(cell, player, val);
@@ -248,6 +228,34 @@ public class PlayerController implements Observer {
         }
 
         return true;
+    }
+
+    private void grabWapon(Observable view, CommandObj cmdObj){
+        WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(cmdObj.getWeaponSelector()));
+        Card discardWeapon = null;
+
+        //Player can play this weaponCard?
+        int test[] = Bullet.toIntArray(grabWeapon.getGrabCost());
+        if(player.canPay(test)) {
+            //Player can draw an other WeaponCard?
+            if (player.getWeapons().size() == Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
+                //He can't
+                int discardIndex = ((PlayerView) view).chooseWeaponToDiscard();
+                if (discardIndex == -1) return;
+                discardWeapon = player.rmWeapon(discardIndex);
+            }
+            //Draw weaponCard
+            if (grab(player.getCell(), cmdObj.getWeaponSelector())) {
+                if (discardWeapon != null) {
+                    boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
+                }
+                numAction++;
+            } else {
+                viewPrintError(view, "You can't draw an other WeaponCard");
+            }
+        }else {
+            viewPrintError(view, "You have no bullets to grab this weapon!");
+        }
     }
 
     /**
@@ -354,7 +362,7 @@ public class PlayerController implements Observer {
         else return false;
     }
 
-    public ArrayList<Cell> getModifyCell() {
+    public List<Cell> getModifyCell() {
         return modifyCell;
     }
 
@@ -377,15 +385,25 @@ public class PlayerController implements Observer {
 
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
             playerView.myTurn();
-          //  boardController.getBoardViewToString();
         }
         numAction = 0;
     }
 
+    /**
+     *
+     * @param view
+     * @deprecated use viewPrintErro(Observable, String)
+     */
+    @Deprecated
     private void viewPrintError(Observable view){
         if(view.getClass() == PlayerView.class) {
             ((PlayerView) view).printError();
         }
     }
 
+    private void viewPrintError(Observable view, String mex){
+        if(view.getClass() == PlayerView.class) {
+            ((PlayerView) view).printError(mex);
+        }
+    }
 }

@@ -1,9 +1,10 @@
 package deck;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import constants.Color;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -32,7 +33,8 @@ public class Bullet {
      * @param bullets //TODO scrivedre meglio Java doc
      * @return
      */
-    public int[] toIntArray(ArrayList<Bullet> bullets){
+    @Contract(pure = true)
+    public static int[] toIntArray(@NotNull List<Bullet> bullets){
         int[] colorArray = new int[]{0,0,0};
         for(Bullet bullet : bullets){
             switch (bullet.color){

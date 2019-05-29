@@ -2,6 +2,7 @@ package board;
 
 import board.billboard.Billboard;
 import deck.*;
+import org.jetbrains.annotations.NotNull;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerCardFactory;
@@ -161,11 +162,17 @@ public class Board extends Observable{
         notifyObservers(this.cloneBoard());
     }
 
-    public Card giveCardFromCell(Cell cell, Player player, int val){
+    public Card giveCardFromCell(@NotNull Cell cell, Player player, int val){
         Card card = cell.giveCard(player, val);
         setChanged();
         notifyObservers(this.cloneBoard());
         return card;
+    }
+
+    public void addCardInCell(Card card, @NotNull Cell cell){
+        cell.setCard(card);
+        setChanged();
+        notifyObservers(this.cloneBoard());
     }
 
     //TODO add addCardInCell(cell, card) sostituire metodo in playercontroller.grabweapon
