@@ -78,7 +78,7 @@ public abstract class WeaponCard extends Card {
     //TODO da rivedere, restituisce cose sbagliate (mi sa)
     public List<Bullet> getGrabCost(){
         if (this.cost.size() > 1) {
-            return this.cost.subList(1,this.cost.size()-1);
+            return this.cost.subList(1,this.cost.size());
         }else{
             return Collections.EMPTY_LIST;
         }
