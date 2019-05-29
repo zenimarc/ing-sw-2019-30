@@ -5,6 +5,7 @@ import board.Cell;
 import constants.Constants;
 import constants.Color;
 import deck.Card;
+import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
@@ -16,7 +17,7 @@ import static deck.Bullet.mapToString;
 /**
  * Player saves all information about a player
  */
-public class Player extends Observable {
+public class Player extends Observable implements Cloneable {
 
     private String nickname;
     private Pawn pawn;
@@ -64,31 +65,6 @@ public class Player extends Observable {
     public Cell getCell() {
         return this.pawn.getCell();
     }
-
-    /**
-     * This set player cell
-     *
-     * @param c
-     * @deprecated use setPawnCell
-     */
-    @Deprecated
-    private void setCell(Cell c) {
-        this.pawn.setCell(c);
-    }
-
-    /**
-     * This function modifies the cell of the player and changes the pawn list of initial and destination cell
-     *
-     * @param cell of destination
-     */
-    public void setPawnCell(Cell cell) {
-        if(pawn.getCell()!=null) {
-            this.pawn.getCell().removePawn(this.pawn);
-        }
-        this.pawn.setCell(cell);
-        cell.addPawn(this.pawn);
-    }
-
     /**
      * This function returns the name of the player
      *
@@ -135,6 +111,38 @@ public class Player extends Observable {
     }
 
     /**
+     * @return an HashMap containing player's ammo by color.
+     */
+    public Map<Color, Integer> getBullets() {
+        return this.ammo;
+    }
+
+    /**
+     * This set player cell
+     *
+     * @param c
+     * @deprecated use setPawnCell
+     */
+    @Deprecated
+    private void setCell(Cell c) {
+        this.pawn.setCell(c);
+    }
+
+    /**
+     * This function modifies the cell of the player and changes the pawn list of initial and destination cell
+     *
+     * @param cell of destination
+     */
+    public void setPawnCell(Cell cell) {
+        if(pawn.getCell()!=null) {
+            this.pawn.getCell().removePawn(this.pawn);
+        }
+        this.pawn.setCell(cell);
+        cell.addPawn(this.pawn);
+    }
+
+
+    /**
      * This function adds the points to a player after a kill
      *
      * @param points to give
@@ -143,12 +151,6 @@ public class Player extends Observable {
         this.points += points;
     }
 
-    /**
-     * @return an HashMap containing player's ammo by color.
-     */
-    public Map<Color, Integer> getBullets() {
-        return this.ammo;
-    }
 
     /**
      * This function checks if the player can pay for the indicated ammo.
@@ -156,7 +158,7 @@ public class Player extends Observable {
      * @param ammo is an array containing ammo to pay per color
      * @return True if the player has enough ammo, else False.
      */
-    public boolean canPay(int[] ammo) {
+    public boolean canPay(@NotNull int[] ammo) {
         for (int i = 0; i < ammo.length; i++)
             if (ammo[i] > this.ammo.get(Color.values()[i]) || this.ammo.get(Color.values()[i]) == null)
                 return false;
@@ -174,7 +176,7 @@ public class Player extends Observable {
         if (canPay(ammo)) {
             addAmmo(Arrays.stream(ammo).map(x -> -x).toArray());
             setChanged();
-            notifyObservers();
+            notifyObservers(this.clonePlayer());
             return true;
         } else
             return false;
@@ -199,7 +201,7 @@ public class Player extends Observable {
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), this.ammo.get(BLUE) + ammo[2]) :
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), ammo[2]));
         setChanged();
-        notifyObservers();
+        notifyObservers(this.clonePlayer());
     }
 
     /**
@@ -212,7 +214,7 @@ public class Player extends Observable {
         if (weapons.size() < Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
             weapons.add(weaponCard);
             setChanged();
-            notifyObservers();
+            notifyObservers(this.clonePlayer());
             return true;
         }
         return false;
@@ -235,7 +237,7 @@ public class Player extends Observable {
     public void addDamage(Player opponent, int shots) {
         this.playerBoard.addDamage(opponent, shots);
         setChanged();
-        notifyObservers();
+        notifyObservers(this.clonePlayer());
     }
 
     public void addDamage(Player opponent) {
@@ -252,7 +254,7 @@ public class Player extends Observable {
     public void addMark(Player opponent, int mark) {
         this.playerBoard.addMark(opponent, mark);
         setChanged();
-        notifyObservers();
+        notifyObservers(this.clonePlayer());
     }
 
     /**
@@ -307,10 +309,23 @@ public class Player extends Observable {
         if (powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
             powerups.add(powerCard);
             setChanged();
-            notifyObservers();
+            notifyObservers(this.clonePlayer());
             return true;
         }
         return false;
+    }
+
+    /**
+     * Clone this player
+     * @return a clone of this player
+     */
+    public Player clonePlayer(){
+        try{
+            return (Player) this.clone();
+        }catch (CloneNotSupportedException err){
+            System.out.println("problema");
+            return null;
+        }
     }
 
     @Override
