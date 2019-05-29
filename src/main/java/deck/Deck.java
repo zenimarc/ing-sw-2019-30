@@ -8,6 +8,7 @@ import java.util.*;
 public class Deck {
 
     private List<Card> cards;
+    private Random r = new Random();
 
     /**
      * Constructors
@@ -39,7 +40,6 @@ public class Deck {
      * @return the drawn card
      */
     public Card draw() {
-        Random r = new Random();
         int index = r.nextInt(cards.size());
         Card card = cards.get(index);
         removeCard(index);

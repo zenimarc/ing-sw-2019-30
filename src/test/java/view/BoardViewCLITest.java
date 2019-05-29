@@ -5,6 +5,7 @@ import board.Cell;
 import board.NormalCell;
 import board.RegenerationCell;
 import board.billboard.Billboard;
+import board.billboard.BillboardGenerator;
 import deck.AmmoCard;
 import constants.Color;
 
@@ -89,6 +90,14 @@ class BoardViewCLITest {
         c23.setCard(weapon3);
         assertNotNull(c23.getCard(0));
         Board board = new Board(8, myBillboard);
+        BoardViewCLI boardViewCLI = new BoardViewCLI(board);
+        boardViewCLI.drawCLI();
+    }
+
+    @Test
+    public void test2(){
+        Billboard billboard = BillboardGenerator.generateBillboard4();
+        Board board = new Board(8, billboard);
         BoardViewCLI boardViewCLI = new BoardViewCLI(board);
         boardViewCLI.drawCLI();
     }
