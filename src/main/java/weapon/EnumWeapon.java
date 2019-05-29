@@ -28,10 +28,10 @@ public enum EnumWeapon {
     private String name;
     private ArrayList<Bullet> cost;
 
-    public static final Set<EnumWeapon> AreaWeaponSet = EnumSet.of(FURNACE);
-    public static final Set<EnumWeapon> DistanceWeaponSet = EnumSet.of(WHISPER, HELLION, SHOCKWAVE);
-    public static final Set<EnumWeapon> MovementWeaponSet = EnumSet.of(TRACTOR_BEAM, VORTEX_CANNON, SHOTGUN, SLEDGEHAMMER);
-    public static final Set<EnumWeapon> SimpleWeaponSet = EnumSet.of(LOCK_RIFLE, MACHINE_GUN, ELECTROSCYTHE, HEATSEEKER, ZX_2);
+    protected static final Set<EnumWeapon> AreaWeaponSet = EnumSet.of(FURNACE);
+    protected static final Set<EnumWeapon> DistanceWeaponSet = EnumSet.of(WHISPER, HELLION, SHOCKWAVE);
+    protected static final Set<EnumWeapon> MovementWeaponSet = EnumSet.of(TRACTOR_BEAM, VORTEX_CANNON, SHOTGUN, SLEDGEHAMMER);
+    protected static final Set<EnumWeapon> SimpleWeaponSet = EnumSet.of(LOCK_RIFLE, MACHINE_GUN, ELECTROSCYTHE, HEATSEEKER, ZX_2);
 
 
     EnumWeapon(String name, ArrayList<Bullet> bullets){
