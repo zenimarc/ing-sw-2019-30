@@ -30,16 +30,18 @@ public class PlayerView extends Observable implements Observer{
 
     public void myTurn() {
 
-        int index = choosePlayerAction();
+        PlayerCommand command = choosePlayerAction();
 
-        switch (index) {
-            case 0:
+        switch (command) {
+            case MOVE:
                 move(PlayerCommand.MOVE);
                 break;
-            case 1:
+            case GRAB:
                 grab();
                 break;
-            case 4:
+            case PLACE_WEAPONCARD:
+                placeWeaponCard();
+            case END_TURN:
                 setChanged();
                 notifyObservers(new CommandObj(PlayerCommand.END_TURN));
                 break;
@@ -91,6 +93,11 @@ public class PlayerView extends Observable implements Observer{
         return false;
     }
 
+    private boolean placeWeaponCard(){
+        
+        return true;
+    }
+    
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
         setChanged();
@@ -154,7 +161,7 @@ public class PlayerView extends Observable implements Observer{
         return sb.toString();
     }
 
-    private int choosePlayerAction(){
+    private PlayerCommand choosePlayerAction(){
         int slt;
         String read;
         String formatString = "[0-"+PlayerCommand.PlayerAction.size()+"]";
@@ -164,34 +171,45 @@ public class PlayerView extends Observable implements Observer{
             System.out.println("What do you want?");
             read =reader.next();
             slt = read.matches(formatString) ? Integer.valueOf(read) : PlayerCommand.PlayerAction.size();
-            if(slt<PlayerCommand.PlayerAction.size()){ return slt;}
+            if(slt<PlayerCommand.PlayerAction.size()){
+                return PlayerCommand.values()[slt];
+            }
         }
     }
 
-    private String stringForChooseWeaponToDiscard(){
+    private String stringForChooseWeaponFromHand(String mex, String query){
         StringBuilder sb = new StringBuilder();
-        sb.append("You have just three weapon in your hand. You have:\n");
+        sb.append(mex);
         for(WeaponCard weaponCard : player.getWeapons()){
             sb.append((player.getWeapons().indexOf(weaponCard))+1);
             sb.append(") ");
             sb.append(weaponCard);
             sb.append("\t");
         }
-        sb.append("\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ");
+        sb.append(query);
 
         return sb.toString();
     }
 
     /**
-     * This ask player what WeaponCard want to discard
-     * @return index of WeaponCard to Discard, -1 if don't want to discard
+     * String for choose weapon to discard
+     * @return String for choose weapon to discard
      */
-    public int chooseWeaponToDiscard(){
+    private String stringForChooseWeaponToDiscard() {
+    return stringForChooseWeaponFromHand("You have just three weapon in your hand. You have:\n",
+            "\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ");
+    }
+
+    /**
+         * This ask player what WeaponCard want to discard
+         * @return index of WeaponCard to Discard, -1 if don't want to discard
+         */
+    public int chooseWeaponFromHand(String mex){
         String read;
         String formatString = "[0-"+ Constants.MAX_WEAPON_HAND_SIZE.getValue()+"]";
 
         while (true){
-            System.out.println(stringForChooseWeaponToDiscard());
+            System.out.println(mex);
             read = reader.next();
 
             if(read.matches(formatString)){
@@ -200,6 +218,10 @@ public class PlayerView extends Observable implements Observer{
                 printError();
             }
         }
+    }
+
+    public int chooseWeaponToDiscard(){
+        return chooseWeaponFromHand(stringForChooseWeaponToDiscard());
     }
 
     private String stringForChooseWeaponCard(){
