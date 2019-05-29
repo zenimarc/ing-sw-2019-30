@@ -26,11 +26,10 @@ public class Player extends Observable implements Cloneable {
     private ArrayList<WeaponCard> weapons;
     private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
+
     /**
      * Default constructors
      */
-
-
     public Player(String nickname) {
         this.nickname = nickname;
         this.pawn = new Pawn(this);
@@ -141,7 +140,6 @@ public class Player extends Observable implements Cloneable {
         cell.addPawn(this.pawn);
     }
 
-
     /**
      * This function adds the points to a player after a kill
      *
@@ -220,6 +218,11 @@ public class Player extends Observable implements Cloneable {
         return false;
     }
 
+    /**
+     * Remove weaponCard in position index
+     * @param index index of card to remove
+     * @return
+     */
     public Card rmWeapon(int index){
         if(index < weapons.size()){
             return weapons.remove(index);
