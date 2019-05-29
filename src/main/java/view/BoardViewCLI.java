@@ -9,6 +9,8 @@ import weapon.WeaponCard;
 import java.util.Observable;
 import java.util.Observer;
 
+import static constants.Constants.MAX_WEAPON_REGENERATIONCELL;
+
 /**
  * BoardViewCLI is used to draw the map of the game. It can draw Cli or GUI version
  */
@@ -41,7 +43,7 @@ public class BoardViewCLI implements Observer {
     public void drawCLI() {
         printHighBoard();
         for(int i = 0; i < A; i++){
-            for(int x = i*M; x < i*M+M; x ++)
+            for(int x = i*M; x < i*M+M-1; x++)
                 printThings(x);
             printCards(i);
             if(i < A-1)
@@ -317,25 +319,27 @@ public class BoardViewCLI implements Observer {
      */
     private void printCards(int x) {
         StringBuilder stream = new StringBuilder();
-        for (int y = 0; y < N; y++) {
-            if (getCell(x, y) == null){
-                if(y == 0)
-                    stream.append(" ");
-                for(int i = 0; i < (Z+M)*Z; i++)
-                    stream.append(" ");
-            if(y != N - 1)
-                if(getCell(x, y+1) != null)
+        for(int i = MAX_WEAPON_REGENERATIONCELL.getValue() -1; i > -1; i--){
+            for (int y = 0; y < N; y++) {
+                if (getCell(x, y) == null){
+                    if(y == 0)
+                       stream.append(" ");
+                 for(int j = 0; j < (Z+M)*Z;j++)
+                        stream.append(" ");
+                if(y != N - 1)
+                    if(getCell(x, y+1) != null)
+                     stream.append("│");
+                }
+                else {
+                    if (y == 0)
                     stream.append("│");
-            }
-            else {
-                if (y == 0)
-                    stream.append("│");
-                if (getCell(x, y).getClass() == NormalCell.class)
-                    stream.append(printAmmo(getCell(x, y)));
-                else  stream.append(printWeapons(getCell(x, y)));
-            }
+                    if (getCell(x, y).getClass() == NormalCell.class)
+                     stream.append(printAmmo(getCell(x, y), i));
+                 else  stream.append(printWeapons(getCell(x, y), i));
+                }
         }
-        stream.append("\n");
+            stream.append("\n");}
+
         System.out.print(stream);
     }
 
@@ -344,9 +348,9 @@ public class BoardViewCLI implements Observer {
      * @param cell with needed information
      * @return a stream with infos
      */
-    private StringBuilder printAmmo(Cell cell){
+    private StringBuilder printAmmo(Cell cell, int pos){
         StringBuilder stream = new StringBuilder();
-        if (cell.getCard(0) != null){
+        if (cell.getCard(0) != null && pos == 0){
             stream.append(printAmmoThings((AmmoCard)cell.getCard(0)));
         }
         else
@@ -377,14 +381,12 @@ public class BoardViewCLI implements Observer {
      * @param cell with needed information
      * @return a stream with infos
      */
-    private StringBuilder printWeapons(Cell cell){
+    private StringBuilder printWeapons(Cell cell, int pos){
         StringBuilder stream = new StringBuilder();
-        for(int i = 0; i < Z; i++) {
-            if (cell.getCard(i) != null)
-                stream.append(printWeaponName((WeaponCard) cell.getCard(i)));
+            if (cell.getCard(pos) != null)
+                stream.append(printWeaponName((WeaponCard) cell.getCard(pos)));
             else for(int j = 0; j < M+Z; j++)
                 stream.append(" ");
-        }
         stream.append("│");
         return stream;
     }
@@ -399,6 +401,9 @@ public class BoardViewCLI implements Observer {
         String name = weapon.getName().substring(0, Math.min(weapon.getName().length(),M+Z-1));
         stream.append(name);
         for(int i = name.length(); i < M+Z; i++)
+            stream.append(" ");
+        stream.append(weapon.toString());
+        for(int i = stream.length(); i < (M+Z)*Z; i++)
             stream.append(" ");
         return stream;
     }

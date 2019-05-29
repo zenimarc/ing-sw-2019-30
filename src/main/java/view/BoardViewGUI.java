@@ -1,5 +1,7 @@
 package view;
 
+import client.Client;
+import client.ClientRMI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -19,9 +21,10 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.rmi.RemoteException;
 
 public class BoardViewGUI extends Application {
-    private float mainMenuWidth = 880;
+    private float mainMenuWidth = 870;
     private float mainMenuHeight = 650;
 
 
@@ -51,6 +54,7 @@ public class BoardViewGUI extends Application {
      * @return a Pane
      */
     private Pane mainMenu(Stage gameStage) {
+        final boolean[] isRMI = new boolean[1];
         Pane root = new Pane();
         Button RMI = setRMIButton();
         Button Socket = setSocketButton();
@@ -98,7 +102,7 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                 GUI.setVisible(false);
                 RMI.setVisible(true);
                 Socket.setVisible(true);
-
+                isRMI[0] = false;
             }
         });
 
@@ -110,8 +114,8 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                 Name.setVisible(true);
                 confirm.setVisible(true);
                 back.setVisible(true);
-                //farà partire rmi
-                }
+                isRMI[0] = true;
+            }
         });
 
         Socket.setOnAction(new EventHandler<ActionEvent>() {
@@ -122,7 +126,6 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                 Name.setVisible(true);
                 confirm.setVisible(true);
                 back.setVisible(true);
-                //farà partire socket
             }
         });
 
@@ -133,6 +136,14 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                     Name.setVisible(false);
                     confirm.setVisible(false);
                     wait.setVisible(true);
+                    if(isRMI[0] = true){
+                        try {
+                            ClientRMI clientRMI = new ClientRMI();
+                            clientRMI.setNickname(Name.getAccessibleText());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 /*}
                 else {
                     //confirm.disableProperty().bind(Name.getAccessibleText().isEmpty());

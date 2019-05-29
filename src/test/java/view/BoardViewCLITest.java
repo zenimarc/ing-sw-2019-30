@@ -79,16 +79,6 @@ class BoardViewCLITest {
         c00.addPawn(p.getPawn());
         Player p2 = new Player("Paolofdvsgfdrgrehgerh");
         c10.addPawn(p2.getPawn());
-        int[] array = {0, 1, 2};
-        AmmoCard ammo = new AmmoCard(array, true);
-        c00.setCard(ammo);
-        WeaponCard weapon1 = new SimpleWeapon(ELECTROSCYTHE);
-        WeaponCard weapon2 = new SimpleWeapon(ZX_2);
-        WeaponCard weapon3 = new SimpleWeapon(LOCK_RIFLE);
-        c23.setCard(weapon1);
-        c23.setCard(weapon2);
-        c23.setCard(weapon3);
-        assertNotNull(c23.getCard(0));
         Board board = new Board(8, myBillboard);
         BoardViewCLI boardViewCLI = new BoardViewCLI(board);
         boardViewCLI.drawCLI();

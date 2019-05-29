@@ -11,6 +11,9 @@ import player.Player;
 
 import java.util.*;
 
+import static deck.Bullet.intArrayToString;
+import static deck.Bullet.toIntArray;
+
 
 /**
  * WeaponCard is the card which represent a weapon.
@@ -141,6 +144,6 @@ public abstract class WeaponCard extends Card {
 
     @Override
     public String toString() {
-        return name;
+        return intArrayToString(toIntArray(cost));
     }
 }

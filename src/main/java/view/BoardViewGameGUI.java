@@ -1,13 +1,17 @@
 package view;
 
+import board.Board;
+import board.billboard.Billboard;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -16,6 +20,13 @@ import java.util.ArrayList;
 
 //TODO finire le playerboard in alto, ridimensionare carte ai lati, aggiungere i nomi, aggiungere i bottoni
 public class BoardViewGameGUI extends Application {
+    private int stageHeight = 700;
+    private int stageWidth = 920;
+    private Board board;
+
+    BoardViewGameGUI(Board board){
+        this.board = board;
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -30,13 +41,13 @@ public class BoardViewGameGUI extends Application {
     public void start(Stage primaryStage) throws FileNotFoundException {
         AnchorPane pane = createGame(1);
         pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.setCenterShape(true);
         Scene scene = new Scene(pane);
         primaryStage.setTitle("Adrenaline");
         primaryStage.setScene(scene);
-        primaryStage.setHeight(680);
-        primaryStage.setWidth(920);
+        primaryStage.setHeight(stageHeight);
+        primaryStage.setWidth(stageWidth);
         primaryStage.show();
-
     }
 
     /**
@@ -77,7 +88,7 @@ public class BoardViewGameGUI extends Application {
         anchor.getChildren().get(6).setLayoutX(300);
         anchor.getChildren().get(6).setLayoutY(35);
        // anchor.getChildren().get(6).setVisible(false);
-
+        anchor.setCenterShape(true);
         return anchor;
     }
 
@@ -94,12 +105,12 @@ public class BoardViewGameGUI extends Application {
         mapImage.setFitWidth(600);
         map.getChildren().add(mapImage);
         //first line
-        map.getChildren().add(ammoCards(ammoPath(1), -162, -52));//
-        map.getChildren().add(ammoCards(ammoPath(1), -70, -100));//
-        map.getChildren().add(ammoCards(ammoPath(1), 170, -52));//
+        map.getChildren().add(ammoCards(ammoPath(1), -162, -52));
+        map.getChildren().add(ammoCards(ammoPath(1), -70, -100));
+        map.getChildren().add(ammoCards(ammoPath(1), 170, -52));
         //second line
 
-        map.getChildren().add(ammoCards(ammoPath(1), -80, 20));//
+        map.getChildren().add(ammoCards(ammoPath(1), -80, 20));
         map.getChildren().add(ammoCards(ammoPath(1), 35, 48));
         map.getChildren().add(ammoCards(ammoPath(1), 125, 48));
         //third line
@@ -157,6 +168,8 @@ return map;
             changeSizeImage((ImageView)playerBoard.getChildren().get(i),110, 80);
         for(Button buttons: cardBoardButtonSet(600, 0,110, 80, 40, 0))
             playerBoard.getChildren().add(buttons);
+        for(Button buttons: actionButtons())
+            playerBoard.getChildren().add(buttons);
         return playerBoard;
 
     }
@@ -180,6 +193,8 @@ return map;
             changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
         for(Button buttons: cardBoardButtonSet(280,75, 75, 50, 35, 270))
             playerBoard.getChildren().add(buttons);
+        playerBoard.getChildren().add(createButton("board2",75,280,0, 0));
+        playerBoard.getChildren().get(13).rotateProperty().setValue(270);
         return playerBoard;
     }
 
@@ -201,6 +216,8 @@ return map;
             changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
         for(Button buttons: cardBoardButtonSet(280,75, 75, 50, 35, 90))
             playerBoard.getChildren().add(buttons);
+        playerBoard.getChildren().add(createButton("board3",75,280,0, 0));
+        playerBoard.getChildren().get(13).rotateProperty().setValue(90);
         return playerBoard;
     }
 
@@ -223,6 +240,7 @@ return map;
             changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
         for(Button buttons: cardBoardButtonSet(280, 0,75, 50, 35, 180))
             playerBoard.getChildren().add(buttons);
+        playerBoard.getChildren().add(createButton("board4/5",50,240,0, 0));
         return playerBoard;
     }
 
@@ -245,6 +263,7 @@ return map;
             changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
         for(Button buttons: cardBoardButtonSet(280, 0,75, 50, 35, 180))
             playerBoard.getChildren().add(buttons);
+        playerBoard.getChildren().add(createButton("board4/5",75,280,0, 0));
         return playerBoard;
     }
 
@@ -365,14 +384,9 @@ return map;
     private ArrayList<Button> cellButtonSet(){
         ArrayList<Button> buttons = new ArrayList<>();
         for(int column = 0; column < 4; column++)
-            for(int line = 0; line < 3; line++) {
-                Button button = new Button("c" + line + column);
-                changeSizeButton(button, 90, 100);
-                button.setTranslateX(-150+ column * 105);
-                button.setTranslateY(-80 + line*95);
-                button.setOpacity(0);
-                buttons.add(button);
-            }
+            for(int line = 0; line < 3; line++)
+                buttons.add(createButton("c" + line + column, 90, 105, -150+ column * 105, -80 + line*95));
+
         return buttons;
     }
 
@@ -384,12 +398,9 @@ return map;
         ArrayList<Button> buttons = new ArrayList<>();
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++){
-                Button card = new Button("card" + i*j);
-                changeSizeButton(card, 90, 60);
-                buttons.add(card);
+                buttons.add(createButton("card" + i*j, 90, 60, 0,0));
             }
-        for (Button button: buttons)
-            button.setOpacity(0);
+
         //red cards
         for(int i = 0; i < 3; i++) {
             buttons.get(i).setTranslateX(-255);
@@ -428,8 +439,6 @@ return map;
         //3 attacks
         buttons.add(createButton("triAttack1", 55, 75, -40, 185));
         buttons.add(createButton("triAttack2", 55, 75, 40, 185));
-        for (Button button: buttons)
-            button.setOpacity(0);
 
         return buttons;
     }
@@ -448,6 +457,8 @@ return map;
         changeSizeButton(button, height, width);
         button.setTranslateX(transX);
         button.setTranslateY(transY);
+        button.setOpacity(0);
+        button.setVisible(false);
         return button;
     }
 
@@ -489,9 +500,19 @@ return map;
             }}
 
         for(Button button: buttons) {
-            button.setOpacity(0.5);
             button.rotateProperty().setValue(grades);
         }
         return buttons;
     }
+
+    private ArrayList<Button> actionButtons(){
+        ArrayList<Button> buttons = new ArrayList<>();
+        buttons.add(createButton("move", 8, 0, 30,15));
+        buttons.add(createButton("move", 8, 0, 30,28));
+        buttons.add(createButton("move", 8, 0, 30,40));
+        buttons.add(createButton("move", 8, 0, 30,70));
+        buttons.add(createButton("move", 8, 0, 30,85));
+        return buttons;
+    }
+
 }
