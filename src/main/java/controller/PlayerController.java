@@ -38,6 +38,7 @@ public class PlayerController implements Observer {
     public PlayerController(Player player) {
         this.player = player;
         this.playerView = new PlayerView(player, this);
+        this.player.addObserver(playerView);
 
     }
 

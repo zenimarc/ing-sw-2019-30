@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * 
  */
-public class PlayerView extends Observable{
+public class PlayerView extends Observable implements Observer{
     private Player player;
     private PlayerBoardView myPlayerBoard;
     private Scanner reader = new Scanner(System.in);
@@ -258,5 +258,10 @@ public class PlayerView extends Observable{
     }
 
 
-
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o.getClass()==Player.class && arg.getClass()==Player.class){
+            this.player = (Player) arg;
+        }
+    }
 }
