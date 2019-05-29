@@ -321,7 +321,7 @@ public class Player extends Observable {
         sb.append(nickname);
         sb.append(" -.-.-.-.-.-\n");
 
-        sb.append("Position: " + pawn.getCell() + '\n');
+//        sb.append("Position: " + pawn.getCell() + '\n');
         sb.append("Ammo: " + mapToString(ammo));
         sb.append('\t');
         sb.append("Points: " + points + '\n');
