@@ -11,7 +11,6 @@ public enum PlayerCommand {
     GRAB("Grab", "..."),
     SHOOT("Shoot", "..."),
     POWERUP("PowerUp", "..."),
-    PLACE_WEAPONCARD("Place WeaponCard","..."),
     END_TURN("End Turn", "End your turn"),
     REG_CELL("Regeneration Cell", "Choose Regeneration cell"),
     GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell"),
@@ -19,10 +18,12 @@ public enum PlayerCommand {
     GRAB_AMMO("Grab", "..."),
     DISCARD_WEAPON("Discard weapon","..."),
     GRAB_MOVE("Grab move", "Move than Grab"),
-    SHOOT_MOVE("Shot move", "Move than Shoot")
+    SHOOT_MOVE("Shot move", "Move than Shoot"),
+    PLACE_WEAPONCARD("Place WeaponCard","..."),
+
     ;
 
-    public static final Set<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, PLACE_WEAPONCARD, END_TURN);
+    public static final Set<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
 
     private String name;
     private String description;

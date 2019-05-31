@@ -39,8 +39,9 @@ public class PlayerView extends Observable implements Observer{
             case GRAB:
                 grab();
                 break;
-            case PLACE_WEAPONCARD:
-                placeWeaponCard();
+            case SHOOT:
+                shoot();
+                break;
             case END_TURN:
                 setChanged();
                 notifyObservers(new CommandObj(PlayerCommand.END_TURN));
@@ -93,6 +94,21 @@ public class PlayerView extends Observable implements Observer{
         return false;
     }
 
+    public boolean shoot() {
+        if(player.getWeapons().isEmpty()){
+            printError("You have not Weapon, so you can't shoot");
+        }else{
+            int index = chooseWeaponToPlace();
+
+            setChanged();
+            notifyObservers(new CommandObj(PlayerCommand.PLACE_WEAPONCARD, player.getWeapons().get(index)));
+            //Hai in mano armi cariche => scegli quale/i vuoi giocare
+            //Scegli con quali sparare
+        }
+        return true;
+    }
+
+
     private boolean placeWeaponCard(){
         
         return true;
@@ -103,11 +119,6 @@ public class PlayerView extends Observable implements Observer{
         setChanged();
         notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index)));
         return true;
-    }
-
-    public boolean shoot(Cell cell, WeaponCard weapon) {
-        // TODO implement here
-        return false;
     }
 
     public void chooseTarget(){
@@ -192,19 +203,10 @@ public class PlayerView extends Observable implements Observer{
     }
 
     /**
-     * String for choose weapon to discard
-     * @return String for choose weapon to discard
-     */
-    private String stringForChooseWeaponToDiscard() {
-    return stringForChooseWeaponFromHand("You have just three weapon in your hand. You have:\n",
-            "\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ");
-    }
-
-    /**
          * This ask player what WeaponCard want to discard
          * @return index of WeaponCard to Discard, -1 if don't want to discard
          */
-    public int chooseWeaponFromHand(String mex){
+    private int chooseWeaponFromHand(String mex){
         String read;
         String formatString = "[0-"+ Constants.MAX_WEAPON_HAND_SIZE.getValue()+"]";
 
@@ -220,8 +222,33 @@ public class PlayerView extends Observable implements Observer{
         }
     }
 
+    /**
+     * String for choose weapon to discard
+     * @return String for choose weapon to discard
+     */
+    private String stringForChooseWeaponToDiscard() {
+        return stringForChooseWeaponFromHand("You have just three weapon in your hand. You have:\n",
+                "\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ");
+    }
+
+    /**
+     * Execute chooseWeaponFromHand using message for discard weapon
+     * @return index of card to discard
+     */
     public int chooseWeaponToDiscard(){
         return chooseWeaponFromHand(stringForChooseWeaponToDiscard());
+    }
+
+    private String stringForChooseWeaponToPlace(){
+        return stringForChooseWeaponFromHand("You have this Weapon: ", "Do you want place any WeaponCard?");
+    }
+
+    /**
+     * Execute chooseWeaponFromHand using message for place weaponcard
+     * @return index of card to place
+     */
+    private int chooseWeaponToPlace(){
+        return  chooseWeaponFromHand(stringForChooseWeaponToPlace());
     }
 
     private String stringForChooseWeaponCard(){

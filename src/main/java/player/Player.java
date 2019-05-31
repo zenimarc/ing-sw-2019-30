@@ -26,6 +26,7 @@ public class Player extends Observable implements Cloneable {
     private ArrayList<WeaponCard> weapons;
     private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
+    private ArrayList<WeaponCard> placedWeapons;
 
     /**
      * Default constructors
@@ -37,6 +38,7 @@ public class Player extends Observable implements Cloneable {
         this.points = 0; //a new player has 0 points
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
+        this.placedWeapons = new ArrayList<>();
         this.ammo = new EnumMap<>(Color.class);
         ammo.put(RED,0);
         ammo.put(YELLOW, 0);
@@ -288,6 +290,10 @@ public class Player extends Observable implements Cloneable {
         return this.playerBoard.getNumDamages();
     }
 
+    public ArrayList<WeaponCard> getPlacedWeapons() {
+        return placedWeapons;
+    }
+
     /**
      * This function verifies if a player is visible
      *
@@ -344,16 +350,8 @@ public class Player extends Observable implements Cloneable {
         sb.append('\t');
         sb.append("Points: " + points + '\n');
 
-        sb.append("WeaponCard: " );
-        if(!weapons.isEmpty()) {
-            for (WeaponCard wc : weapons) {
-                sb.append(wc);
-                sb.append('\t');
-            }
-        }else {
-            sb.append("no WeaponCards");
-        }
-        sb.append('\n');
+        sb.append(weaponsToString("WeaponCards in my hand", this.weapons));
+        sb.append(weaponsToString("Placed WeaponCards", this.placedWeapons));
 
         sb.append("PowerCard: " );
         if(!powerups.isEmpty()) {
@@ -370,9 +368,22 @@ public class Player extends Observable implements Cloneable {
         sb.append("end " + nickname);
         sb.append(" -.-.-.-.-\n");
 
+        return sb.toString();
+    }
 
-
-
+    public String weaponsToString(String name, ArrayList<WeaponCard> weapons){
+        StringBuilder sb =new StringBuilder();
+        sb.append(name);
+        sb.append(": ");
+        if(!weapons.isEmpty()) {
+            for (WeaponCard wc : weapons) {
+                sb.append(wc);
+                sb.append('\t');
+            }
+        }else {
+            sb.append("no Weapons");
+        }
+        sb.append('\n');
         return sb.toString();
     }
 
@@ -396,5 +407,10 @@ public class Player extends Observable implements Cloneable {
             ammo.replace(color, ammo.get(color)-1);
             return true;}
         else return false;
+    }
+
+    public void placeWeaponCard(WeaponCard weaponCard) {
+        placedWeapons.add(weaponCard);
+        weapons.remove(weaponCard);
     }
 }

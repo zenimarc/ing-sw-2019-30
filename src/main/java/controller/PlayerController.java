@@ -1,4 +1,5 @@
 package controller;
+import attack.Attack;
 import board.*;
 import board.Cell;
 import board.billboard.Billboard;
@@ -18,8 +19,6 @@ import java.util.*;
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
 import static controller.PlayerCommand.MOVE;
-
-//TODO finire la shoot e decidere come gestirla, fare overloading di alcune funzioni
 
 /**
  * PlayerController is used to control if a player can do certain actions
@@ -42,7 +41,7 @@ public class PlayerController implements Observer {
 
     }
 
-    public PlayerController(Player player, BoardController boardController) {
+    public PlayerController(Player player, @NotNull BoardController boardController) {
         this(player);
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
@@ -70,19 +69,17 @@ public class PlayerController implements Observer {
                 }
                 break;
             case GRAB_AMMO:
-                if(grab(cmdObj.getCell(), cmdObj.getWeaponSelector())){
+                 if(grabAmmo((NormalCell) cmdObj.getCell())){
                     numAction++;
                 }else {
                     viewPrintError(view);
                 }
                 break;
             case GRAB_WEAPON:
-                grabWapon(view, cmdObj);
+                grabWeapon(view, (int) cmdObj.getObject());
                 break;
-
             case SHOOT:
                 //TODO verificare come implementarlo per bene
-                shoot(cmdObj.getCell(), cmdObj.getWeaponSelector());
                 break;
             // case POWERUP:
             //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
@@ -99,6 +96,11 @@ public class PlayerController implements Observer {
                 break;
             case DISCARD_WEAPON:
                 player.rmWeapon((int) cmdObj.getObject());
+                break;
+            case PLACE_WEAPONCARD:
+                if(!placeWeaponCard((WeaponCard) cmdObj.getObject())){
+                    viewPrintError(view, "Something wrong: Selected WeaponCard is not in you hand!");
+                }
                 break;
             default: 
                 break;
@@ -206,40 +208,35 @@ public class PlayerController implements Observer {
      }
 
     /**
-     * This function controls the GRAB action
-     * @param cell of destination
-     * @return true if the action was successful, else false
+     * This controls GRAB action for NormalCell (Grab Ammocard)
+     * @param cell Destination cell
+     * @return success of operation
      */
-    private boolean grab(@NotNull Cell cell, int val) {
-        //If you want give a weaponCard but you have 3(or more) in your hand, return false
-        if(cell.getClass() == RegenerationCell.class &&
-                player.getWeapons().size()>=Constants.MAX_WEAPON_HAND_SIZE.getValue()){
-                return false;
-        }
-
-        Card card = boardController.getBoard().giveCardFromCell(cell, player, val);
-        modifyCell.add(cell);
-
-        if(card.getClass() == AmmoCard.class){
-            AmmoCard ac = (AmmoCard) card;
-            if(ac.verifyPowerUp())
+    private boolean grabAmmo(NormalCell cell){
+        AmmoCard ammoCard = (AmmoCard) boardController.getBoard().giveCardFromCell(cell, player, 0);
+        if(ammoCard!=null) {
+            if (ammoCard.verifyPowerUp())
                 boardController.getBoard().giveCardFromPowerUpDeck(player);
-            boardController.getBoard().addAmmoDiscardDeck(ac);
+            boardController.getBoard().addAmmoDiscardDeck(ammoCard);
+            modifyCell.add(cell);
+            return true;
         }
-
-        return true;
+        return false;
     }
 
-    private void grabWapon(Observable view, @NotNull CommandObj cmdObj){
-
-        int weaponIndex = (int) cmdObj.getObject();
+    /**
+     * This controls GRAB action for RegenerationCEll (Grab Weapon)
+     * @param view player view
+     * @param weaponIndex index of weapon to grab
+     */
+    private void grabWeapon(Observable view, int weaponIndex){
         WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(weaponIndex));
         Card discardWeapon = null;
 
-        //Player can play this weaponCard?
         int grabCost[] = Bullet.toIntArray(grabWeapon.getGrabCost());
+        //Can player pay this weaponCard?
         if(player.canPay(grabCost)) {
-            //Player can draw an other WeaponCard?
+            //Can player draw an other WeaponCard?
             if (player.getWeapons().size() == Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
                 //He can't
                 int discardIndex = ((PlayerView) view).chooseWeaponToDiscard();
@@ -247,7 +244,9 @@ public class PlayerController implements Observer {
                 discardWeapon = player.rmWeapon(discardIndex);
             }
             //Draw weaponCard
-            if (grab(player.getCell(), weaponIndex)) {
+            Card card = boardController.getBoard().giveCardFromCell(player.getCell(), player, weaponIndex);
+            if (card!=null) {
+                modifyCell.add(player.getCell());
                 if (discardWeapon != null) {
                     boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
                 }
@@ -262,40 +261,15 @@ public class PlayerController implements Observer {
     }
 
     /**
-     * This function controls the SHOOT action
-     * @param cell of destination of the movement
-     * @return true if the attack was successful, false otherwise
+     * If WeaponCard wc is in player's hand, put wc in PlacedWeapon else return false
+     * @param wc WeaponCard to place
+     * @return result of operation
      */
-    public boolean shoot(Cell cell, int weaponNumber) {
-        if(!this.move(cell, 12))
-            return false; //lancia errore
-        //verifyWeapon(weaponNumber);//viene verificato se l'arma è carica, altrimenti si cambia arma
-
-        return true;
-    }
-
-    /**
-     * This function verifies if the weapon can be used
-     * @return the weapon desired
-     */
-    public boolean verifyWeapon(int weaponNumber){
-        //if(player.getWeapons().get(weaponNumber).isReady());//TODO gestire il caso in cui l'arma non sia carica
-        //chooseAttack(weaponNumber) viene chiesto l'attacco che si vuole usare e si verifica se sia usabile
-        //
-        return false;
-    }
-
-    /**
-     * This function returns the attack the player wants to use
-     * @return the attack wanted
-     */
-
-    public boolean chooseAttack(int weaponNumber, int attack){
-        //if() se è optional non valido, da errore
-        if(player.canPay(player.getWeapons().get(weaponNumber).getAttack(attack).getCost()))
-
-            //chooseTarget(attack, oggetto da colpire); si fa un switch case
-        {return false;}
+    private boolean placeWeaponCard(WeaponCard wc){
+        if(player.getWeapons().contains(wc)){
+            player.placeWeaponCard(wc);
+            return true;
+        }
         return false;
     }
 
@@ -305,11 +279,9 @@ public class PlayerController implements Observer {
      * @param obj a cell o a list of target to hit
      * @return true if the attack was successful, false otherwise
      */
-   /* public boolean chooseTarget(Attack attack, Object obj){
-
-        }*/
-
-
+    public boolean chooseTarget(Attack attack, Object obj) {
+        return true;
+    }
 
     /**
      * This function modifies the position of the pawn of another player
@@ -332,7 +304,7 @@ public class PlayerController implements Observer {
         this.boardController.getBoard().setPlayerCell(this.player,cell);
     }
 
-    public boolean verifyPowerUp(PowerCard power, Object object, int i) {
+    public boolean verifyPowerUp(PowerCard power, Object object) {
         if(!player.usePowerUp(power, false))
             return false; //chiederà al giocatore se vuole scartarla o meno
 
@@ -395,7 +367,6 @@ public class PlayerController implements Observer {
     /**
      *
      * @param view
-     * @deprecated use viewPrintErro(Observable, String)
      */
     private void viewPrintError(@NotNull Observable view){
         if(view.getClass() == PlayerView.class) {
