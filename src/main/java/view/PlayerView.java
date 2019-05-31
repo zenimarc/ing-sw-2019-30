@@ -102,18 +102,13 @@ public class PlayerView extends Observable implements Observer{
 
             setChanged();
             notifyObservers(new CommandObj(PlayerCommand.PLACE_WEAPONCARD, player.getWeapons().get(index)));
+            //TODO implements here
             //Hai in mano armi cariche => scegli quale/i vuoi giocare
             //Scegli con quali sparare
         }
         return true;
     }
 
-
-    private boolean placeWeaponCard(){
-        
-        return true;
-    }
-    
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
         setChanged();
@@ -121,14 +116,9 @@ public class PlayerView extends Observable implements Observer{
         return true;
     }
 
-    public void chooseTarget(){
-        //TODO implement here
-    }
-
     public void drawCLI(BoardViewCLI map) {
         map.drawCLI();
     }
-
 
     public void drawGUI() {
         // TODO implement here
@@ -153,7 +143,7 @@ public class PlayerView extends Observable implements Observer{
             }
             sb.append("What RegenerationCell color you want? (Enter number)[0] ");
 
-            System.out.print(sb.toString());
+            print(sb.toString());
 
             slt = reader.nextInt();
             if (slt < powerUps.size()) return slt;
@@ -178,8 +168,8 @@ public class PlayerView extends Observable implements Observer{
         String formatString = "[0-"+PlayerCommand.PlayerAction.size()+"]";
 
         while(true) {
-            System.out.println(stringForPlayerAction());
-            System.out.println("What do you want?");
+            print(stringForPlayerAction());
+            print("What do you want?");
             read =reader.next();
             slt = read.matches(formatString) ? Integer.valueOf(read) : PlayerCommand.PlayerAction.size();
             if(slt<PlayerCommand.PlayerAction.size()){
@@ -211,7 +201,7 @@ public class PlayerView extends Observable implements Observer{
         String formatString = "[0-"+ Constants.MAX_WEAPON_HAND_SIZE.getValue()+"]";
 
         while (true){
-            System.out.println(mex);
+            print(mex);
             read = reader.next();
 
             if(read.matches(formatString)){
@@ -273,7 +263,7 @@ public class PlayerView extends Observable implements Observer{
         String read;
         String formatString = "[0-"+((((RegenerationCell) player.getCell()).getCards().size())-1) +"]";
 
-        System.out.println(stringForChooseWeaponCard());
+        print(stringForChooseWeaponCard());
         while (true){
             read = reader.next();
             if(read.matches(formatString)) {
@@ -303,9 +293,12 @@ public class PlayerView extends Observable implements Observer{
             sb.append(mex);
         }
         sb.append(" -----");
-        System.out.println(sb.toString());
+        print(sb.toString());
     }
 
+    public void print(String string){
+        System.out.println(string);
+    }
 
     @Override
     public void update(Observable o, Object arg) {

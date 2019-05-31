@@ -327,7 +327,7 @@ public class PlayerController implements Observer {
         return false;
     }
 
-    public boolean useKineticRay(Player player, Cell cell){
+    private boolean useKineticRay(Player player, Cell cell){
         if(!movePlayer(player, cell, 2))
             return false;
         if((billboard.getCellPosition(player.getCell()).getX() == billboard.getCellPosition(cell).getX())|| (billboard.getCellPosition(player.getCell()).getY() == billboard.getCellPosition(cell).getY())) {
@@ -341,15 +341,15 @@ public class PlayerController implements Observer {
         return modifyCell;
     }
 
-    public void useGranade(@NotNull Player player){
+    private void useGranade(@NotNull Player player){
         player.addMark(this.player);
     }
 
-    public void useGunsight(@NotNull Player player){
+    private void useGunsight(@NotNull Player player){
         player.addDamage(this.player);
     }
 
-    public void useTeleporter(Cell cell){
+    private void useTeleporter(Cell cell){
         setCell(cell);
     }
 
