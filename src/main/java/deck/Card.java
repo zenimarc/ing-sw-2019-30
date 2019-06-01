@@ -53,5 +53,7 @@ public abstract class Card {
     }
 
 
-
+    public String stringGUI() {
+        return "";
+    }
 }

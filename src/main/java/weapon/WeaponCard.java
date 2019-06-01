@@ -146,4 +146,9 @@ public abstract class WeaponCard extends Card {
     public String toString() {
         return intArrayToString(toIntArray(cost));
     }
+
+    @Override
+    public String stringGUI(){
+        return this.name;
+    }
 }

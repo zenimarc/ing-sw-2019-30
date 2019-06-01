@@ -62,4 +62,18 @@ public class AmmoCard extends Card {
 
         return stringBuilder.toString();
     }
+
+    @Override
+    public String stringGUI(){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(int i = 0; i < 3; i++)
+            stringBuilder.append(cubes[i]);
+
+        if(hasPowerUp)
+            stringBuilder.append("y");
+        else stringBuilder.append("n");
+
+        return stringBuilder.toString();
+    }
 }
