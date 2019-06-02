@@ -70,7 +70,8 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     }
 
     /**
-     * this funcrion is called by remote clients for registering to the lobby and to get personal userToken
+     * this function is called by remote clients for registering to the lobby and to get personal userToken.
+     * in case of success the player joins a free game or creates new one.
      * @param username of the client who wants to connect
      * @param remoteClient remote client reference
      * @return a new unique userToken to the client

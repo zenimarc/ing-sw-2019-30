@@ -2,7 +2,7 @@ package view;
 import player.Player;
 
 /**
- *
+ * TODO: aggiungere munizioni che ha il player, armi che ha il player, potenziamenti che ha il player.
  */
 public class PlayerBoardView {
     private Player player;
