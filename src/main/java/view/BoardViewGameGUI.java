@@ -22,11 +22,12 @@ import java.util.ArrayList;
 public class BoardViewGameGUI extends Application {
     private int stageHeight = 700;
     private int stageWidth = 920;
+    /*
     private Board board;
 
     BoardViewGameGUI(Board board){
         this.board = board;
-    }
+    }*/
 
     public static void main(String[] args) {
         launch(args);

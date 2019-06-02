@@ -19,6 +19,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private int minPlayer;
     private int maxPlayer;
     private UUID gameToken;
+    private boolean gameStarted;
+    private int turn;
 
     public GameServerImpl(int minPlayer, int maxPlayer) throws RemoteException {
         boardController = new BoardController();
@@ -27,6 +29,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         this.minPlayer = minPlayer;
         this.maxPlayer = maxPlayer;
         this.gameToken = UUID.randomUUID();
+        this.gameStarted = false;
+        this.turn = 0;
     }
 
     /**
@@ -44,6 +48,20 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      */
     public UUID getGameToken(){
         return this.gameToken;
+    }
+
+    public synchronized boolean isStarted(){
+        return this.gameStarted;
+    }
+
+    public synchronized void startGame(){
+        //TODO: far partire il gioco e avvisare tutti i client
+        this.gameStarted = true;
+        new Thread(new TurnHandler(this)).start();
+    }
+
+    public synchronized void endGame(){
+        this.gameStarted = false;
     }
 
     /**
@@ -131,6 +149,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 for (Client client : clientsToBeSuspended) {
                     swapOnOff(client);
                     new Thread(() -> kick(client)).start();
+                    //TODO: qui magari fare thread pool e far partire il countdown timer thread senza lambda.
                 }
             }catch (InterruptedException ie){
                 ie.fillInStackTrace();
@@ -167,10 +186,23 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         System.out.println(client + " removed for inactivity");
     }
 
+    public synchronized int changeTurn() {
+        if(turn == clients.size()-1)
+            turn = 0;
+        else turn++;
+        return turn;
+    }
+
+    public synchronized int getTurn(){
+        return this.turn;
+    }
+
     /**
      * this function start a new gameserver with offline clients watchdog
      */
     public void start(){
-        new Thread(() -> checkOfflineClients()).start();
+        new Thread(this::checkOfflineClients).start();
+        startGame();
+        //TODO: far partire il checkoogìfline e anche il timer del turno (2 min per azione)
     }
 }

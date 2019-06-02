@@ -139,7 +139,10 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                     if(isRMI[0] = true){
                         try {
                             ClientRMI clientRMI = new ClientRMI();
-                            clientRMI.setNickname(Name.getAccessibleText());
+                            clientRMI.connect("127.0.0.1");
+                            System.out.println(Name.getAccessibleText());
+                            clientRMI.register(Name.getAccessibleText());
+
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }

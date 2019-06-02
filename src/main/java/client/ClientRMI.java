@@ -32,16 +32,19 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
      * this function lookups the rmi registry at indicated hostname and port and try to obtain a remote lobby
      * @param host of rmi registry
      * @param port of rmi registry
+     * @return true if it is successfully connected, else false
      * @throws RemoteException
      */
-    public void connect(String host, int port) throws RemoteException {
+    public boolean connect(String host, int port) throws RemoteException {
         this.registry = LocateRegistry.getRegistry(host, port);
         try {
             this.lobby = (Lobby) registry.lookup("lobby");
             System.out.println("lobby trovata");
+            return true;
         } catch (NotBoundException nbe) {
             System.out.println(nbe.toString());
             nbe.fillInStackTrace();
+            return false;
         }
     }
 
@@ -57,13 +60,16 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
     /**
      * this function register this client to the remote Lobby and if the Lobby accept the
      * registration, the client saves his userToken in local attribute.
+     * if it returns true, it means that the player also joined in a new game.
+     * @param nickname you want to use
      * @return true if the Lobby accepts the connection, False if the Lobby refuses the connection
      * or if there are connectivity problems.
      */
-    public boolean register() {
+    public boolean register(String nickname) {
         try {
-            UUID myToken = this.lobby.register(this.nickname, this);
+            UUID myToken = this.lobby.register(nickname, this);
             if (myToken != null) {
+                this.setNickname(nickname);
                 this.userToken = myToken;
                 return true;
             }
@@ -153,7 +159,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
                 clientRMI.reconnect(userName, UUID.fromString(scanner.nextLine()));
             }
             else
-                while (!clientRMI.register()) {
+                while (!clientRMI.register(clientRMI.getNickname())) {
                     System.out.println("Enter another username");
                     userName = scanner.nextLine();
                     clientRMI.setNickname(userName);
