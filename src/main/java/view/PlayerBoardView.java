@@ -74,6 +74,8 @@ public class PlayerBoardView {
 
         stringBuilder.append(printTopBorder(BOTTOM_LEFT_SEPARATOR, BOTTOM_RIGHT_SEPARATOR));
 
+        stringBuilder.append(System.getProperty("line.separator"));
+
         System.out.print(stringBuilder.toString());
     }
 
@@ -199,7 +201,7 @@ public class PlayerBoardView {
      */
     private String printMarks(){
         String textToView;
-        int nameSpace=0;
+        int nameSpace;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
         stringBuilder.append(V_SEPARATOR);
