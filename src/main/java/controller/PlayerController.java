@@ -258,6 +258,9 @@ public class PlayerController implements Observer {
             //Draw weaponCard
             Card card = boardController.getBoard().giveCardFromCell(player.getCell(), player, weaponIndex);
             if (card!=null) {
+                //Set weapon load
+                ((WeaponCard) card).setLoaded();
+                //Add cell to modify cell
                 modifyCell.add(player.getCell());
                 if (discardWeapon != null) {
                     boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
