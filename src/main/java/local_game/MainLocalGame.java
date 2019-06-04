@@ -26,7 +26,6 @@ public class MainLocalGame {
         int i=0;
         while (i<10) {
             playerWhoPlay = boardController.getPlayer();
-            System.out.println(playerWhoPlay);
 
             boardController.playerPlay(playerWhoPlay);
 

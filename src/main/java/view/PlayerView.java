@@ -1,5 +1,4 @@
 package view;
-import board.Cell;
 import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
@@ -17,7 +16,6 @@ import java.util.*;
  */
 public class PlayerView extends Observable implements Observer{
     private Player player;
-    private PlayerBoardView myPlayerBoard;
     private Scanner reader = new Scanner(System.in);
 
     /**
@@ -37,7 +35,7 @@ public class PlayerView extends Observable implements Observer{
                 move(PlayerCommand.MOVE);
                 break;
             case GRAB:
-                grab();
+                move(PlayerCommand.GRAB_MOVE);
                 break;
             case SHOOT:
                 shoot();
@@ -51,11 +49,15 @@ public class PlayerView extends Observable implements Observer{
         }
     }
 
-
+    /**
+     * This ask new position and notify MOVE action
+     * @param playerCommand type of movement
+     * @return movement success
+     */
     public boolean move(PlayerCommand playerCommand) {
         String positionString;
         while (true) {
-            System.out.println("In che cella vuoi andare? ");
+            System.out.println("Where do you want to move?");
             positionString = reader.next();
 
             if(positionString.matches("[0-2]+,+[0-3]")){
@@ -72,9 +74,7 @@ public class PlayerView extends Observable implements Observer{
         return true;
     }
 
-    private boolean grab() {
-        move(PlayerCommand.GRAB_MOVE);
-
+    public boolean grab() {
         if(player.getCell().getClass() == NormalCell.class) return grabAmmo();
         else if (player.getCell().getClass()== RegenerationCell.class) return grabWeapon();
         return false;
@@ -96,7 +96,7 @@ public class PlayerView extends Observable implements Observer{
 
     public boolean shoot() {
         if(player.getWeapons().isEmpty()){
-            printError("You have not Weapon, so you can't shoot");
+            printError("You have not loaded weapon, so you can't shoot");
         }else{
             int index = chooseWeaponToPlace();
 

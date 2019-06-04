@@ -11,6 +11,7 @@ import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
 import player.Player;
+import view.PlayerBoardView;
 import view.PlayerView;
 import weapon.WeaponCard;
 
@@ -30,6 +31,7 @@ public class PlayerController implements Observer {
     private Player player;
     private int numAction = 0;
     private ArrayList<Cell> modifyCell;
+    private PlayerBoardView playerBoardView;
 
     /**
      * Default constructor
@@ -37,6 +39,7 @@ public class PlayerController implements Observer {
     public PlayerController(Player player) {
         this.player = player;
         this.playerView = new PlayerView(player, this);
+        this.playerBoardView = new PlayerBoardView(player);
         this.player.addObserver(playerView);
 
     }
@@ -46,6 +49,14 @@ public class PlayerController implements Observer {
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
 
+    }
+
+    public PlayerView getPlayerView() {
+        return playerView;
+    }
+
+    public PlayerBoardView getPlayerBoardView() {
+        return playerBoardView;
     }
 
     public void setBillboard(Billboard board){this.billboard = board;}
@@ -64,6 +75,7 @@ public class PlayerController implements Observer {
             case GRAB_MOVE:
                 if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
                     if(cmdObj.getCmd()==MOVE) numAction++;
+                    else ((PlayerView) view).grab();
                 }else {
                     viewPrintError(view);
                 }
