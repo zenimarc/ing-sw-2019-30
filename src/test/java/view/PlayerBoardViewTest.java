@@ -4,7 +4,6 @@ import board.Board;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
-import powerup.PowerCard;
 import weapon.EnumWeapon;
 import weapon.SimpleWeapon;
 

@@ -56,7 +56,7 @@ public class BoardViewGameGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
         initialize();
-        AnchorPane pane = createGame(1);
+        Pane pane = createGame(1);
         pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setCenterShape(true);
         Scene scene = new Scene(pane);
@@ -78,8 +78,8 @@ public class BoardViewGameGUI extends Application {
      * @return map GUI
      * @throws FileNotFoundException if files are not found
      */
-    private AnchorPane createGame(int number) throws FileNotFoundException {
-        AnchorPane anchor = new AnchorPane();
+    private Pane createGame(int number) throws FileNotFoundException {
+        Pane anchor = new Pane();
         anchor.getChildren().add(createMap(number));
         anchor.getChildren().get(0).setLayoutX(150);
         anchor.getChildren().get(0).setLayoutY(110);
@@ -489,13 +489,15 @@ return playerBoard;
         ImageView image = new ImageView(new Image(new FileInputStream(name)));
         changeSizeImage(image, height, width);
 
+
         Button button = new Button();
+        changeSizeButton(button, height, width);
         button.rotateProperty().setValue(grades);
 
         button.setOpacity(1);
         button.setGraphic(image);
         button.getGraphic().setVisible(false);
-        //button.setPadding(Insets.EMPTY);
+
 
 
         button.setTranslateX(transX);

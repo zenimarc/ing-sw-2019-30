@@ -56,6 +56,10 @@ public class Billboard{
         return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
     }
 
+    public static Cell getCellsFromPosition(HashMap<Cell, Position> billboardCell, Position pos){
+        return billboardCell.keySet().stream().filter(x -> billboardCell.get(x).equals(pos)).findFirst().orElse(null);
+    }
+
     /**
      * Says if exists a Door between c1 and c2 (or c2 and c1)
      * @param c1 First Cell
@@ -320,7 +324,7 @@ public class Billboard{
 
     /**
      * TODO JAVADOC
-     * @return
+     * @return a string
      */
     @Override
     public String toString() {

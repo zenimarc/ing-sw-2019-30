@@ -19,7 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;

@@ -37,12 +37,12 @@ public class PlayerBoardView {
      * This function draws the Board of a player
      * @param player player
      */
-    public void drawDamageTrack(Player player) {
+    private void drawDamageTrack(Player player) {
         StringBuilder stringBuilder = new StringBuilder();
         //NAME
         stringBuilder.append(player.getName()+"'s damage track:"+System.getProperty("line.separator"));
         //TOP BORDER
-        stringBuilder.append(printTopBorder(TOP_LEFT_SEPARATOR, TOP_RIGHT_SEPARATOR));
+        stringBuilder.append(printTopBorder(TOP_LEFT_SEPARATOR, TOP_RIGHT_SEPARATOR, H_SEPARATOR));
 
         //HEADER
         stringBuilder.append(printHeader());
@@ -50,13 +50,9 @@ public class PlayerBoardView {
         //CELL BODY
         stringBuilder.append(printCellBodies());
 
-        //BOTTOM BORDER
+        //MIDDLE BORDER
         stringBuilder.append(System.getProperty("line.separator"));
-        stringBuilder.append(printBordCell(NEW_ROW_LEFT_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM));
-        for (int i=0; i<COLS-2; i++ ){
-            stringBuilder.append(printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM));
-        }
-        stringBuilder.append(printBordCell(H_SEPARATOR, NEW_ROW_RIGHT_SEPARATOR));
+        stringBuilder.append(printTopBorder(NEW_ROW_LEFT_SEPARATOR, NEW_ROW_RIGHT_SEPARATOR, NEW_COL_SEPARATOR_BOTTOM));
 
         //PRINT MARKS
         stringBuilder.append(printMarks());
@@ -72,7 +68,7 @@ public class PlayerBoardView {
 
         //BOTTOM BORDER
 
-        stringBuilder.append(printTopBorder(BOTTOM_LEFT_SEPARATOR, BOTTOM_RIGHT_SEPARATOR));
+        stringBuilder.append(printTopBorder(BOTTOM_LEFT_SEPARATOR, BOTTOM_RIGHT_SEPARATOR, H_SEPARATOR));
 
         stringBuilder.append(System.getProperty("line.separator"));
 
@@ -143,11 +139,8 @@ public class PlayerBoardView {
         stringBuilder.append(V_SEPARATOR);
 
         stringBuilder.append(System.getProperty("line.separator"));
-        stringBuilder.append(printBordCell(NEW_ROW_LEFT_SEPARATOR, NEW_COL_SEPARATOR_TOP));
-        for (int i=0; i<COLS-2; i++ ){
-            stringBuilder.append(printBordCell(H_SEPARATOR, NEW_COL_SEPARATOR_TOP));
-        }
-        stringBuilder.append(printBordCell(H_SEPARATOR, NEW_ROW_RIGHT_SEPARATOR));
+        stringBuilder.append(printTopBorder(NEW_ROW_LEFT_SEPARATOR, NEW_ROW_RIGHT_SEPARATOR, NEW_COL_SEPARATOR_TOP));
+
         return stringBuilder.toString();
     }
 
@@ -184,11 +177,11 @@ public class PlayerBoardView {
      * @param rightBorder char
      * @return a string
      */
-    private String printTopBorder(char leftBorder, char rightBorder){
+    private String printTopBorder(char leftBorder, char rightBorder, char separator){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(printBordCell(leftBorder, H_SEPARATOR));
+        stringBuilder.append(printBordCell(leftBorder, separator));
         for (int i=0; i<COLS-2; i++ ){
-            stringBuilder.append(printBordCell(H_SEPARATOR, H_SEPARATOR));
+            stringBuilder.append(printBordCell(H_SEPARATOR, separator));
         }
         stringBuilder.append(printBordCell(H_SEPARATOR, rightBorder));
         return stringBuilder.toString();
