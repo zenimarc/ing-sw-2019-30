@@ -30,10 +30,8 @@ public class MainLocalGame {
             boardController.playerPlay(playerWhoPlay);
 
             boardController.changeTurn();
-          /*  if(boardController.changeTurn()==0){
-                boardController.getBoardViewToString();
-            }
-            */i++;
+
+            i++;
         }
     }
 

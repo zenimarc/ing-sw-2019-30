@@ -350,8 +350,8 @@ public class Player extends Observable implements Cloneable {
         sb.append('\t');
         sb.append("Points: " + points + '\n');
 
-        sb.append(weaponsToString("WeaponCards in my hand", this.weapons));
-        sb.append(weaponsToString("Placed WeaponCards", this.placedWeapons));
+        sb.append(weaponsToString("WeaponCards in my hand", true));
+        sb.append(weaponsToString("Placed WeaponCards", false));
 
         sb.append("PowerCard: " );
         if(!powerups.isEmpty()) {
