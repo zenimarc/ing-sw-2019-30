@@ -9,6 +9,7 @@ import deck.AmmoCard;
 import deck.Bullet;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
+import player.PlayerBoard;
 import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
@@ -49,6 +50,14 @@ public class PlayerController implements Observer {
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
 
+    }
+
+    public void setPlayerView(PlayerView playerView){
+        this.playerView = playerView;
+    }
+
+    public void setPlayerBoardView(PlayerBoardView playerBoardView){
+        this.playerBoardView = playerBoardView;
     }
 
     public PlayerView getPlayerView() {

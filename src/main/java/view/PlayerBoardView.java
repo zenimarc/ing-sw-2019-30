@@ -6,21 +6,21 @@ import player.Player;
  */
 public class PlayerBoardView {
     private Player player;
-    private static int CELL_LENGTH=8;
-    private static int CELL_HEIGHT=8;
-    private static int COLS=12;
-    private static int ROWS=2;
-    private static char H_SEPARATOR = '─';
-    private static char V_SEPARATOR = '│';
-    private static char TOP_LEFT_SEPARATOR = '┌';
-    private static char TOP_RIGHT_SEPARATOR = '┐';
-    private static char BOTTOM_LEFT_SEPARATOR = '└';
-    private static char BOTTOM_RIGHT_SEPARATOR = '┘';
-    private static char NEW_ROW_LEFT_SEPARATOR = '├';
-    private static char NEW_ROW_RIGHT_SEPARATOR = '┤';
-    private static char NEW_COL_SEPARATOR_TOP = '┬';
-    private static char NEW_COL_SEPARATOR_MIDDLE = '┼';
-    private static char NEW_COL_SEPARATOR_BOTTOM = '┴';
+    private static final int CELL_LENGTH=8;
+    private static final int CELL_HEIGHT=8;
+    private static final int COLS=12;
+    private static final int ROWS=2;
+    private static final char H_SEPARATOR = '─';
+    private static final char V_SEPARATOR = '│';
+    private static final char TOP_LEFT_SEPARATOR = '┌';
+    private static final char TOP_RIGHT_SEPARATOR = '┐';
+    private static final char BOTTOM_LEFT_SEPARATOR = '└';
+    private static final char BOTTOM_RIGHT_SEPARATOR = '┘';
+    private static final char NEW_ROW_LEFT_SEPARATOR = '├';
+    private static final char NEW_ROW_RIGHT_SEPARATOR = '┤';
+    private static final char NEW_COL_SEPARATOR_TOP = '┬';
+    private static final char NEW_COL_SEPARATOR_MIDDLE = '┼';
+    private static final char NEW_COL_SEPARATOR_BOTTOM = '┴';
 
     /**
      * Default constructor
@@ -206,7 +206,7 @@ public class PlayerBoardView {
         stringBuilder.append(System.getProperty("line.separator"));
         stringBuilder.append(V_SEPARATOR);
         if (!player.getPlayerBoard().getMarks().keySet().isEmpty()) {
-            nameSpace = (((CELL_LENGTH+2) * COLS)-1) / player.getPlayerBoard().getMarks().keySet().size();
+            nameSpace = (((CELL_LENGTH+2) * COLS)-2) / player.getPlayerBoard().getMarks().keySet().size();
             for (Player player : player.getPlayerBoard().getMarks().keySet()) {
                 textToView = player.getName().substring(0, Math.min(nameSpace-3-String.valueOf(this.player.getMarks(player)).length(), player.getName().length()))
                         + ": " + this.player.getMarks(player) + " "; //-3 is the length of ": " + " " string (all added strings)
@@ -215,7 +215,7 @@ public class PlayerBoardView {
             for (int i=0; i< (((((CELL_LENGTH+2) * COLS)-1) % player.getPlayerBoard().getMarks().keySet().size())-1); i++)
                 stringBuilder.append(" ");
         } else
-            stringBuilder.append(stringTrunker(" ", CELL_LENGTH*COLS-2));
+            stringBuilder.append(stringTrunker(" ", (CELL_LENGTH+2)*COLS-2));
         stringBuilder.append(V_SEPARATOR);
         return stringBuilder.toString();
 

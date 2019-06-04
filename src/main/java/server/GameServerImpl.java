@@ -2,6 +2,8 @@ package server;
 
 import client.Client;
 import controller.BoardController;
+import controller.PlayerController;
+import player.Player;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -42,6 +44,14 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         return (clients.size() >= maxPlayer);
     }
 
+    public PlayerController getPlayerController(Client remoteClient) throws RemoteException{
+        return boardController.getPlayerController(remoteClient.getNickname());
+    }
+
+    public Player getPlayer(Client remoteClient) throws RemoteException{
+        return boardController.getPlayer(remoteClient.getNickname());
+    }
+
     /**
      * this function returns the gameToken of the current gameServer
      * @return the gameToken
@@ -58,6 +68,14 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         //TODO: far partire il gioco e avvisare tutti i client
         this.gameStarted = true;
         new Thread(new TurnHandler(this)).start();
+        List<Player> players = new ArrayList<>();
+        try {
+            for (Client remoteClient : getActiveClients()) {
+                players.add(new Player(remoteClient.getNickname()));
+            }
+        }catch (RemoteException re){
+            //TODO cancel this game and notify players
+        }
     }
 
     public synchronized void endGame(){

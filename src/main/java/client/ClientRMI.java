@@ -3,6 +3,8 @@ package client;
 import server.GameServer;
 import server.Lobby;
 import server.LobbyImpl;
+import view.PlayerBoardView;
+import view.PlayerView;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -18,6 +20,8 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
     private transient Lobby lobby;
     private transient GameServer gameServer;
     private UUID userToken;
+    private PlayerView playerView;
+    private PlayerBoardView playerBoardView;
 
 
     public ClientRMI() throws RemoteException {
@@ -89,6 +93,18 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
         System.out.println("Login success");
     }
 
+    public void gameStarted() throws RemoteException{
+
+    }
+
+    public PlayerView createPlayerView() throws RemoteException{
+        return this.playerView = new PlayerView(gameServer.getPlayer(this), gameServer.getPlayerController(this));
+    }
+
+    public PlayerBoardView createPlayerBoardView() throws RemoteException{
+        return this.playerBoardView = new PlayerBoardView(gameServer.getPlayer(this));
+    }
+
     /**
      * this function set the nickname for the client
      * @param nickname to be set on this client
@@ -106,7 +122,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
     }
 
     /**
-     * this funcion is used by remote Lobby to set on this client the gameServer assigned to play in
+     * this funcion is called by remote Lobby to set on this client the gameServer assigned to play in
      * @param gameServer to play in
      */
     public void setGameServer(GameServer gameServer) {

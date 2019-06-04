@@ -86,6 +86,15 @@ public class BoardController{
      */
     public Player getPlayer(){return this.listOfPlayers.get(playerTurn);}
 
+    /**
+     * this function returns a Player from a nickname
+     * @param nickname of the player you want to get
+     * @return the player associated to the nickname
+     */
+    public Player getPlayer(String nickname){
+        return listOfPlayers.stream().filter(x -> x.getName().equals(nickname)).findFirst().orElse(null);
+    }
+
     public int getFrenzyturns (){return this.verifyFinalFrenzyTurns;}
 
     /**
@@ -167,6 +176,15 @@ public class BoardController{
      */
     public PlayerController getPlayerController(Player player){
         return this.playerControllers.stream().filter(x -> x.getPlayer() == player).findFirst().orElse(null);
+    }
+
+    /**
+     * this function return the PlayerController associated to a specific nickname of a Player
+     * @param nickname of the player you want to know its PlayerController
+     * @return player's PlayerController if present, else null.
+     */
+    public PlayerController getPlayerController(String nickname){
+        return this.playerControllers.stream().filter(x -> x.getPlayer().getName().equals(nickname)).findFirst().orElse(null);
     }
 
     /**

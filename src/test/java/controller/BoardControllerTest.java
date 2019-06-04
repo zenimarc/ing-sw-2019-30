@@ -61,6 +61,10 @@ class BoardControllerTest {
         board = new Board(0, billboard);
         controller = new BoardController(players, board);
     }
+    @Test
+    void getPlayerController(){
+        assertEquals(controller.getPlayerController(p1), controller.getPlayerController("Marco"));
+    }
 
     @Test
     void BoardControllerConstructorTest(){

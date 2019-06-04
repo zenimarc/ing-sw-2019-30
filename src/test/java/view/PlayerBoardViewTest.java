@@ -27,8 +27,7 @@ class PlayerBoardViewTest {
         p1.addDamage(new Player("L"), 6);
         p1.addMark(p4, 2);
         p1.addMark(p2, 4);
-        p1.addMark(p3, 6);
-        p1.addMark(p5);
+        p1.addMark(p3, 3);
         p1view = new PlayerBoardView(p1);
     }
 
