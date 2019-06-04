@@ -3,7 +3,7 @@ package attack;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import constants.EnumString;
+import constants.EnumAttackName;
 import controller.EnumTargetSet;
 import player.Player;
 
@@ -29,7 +29,7 @@ import java.util.List;
 
 public abstract class Attack {
 
-    protected EnumString name;
+    protected EnumAttackName name;
     protected int damage;
     protected int mark;
     protected String description;
@@ -75,7 +75,7 @@ public abstract class Attack {
      * Get attack's name
      * @return attack's name
      */
-    public EnumString getName() {
+    public EnumAttackName getName() {
         return name;
     }
 
@@ -94,4 +94,14 @@ public abstract class Attack {
     public EnumTargetSet getTargetType() {
         return targetType;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.name.getString());
+        sb.append(": ");
+        sb.append(this.getDescription());
+
+        return sb.toString();
     }
+}

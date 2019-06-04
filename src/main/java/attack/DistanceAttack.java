@@ -3,7 +3,7 @@ package attack;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import constants.EnumString;
+import constants.EnumAttackName;
 import controller.EnumTargetSet;
 import player.Player;
 
@@ -26,7 +26,7 @@ public class DistanceAttack extends Attack {
      */
     @JsonCreator
     public DistanceAttack(@JsonProperty("targetType") EnumTargetSet targetType,
-                          @JsonProperty("name") EnumString name,
+                          @JsonProperty("name") EnumAttackName name,
                           @JsonProperty("damage") int damage,
                           @JsonProperty("mark") int mark,
                           @JsonProperty("target") int target,

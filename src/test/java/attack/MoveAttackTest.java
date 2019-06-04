@@ -3,7 +3,7 @@ package attack;
 import board.Board;
 import board.Cell;
 import board.NormalCell;
-import constants.EnumString;
+import constants.EnumAttackName;
 import controller.EnumTargetSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class MoveAttackTest {
     public static void init(){
         board = new Board();
 
-        moveAttack = new MoveAttack(EnumTargetSet.VISIBLE, EnumString.BASE_ATTACK_NAME, "description", 2,damage,1);
+        moveAttack = new MoveAttack(EnumTargetSet.VISIBLE, EnumAttackName.BASE_ATTACK_NAME, "description", 2,damage,1);
 
         p1 = new Player("first",board);
         p2 = new Player("second",board);

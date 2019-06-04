@@ -146,4 +146,8 @@ public abstract class WeaponCard extends Card {
     public String toString() {
         return intArrayToString(toIntArray(cost));
     }
+
+    public void setLoaded() {
+        isLoaded = true;
+    }
 }

@@ -1,6 +1,6 @@
 package constants;
 
-public enum EnumString {
+public enum EnumAttackName {
 
 
     BASE_ATTACK_NAME("Base Attack"),
@@ -22,7 +22,7 @@ public enum EnumString {
 
     private String string;
 
-    EnumString(String value){
+    EnumAttackName(String value){
         this.string = value;
     }
 

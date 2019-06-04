@@ -68,7 +68,6 @@ public class BoardController{
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             //set Observers
-
             this.board.addObserver(boardViewCLI);
 
         }

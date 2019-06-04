@@ -13,7 +13,7 @@ import player.Player;
 import java.util.List;
 import java.util.Optional;
 
-import static constants.EnumString.*;
+import static constants.EnumAttackName.*;
 import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
