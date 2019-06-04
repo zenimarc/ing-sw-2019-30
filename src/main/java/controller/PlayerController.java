@@ -332,7 +332,7 @@ public class PlayerController implements Observer {
                     return true;
                 }
                 else return false;
-            case VENOMGRANADE:
+            case VENOMGRENADE:
                 useGranade((Player) object);
                 return true;
             case TELEPORTER:

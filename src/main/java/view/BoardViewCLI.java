@@ -385,7 +385,7 @@ public class BoardViewCLI implements Observer {
         StringBuilder stream = new StringBuilder();
             if (cell.getCard(pos) != null)
                 stream.append(printWeaponName((WeaponCard) cell.getCard(pos)));
-            else for(int j = 0; j < M+Z; j++)
+            else for(int j = 0; j < (M+Z)*Z; j++)
                 stream.append(" ");
         stream.append("│");
         return stream;

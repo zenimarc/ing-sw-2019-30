@@ -1,6 +1,6 @@
 {
   "WeaponClass" : "weapon.DistanceWeapon",
-  "name" : "Whishper",
+  "name" : "Whisper",
   "cost" : [ {
     "color" : "BLUE"
   }, {

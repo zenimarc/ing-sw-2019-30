@@ -7,5 +7,5 @@ public enum PowerUp {
     GUNSIGHT,
     KINETICRAY,
     TELEPORTER,
-    VENOMGRANADE
+    VENOMGRENADE
 }

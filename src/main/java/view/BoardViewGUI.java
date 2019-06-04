@@ -255,13 +255,6 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
         name.setLayoutX(mainMenuWidth/2-80);
         name.setLayoutY(mainMenuHeight / 2 + 100);
 
-        userTextField.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.print("prova");
-            }
-        });
-
         return name;
     }
 
