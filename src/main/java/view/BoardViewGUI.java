@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
@@ -63,6 +64,8 @@ public class BoardViewGUI extends Application {
         Button confirm = confirmButton();
         Button back= backButton();
         GridPane Name = askName();
+        Name.add(confirm, 1, 1);
+        Name.add(back, 2, 1);
         GridPane wait = waitCheck("Verifying name...");
         GridPane fail = waitCheck("Error: name not valid");
 
@@ -70,13 +73,11 @@ public class BoardViewGUI extends Application {
         alert.setTitle("Warning");
         alert.setHeaderText("Required Fields Empty");
 
-
         root.getChildren().add(RMI);
         root.getChildren().add(Socket);
         root.getChildren().add(CLI);
         root.getChildren().add(GUI);
         root.getChildren().add(Name);
-        root.getChildren().add(confirm);
         root.getChildren().add(back);
         root.getChildren().add(wait);
         root.getChildren().add(fail);
@@ -132,16 +133,17 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
         confirm.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-               // if(!Name.getAccessibleText().trim().isEmpty()) {
+                String name = Name.getChildren().get(0).getAccessibleText();
                     Name.setVisible(false);
                     confirm.setVisible(false);
                     wait.setVisible(true);
+
                     if(isRMI[0] = true){
                         try {
                             ClientRMI clientRMI = new ClientRMI();
                             clientRMI.connect("127.0.0.1");
-                            System.out.println(Name.getAccessibleText());
-                            clientRMI.register(Name.getAccessibleText());
+                            System.out.println(name);
+                            clientRMI.register(name);
 
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -234,8 +236,8 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
     private Button backButton(){
         Button back = new Button();
         back.setText("Return");//modifica nome del pulsante
-        back.setLayoutX(mainMenuWidth / 2 + 60);
-        back.setLayoutY(mainMenuHeight / 2 + 130);
+        back.setLayoutX(mainMenuWidth / 2 + 65);
+        back.setLayoutY(mainMenuHeight / 2 + 135);
         back.setVisible(false);
         return back;
     }
@@ -248,13 +250,11 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
         name.setPadding(new Insets(0, 0, 0, 0));
         name.setVisible(false);
 
-        Label userName = new Label("Name:");//inserisce nome
-        name.add(userName, 0, 0);//altezza e poi lunghezza
-        TextField userTextField = new TextField();//permette d'inserire il testo
-        name.add(userTextField, 1, 0);
+        name.add(new Label("Name:"), 0, 0);//altezza e poi lunghezza//permette d'inserire il testo
+        name.add(new TextField(), 1, 0);
         name.setLayoutX(mainMenuWidth/2-80);
         name.setLayoutY(mainMenuHeight / 2 + 100);
-
+name.getChildren().get(1).setAccessibleText("name");
         return name;
     }
 

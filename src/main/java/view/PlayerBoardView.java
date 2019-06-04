@@ -29,12 +29,20 @@ public class PlayerBoardView {
         this.player = player;
     }
 
-    public void drawDamageTrack() {
+    public void drawPlayerboard(){
+         drawDamageTrack(this.player);
+    }
+
+    /**
+     * This function draws the Board of a player
+     * @param player player
+     */
+    public void drawDamageTrack(Player player) {
         StringBuilder stringBuilder = new StringBuilder();
         //NAME
         stringBuilder.append(player.getName()+"'s damage track:"+System.getProperty("line.separator"));
         //TOP BORDER
-        stringBuilder.append(printTopBorder());
+        stringBuilder.append(printTopBorder(TOP_LEFT_SEPARATOR, TOP_RIGHT_SEPARATOR));
 
         //HEADER
         stringBuilder.append(printHeader());
@@ -52,12 +60,31 @@ public class PlayerBoardView {
 
         //PRINT MARKS
         stringBuilder.append(printMarks());
+
+        //PRINT WEAPONS AND POWER UP
+        stringBuilder.append(printWeaponAmmo());
+        for(int i = 0; i < 3; i++)
+            stringBuilder.append(printWeapons(i));
+
+
+        //PRINT AMMO AND POINTS
+        stringBuilder.append(printPoints());
+
+        //BOTTOM BORDER
+
+        stringBuilder.append(printTopBorder(BOTTOM_LEFT_SEPARATOR, BOTTOM_RIGHT_SEPARATOR));
+
         System.out.print(stringBuilder.toString());
-
-
-
-
     }
+
+
+    /**
+     * TODO Marco non fa la javadoc
+     * @param leftChar
+     * @param rightChar
+     * @param text
+     * @return
+     */
     private String printBodyCell(char leftChar, char rightChar, String text){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(leftChar);
@@ -73,6 +100,12 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
+    /**
+     * TODO Marco lavora
+     * @param leftChar
+     * @param rightChar
+     * @return
+     */
     private String printBordCell(char leftChar, char rightChar){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(leftChar);
@@ -82,6 +115,10 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
+    /**
+     * TODO Marco sfaticato
+     * @return
+     */
     private String printHeader(){
         //HEADER
         StringBuilder stringBuilder = new StringBuilder();
@@ -112,6 +149,10 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
+    /**
+     * TODO mi sono rotto
+     * @return
+     */
     private String printCellBodies(){
         //CELL BODY
         StringBuilder stringBuilder = new StringBuilder();
@@ -135,18 +176,29 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
-    private String printTopBorder(){
+    /**
+     * This function prints the top and bottom border of the playerboard
+     * @param leftBorder char
+     * @param rightBorder char
+     * @return a string
+     */
+    private String printTopBorder(char leftBorder, char rightBorder){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(printBordCell(TOP_LEFT_SEPARATOR, H_SEPARATOR));
+        stringBuilder.append(printBordCell(leftBorder, H_SEPARATOR));
         for (int i=0; i<COLS-2; i++ ){
             stringBuilder.append(printBordCell(H_SEPARATOR, H_SEPARATOR));
         }
-        stringBuilder.append(printBordCell(H_SEPARATOR, TOP_RIGHT_SEPARATOR));
+        stringBuilder.append(printBordCell(H_SEPARATOR, rightBorder));
         return stringBuilder.toString();
     }
 
+
+    /**
+     * This function prints mark given by other players
+     * @return a string
+     */
     private String printMarks(){
-        String textToView = "";
+        String textToView;
         int nameSpace=0;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
@@ -164,8 +216,96 @@ public class PlayerBoardView {
             stringBuilder.append(stringTrunker(" ", CELL_LENGTH*COLS-2));
         stringBuilder.append(V_SEPARATOR);
         return stringBuilder.toString();
+
+
     }
 
+    /**
+     * This function prints weapon and power up
+     * @return string
+     */
+    private String printWeaponAmmo(){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(System.getProperty("line.separator"));
+        stringBuilder.append(V_SEPARATOR);
+
+        stringBuilder.append("Weapons:");
+        for (int i = 10; i < CELL_LENGTH*COLS/2+COLS; i++)
+            stringBuilder.append(" ");
+
+        stringBuilder.append("Power up:");
+        for (int i = 9; i < CELL_LENGTH*COLS/2+COLS; i++)
+            stringBuilder.append(" ");
+
+        stringBuilder.append(V_SEPARATOR);
+        stringBuilder.append(System.getProperty("line.separator"));
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * This function prints weapons and power ups of the player
+     * @param i weapon and power up number
+     * @return a string
+     */
+    private String printWeapons(int i) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String weapon;
+        stringBuilder.append(V_SEPARATOR);
+
+        if(i +1 < player.getWeapons().size()){
+            weapon = player.getWeapons().get(i).toString() + " " + player.getWeapons().get(i).getGrabCostCLI() + " " + player.getWeapons().get(i).isLoadedCLI() + " " ;
+            stringBuilder.append(weapon);
+            for (int j = weapon.length(); j < CELL_LENGTH*COLS/2+COLS-1; j++)
+                stringBuilder.append(" ");
+        }
+        else for (int j = 0; j < CELL_LENGTH*COLS/2+COLS-1; j++)
+            stringBuilder.append(" ");
+
+
+        if(i +1 < player.getPowerups().size()){
+            stringBuilder.append(player.getPowerups().get(i).toString());
+            for (int j = player.getPowerups().get(i).toString().length(); j < CELL_LENGTH*COLS/2+COLS-1; j++)
+                stringBuilder.append(" ");
+        }
+        else for (int j = 0; j < CELL_LENGTH*COLS/2+COLS-1; j++)
+            stringBuilder.append(" ");
+
+        stringBuilder.append(V_SEPARATOR);
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
+    }
+
+    /**
+     * This function prints points and ammo of the player
+     * @return a string
+     */
+    private String printPoints() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(V_SEPARATOR);
+
+        stringBuilder.append("Points:" + player.getPoints());
+        for (int i = 0; i < 8; i++)
+            stringBuilder.append(" ");
+
+        stringBuilder.append(player.printPlayerAmmo());
+
+
+        for(int i = stringBuilder.length(); i< CELL_LENGTH*COLS + 2*COLS - 1; i++)
+            stringBuilder.append(" ");
+        stringBuilder.append(V_SEPARATOR);
+        stringBuilder.append(System.getProperty("line.separator"));
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * This function trunks a string by reducing its length
+     * @param string to be shortened
+     * @param size number of characters the new string will have
+     * @return string shortened
+     */
     public String stringTrunker(String string, int size){
         StringBuilder stringBuilder = new StringBuilder();
         if (string.length() > size)
@@ -178,12 +318,12 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
+    /**
+     * This function sets the player
+     * @param player player
+     */
     public void setPlayer(Player player){
         this.player = player;
     }
 
-    public void drawGUI() {
-        // TODO implement here
-
-    }
 }

@@ -144,7 +144,21 @@ public abstract class WeaponCard extends Card {
 
     @Override
     public String toString() {
+        return this.name;
+    }
+
+    public String getGrabCostCLI(){
+        return intArrayToString(toIntArray(getGrabCost()));
+    }
+
+    public String getWeaponCostCLI(){
         return intArrayToString(toIntArray(cost));
+    }
+
+    public String isLoadedCLI(){
+        if(isLoaded)
+            return "Loaded    ";
+        else return "Not loaded";
     }
 
     public void setLoaded() {

@@ -14,6 +14,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -23,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import player.Player;
+import weapon.WeaponCard;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -87,11 +89,11 @@ public class BoardViewGameGUI extends Application {
         anchor.getChildren().get(1).setLayoutY(540);
 
         anchor.getChildren().add(createBoardRight());
-        anchor.getChildren().get(2).setLayoutX(650);
+        anchor.getChildren().get(2).setLayoutX(700);
         anchor.getChildren().get(2).setLayoutY(300);
 
         anchor.getChildren().add(createBoardLeft());
-        anchor.getChildren().get(3).setLayoutX(-25);
+        anchor.getChildren().get(3).setLayoutX(-50);
         anchor.getChildren().get(3).setLayoutY(300);
 
         anchor.getChildren().add(createBoardMultiHigh());
@@ -106,7 +108,7 @@ public class BoardViewGameGUI extends Application {
 
         anchor.getChildren().add(createBoardHigh());
         anchor.getChildren().get(6).setLayoutX(310);
-        anchor.getChildren().get(6).setLayoutY(35);
+        anchor.getChildren().get(6).setLayoutY(0);
        // anchor.getChildren().get(6).setVisible(false);
         anchor.setCenterShape(true);
         return anchor;
@@ -139,19 +141,16 @@ public class BoardViewGameGUI extends Application {
         map.getChildren().add(ammoCards(ammoPath(getString(2, 2, 0)), 40, 128));
 
         //red weapon 10-12
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(1, 0, 0)), 45, -170, 180));
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(1, 0, 1)), 110, -170, 180));
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(1, 0, 2)), 175, -170, 180));
+        for(int i = 0; i< 3; i++)
+            map.getChildren().add(generateCard(weaponPath(getString(1,0, i)), 80,55,-255, -30 + i*65, 90));
 
         //blue weapon 13-15
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(0, 2, 0)), -255, -30, 90));
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(0, 2, 1)), -255, 35, 90));
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(0, 2, 2)), -255, 100, 90));
+        for(int i = 0; i< 3; i++)
+            map.getChildren().add(generateCard(weaponPath(getString(0,2, i)), 80,55,45+ i*65, -170, 180));
 
         //yellow weapon 16-18
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(2, 3, 0)), 255, 50, 270));
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(2, 3, 1)), 255, 115, 270));
-        map.getChildren().add(tableWeaponCards(weaponPath(getString(2, 3, 2)), 255, 180, 270));
+        for(int i = 0; i< 3; i++)
+            map.getChildren().add(generateCard(weaponPath(getString(2,3, i)), 80,55,255, 50 + i*65, 270));
 
         //deck not to be modified 19-20
         map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 250, -55, 0));
@@ -161,28 +160,10 @@ public class BoardViewGameGUI extends Application {
         map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 0, 115, 0));
         changeSizeImage((ImageView) map.getChildren().get(21), 200, 150);
 
-        //cell buttons // 21-33
-        for (Button buttons : cellButtonSet()) {
-            buttons.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    //cella di movimento, cella di grab, cella di attacco
-                }
-            });
-            map.getChildren().add(buttons);
-        }
-        //card map buttons // 34-43
-        for (Button buttons : cardMapButtonSet()) {
-            buttons.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                     map.getChildren().add(21, map.getChildren().get(13));
 
-                    //guardare la carta, scegliere la carta da prendere e cambiare immagine
-                }
-            });
-            map.getChildren().add(buttons);
-        }
+        for (int i = 10; i < 19; i++)
+            setAction((Button)map.getChildren().get(i), (ImageView) map.getChildren().get(21));
+
         //generic card 44-50
         for (Button buttons : cardViewButtonSet()) {
             buttons.setOnAction(new EventHandler<ActionEvent>() {
@@ -208,17 +189,10 @@ return map;
         Pane playerBoard = new Pane();
         playerBoard.getChildren().add(playerBoard(playerBoardPath(), 110, 600, 0));
 
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 680, 0, 0));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 640, 0, 0));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 600, 0,0));
-
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), -160, 0,0));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), -120, 0,0));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), -80, 0,0));
-        for(int i = 1; i < 7; i++)
-            changeSizeImage((ImageView)playerBoard.getChildren().get(i),110, 80);
-        for(Button buttons: cardBoardButtonSet(600, 0,110, 80, 40, 0))
-            playerBoard.getChildren().add(buttons);
+        for(int i = 0; i < 3; i++) {
+            playerBoard.getChildren().add(generateCard(weaponPath("Electroscythe"), 110, 80, 680 - i * 40, 0, 0));
+            playerBoard.getChildren().add(generateCard(powerPath("VENOMGRENADER"), 110, 80, -160 + i * 40, 0, 0));
+        }
         for(Button buttons: actionButtons())
             playerBoard.getChildren().add(buttons);
         return playerBoard;
@@ -232,20 +206,13 @@ return map;
      */
     private Pane createBoardRight() throws FileNotFoundException {
         Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(playerBoard(playerBoardPath(), 75, 280, 270));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 190, -115,270));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 190, -80, 270));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 190, -45, 270));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 190, 115,270));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 190, 80,270));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 190, 45,270));
+        playerBoard.getChildren().add(generateCard(playerBoardPath(), 75, 280, 0, 0, 270));
 
-        for(int i = 1; i < 7; i++)
-            changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
-        for(Button buttons: cardBoardButtonSet(280,75, 75, 50, 35, 270))
-            playerBoard.getChildren().add(buttons);
-        playerBoard.getChildren().add(createButton("board2",75,280,0, 0));
-        playerBoard.getChildren().get(13).rotateProperty().setValue(270);
+        for(int i = 0; i < 3; i++) {
+            playerBoard.getChildren().add(generateCard(weaponPath("Electroscythe"), 75, 50, 190, -115+i*35, 270));
+            playerBoard.getChildren().add(generateCard(powerPath("VENOMGRENADER"), 75, 50, 190, 115-i*35, 270));
+        }
+
         return playerBoard;
     }
 
@@ -256,19 +223,13 @@ return map;
      */
     private Pane createBoardLeft() throws FileNotFoundException {
         Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(playerBoard(playerBoardPath(), 75, 280, 90));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 40, 115,90));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 40, 80, 90));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 40, 45, 90));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 40, -115,90));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 40, -80,90));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 40, -45,90));
-        for(int i = 1; i < 7; i++)
-            changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
-        for(Button buttons: cardBoardButtonSet(280,75, 75, 50, 35, 90))
-            playerBoard.getChildren().add(buttons);
-        playerBoard.getChildren().add(createButton("board3",75,280,0, 0));
-        playerBoard.getChildren().get(13).rotateProperty().setValue(90);
+        playerBoard.getChildren().add(generateCard(playerBoardPath(), 75, 280, 0, 0, 270));
+
+        for(int i = 0; i < 3; i++) {
+            playerBoard.getChildren().add(generateCard(weaponPath("Electroscythe"), 75, 50, 40, 115-i*35, 90));
+            playerBoard.getChildren().add(generateCard(powerPath("VENOMGRENADER"), 75, 50, 40, -115+i*35, 90));
+        }
+
         return playerBoard;
     }
 
@@ -279,19 +240,13 @@ return map;
      */
     private Pane createBoardMultiHigh() throws FileNotFoundException {
         Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(playerBoard(playerBoardPath(), 50, 240, 180));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 70, -90, 180));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 35, -90, 180));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), 0, -90,180));
+        playerBoard.getChildren().add(generateCard(playerBoardPath(), 50, 240, 0, 0, 180));
 
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 180, -90,180));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 145, -90,180));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 110, -90,180));
-        for(int i = 1; i < 7; i++)
-            changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
-        for(Button buttons: cardBoardButtonSet(280, 0,75, 50, 35, 180))
-            playerBoard.getChildren().add(buttons);
-        playerBoard.getChildren().add(createButton("board4/5",50,240,0, 0));
+        for(int i = 0; i < 3; i++) {
+            playerBoard.getChildren().add(generateCard(weaponPath("Electroscythe"), 75, 50, 70-i*35, -90, 90));
+            playerBoard.getChildren().add(generateCard(powerPath("VENOMGRENADER"), 75, 50, 180-i*35, -90, 90));
+        }
+
         return playerBoard;
     }
 
@@ -301,21 +256,16 @@ return map;
      * @throws FileNotFoundException if files are not found
      */
     private Pane createBoardHigh() throws FileNotFoundException {
-        Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(playerBoard(playerBoardPath(), 75, 280, 180));
 
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), -120, 0, 180));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), -85, 0, 180));
-        playerBoard.getChildren().add(tableWeaponCards(weaponPath("Electroscythe"), -50, 0,180));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 350, 0,180));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 315, 0,180));
-        playerBoard.getChildren().add(tableWeaponCards(powerPath("VENOMGRENADER"), 280, 0,180));
-        for(int i = 1; i < 7; i++)
-            changeSizeImage((ImageView)playerBoard.getChildren().get(i),75, 50);
-        for(Button buttons: cardBoardButtonSet(280, 0,75, 50, 35, 180))
-            playerBoard.getChildren().add(buttons);
-        playerBoard.getChildren().add(createButton("board4/5",75,280,0, 0));
-        return playerBoard;
+        Pane playerBoard = new Pane();
+        playerBoard.getChildren().add(generateCard(playerBoardPath(), 75, 280, 0, 0, 180));
+
+        for(int i = 0; i < 3; i++) {
+            playerBoard.getChildren().add(generateCard(weaponPath("Electroscythe"), 75, 50, -120+i*35, 0, 180));
+            playerBoard.getChildren().add(generateCard(powerPath("VENOMGRENADER"), 75, 50, 350-i*35, 0, 180));
+        }
+
+return playerBoard;
     }
 
     /**
@@ -442,38 +392,6 @@ return map;
     }
 
     /**
-     * This function creates buttons for cards in the map
-     * @return ArrayList of buttons
-     */
-    private ArrayList<Button> cardMapButtonSet(){
-        ArrayList<Button> buttons = new ArrayList<>();
-        for(int i = 0; i < 3; i++)
-            for(int j = 0; j < 3; j++){
-                buttons.add(createButton("card" + i*j, 90, 60, 0,0));
-            }
-
-        //red cards
-        for(int i = 0; i < 3; i++) {
-            buttons.get(i).setTranslateX(-255);
-            buttons.get(i).setTranslateY(-30 + 65*i);
-            buttons.get(i).rotateProperty().setValue(90);
-        }
-        //blue cards
-        for(int i = 3; i < 6; i++){
-            buttons.get(i).setTranslateX(45 + 65*(i-3));
-            buttons.get(i).setTranslateY(-170);
-            buttons.get(i).rotateProperty().setValue(180);
-            }
-        //yellow cards
-        for(int i = 6; i < 9; i++){
-            buttons.get(i).setTranslateX(255);
-            buttons.get(i).setTranslateY(50 + 65*(i-6));
-            buttons.get(i).rotateProperty().setValue(270);
-        }
-        return buttons;
-    }
-
-    /**
      * This function creates buttons to check or to use cards
      * @return ArrayList of buttons
      */
@@ -566,11 +484,58 @@ return map;
         return buttons;
     }
 
-    private StackPane generateCard(ImageView image, Button button){
-        StackPane stackPane = new StackPane();
-        stackPane.setAlignment(image, Pos.TOP_CENTER);
-        stackPane.setAlignment(button, Pos.CENTER);
-        return stackPane;
+    private Button generateCard(String name, int height, int width, int transX, int transY, int grades) throws FileNotFoundException {
+
+        ImageView image = new ImageView(new Image(new FileInputStream(name)));
+        changeSizeImage(image, height, width);
+
+        Button button = new Button();
+        button.rotateProperty().setValue(grades);
+
+        button.setOpacity(1);
+        button.setGraphic(image);
+        button.getGraphic().setVisible(false);
+        //button.setPadding(Insets.EMPTY);
+
+
+        button.setTranslateX(transX);
+        button.setTranslateY(transY);
+
+        return button;
     }
+
+    private void setAction(Button button, ImageView image){//carte della mappa
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Node node = button.getGraphic();
+                ImageView imageView = (ImageView) node;
+                image.setImage(imageView.getImage());
+
+                //guardare la carta, scegliere la carta da prendere e cambiare immagine
+                /*
+
+                button.setGraphic(image) //quando carta è null e bisogna rimetterla
+
+
+                 */
+            }
+        });
+    }
+    private void playerboardCardAction(Button button, ImageView image){//carte della mappa
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Node node = button.getGraphic();
+                ImageView imageView = (ImageView) node;
+                image.setImage(imageView.getImage());
+            }
+        });
+    }
+
+    private void attack(Button attack, WeaponCard weapon){
+
+    }
+
 
 }

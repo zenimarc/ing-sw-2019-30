@@ -415,4 +415,16 @@ public class Player extends Observable implements Cloneable {
         setChanged();
         notifyObservers(this.clonePlayer());
     }
+
+    public String printPlayerAmmo(){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Ammo: [");
+        stringBuilder.append("R:" + ammo.get(RED) + ",");
+        stringBuilder.append("Y:"+ ammo.get(YELLOW) + ",");
+        stringBuilder.append("B:" + ammo.get(BLUE) + "]");
+
+        return stringBuilder.toString();
+    }
+
 }
