@@ -104,8 +104,6 @@ public class PlayerView extends Observable implements Observer{
             if(index==-1) return false;
             //change model
             WeaponCard weaponCard = player.getWeapons().get(index);
-            setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.PLACE_WEAPONCARD, weaponCard));
 
             for(Attack attack : weaponCard.getAttacks()){
                 print(attack.toString());
@@ -190,15 +188,9 @@ public class PlayerView extends Observable implements Observer{
     private String stringForChooseWeaponFromHand(String mex, String query){
         StringBuilder sb = new StringBuilder();
         sb.append(mex);
-        sb.append("0) No one\t");
-        for(WeaponCard weaponCard : player.getWeapons()){
-            sb.append((player.getWeapons().indexOf(weaponCard))+1);
-            sb.append(") ");
-            sb.append(weaponCard);
-            sb.append("\t");
-        }
-        sb.append(query);
 
+        sb.append(stringWeaponFromList(player.getWeapons(), true));
+        sb.append(query);
         return sb.toString();
     }
 
@@ -239,7 +231,7 @@ public class PlayerView extends Observable implements Observer{
     }
 
     private String stringForChooseWeaponToPlace(){
-        return stringForChooseWeaponFromHand("You have this Weapon: ", "Do you want place any WeaponCard?");
+        return stringForChooseWeaponFromHand("You have this Weapon: ", "What weapon to shoot?");
     }
 
     /**
@@ -265,7 +257,7 @@ public class PlayerView extends Observable implements Observer{
         return sb.toString();
     }
 
-    private String stringWeaponFromList(ArrayList<WeaponCard> weaponCards, boolean nullAnswer){
+    private String stringWeaponFromList(List<WeaponCard> weaponCards, boolean nullAnswer){
         StringBuilder sb = new StringBuilder();
         int i = 0;
         if(nullAnswer){
@@ -282,6 +274,7 @@ public class PlayerView extends Observable implements Observer{
             i++;
         }
 
+        sb.append("\n");
         return sb.toString();
 
     }

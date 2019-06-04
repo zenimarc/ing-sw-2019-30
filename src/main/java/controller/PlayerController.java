@@ -91,7 +91,9 @@ public class PlayerController implements Observer {
                 grabWeapon(view, (int) cmdObj.getObject());
                 break;
             case SHOOT:
-                //TODO verificare come implementarlo per bene
+                //TODO
+                //Controllare di poter usare arma
+                //Controlla obiettivi
                 break;
             // case POWERUP:
             //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
@@ -108,11 +110,6 @@ public class PlayerController implements Observer {
                 break;
             case DISCARD_WEAPON:
                 player.rmWeapon((int) cmdObj.getObject());
-                break;
-            case PLACE_WEAPONCARD:
-                if(!placeWeaponCard((WeaponCard) cmdObj.getObject())){
-                    viewPrintError(view, "Something wrong: Selected WeaponCard is not in you hand!");
-                }
                 break;
             default: 
                 break;
@@ -273,19 +270,6 @@ public class PlayerController implements Observer {
         }else {
             viewPrintError(view, "You have no bullets to grab this weapon!");
         }
-    }
-
-    /**
-     * If WeaponCard wc is in player's hand, put wc in PlacedWeapon else return false
-     * @param wc WeaponCard to place
-     * @return result of operation
-     */
-    private boolean placeWeaponCard(WeaponCard wc){
-        if(player.getWeapons().contains(wc)){
-            player.placeWeaponCard(wc);
-            return true;
-        }
-        return false;
     }
 
     /**
