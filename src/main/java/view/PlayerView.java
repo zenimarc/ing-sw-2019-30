@@ -1,4 +1,5 @@
 package view;
+import attack.Attack;
 import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
@@ -99,11 +100,19 @@ public class PlayerView extends Observable implements Observer{
             printError("You have not loaded weapon, so you can't shoot");
         }else{
             int index = chooseWeaponToPlace();
-
+            //Not want to place weapon
+            if(index==-1) return false;
+            //change model
+            WeaponCard weaponCard = player.getWeapons().get(index);
             setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.PLACE_WEAPONCARD, player.getWeapons().get(index)));
+            notifyObservers(new CommandObj(PlayerCommand.PLACE_WEAPONCARD, weaponCard));
+
+            for(Attack attack : weaponCard.getAttacks()){
+                print(attack.toString());
+            }
+
+
             //TODO implements here
-            //Hai in mano armi cariche => scegli quale/i vuoi giocare
             //Scegli con quali sparare
         }
         return true;
@@ -181,6 +190,7 @@ public class PlayerView extends Observable implements Observer{
     private String stringForChooseWeaponFromHand(String mex, String query){
         StringBuilder sb = new StringBuilder();
         sb.append(mex);
+        sb.append("0) No one\t");
         for(WeaponCard weaponCard : player.getWeapons()){
             sb.append((player.getWeapons().indexOf(weaponCard))+1);
             sb.append(") ");
@@ -203,7 +213,6 @@ public class PlayerView extends Observable implements Observer{
         while (true){
             print(mex);
             read = reader.next();
-
             if(read.matches(formatString)){
                 return Integer.valueOf(read)-1;
             }else {
@@ -245,14 +254,36 @@ public class PlayerView extends Observable implements Observer{
         RegenerationCell cell = (RegenerationCell) player.getCell();
         StringBuilder sb = new StringBuilder();
         sb.append("Weapon card in this cell are:");
-        for(WeaponCard weaponCard : cell.getCards()){
+        sb.append(stringWeaponFromList(cell.getCards(), false));
+      /*  for(WeaponCard weaponCard : cell.getCards()){
             sb.append('\t');
             sb.append(cell.getCards().indexOf(weaponCard));
             sb.append(") ");
             sb.append(weaponCard);
-        }
+        }*/
         sb.append("\nWhich do you want? ");
         return sb.toString();
+    }
+
+    private String stringWeaponFromList(ArrayList<WeaponCard> weaponCards, boolean nullAnswer){
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        if(nullAnswer){
+            sb.append(i);
+            sb.append(") No weapon\t");
+            i++;
+        }
+
+        for(WeaponCard wp : weaponCards){
+            sb.append(i);
+            sb.append(") ");
+            sb.append(wp);
+            sb.append("\t");
+            i++;
+        }
+
+        return sb.toString();
+
     }
 
     /**
