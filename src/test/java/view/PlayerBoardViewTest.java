@@ -4,6 +4,9 @@ import board.Board;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
+import powerup.PowerCard;
+import weapon.EnumWeapon;
+import weapon.SimpleWeapon;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +34,9 @@ class PlayerBoardViewTest {
 
     @Test
     void drawDamageTrack() {
-        p1view.drawDamageTrack();
+        p1.addWeapon(new SimpleWeapon(EnumWeapon.LOCK_RIFLE));
+        p1.addWeapon(new SimpleWeapon(EnumWeapon.LOCK_RIFLE));
+        p1view.drawPlayerboard();
     }
 
 

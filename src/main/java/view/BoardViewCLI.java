@@ -402,7 +402,7 @@ public class BoardViewCLI implements Observer {
         stream.append(name);
         for(int i = name.length(); i < M+Z; i++)
             stream.append(" ");
-        stream.append(weapon.toString());
+        stream.append(weapon.getGrabCostCLI());
         for(int i = stream.length(); i < (M+Z)*Z; i++)
             stream.append(" ");
         return stream;
