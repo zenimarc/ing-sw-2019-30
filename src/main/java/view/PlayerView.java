@@ -105,9 +105,7 @@ public class PlayerView extends Observable implements Observer{
             //change model
             WeaponCard weaponCard = player.getWeapons().get(index);
 
-            for(Attack attack : weaponCard.getAttacks()){
-                print(attack.toString());
-            }
+            Attack attack = chooseAttack(weaponCard);
 
 
             //TODO implements here
@@ -157,6 +155,10 @@ public class PlayerView extends Observable implements Observer{
         }
     }
 
+    /**
+     * Generate string for choose player action
+     * @return String for choose player action
+     */
     private String stringForPlayerAction(){
         StringBuilder sb = new StringBuilder();
         sb.append("Possible Action: \n");
@@ -169,6 +171,10 @@ public class PlayerView extends Observable implements Observer{
         return sb.toString();
     }
 
+    /**
+     * Ask Player wich action want to do
+     * @return Player command
+     */
     private PlayerCommand choosePlayerAction(){
         int slt;
         String read;
@@ -185,6 +191,12 @@ public class PlayerView extends Observable implements Observer{
         }
     }
 
+    /**
+     * Ask player wich card want play (only loaded)
+     * @param mex Introducion mex
+     * @param query Query mex
+     * @return string for choose weapon from hand
+     */
     private String stringForChooseWeaponFromHand(String mex, String query){
         StringBuilder sb = new StringBuilder();
         sb.append(mex);
@@ -295,6 +307,28 @@ public class PlayerView extends Observable implements Observer{
             }
             printError();
         }
+    }
+
+    /**
+     *
+     */
+    private Attack chooseAttack(WeaponCard wc){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Attacks for ");
+        sb.append(wc.getName());
+        sb.append(":");
+
+        for(Attack attack : wc.getAttacks()){
+            sb.append("\n\t");
+            sb.append(wc.getAttacks().indexOf(attack));
+            sb.append(") ");
+            sb.append(attack);
+        }
+
+        sb.append("\nWhich do you prefer?");
+
+        return null;
     }
 
     /**
