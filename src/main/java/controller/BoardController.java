@@ -263,7 +263,9 @@ public class BoardController{
     public void playerPlay(Player player){
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
+            pc.getPlayerBoardView().drawDamageTrack();
             getBoardViewToString();
+            System.out.println(pc.getPlayer());
             pc.myTurn();
             restoreCell(pc.getModifyCell());
         }

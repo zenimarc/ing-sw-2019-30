@@ -58,7 +58,7 @@ public class PlayerBoardView {
 
 
     }
-    public String printBodyCell(char leftChar, char rightChar, String text){
+    private String printBodyCell(char leftChar, char rightChar, String text){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(leftChar);
         if (text == null || text.equals(""))
@@ -73,7 +73,7 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
-    public String printBordCell(char leftChar, char rightChar){
+    private String printBordCell(char leftChar, char rightChar){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(leftChar);
         for(int i=0; i<CELL_LENGTH; i++)
@@ -82,7 +82,7 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
-    public String printHeader(){
+    private String printHeader(){
         //HEADER
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
@@ -112,7 +112,7 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
-    public String printCellBodies(){
+    private String printCellBodies(){
         //CELL BODY
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
@@ -135,7 +135,7 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
-    public String printTopBorder(){
+    private String printTopBorder(){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(printBordCell(TOP_LEFT_SEPARATOR, H_SEPARATOR));
         for (int i=0; i<COLS-2; i++ ){
@@ -145,7 +145,7 @@ public class PlayerBoardView {
         return stringBuilder.toString();
     }
 
-    public String printMarks(){
+    private String printMarks(){
         String textToView = "";
         int nameSpace=0;
         StringBuilder stringBuilder = new StringBuilder();
@@ -176,6 +176,10 @@ public class PlayerBoardView {
                 stringBuilder.append(' ');
         }
         return stringBuilder.toString();
+    }
+
+    public void setPlayer(Player player){
+        this.player = player;
     }
 
     public void drawGUI() {
