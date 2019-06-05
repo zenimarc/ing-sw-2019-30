@@ -205,7 +205,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     public synchronized int changeTurn() {
-        if(turn == clients.size()-1)
+        if(turn >= clients.size()-1)
             turn = 0;
         else turn++;
         return turn;

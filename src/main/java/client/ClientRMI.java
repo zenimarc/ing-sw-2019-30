@@ -156,6 +156,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
         return this.nickname;
     }
 
+    public UUID getUserToken(){
+        return this.userToken;
+    }
+
     @Override
     public void timeExpired() throws RemoteException {
 
