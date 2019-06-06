@@ -6,6 +6,8 @@ import board.Position;
 import board.billboard.Billboard;
 import board.billboard.BillboardGenerator;
 import client.Client;
+import controller.CommandObj;
+import controller.PlayerCommand;
 import deck.AmmoCard;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -30,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import static controller.PlayerCommand.*;
+
 //TODO finire le playerboard in alto, ridimensionare carte ai lati, aggiungere i nomi, aggiungere i bottoni
 public class BoardViewGameGUI extends Application {
     private int stageHeight = 700;
@@ -37,9 +41,12 @@ public class BoardViewGameGUI extends Application {
     private Board board;
     private ArrayList<Client> client;
     private ArrayList<Player> players;
+    private Player player = new Player("Marco");
+    private PlayerCommand command = CHOOSE_ACTION;
 
     private void initialize(/*, ArrayList<Client> client*/){
         this.board = new Board(8, BillboardGenerator.generateBillboard3());
+        player = new Player("Marco");
         //this.players = players;
         //this.client = client;
     }
@@ -80,21 +87,23 @@ public class BoardViewGameGUI extends Application {
      */
     private Pane createGame(int number) throws FileNotFoundException {
         Pane anchor = new Pane();
-        anchor.getChildren().add(createMap(number));
-        anchor.getChildren().get(0).setLayoutX(150);
-        anchor.getChildren().get(0).setLayoutY(110);
 
-        anchor.getChildren().add(createBoards());
-        anchor.getChildren().get(1).setLayoutX(150);
-        anchor.getChildren().get(1).setLayoutY(540);
+        Pane board1 = createBoards();
+        anchor.getChildren().add(board1);
+        anchor.getChildren().get(0).setLayoutX(150);
+        anchor.getChildren().get(0).setLayoutY(540);
 
         anchor.getChildren().add(createBoardRight());
-        anchor.getChildren().get(2).setLayoutX(700);
-        anchor.getChildren().get(2).setLayoutY(300);
+        anchor.getChildren().get(1).setLayoutX(700);
+        anchor.getChildren().get(1).setLayoutY(300);
 
         anchor.getChildren().add(createBoardLeft());
-        anchor.getChildren().get(3).setLayoutX(-50);
-        anchor.getChildren().get(3).setLayoutY(300);
+        anchor.getChildren().get(2).setLayoutX(-50);
+        anchor.getChildren().get(2).setLayoutY(300);
+
+        anchor.getChildren().add(createMap(number, board1));
+        anchor.getChildren().get(3).setLayoutX(150);
+        anchor.getChildren().get(3).setLayoutY(110);
 
         anchor.getChildren().add(createBoardMultiHigh());
         anchor.getChildren().get(4).setLayoutX(150);
@@ -120,7 +129,7 @@ public class BoardViewGameGUI extends Application {
      * @return map
      * @throws FileNotFoundException if files are not found
      */
-    private Pane createMap(int number) throws FileNotFoundException {//TODO mancano teschi, pedine, bottoni e settare le giuste immagini
+    private Pane createMap(int number, Pane playerboard) throws FileNotFoundException {//TODO mancano teschi, pedine, bottoni e settare le giuste immagini
         Pane map = new StackPane();
         ImageView mapImage = new ImageView(new Image(new FileInputStream("src/resources/images/gametable/map" + number + ".png")));
         mapImage.setFitHeight(430);
@@ -140,29 +149,32 @@ public class BoardViewGameGUI extends Application {
         map.getChildren().add(ammoCards(ammoPath(getString(2, 1, 0)), -80, 128));
         map.getChildren().add(ammoCards(ammoPath(getString(2, 2, 0)), 40, 128));
 
-        //red weapon 10-12
-        for(int i = 0; i< 3; i++)
-            map.getChildren().add(generateCard(weaponPath(getString(1,0, i)), 80,55,-255, -30 + i*65, 90));
+        //Card you want to see 10
+        map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 0, 115, 0));
+        changeSizeImage((ImageView) map.getChildren().get(10), 200, 150);
+        map.getChildren().get(10).setVisible(false);
 
-        //blue weapon 13-15
-        for(int i = 0; i< 3; i++)
-            map.getChildren().add(generateCard(weaponPath(getString(0,2, i)), 80,55,45+ i*65, -170, 180));
+        //red weapon 11-13
+        for(int i = 0; i< 3; i++) {
+            map.getChildren().add(generateCard(weaponPath(getString(1, 0, i)), 80, 55, -255, -30 + i * 65, 90));
+            setAction((Button)map.getChildren().get(11+i), (ImageView) map.getChildren().get(10), 1, 0, i, playerboard);
+        }
+        //blue weapon 14-16
+        for(int i = 0; i< 3; i++) {
+            map.getChildren().add(generateCard(weaponPath(getString(0, 2, i)), 80, 55, 45 + i * 65, -170, 180));
+            setAction((Button)map.getChildren().get(14+i), (ImageView) map.getChildren().get(10), 0,2, i, playerboard);
+        }
 
-        //yellow weapon 16-18
-        for(int i = 0; i< 3; i++)
-            map.getChildren().add(generateCard(weaponPath(getString(2,3, i)), 80,55,255, 50 + i*65, 270));
-
-        //deck not to be modified 19-20
+        //yellow weapon 17-19
+        for(int i =0; i< 3; i++) {
+            map.getChildren().add(generateCard(weaponPath(getString(2, 3, i)), 80, 55, 255, 50 + i * 65, 270));
+            setAction((Button)map.getChildren().get(17+i), (ImageView) map.getChildren().get(10), 2, 3, i, playerboard);
+        }
+        //deck not to be modified 20-21
         map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 250, -55, 0));
         map.getChildren().add(tableWeaponCards(powerPath("powerCard"), 255, -160, 0));
 
-        //Card you want to see 21
-        map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 0, 115, 0));
-        changeSizeImage((ImageView) map.getChildren().get(21), 200, 150);
 
-
-        for (int i = 10; i < 19; i++)
-            setAction((Button)map.getChildren().get(i), (ImageView) map.getChildren().get(21));
 
         //generic card 44-50
         for (Button buttons : cardViewButtonSet()) {
@@ -190,11 +202,12 @@ return map;
         playerBoard.getChildren().add(playerBoard(playerBoardPath(), 110, 600, 0));
 
         for(int i = 0; i < 3; i++) {
-            playerBoard.getChildren().add(generateCard(weaponPath("Electroscythe"), 110, 80, 680 - i * 40, 0, 0));
-            playerBoard.getChildren().add(generateCard(powerPath("VENOMGRENADER"), 110, 80, -160 + i * 40, 0, 0));
+            playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 110, 80,80 - i * 40, 0, 0));
+            playerBoard.getChildren().get(2*i+1).setVisible(false);
+            playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 110, 80,680 - i * 40, 0, 0));
+            playerBoard.getChildren().get(2*i+2).setVisible(false);
         }
-        for(Button buttons: actionButtons())
-            playerBoard.getChildren().add(buttons);
+
         return playerBoard;
 
     }
@@ -431,49 +444,6 @@ return playerBoard;
         return button;
     }
 
-    /**
-     * This function creates buttons for cards players have
-     * @param boardWidth board's width
-     * @param boardHeight board's height
-     * @param height of buttons
-     * @param width of buttons
-     * @param distance between cards
-     * @param grades angle of rotation
-     * @return a list of buttons
-     */
-    private ArrayList<Button> cardBoardButtonSet(int boardWidth, int boardHeight, int height, int width, int distance, int grades){
-        ArrayList<Button> buttons = new ArrayList<>();
-        if(grades == 0 || grades == 180){
-        for(int i = 0; i < 3; i++){
-            buttons.add(createButton("powerup" + i, height, width, -width -(2-i)*distance, boardHeight));
-        }
-        for(int i = 0; i < 3; i++){
-            buttons.add(createButton("attack" + i, height, width, boardWidth+ (2-i)*distance, boardHeight));
-        }}
-
-        else if(grades == 270){
-        for(int i = 0; i < 3; i++){
-            buttons.add(createButton("powerup" + i, height, width, 190, distance + 10 + (2-i)*distance));
-        }
-        for(int i = 0; i < 3; i++){
-            buttons.add(createButton("attack" + i, height, width, 190, -distance - 10 - (2-i)*distance));
-        }}
-
-        else
-        {
-            for(int i = 0; i < 3; i++){
-                buttons.add(createButton("powerup" + i, height, width, width-10, -distance - 10 - (2-i)*distance));
-            }
-            for(int i = 0; i < 3; i++){
-                buttons.add(createButton("attack" + i, height, width, width-10, distance + 10 + (2-i)*distance));
-            }}
-
-        for(Button button: buttons) {
-            button.rotateProperty().setValue(grades);
-        }
-        return buttons;
-    }
-
     private ArrayList<Button> actionButtons(){
         ArrayList<Button> buttons = new ArrayList<>();
         buttons.add(createButton("move", 8, 40, 0,15));
@@ -486,58 +456,152 @@ return playerBoard;
 
     private Button generateCard(String name, int height, int width, int transX, int transY, int grades) throws FileNotFoundException {
 
-        ImageView image = new ImageView(new Image(new FileInputStream(name)));
-        changeSizeImage(image, height, width);
-
-
         Button button = new Button();
         changeSizeButton(button, height, width);
         button.rotateProperty().setValue(grades);
 
         button.setOpacity(1);
+        ImageView image = new ImageView(new Image(new FileInputStream(name)));
+        changeSizeImage(image, height, width);
         button.setGraphic(image);
-        button.getGraphic().setVisible(false);
 
-
-
+        button.setPadding(Insets.EMPTY);
         button.setTranslateX(transX);
         button.setTranslateY(transY);
 
         return button;
     }
 
-    private void setAction(Button button, ImageView image){//carte della mappa
-        button.setOnAction(new EventHandler<ActionEvent>() {
+    //prima la carta da vedere, secondo è posizione dove verrà messa
+    private void setAction(Button buttonCard, ImageView image, int x, int y, int pos, Pane playerboard){//carte della mappa posso guardarle o pescarle
+        buttonCard.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Node node = button.getGraphic();
-                ImageView imageView = (ImageView) node;
-                image.setImage(imageView.getImage());
+                switch (command) {
+                    case CHOOSE_ACTION: //guarda la carta
+                        changeGraphics(buttonCard, image);
+                        image.setVisible(true);
+                        command = GRAB_WEAPON;
+                        //deve uscire da questa opzione
+                        break;
+                    case GRAB_WEAPON://scegliere la carta da prendere, non serve il riferimento alle altre carte perchè lo prendo dal player
+                        player.addWeapon((WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos));
+                        System.out.print("funziona");
+                        changeImage((Button)playerboard.getChildren().get(3), image);
+                        image.setVisible(false);
+                        buttonCard.setVisible(false);
 
-                //guardare la carta, scegliere la carta da prendere e cambiare immagine
-                /*
 
-                button.setGraphic(image) //quando carta è null e bisogna rimetterla
+                        break;
+                    default: buttonCard.setVisible(false);
+
+                }
 
 
-                 */
             }
         });
     }
-    private void playerboardCardAction(Button button, ImageView image){//carte della mappa
-        button.setOnAction(new EventHandler<ActionEvent>() {
+
+    private void playerboardCardAction(Button card, ImageView image){
+        card.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Node node = button.getGraphic();
-                ImageView imageView = (ImageView) node;
-                image.setImage(imageView.getImage());
+                switch (command) {
+                    case MOVE: //guarda la carta
+
+                        break;
+                    case END_TURN://carta da usare
+                        Node cardNode = card.getGraphic();
+                        ImageView image = (ImageView) cardNode;
+                        image.setImage(image.getImage());
+                        //verifica se è weapon o ammo, se ammo la può usare subito
+
+                        break;
+                    default: card.setVisible(false);
+
+                }
             }
         });
     }
 
-    private void attack(Button attack, WeaponCard weapon){
-
+    private void setMovePlayer(Button move, ArrayList<Button> Buttons){
+        move.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //verifica se è il proprio turno
+                command = MOVE;
+                move.setVisible(false);
+            }
+        });
     }
 
+    private void setGrabPlayer(Button grab, ArrayList<Button> Buttons){
+        grab.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //verifica se è il proprio turno
+                command = GRAB_MOVE;
+                grab.setVisible(false);
+            }
+        });
+    }
 
+    private void setAttackPlayer(Button attack, ArrayList<Button> Buttons){
+        attack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //verifica se è il proprio turno
+                command = SHOOT_MOVE;
+                attack.setVisible(false);
+            }
+        });
+    }
+
+    private void setCellAction(Button cell, int x, int y, ImageView ammo){
+        cell.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch (command) {
+                    case MOVE:
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 3)) {
+                            cell.setVisible(true);
+                            player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
+
+                        }
+
+                        break;
+                    case GRAB_MOVE://scegliere la carta da prendere
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 2)) {
+                            cell.setVisible(true);
+                            player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
+                            ammo.setVisible(false);
+                            //da ammo e power up
+                        }
+                    case SHOOT_MOVE:
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 2)) {
+                            cell.setVisible(true);
+                            player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
+                            //fa usare le armi
+                        }
+
+                        break;
+                    default: cell.setVisible(false);
+
+                }
+
+            }
+
+        });
+    }
+
+    private void changeGraphics(Button button, ImageView image){
+        Node node = button.getGraphic();
+        ImageView imageView = (ImageView) node;
+        image.setImage(imageView.getImage());
+    }
+
+    private void changeImage(Button button, ImageView image){
+        button.setGraphic(image);
+        button.setVisible(true);
+    }
 }
