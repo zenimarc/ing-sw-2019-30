@@ -201,8 +201,11 @@ public class BoardController{
      * @param targetType is the attack's target type, examples: Visible, Same room... (see EnumTargetSet for complete enumeration)
      * @return a list of players the shooter che hit with the selected targetType
      */
-
     public List<Player> getPotentialTargets(Cell shooterCell, EnumTargetSet targetType) {
+
+        //If there are not opponents return empty list
+        if(this.listOfPlayers.size()==1) return Collections.emptyList();
+
         switch (targetType) {
             case VISIBLE:
                 return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
