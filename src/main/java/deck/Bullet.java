@@ -54,6 +54,8 @@ public class Bullet {
 
     public static String intArrayToString(int cubes[]){
 
+        if(cubes==null) return "";
+
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("[");
