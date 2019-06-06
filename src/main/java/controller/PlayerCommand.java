@@ -21,6 +21,9 @@ public enum PlayerCommand {
     SHOOT_MOVE("Shot move", "Move than Shoot"),
     PLACE_WEAPONCARD("Place WeaponCard","..."),
 
+    //Commands for GUI
+    CHOOSE_ACTION("Action", "...");
+
     ;
 
     public static final Set<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);

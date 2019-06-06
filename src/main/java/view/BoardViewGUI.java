@@ -1,20 +1,16 @@
 package view;
 
-import client.Client;
 import client.ClientRMI;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -22,15 +18,15 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
+import java.util.TimerTask;
 
+//TODO far partire il gioco da CLI, gestire la reconnect
 public class BoardViewGUI extends Application {
     private float mainMenuWidth = 870;
     private float mainMenuHeight = 650;
 
-
     @Override
     public void start(Stage primaryStage) { //can't change name
-        primaryStage.setTitle("Adrenaline"); //nome dell'app
         primaryStage.setResizable(false);
         Pane root = mainMenu(primaryStage);
         root.setBackground(new Background(menuBackground()));
@@ -56,21 +52,25 @@ public class BoardViewGUI extends Application {
     private Pane mainMenu(Stage gameStage) {
         final boolean[] isRMI = new boolean[1];
         Pane root = new Pane();
-        Button RMI = setRMIButton();
-        Button Socket = setSocketButton();
-        Button CLI = setCLIButton();
-        Button GUI = setGUIButton();
-        Button confirm = confirmButton();
-        Button back= backButton();
-        GridPane Name = askName();
-        Name.add(confirm, 1, 1);
-        Name.add(back, 2, 1);
-        GridPane wait = waitCheck("Verifying name...");
-        GridPane fail = waitCheck("Error: name not valid");
 
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Warning");
-        alert.setHeaderText("Required Fields Empty");
+        Button CLI = setButtons("CLI", mainMenuWidth/2-30,mainMenuHeight/2+100, true);
+        Button GUI = setButtons("GUI", mainMenuWidth/2+30, mainMenuHeight/2+100, true);
+
+        Button RMI = setButtons("RMI", mainMenuWidth/2-30, mainMenuHeight/2+100, false);
+        Button Socket = setButtons("Socket", mainMenuWidth/2+30, mainMenuHeight/2+100, false);
+
+        Button confirm = setButtons("Confirm", 0, 0, false);
+        Button back = setButtons("Return", mainMenuWidth / 2 + 65, mainMenuHeight / 2 + 138, false);
+
+        TextField prova = new TextField();
+        GridPane Name = askName();
+
+        ProgressIndicator test = createBar();
+        test.setVisible(false);
+
+        Name.add(confirm, 1, 2);
+        Name.add(back, 2, 2);
+
 
         root.getChildren().add(RMI);
         root.getChildren().add(Socket);
@@ -78,15 +78,12 @@ public class BoardViewGUI extends Application {
         root.getChildren().add(GUI);
         root.getChildren().add(Name);
         root.getChildren().add(back);
-        root.getChildren().add(wait);
-        root.getChildren().add(fail);
+        root.getChildren().add(test);
 
 
-        /*
-        Image imageDecline = new Image(getClass().getResourceAsStream("not.png"));
-Button button5 = new Button();
-button5.setGraphic(new ImageView(imageDecline)); for setting button image
-         */
+
+        Name.add(prova, 1, 1);
+
         CLI.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -114,6 +111,7 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                 Name.setVisible(true);
                 confirm.setVisible(true);
                 back.setVisible(true);
+                Name.getChildren().get(1).setVisible(false);
                 isRMI[0] = true;
             }
         });
@@ -126,40 +124,35 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
                 Name.setVisible(true);
                 confirm.setVisible(true);
                 back.setVisible(true);
+                Name.getChildren().get(1).setVisible(false);
             }
         });
 
         confirm.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String name = Name.getChildren().get(0).getAccessibleText();
-                    Name.setVisible(false);
-                    confirm.setVisible(false);
-                    wait.setVisible(true);
+                String name = prova.getText();
+
 
                     if(isRMI[0] = true){
                         try {
                             ClientRMI clientRMI = new ClientRMI();
                             clientRMI.connect("127.0.0.1");
-                            System.out.println(name);
-                            clientRMI.register(name);
 
-                        } catch (RemoteException e) {
+                            if(clientRMI.register(name) /*|| clientRMI.reconnect(name, )*/){
+                                Name.setVisible(false);
+                                confirm.setVisible(false);
+                                Name.getChildren().get(1).setVisible(false);
+                                test.setVisible(true);
+                            }
+                            else Name.getChildren().get(1).setVisible(true);
+                        }
+                        catch (RemoteException e) {
                             e.printStackTrace();
                         }
                     }
-                /*}
-                else {
-                    //confirm.disableProperty().bind(Name.getAccessibleText().isEmpty());
-
-                }*/
-
+                    //else parte socket
                 }
-
-                //se il controllo non va bene lancia errore e return, poi risetta name, confirm true, resto false
-
-                //farà controllo nomi
-
         });
 
         back.setOnAction(new EventHandler<ActionEvent>() {
@@ -189,57 +182,16 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
         return null;
     }
 
-    private Button setRMIButton(){
+    private Button setButtons(String string, float setX, float setY, boolean visible){
         Button RMI = new Button();
-        RMI.setText("RMI");//modifica nome del pulsante
-        RMI.setLayoutX(mainMenuWidth/2-30);
-        RMI.setLayoutY(mainMenuHeight/2+100);
-        RMI.setVisible(false);
+        RMI.setText(string);//modifica nome del pulsante
+        RMI.setLayoutX(setX);
+        RMI.setLayoutY(setY);
+        RMI.setVisible(visible);
         return RMI;
     }
 
-    private Button setSocketButton(){
-        Button Socket = new Button();
-        Socket.setText("Socket");//modifica nome del pulsante
-        Socket.setLayoutX(mainMenuWidth/2+30);
-        Socket.setLayoutY(mainMenuHeight/2+100);
-        Socket.setVisible(false);
-        return Socket;
-    }
 
-    private Button setCLIButton(){
-        Button CLI = new Button();
-        CLI.setText("CLI");//modifica nome del pulsante
-        CLI.setLayoutX(mainMenuWidth/2-30);
-        CLI.setLayoutY(mainMenuHeight/2+100);
-        return CLI;
-    }
-
-    private Button setGUIButton() {
-        Button GUI = new Button();
-        GUI.setText("GUI");//modifica nome del pulsante
-        GUI.setLayoutX(mainMenuWidth / 2 + 30);
-        GUI.setLayoutY(mainMenuHeight / 2 + 100);
-        return GUI;
-    }
-
-    private Button confirmButton(){
-        Button confirm = new Button();
-        confirm.setText("Confirm");//modifica nome del pulsante
-        confirm.setLayoutX(mainMenuWidth / 2 - 35);
-        confirm.setLayoutY(mainMenuHeight / 2 + 130);
-        confirm.setVisible(false);
-        return confirm;
-    }
-
-    private Button backButton(){
-        Button back = new Button();
-        back.setText("Return");//modifica nome del pulsante
-        back.setLayoutX(mainMenuWidth / 2 + 65);
-        back.setLayoutY(mainMenuHeight / 2 + 135);
-        back.setVisible(false);
-        return back;
-    }
 
     private GridPane askName(){
         GridPane name = new GridPane();
@@ -249,25 +201,37 @@ button5.setGraphic(new ImageView(imageDecline)); for setting button image
         name.setPadding(new Insets(0, 0, 0, 0));
         name.setVisible(false);
 
-        name.add(new Label("Name:"), 0, 0);//altezza e poi lunghezza//permette d'inserire il testo
-        name.add(new TextField(), 1, 0);
+        name.add(new Label("Name:"), 0, 1);//altezza e poi lunghezza//permette d'inserire il testo
+        Label fail = new Label("Error: name not valid");
+        fail.setVisible(false);
+        name.add(fail, 1, 0);
         name.setLayoutX(mainMenuWidth/2-80);
-        name.setLayoutY(mainMenuHeight / 2 + 100);
-name.getChildren().get(1).setAccessibleText("name");
+        name.setLayoutY(mainMenuHeight / 2 + 75);
         return name;
     }
 
-    private GridPane waitCheck(String string){
-        GridPane waitCheck = new GridPane();
-        waitCheck.setAlignment(Pos.CENTER);
-        waitCheck.setHgap(10);
-        waitCheck.setVgap(10);
-        waitCheck.setPadding(new Insets(0, 0, 0, 0));
-        waitCheck.setVisible(false);
-        Label userName = new Label(string);//inserisce nome
-        waitCheck.add(userName, 0, 0);//altezza e poi lunghezza
-        waitCheck.setLayoutX(mainMenuWidth/2-20);
-        waitCheck.setLayoutY(mainMenuHeight / 2 + 100);
-        return waitCheck;
+    private ProgressBar createBar(){
+        ProgressBar progress = new ProgressBar(0);
+for(int i = 0; i < 100; i++) {
+    progress.setProgress(i++);
+    System.out.print(i);
+}
+
+        /*final Slider slider = new Slider();
+        slider.setMin(0);
+        slider.setMax(50);
+        slider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                                Number old_val, Number new_val) {
+                progress.setProgress(new_val.doubleValue()/50);
+
+            }
+        });*/
+
+        progress.setLayoutX(mainMenuWidth/2-30);
+        progress.setLayoutY(mainMenuHeight/2+100);
+        return progress;
+
     }
+
 }
