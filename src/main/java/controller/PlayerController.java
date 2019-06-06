@@ -78,7 +78,10 @@ public class PlayerController implements Observer {
 
     @Override
     public void update(Observable view, Object obj){
+        if(view.getClass() != PlayerView.class) return;
+
         CommandObj cmdObj = (CommandObj) obj;
+        PlayerView pw = (PlayerView) view;
         switch (cmdObj.getCmd()) {
             case MOVE:
             case GRAB_MOVE:
@@ -119,6 +122,14 @@ public class PlayerController implements Observer {
                 break;
             case DISCARD_WEAPON:
                 player.rmWeapon((int) cmdObj.getObject());
+                break;
+            case CHOOSE_ATTACK:
+                Attack attack = (Attack) cmdObj.getObject();
+                if(player.canPay(attack.getCost())){
+                    pw.chooseTarget(boardController.getPotentialTargets(player.getCell(), attack.getTargetType()));
+                }else {
+                    pw.printError("You have not enough bullet to use this attack");
+                }
                 break;
             default: 
                 break;
@@ -296,7 +307,6 @@ public class PlayerController implements Observer {
      * @param player to be moved
      * @param cell of destination
      */
-
     public void setOtherCell(@NotNull Player player, Cell cell){
         player.getCell().removePawn(player.getPawn());
         player.getPawn().setCell(cell);
@@ -307,7 +317,6 @@ public class PlayerController implements Observer {
      * This function modifies the position of the pawn
      * @param cell of destination
      */
-
     public void setCell(Cell cell){
         this.boardController.getBoard().setPlayerCell(this.player,cell);
     }
