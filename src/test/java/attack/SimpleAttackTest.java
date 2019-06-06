@@ -36,10 +36,4 @@ class SimpleAttackTest {
         assertEquals(p2.getMarks(p1),testMark);
     }
 
-    @Test
-    void getDescription() {
-        assertEquals(simpleAttack.getDescription(), simpleAttack.description);
-        assertEquals(simpleAttack.stdDescription(),
-                "Dai "+testDamage+" danni e "+testMark+" marchio/i a 1 bersaglio che puoi vedere.");
-    }
 }

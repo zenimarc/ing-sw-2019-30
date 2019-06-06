@@ -66,10 +66,10 @@ public abstract class WeaponCard extends Card {
      * This function returns the list of attacks a weapon has
      * @return the list of attacks
      */
-
     public List<Attack> getAttacks(){
         return this.attacks;
     }
+
     /**
      * This function returns the cost of every attack
      * @return the cost of every attack
@@ -78,7 +78,11 @@ public abstract class WeaponCard extends Card {
         return this.cost;
     }
 
-    //TODO da rivedere, restituisce cose sbagliate (mi sa)
+    /**
+     * Return grab cost of this weapon
+     * @return cost
+     */
+    @JsonIgnore
     public List<Bullet> getGrabCost(){
         if (this.cost.size() > 1) {
             return this.cost.subList(1,this.cost.size());
