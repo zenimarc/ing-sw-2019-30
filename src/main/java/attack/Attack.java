@@ -71,6 +71,9 @@ public abstract class Attack {
      * @return int[num of R, num of Y, num of B]
      */
     public int[] getCost() {
+        if(bulletsColor==null){
+            return new int[]{0,0,0};
+        }
         return bulletsColor;
     }
 
