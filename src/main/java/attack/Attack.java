@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import constants.EnumAttackName;
 import controller.EnumTargetSet;
+import deck.Bullet;
 import player.Player;
 
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public abstract class Attack {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.name.getString());
+        sb.append(Bullet.intArrayToString(this.getCost()));
         sb.append(": ");
         sb.append(this.getDescription());
 
