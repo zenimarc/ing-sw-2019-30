@@ -23,6 +23,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private UUID gameToken;
     private boolean gameStarted;
     private int turn;
+    private TurnHandler turnHandler;
 
     public GameServerImpl(int minPlayer, int maxPlayer) throws RemoteException {
         boardController = new BoardController();
@@ -67,7 +68,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     public synchronized void startGame(){
         //TODO: far partire il gioco e avvisare tutti i client
         this.gameStarted = true;
-        new Thread(new TurnHandler(this)).start();
+        turnHandler = new TurnHandler(this);
+        turnHandler.start();
         List<Player> players = new ArrayList<>();
         try {
             for (Client remoteClient : getActiveClients()) {
@@ -205,14 +207,23 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     public synchronized int changeTurn() {
+        turnHandler.interrupt();
         if(turn >= clients.size()-1)
             turn = 0;
         else turn++;
+        turnHandler = new TurnHandler(this);
+        turnHandler.start();
+        System.out.println("è il turno di "+this.getTurn());
         return turn;
     }
 
     public synchronized int getTurn(){
         return this.turn;
+    }
+
+    public synchronized void changeTurn(Client remoteClient){
+        if(clients.get(this.getTurn()).getClient().equals(remoteClient))
+            this.changeTurn();
     }
 
     /**

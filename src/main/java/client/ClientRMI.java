@@ -3,6 +3,7 @@ package client;
 import server.GameServer;
 import server.Lobby;
 import server.LobbyImpl;
+import server.TurnHandler;
 import view.PlayerBoardView;
 import view.PlayerView;
 
@@ -121,6 +122,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
         return this.nickname;
     }
 
+    private void changeTurn() throws RemoteException{
+        this.gameServer.changeTurn(this);
+    }
+
     /**
      * this funcion is called by remote Lobby to set on this client the gameServer assigned to play in
      * @param gameServer to play in
@@ -184,7 +189,16 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
                     userName = scanner.nextLine();
                     clientRMI.setNickname(userName);
                 }
-
+            String command = scanner.nextLine();
+            while(!command.equals("exit")) {
+                try {
+                    if (command.equals("ct"))
+                        clientRMI.changeTurn();
+                }catch (RemoteException re) {
+                    re.fillInStackTrace();
+                }
+                command = scanner.nextLine();
+            }
         } catch (RemoteException re) {
             System.out.println(re.toString());
             re.fillInStackTrace();

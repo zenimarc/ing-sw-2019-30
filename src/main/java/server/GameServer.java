@@ -11,4 +11,5 @@ public interface GameServer extends Remote {
     UUID getGameToken() throws RemoteException;
     Player getPlayer(Client remoteClient) throws RemoteException;
     PlayerController getPlayerController(Client remoteClient) throws RemoteException;
+    void changeTurn(Client remoteClient) throws RemoteException;
 }

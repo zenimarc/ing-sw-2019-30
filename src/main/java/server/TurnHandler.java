@@ -11,9 +11,8 @@ public class TurnHandler extends Thread{
     @Override
     public void run(){
         try {
-            System.out.println("Thread turHandler partito");
+            //System.out.println("Thread turHandler partito");
             while (gameServer.isStarted()) {
-                System.out.println("è il turno di: "+ gameServer.getTurn());
                 Thread.sleep(TURNTIME * 1000);
                 gameServer.changeTurn();
             }
