@@ -10,6 +10,7 @@ import player.Player;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
+import java.time.Period;
 import java.util.*;
 
 /**
@@ -39,7 +40,7 @@ public class PlayerView extends Observable implements Observer{
                 move(PlayerCommand.GRAB_MOVE);
                 break;
             case SHOOT:
-                shoot();
+                chooseAttack();
                 break;
             case END_TURN:
                 setChanged();
@@ -95,24 +96,77 @@ public class PlayerView extends Observable implements Observer{
         return false;
     }
 
-    public boolean shoot() {
+    private boolean chooseAttack() {
         if(player.getWeapons().isEmpty()){
             printError("You have not loaded weapon, so you can't shoot");
         }else{
             int index = chooseWeaponToPlace();
             //Not want to place weapon
             if(index==-1) return false;
-            //change model
+            //else want shoot
             WeaponCard weaponCard = player.getWeapons().get(index);
 
             Attack attack = chooseAttack(weaponCard);
 
-
-            //TODO implements here
-            //Scegli con quali sparare
+            setChanged();
+            notifyObservers(new CommandObj(PlayerCommand.CHOOSE_ATTACK, attack));
         }
+
         return true;
     }
+
+    public Player chooseTarget(List<Player> possibleTarget){
+
+        if(possibleTarget.isEmpty()){
+            printError("There are not possible target");
+            return null;
+        }
+
+        String format = "[0-"+possibleTarget.size()+"]";
+        String question = stringForChooseTarget(possibleTarget);
+        String read;
+        int index;
+
+        while(true){
+            print(question);
+            read = reader.next();
+            if(read.matches(format)){
+                index = Integer.valueOf(read)-1;
+                break;
+            }
+        }
+
+        return index==-1 ? null : possibleTarget.get(index);
+    }
+
+    /**
+     * This ask player which opponents want hit from possible target
+     * @param numTarget max target to hit
+     * @param possibleTarget all possible target
+     * @return list of opponents to hit
+     */
+    public List<Player> chooseTargets(int numTarget, List<Player> possibleTarget){
+        List<Player> targets = new ArrayList<>();
+        Player p;
+
+        for(int i=0; i<numTarget;i++){
+            p = chooseTarget(possibleTarget);
+            if(p!=null){
+                targets.add(p);
+                possibleTarget.remove(p);
+                if(possibleTarget.isEmpty()) break;
+            }else
+                i=numTarget;
+        }
+
+        return targets;
+    }
+
+    private void shoot(Attack attack){
+
+        //shoot
+    }
+
 
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
@@ -127,6 +181,21 @@ public class PlayerView extends Observable implements Observer{
 
     public void drawGUI() {
         // TODO implement here
+    }
+
+    private String stringForChooseTarget(List<Player> possibleTarget){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Possible target are:\n");
+        sb.append("0) No one\t");
+        for(Player p : possibleTarget){
+            sb.append(possibleTarget.indexOf(p)+1);
+            sb.append(") ");
+            sb.append(p.getName());
+            sb.append("\t");
+        }
+        sb.append("\nWhich opponent do you want to shoot?");
+        return sb.toString();
     }
 
     /**
@@ -310,9 +379,11 @@ public class PlayerView extends Observable implements Observer{
     }
 
     /**
-     *
+     * Create string for choose which attack want to use
+     * @param wc WeaponCard
+     * @return String contains possible attack
      */
-    private Attack chooseAttack(WeaponCard wc){
+    private String stringForChooseAttack(WeaponCard wc){
         StringBuilder sb = new StringBuilder();
 
         sb.append("Attacks for ");
@@ -327,8 +398,27 @@ public class PlayerView extends Observable implements Observer{
         }
 
         sb.append("\nWhich do you prefer?");
+        return sb.toString();
+    }
 
-        return null;
+    /**
+     * This ask player which attack want to use
+     * @param wc WeaponCard
+     * @return attack to use
+     */
+    private Attack chooseAttack(WeaponCard wc){
+        String read;
+        String format = "[0-"+(wc.getAttacks().size()-1)+"]";
+        String question = stringForChooseAttack(wc);
+
+        while(true){
+            print(question);
+            read = reader.next();
+            if(read.matches(format)){
+                break;
+            }
+        }
+        return wc.getAttack(Integer.valueOf(read));
     }
 
     /**
