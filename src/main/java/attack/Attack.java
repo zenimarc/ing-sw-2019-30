@@ -53,7 +53,9 @@ public abstract class Attack {
      * This return the attack's description
      * @return attack's description
      */
-    public abstract String getDescription();
+    public String getDescription(){
+        return this.description;
+    }
 
     /**
      * set how many bullets need to use this attack

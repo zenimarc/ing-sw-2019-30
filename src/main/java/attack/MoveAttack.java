@@ -44,7 +44,7 @@ public class MoveAttack extends Attack {
         this.name = name;
         this.step = step;
         this.damage = damage;
-        this.description = getDescription();
+        this.description = this.name.getDescription();
         this.target = target;
     }
 
@@ -67,8 +67,4 @@ public class MoveAttack extends Attack {
         return true;
     }
 
-    @Override
-    public String getDescription() {
-        return "Sposta un avversario di "+step+" caselle.";
-    }
 }

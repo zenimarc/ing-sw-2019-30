@@ -21,6 +21,7 @@ public class SimpleAttack extends Attack {
         this.damage = damage;
         this.mark = mark;
         this.target = target;
+        this.description = this.name.getDescription();
     }
 
     @JsonCreator
@@ -76,38 +77,10 @@ public class SimpleAttack extends Attack {
      * @param opponent Player hit
      * @return true
      */
-
     public boolean singleAttack(Player player, Player opponent) {
         opponent.addDamage(player, damage);
         opponent.addMark(player, mark);
         return true;
     }
 
-
-    /**
-     * This create an attack's standard description
-     *
-     * @return
-     */
-    public String stdDescription() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Dai ");
-        sb.append(damage);
-        sb.append(" danni e ");
-        sb.append(mark);
-        sb.append(" marchio/i a 1 bersaglio che puoi vedere.");
-        return sb.toString();
-    }
-
-
-    /**
-     * This return attack's description
-     *
-     * @return attack's description
-     */
-    @Override
-    public String getDescription() {
-        if (description == null) description = stdDescription();
-        return this.description;
-    }
 }

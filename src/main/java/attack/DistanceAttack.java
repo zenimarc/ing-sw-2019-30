@@ -36,7 +36,7 @@ public class DistanceAttack extends Attack {
         this.name = name;
         this.damage = damage;
         this.mark = mark;
-        this.description = getDescription();
+        this.description = this.name.getDescription();
         this.target = target;
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
@@ -55,9 +55,4 @@ public class DistanceAttack extends Attack {
         return true;
     }
 
-    @Override
-    public String getDescription() {
-        return minDistance==maxDistance ? "Attacca un avversario che si trova a "+ minDistance+" step." :
-                "Attaca un avversario che si trova a minimo "+minDistance+" step e maximo "+maxDistance+" step.";
-    }
 }
