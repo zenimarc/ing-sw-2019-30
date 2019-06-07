@@ -23,6 +23,7 @@ public class BoardController{
     private List<Player> listOfPlayers;
     private List<PlayerController> playerControllers;
     private Board board;
+    private Player playerWhoPlay;
 
     private BoardViewCLI boardViewCLI;
 
@@ -206,19 +207,23 @@ public class BoardController{
         //If there are not opponents return empty list
         if(this.listOfPlayers.size()==1) return Collections.emptyList();
 
+        List<Player> opponents = new ArrayList<>();
+        opponents.addAll(this.listOfPlayers);
+        opponents.remove(playerWhoPlay);
+
         switch (targetType) {
             case VISIBLE:
-                return listOfPlayers.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case NOT_VISIBLE:
-                return listOfPlayers.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
             case VISIBLE_ROOM:
-                return listOfPlayers.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_ROOM:
-                return listOfPlayers.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
             case SAME_CELL:
-                return listOfPlayers.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toCollection(ArrayList::new));
             case CARDINAL_WALL_BYPASS:
-                return listOfPlayers.stream().filter(x -> (board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
+                return opponents.stream().filter(x -> (board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY()).collect(Collectors.toCollection(ArrayList::new));
             case CARDINAL:
                 /*
@@ -229,7 +234,7 @@ public class BoardController{
                 please note that if the two cells are on the same axe (has to be true due the first check) the distance between
                 the two cell is the minimum possible steps to reach the target cell.
                  */
-                return listOfPlayers.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
+                return opponents.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
                         && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
         }
@@ -283,6 +288,7 @@ public class BoardController{
     public void playerPlay(Player player){
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
+            playerWhoPlay = pc.getPlayer();
             pc.getPlayerBoardView().drawPlayerboard();
             getBoardViewToString();
             System.out.println(pc.getPlayer());
