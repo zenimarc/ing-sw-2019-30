@@ -1,0 +1,30 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "Electroscythe",
+  "cost" : [ {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : -1,
+    "cost" : [ 1, 0, 1 ]
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "ELECTROSCYHE_OPT1",
+    "description" : "Deal 2 damage to every other player on your square.",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : -1,
+    "cost" : [ 0, 0, 0 ]
+  } ],
+  "type" : "ELECTROSCYTHE",
+  "weaponType" : "ELECTROSCYTHE",
+  "grabCostCLI" : "[R:0,Y:0,B:0]",
+  "weaponCostCLI" : "[R:0,Y:0,B:1]"
+}
