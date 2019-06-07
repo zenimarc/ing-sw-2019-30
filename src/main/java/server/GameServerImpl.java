@@ -73,7 +73,9 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         List<Player> players = new ArrayList<>();
         try {
             for (Client remoteClient : getActiveClients()) {
-                players.add(new Player(remoteClient.getNickname()));
+                Player onePlayer = new Player(remoteClient.getNickname());
+                players.add(onePlayer);
+                remoteClient.setPlayer(onePlayer);
             }
         }catch (RemoteException re){
             //TODO cancel this game and notify players
@@ -184,8 +186,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * @param client to be monitored
      */
     private void kick(Client client){
-        int INTERVAL = 3; //Ping interval seconds
-        int TIMES = 10; //times to ping
+        final long INTERVAL = 3; //Ping interval seconds
+        final int TIMES = 10; //times to ping
         int i=0;
         while(i<TIMES){
             try {
@@ -196,7 +198,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                     return;
                 }
             }catch (RemoteException re){
-                continue;
+                re.fillInStackTrace();
             }catch (InterruptedException ie){
                 ie.fillInStackTrace();
                 Thread.currentThread().interrupt();

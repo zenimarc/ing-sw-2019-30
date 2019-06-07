@@ -1,7 +1,7 @@
 package server;
 
 public class TurnHandler extends Thread{
-    private static final int TURNTIME = 10; //turn timeout in seconds
+    private static final long TURNTIME = 10; //turn timeout in seconds
     private GameServerImpl gameServer;
 
     public TurnHandler(GameServerImpl gameServer){

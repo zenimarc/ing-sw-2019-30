@@ -434,7 +434,7 @@ public class PlayerView extends Observable implements Observer{
     public void printError(String mex){
         StringBuilder sb = new StringBuilder();
         sb.append("----- ERR: ");
-        if(mex==""){
+        if(mex.equals("")){
             sb.append("Illegal Action");
         }
         else{

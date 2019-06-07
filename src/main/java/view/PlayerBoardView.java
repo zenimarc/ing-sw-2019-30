@@ -249,23 +249,23 @@ public class PlayerBoardView {
         String weapon;
         stringBuilder.append(V_SEPARATOR);
 
-        if(i +1 < player.getWeapons().size()){
+        if(i +1 <= player.getWeapons().size()){
             weapon = player.getWeapons().get(i).toString() + " " + player.getWeapons().get(i).getGrabCostCLI() + " " + player.getWeapons().get(i).isLoadedCLI() + " " ;
             stringBuilder.append(weapon);
             for (int j = weapon.length(); j < CELL_LENGTH*COLS/2+COLS-1; j++)
                 stringBuilder.append(" ");
         }
         else for (int j = 0; j < CELL_LENGTH*COLS/2+COLS-1; j++)
-            stringBuilder.append(" ");
+                stringBuilder.append(" ");
 
 
-        if(i +1 < player.getPowerups().size()){
+        if(i +1 <= player.getPowerups().size()){
             stringBuilder.append(player.getPowerups().get(i).toString());
             for (int j = player.getPowerups().get(i).toString().length(); j < CELL_LENGTH*COLS/2+COLS-1; j++)
                 stringBuilder.append(" ");
         }
         else for (int j = 0; j < CELL_LENGTH*COLS/2+COLS-1; j++)
-            stringBuilder.append(" ");
+                stringBuilder.append(" ");
 
         stringBuilder.append(V_SEPARATOR);
         stringBuilder.append("\n");

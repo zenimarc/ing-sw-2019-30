@@ -1,5 +1,6 @@
 package client;
 
+import player.Player;
 import server.GameServer;
 import server.Lobby;
 import server.LobbyImpl;
@@ -23,6 +24,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
     private UUID userToken;
     private PlayerView playerView;
     private PlayerBoardView playerBoardView;
+    private Player player;
 
 
     public ClientRMI() throws RemoteException {
@@ -114,6 +116,13 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
         this.nickname = nickname;
     }
 
+    public void setPlayer(Player player){
+        this.player = player;
+    }
+
+    public Player getPlayer(){
+        return this.player;
+    }
     /**
      * this function returns the client's nickname
      * @return the client's nickname

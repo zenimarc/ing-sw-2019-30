@@ -12,4 +12,6 @@ public interface Client extends Remote {
     boolean isActive() throws RemoteException;
     void timeExpired() throws RemoteException;
     String getNickname() throws RemoteException;
+    void setPlayer(Player player) throws RemoteException;
+    Player getPlayer();
 }

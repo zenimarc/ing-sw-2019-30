@@ -324,17 +324,16 @@ public class BoardViewCLI implements Observer {
                 if (getCell(x, y) == null){
                     if(y == 0)
                        stream.append(" ");
-                 for(int j = 0; j < (Z+M)*Z;j++)
+                    for(int j = 0; j < (Z+M)*Z;j++)
                         stream.append(" ");
-                if(y != N - 1)
-                    if(getCell(x, y+1) != null)
-                     stream.append("│");
+                    if(y != N - 1 && getCell(x, y+1) != null)
+                        stream.append("│");
                 }
                 else {
                     if (y == 0)
-                    stream.append("│");
+                        stream.append("│");
                     if (getCell(x, y).getClass() == NormalCell.class)
-                     stream.append(printAmmo(getCell(x, y), i));
+                        stream.append(printAmmo(getCell(x, y), i));
                  else  stream.append(printWeapons(getCell(x, y), i));
                 }
         }

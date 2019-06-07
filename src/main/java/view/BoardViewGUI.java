@@ -148,7 +148,7 @@ public class BoardViewGUI extends Application {
                             else Name.getChildren().get(1).setVisible(true);
                         }
                         catch (RemoteException e) {
-                            e.printStackTrace();
+                            e.fillInStackTrace();
                         }
                     }
                     //else parte socket
@@ -177,7 +177,7 @@ public class BoardViewGUI extends Application {
                     BackgroundPosition.DEFAULT, new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return null;
     }
