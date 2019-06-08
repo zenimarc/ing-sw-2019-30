@@ -39,7 +39,7 @@ import static controller.PlayerCommand.*;
 import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
 
-//TODO Finire altri due bottoni a livello di azioni, sistemare la posizione dei bottoni delle celle
+//TODO fare pulizia di codice, finire qualche pulsante, sistemare le nuove immagini di Marco
 public class BoardViewGameGUI extends Application {
     private int stageHeight = 700;
     private int stageWidth = 920;
@@ -47,14 +47,15 @@ public class BoardViewGameGUI extends Application {
     private ArrayList<Client> client;
     private ArrayList<Player> players;
     private Player player = new Player("Marco");
-    private PlayerCommand command = GRAB_WEAPON;
+    private PlayerCommand command = CHOOSE_ACTION;
     private PlayerController controller;
     private int random;
+    private int test = 1;
 
     private void initialize(/*, ArrayList<Client> client*/){
-        this.board = new Board(8, BillboardGenerator.createBillboard(1));
         player = new Player("Marco");
         this.random = new Random().nextInt(3) + 1;
+        this.board = new Board(8, BillboardGenerator.createBillboard(test));
         //this.players = players;
         //this.client = client;
     }
@@ -71,7 +72,7 @@ public class BoardViewGameGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
         initialize();
-        Pane pane = createGame(4);
+        Pane pane = createGame(test);
         pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setCenterShape(true);
         Scene scene = new Scene(pane);
@@ -438,7 +439,7 @@ return playerBoard;
         return button;
     }
 
-    //prima la carta da vedere, secondo è posizione dove verrà messa
+    //Carte relative alla mappa
     private void setAction(Button buttonCard, ImageView image, int x, int y, int pos, Pane playerboard){//carte della mappa posso guardarle o pescarle
         buttonCard.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -466,7 +467,7 @@ return playerBoard;
                         }
                             else command = DISCARD_WEAPON;
                         break;
-                    default: buttonCard.disabledProperty();
+                    default: buttonCard.disableProperty();
 
                 }
             }
@@ -488,14 +489,15 @@ return playerBoard;
                         //verifica se è weapon o ammo, se ammo la può usare subito
 
                         break;
-                    default: card.setVisible(false);
+                    default: card.disabledProperty();
 
                 }
             }
         });
     }
 
-    private void setMovePlayer(Button action, PlayerCommand order){
+    //azioni che giocatore può fare
+    private void setActionPlayer(Button action, PlayerCommand order){
         action.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -510,6 +512,7 @@ return playerBoard;
         });
     }
 
+    //Azioni che èuò fare cella
     private void setCellAction(Button cell, int x, int y, Optional<ImageView> ammo){
         cell.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -553,7 +556,7 @@ return playerBoard;
                         }
 
                         break;
-                    default: cell.setVisible(false);
+                    default: cell.disableProperty();
 
                 }
 
@@ -561,6 +564,8 @@ return playerBoard;
 
         });
     }
+
+    //azioni power up
     private void setPowerUp(Button attack, ArrayList<Button> Buttons){
         attack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -604,6 +609,7 @@ return playerBoard;
     }
 
     private void generateBoard(Pane map, int number) throws FileNotFoundException {
+        int i = 0;
         ImageView mapImage = new ImageView(new Image(new FileInputStream("src/resources/images/gametable/map/board"+number+".png")));
         changeSizeImage(mapImage, 430, 600);
         map.getChildren().add(mapImage);
@@ -614,10 +620,12 @@ return playerBoard;
                 generateBoardRight1(map);//8
                 generateBoardButtonsLeft1(map);
                 generateBoardButtonsRight1(map);//11
-                for(int x = 0; x < 3; x++)
-                    for(int y = 0; y < 4; y++) {
-                        if((x == 0 && y == 1) || (x == 0 && y == 1) || (x == 0 && y == 1))
-                        setCellAction((Button) map.getChildren().get(20), x, y, Optional.of((ImageView) map.getChildren().get(0)));
+
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        i = setCellOnAction(map, x, y, i);
+                        if(x == 1 && y == 0)
+                            x++;
                     }
                 break;
             case 2:
@@ -625,25 +633,34 @@ return playerBoard;
                 generateBoardRight2(map);
                 generateBoardButtonsLeft2(map);
                 generateBoardButtonsRight1(map);
-                for(int i = 13; i < 23; i++)
-                    setCellAction((Button) map.getChildren().get(0), 1, 1, Optional.of((ImageView) map.getChildren().get(0)));
-                break;
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        if(x == 0 && y == 3)
+                            x++;
+                        i = setCellOnAction(map, x, y, i);
+                        if(x == 1 && y == 0)
+                            x++;
+                    }break;
             case 3:
                 generateBoardLeft2(map);
                 generateBoardRight1(map);
                 generateBoardButtonsLeft1(map);
                 generateBoardButtonsRight2(map);
-                for(int i = 13; i < 25; i++)
-                    setCellAction((Button) map.getChildren().get(0), 1, 1, Optional.of((ImageView) map.getChildren().get(0)));
-                break;
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        i = setCellOnAction(map, x, y, i);
+                    }break;
             case 4:
                 generateBoardLeft2(map);
                 generateBoardRight2(map);
                 generateBoardButtonsLeft2(map);
                 generateBoardButtonsRight2(map);
-                for(int i = 13; i < 24; i++)
-                    setCellAction((Button) map.getChildren().get(0), 1, 1, Optional.of((ImageView) map.getChildren().get(0)));
-                break;
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        if(x == 0 && y == 3)
+                            x++;
+                        i = setCellOnAction(map, x, y, i);
+                    }break;
         }
     }
 
@@ -728,6 +745,16 @@ return playerBoard;
         map.getChildren().add(createButton("c22",90, 100, 55, 125));
         map.getChildren().add(createButton("c13",100, 95, 155, 20));
         map.getChildren().add(createButton("c23",100, 95, 155, 120));
+    }
+
+    private int setCellOnAction(Pane map, int x, int y, int i){
+        if(!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))){
+            setCellAction((Button) map.getChildren().get(21 + x + y*3), x, y, Optional.of((ImageView) map.getChildren().get(13+i)));
+            i++;
+        }
+        else
+            setCellAction((Button) map.getChildren().get(21+x+y), x, y, Optional.empty());
+        return i;
     }
 }
 
