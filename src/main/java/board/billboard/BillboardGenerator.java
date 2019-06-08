@@ -22,6 +22,16 @@ import java.util.HashMap;
 
 public class BillboardGenerator extends Billboard {
 
+    public static Billboard createBillboard(int number){
+        if(number == 1)
+            return generateBillboard();
+        if(number == 2)
+            return generateBillboard2();
+        if(number == 3)
+            return generateBillboard3();
+        return generateBillboard4();
+    }
+
     /**
      * This function creates the board with a blank cell on the left
      * @return a billboard

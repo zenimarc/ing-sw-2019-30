@@ -285,7 +285,11 @@ public class PlayerBoardView {
             stringBuilder.append(" ");
 
         stringBuilder.append(player.printPlayerAmmo());
+        for (int i = 0; i < 8; i++)
+            stringBuilder.append(" ");
 
+        //TODO verificare perchè non printa i punti
+        //stringBuilder.append(player.getPlayerBoard().rewardPointstoString());
 
         for(int i = stringBuilder.length(); i< CELL_LENGTH*COLS + 2*COLS - 1; i++)
             stringBuilder.append(" ");
