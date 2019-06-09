@@ -12,7 +12,7 @@ public class TurnHandler extends Thread{
     public void run(){
         try {
             //System.out.println("Thread turHandler partito");
-            while (gameServer.isStarted()) {
+            while (gameServer.isStarted() && !Thread.currentThread().isInterrupted()) {
                 Thread.sleep(TURNTIME * 1000);
                 gameServer.changeTurn();
             }

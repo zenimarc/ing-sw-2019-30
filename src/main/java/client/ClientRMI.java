@@ -78,6 +78,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
             if (myToken != null) {
                 this.setNickname(nickname);
                 this.userToken = myToken;
+                System.out.println("ricevuto il mio userToken: "+this.userToken);
                 return true;
             }
             else
@@ -205,12 +206,15 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
                         clientRMI.changeTurn();
                 }catch (RemoteException re) {
                     re.fillInStackTrace();
+                    System.out.println("errore di connessione");
+                    System.exit(-1);
                 }
                 command = scanner.nextLine();
             }
         } catch (RemoteException re) {
             System.out.println(re.toString());
             re.fillInStackTrace();
+            System.exit(-1);
         }
     }
 }

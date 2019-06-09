@@ -215,7 +215,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         else turn++;
         turnHandler = new TurnHandler(this);
         turnHandler.start();
-        System.out.println("è il turno di "+this.getTurn());
+        System.out.println("server: "+this.getGameToken()+"\nè il turno di "+this.getTurn());
         return turn;
     }
 

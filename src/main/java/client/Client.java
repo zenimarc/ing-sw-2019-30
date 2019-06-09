@@ -13,5 +13,5 @@ public interface Client extends Remote {
     void timeExpired() throws RemoteException;
     String getNickname() throws RemoteException;
     void setPlayer(Player player) throws RemoteException;
-    Player getPlayer();
+    Player getPlayer() throws RemoteException;
 }
