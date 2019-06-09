@@ -113,7 +113,6 @@ public class PlayerBoard {
         this.numDeaths++;
     }
 
-
     /**
      * This function adds a death to the PlayerBoard, (increment numDeath by 1)
      */
@@ -226,5 +225,24 @@ public class PlayerBoard {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toCollection(ArrayList::new));
 
+    }
+
+    public String rewardPointstoString(){
+        StringBuilder string = new StringBuilder();
+        string.append("Points given: [");
+        if(!board.isFinalFrenzy())
+            for(int i = numDeaths; i < REWARDS_BY_DAMAGE.length; i++) {
+                string.append(REWARDS_BY_DAMAGE[i]);
+                if(i < REWARDS_BY_DAMAGE.length-1)
+                    string.append(", ");
+                else string.append("]");
+            }
+        else  for(int i = numDeaths; i < FRENZY_REWARDS_BY_DAMAGE.length; i++) {
+            string.append(REWARDS_BY_DAMAGE[i]);
+            if(i < FRENZY_REWARDS_BY_DAMAGE.length-1)
+                string.append(", ");
+            else string.append("]");
+        }
+        return string.toString();
     }
 }

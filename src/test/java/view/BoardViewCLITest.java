@@ -6,17 +6,14 @@ import board.NormalCell;
 import board.RegenerationCell;
 import board.billboard.Billboard;
 import board.billboard.BillboardGenerator;
-import deck.AmmoCard;
 import constants.Color;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static weapon.EnumWeapon.*;
+
 
 import player.Player;
-import weapon.SimpleWeapon;
-import weapon.WeaponCard;
+
 
 
 import java.util.ArrayList;

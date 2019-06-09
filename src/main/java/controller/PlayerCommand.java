@@ -23,7 +23,8 @@ public enum PlayerCommand {
     CHOOSE_ATTACK("Choose attack","..."),
 
     //Commands for GUI
-    CHOOSE_ACTION("Action", "...");
+    CHOOSE_ACTION("Action", "..."),
+    UNSELECT("prova", "...");
 
     ;
 
