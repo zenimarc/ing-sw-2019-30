@@ -102,6 +102,9 @@ public abstract class WeaponCard extends Card {
      */
     public String getName(){return this.name;}
 
+    public Attack getAlternativeAttack() {
+        return alternativeAttack;
+    }
 
     @JsonIgnore
     public boolean isReady(){return this.isLoaded;}

@@ -50,10 +50,12 @@ public class DistanceWeapon extends WeaponCard {
     protected DistanceWeapon(@JsonProperty("name") String name,
                              @JsonProperty("cost") List<Bullet> cost,
                              @JsonProperty("attacks")List<Attack> attacks,
+                             @JsonProperty("alternativeAttack") Attack alternativeAttack,
                              @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
+        this.alternativeAttack = alternativeAttack;
         this.weaponType = weaponType;
         this.isLoaded = false;
     }

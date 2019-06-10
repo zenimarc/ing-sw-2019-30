@@ -41,11 +41,13 @@ public class AreaWeapon extends WeaponCard {
     protected AreaWeapon(@JsonProperty("name") String name,
                          @JsonProperty("cost") List<Bullet> cost,
                          @JsonProperty("attacks")List<Attack> attacks,
+                         @JsonProperty("alternativeAttack") Attack alternativeAttack,
                          @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
         this.weaponType = weaponType;
+        this.alternativeAttack = alternativeAttack;
         this.isLoaded = false;
     }
 
