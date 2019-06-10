@@ -10,7 +10,6 @@ import player.Player;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
-import java.time.Period;
 import java.util.*;
 
 /**
@@ -115,8 +114,12 @@ public class PlayerView extends Observable implements Observer{
         return true;
     }
 
+    /**
+     * This ask player which opponents want to hit from a list
+     * @param possibleTarget possible target list
+     * @return player who can hit
+     */
     public Player chooseTarget(List<Player> possibleTarget){
-
         if(possibleTarget.isEmpty()){
             printError("There are not possible target");
             return null;
@@ -135,30 +138,28 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-
         return index==-1 ? null : possibleTarget.get(index);
     }
 
     /**
      * This ask player which opponents want hit from possible target
      * @param numTarget max target to hit
-     * @param possibleTarget all possible target
+     * @param checkedList all possible target
      * @return list of opponents to hit
      */
-    public List<Player> chooseTargets(int numTarget, List<Player> possibleTarget){
+    public List<Player> chooseTargets(int numTarget, List<Player> checkedList){
+        ArrayList<Player> possibleTargets = (ArrayList<Player>) ((ArrayList<Player>)checkedList).clone();
         List<Player> targets = new ArrayList<>();
         Player p;
 
         for(int i=0; i<numTarget;i++){
-            p = chooseTarget(possibleTarget);
+            p = chooseTarget(possibleTargets);
             if(p!=null){
                 targets.add(p);
-                possibleTarget.remove(p);
-                if(possibleTarget.isEmpty()) break;
-            }else
-                i=numTarget;
+                possibleTargets.remove(p);
+                if(possibleTargets.isEmpty()) break;
+            }
         }
-
         return targets;
     }
 
@@ -166,7 +167,6 @@ public class PlayerView extends Observable implements Observer{
 
         //shoot
     }
-
 
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
