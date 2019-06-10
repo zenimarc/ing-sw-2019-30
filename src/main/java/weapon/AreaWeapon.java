@@ -27,9 +27,8 @@ public class AreaWeapon extends WeaponCard {
 
         switch (weaponType) {
             case FURNACE:
-                //TODO: other room - gio
-                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME,1,0,-1));
-                attacks.add(new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1));
+                attacks.add(new SimpleAttack(VISIBLE_ROOM, BASE_ATTACK_NAME,1,0,-1));
+                alternativeAttack = new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1);
                 break;
             default:
                 //TODO ERROR

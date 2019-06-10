@@ -39,15 +39,15 @@ public class SimpleWeapon extends WeaponCard{
                 break;
             case ELECTROSCYTHE:
                 attacks.add(new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME, 1,0,-1));
-                attacks.add(new SimpleAttack(SAME_CELL, ELECTROSCYHE_OPT1, 2,0,-1));
-                attacks.get(0).setCost(new int[]{1,0,1});
+                alternativeAttack = new SimpleAttack(SAME_CELL, ELECTROSCYHE_OPT1, 2,0,-1);
+                alternativeAttack.setCost(new int[]{1,0,1});
                 break;
             case HEATSEEKER:
                 attacks.add(new SimpleAttack(NOT_VISIBLE, BASE_ATTACK_NAME, 3,0,1));
                 break;
             case ZX_2:
                 attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1));
-                attacks.add(new SimpleAttack(VISIBLE, ZX_2_OP1, 0,1,3));
+                alternativeAttack = new SimpleAttack(VISIBLE, ZX_2_OP1, 0,1,3);
                 break;
             default:
                 //TODO ERROR
@@ -103,14 +103,12 @@ public class SimpleWeapon extends WeaponCard{
 
 
     private boolean zx2Shoot(int typeAttack, Player shooter, List<Player> opponents){
-        //Base Attack
-        attacks.get(0).attack(shooter, opponents.get(0));
-        //Optional Attack
         switch (typeAttack){
             case 0:
+                attacks.get(0).attack(shooter, opponents.get(0));
                 break;
             case 1:
-                attacks.get(1).attack(shooter, opponents);
+                alternativeAttack.attack(shooter, opponents);
                 break;
             default:
                 return false;
