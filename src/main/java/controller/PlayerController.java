@@ -102,11 +102,6 @@ public class PlayerController implements Observer {
             case GRAB_WEAPON:
                 grabWeapon(view, (int) cmdObj.getObject());
                 break;
-            case SHOOT:
-                //TODO
-                //Controllare di poter usare arma
-                //Controlla obiettivi
-                break;
             // case POWERUP:
             //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
             //break;
@@ -123,14 +118,25 @@ public class PlayerController implements Observer {
             case DISCARD_WEAPON:
                 player.rmWeapon((int) cmdObj.getObject());
                 break;
-            case CHOOSE_ATTACK:
-                Attack attack = (Attack) cmdObj.getObject();
-                if(player.canPay(attack.getCost())){
+            case SHOOT:
+                WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
+                if(!weaponCard.isReady()){
+                    pw.printError("This weapon is not loaded");
+                    break;
+                }
+                int selector = cmdObj.getWeaponSelector();
+                Attack attack =  selector<weaponCard.getAttacks().size() ?
+                        weaponCard.getAttack(selector) : weaponCard.getAlternativeAttack();
 
+                if(player.canPay(attack.getCost())){
                     List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), attack.getTargetType());
-                    List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets );
+                    if(potentialTargets.isEmpty()){
+                        pw.printError("You have not any possible targets");
+                        break;
+                    }
+                    List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets);
                     if(potentialTargets.containsAll(opponents)){
-                        attack.attack(this.player,opponents);
+                        weaponCard.shoot(cmdObj.getWeaponSelector(), player, opponents, null);
                         numAction++;
                     }
                 }else {

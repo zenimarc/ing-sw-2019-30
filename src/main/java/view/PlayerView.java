@@ -39,7 +39,7 @@ public class PlayerView extends Observable implements Observer{
                 move(PlayerCommand.GRAB_MOVE);
                 break;
             case SHOOT:
-                chooseAttack();
+                shoot();
                 break;
             case END_TURN:
                 setChanged();
@@ -95,7 +95,7 @@ public class PlayerView extends Observable implements Observer{
         return false;
     }
 
-    private boolean chooseAttack() {
+    private boolean shoot() {
         if(player.getWeapons().isEmpty()){
             printError("You have not loaded weapon, so you can't shoot");
         }else{
@@ -105,12 +105,11 @@ public class PlayerView extends Observable implements Observer{
             //else want shoot
             WeaponCard weaponCard = player.getWeapons().get(index);
 
-            Attack attack = chooseAttack(weaponCard);
+            index = chooseAttack(weaponCard);
 
             setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.CHOOSE_ATTACK, attack));
+            notifyObservers(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
         }
-
         return true;
     }
 
@@ -161,11 +160,6 @@ public class PlayerView extends Observable implements Observer{
             }
         }
         return targets;
-    }
-
-    private void shoot(Attack attack){
-
-        //shoot
     }
 
     public boolean regPawn(){
@@ -396,6 +390,9 @@ public class PlayerView extends Observable implements Observer{
             sb.append(") ");
             sb.append(attack);
         }
+        sb.append('\n');
+        sb.append("Alternative attack: ");
+        sb.append(wc.getAlternativeAttack());
 
         sb.append("\nWhich do you prefer?");
         return sb.toString();
@@ -404,11 +401,11 @@ public class PlayerView extends Observable implements Observer{
     /**
      * This ask player which attack want to use
      * @param wc WeaponCard
-     * @return attack to use
+     * @return index of attack to use
      */
-    private Attack chooseAttack(WeaponCard wc){
+    private int chooseAttack(WeaponCard wc){
         String read;
-        String format = "[0-"+(wc.getAttacks().size()-1)+"]";
+        String format = "[0-"+(wc.getAttacks().size())+"]";
         String question = stringForChooseAttack(wc);
 
         while(true){
@@ -418,7 +415,7 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-        return wc.getAttack(Integer.valueOf(read));
+        return Integer.valueOf(read);
     }
 
     /**

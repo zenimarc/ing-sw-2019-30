@@ -2,6 +2,7 @@ package controller;
 
 import board.Cell;
 import constants.Color;
+import weapon.WeaponCard;
 
 /**
 è un oggetto utile al fine di move e grab e shoot per il controller in particolare
@@ -21,12 +22,11 @@ public class CommandObj {
         this.cell = cell;
     }
 
-    public CommandObj(PlayerCommand cmd, Cell cell, int[] sel){
+    public CommandObj(PlayerCommand cmd, WeaponCard weaponCard, int index){
         this.cmd = cmd;
-        this.cell = cell;
-        this.object = sel;
+        this.object = weaponCard;
+        this.weaponSelector = index;
     }
-
 
     public CommandObj(PlayerCommand cmd, Object o){
         this.cmd = cmd;
