@@ -126,7 +126,13 @@ public class PlayerController implements Observer {
             case CHOOSE_ATTACK:
                 Attack attack = (Attack) cmdObj.getObject();
                 if(player.canPay(attack.getCost())){
-                    pw.chooseTargets(attack.getTarget(), boardController.getPotentialTargets(player.getCell(), attack.getTargetType()));
+
+                    List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), attack.getTargetType());
+                    List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets );
+                    if(potentialTargets.containsAll(opponents)){
+                        attack.attack(this.player,opponents);
+                        numAction++;
+                    }
                 }else {
                     pw.printError("You have not enough bullet to use this attack");
                 }
