@@ -151,19 +151,28 @@ public class MovementWeapon extends WeaponCard {
      */
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+
+        boolean result;
+
         switch (weaponType){
             case TRACTOR_BEAM:
                 if(!cell.isPresent()) return false;
-                return tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
+                result = tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
+                break;
             case VORTEX_CANNON:
                 if(!cell.isPresent()) return false;
-                return vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                result = vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                break;
             case SHOTGUN:
-                return shotgunShoot(typeAttack,shooter,opponents,cell);
+                result = shotgunShoot(typeAttack,shooter,opponents,cell);
+                break;
             case SLEDGEHAMMER:
-                return sledgehammerShot(typeAttack,shooter,opponents,cell);
+                result = sledgehammerShot(typeAttack,shooter,opponents,cell);
+                break;
                 default:
-                    return false;
+                    result = false;
         }
+        this.setNotLoaded();
+        return result;
     }
 }

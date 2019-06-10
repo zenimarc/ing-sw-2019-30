@@ -120,21 +120,32 @@ public class SimpleWeapon extends WeaponCard{
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+
+        boolean result;
+
         if(typeAttack>=attacks.size()) return false;
         switch (this.weaponType) {
             case LOCK_RIFLE:
-                return lockrifleShoot(typeAttack,shooter,opponents);
+                result = lockrifleShoot(typeAttack,shooter,opponents);
+                break;
             case MACHINE_GUN:
-                return machinegunShoot(typeAttack,shooter,opponents);
+                result = machinegunShoot(typeAttack,shooter,opponents);
+                break;
             case ELECTROSCYTHE:
-                return alternativeSimpleShoot(typeAttack,shooter, opponents);
+                result = alternativeSimpleShoot(typeAttack,shooter, opponents);
+                break;
             case HEATSEEKER:
                 attacks.get(0).attack(shooter,opponents.get(0));
-                return true;
+                result = true;
+                break;
             case ZX_2:
-                return zx2Shoot(typeAttack, shooter, opponents);
+                result = zx2Shoot(typeAttack, shooter, opponents);
+                break;
             default:
-                return false;
+                result = false;
         }
+
+        this.setNotLoaded();
+        return result;
     }
 }

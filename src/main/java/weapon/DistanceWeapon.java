@@ -55,7 +55,6 @@ public class DistanceWeapon extends WeaponCard {
         this.weaponType = weaponType;
         this.isLoaded = false;
     }
-
     private boolean hellionShoot(int typeAttack, Player shooter, List<Player> opponents){
         switch (typeAttack){
             case 0:
@@ -75,17 +74,21 @@ public class DistanceWeapon extends WeaponCard {
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
-
+        boolean result;
         switch (this.weaponType) {
             case WHISPER:
-                attacks.get(0).attack(shooter,opponents.get(0));
-                return true;
+                result = attacks.get(0).attack(shooter,opponents.get(0));
+                break;
             case HELLION:
-                return hellionShoot(typeAttack, shooter, opponents);
+                result = hellionShoot(typeAttack, shooter, opponents);
+                break;
             case SHOCKWAVE:
-                return alternativeSimpleShoot(typeAttack, shooter, opponents);
+                result= alternativeSimpleShoot(typeAttack, shooter, opponents);
+                break;
             default:
                 return false;
         }
+        this.setNotLoaded();
+        return result;
     }
 }

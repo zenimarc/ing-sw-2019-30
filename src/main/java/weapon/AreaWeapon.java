@@ -53,11 +53,17 @@ public class AreaWeapon extends WeaponCard {
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
 
+        boolean result;
+
         switch (weaponType) {
             case FURNACE:
-                return alternativeSimpleShoot(typeAttack,shooter,opponents);
+                result = alternativeSimpleShoot(typeAttack,shooter,opponents);
+                break;
             default:
-                return false;
+                result = false;
         }
+
+        this.setNotLoaded();
+        return result;
     }
 }

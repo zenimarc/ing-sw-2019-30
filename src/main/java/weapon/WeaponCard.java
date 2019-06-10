@@ -169,6 +169,8 @@ public abstract class WeaponCard extends Card {
         isLoaded = true;
     }
 
+    public void  setNotLoaded(){isLoaded = false;}
+
     @Override
     public String stringGUI(){
         return this.name;
