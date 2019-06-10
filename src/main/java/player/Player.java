@@ -411,14 +411,6 @@ public class Player extends Observable implements Cloneable {
         else return false;
     }
 
-
-    public void placeWeaponCard(WeaponCard weaponCard) {
-        placedWeapons.add(weaponCard);
-        weapons.remove(weaponCard);
-        setChanged();
-        notifyObservers(this.clonePlayer());
-    }
-
     public String printPlayerAmmo(){
         StringBuilder stringBuilder = new StringBuilder();
 
