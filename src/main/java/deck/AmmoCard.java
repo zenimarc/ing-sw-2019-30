@@ -3,8 +3,6 @@ package deck;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
-
 import static deck.Bullet.intArrayToString;
 
 /**

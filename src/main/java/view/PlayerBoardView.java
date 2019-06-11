@@ -7,9 +7,7 @@ import player.Player;
 public class PlayerBoardView {
     private Player player;
     private static final int CELL_LENGTH=8;
-    private static final int CELL_HEIGHT=8;
     private static final int COLS=12;
-    private static final int ROWS=2;
     private static final char H_SEPARATOR = '─';
     private static final char V_SEPARATOR = '│';
     private static final char TOP_LEFT_SEPARATOR = '┌';
@@ -19,7 +17,6 @@ public class PlayerBoardView {
     private static final char NEW_ROW_LEFT_SEPARATOR = '├';
     private static final char NEW_ROW_RIGHT_SEPARATOR = '┤';
     private static final char NEW_COL_SEPARATOR_TOP = '┬';
-    private static final char NEW_COL_SEPARATOR_MIDDLE = '┼';
     private static final char NEW_COL_SEPARATOR_BOTTOM = '┴';
 
     /**
@@ -40,7 +37,10 @@ public class PlayerBoardView {
     private void drawDamageTrack(Player player) {
         StringBuilder stringBuilder = new StringBuilder();
         //NAME
-        stringBuilder.append(player.getName()+"'s damage track:"+System.getProperty("line.separator"));
+        stringBuilder.append(player.getName());
+        stringBuilder.append("'s damage track:");
+        stringBuilder.append(System.getProperty("line.separator"));
+
         //TOP BORDER
         stringBuilder.append(printTopBorder(TOP_LEFT_SEPARATOR, TOP_RIGHT_SEPARATOR, H_SEPARATOR));
 
@@ -280,7 +280,8 @@ public class PlayerBoardView {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(V_SEPARATOR);
 
-        stringBuilder.append("Points:" + player.getPoints());
+        stringBuilder.append("Points:");
+        stringBuilder.append(player.getPoints());
         for (int i = 0; i < 8; i++)
             stringBuilder.append(" ");
 

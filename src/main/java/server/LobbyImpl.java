@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
-    private static final int MINPLAYERS = 2;
+    private static final int MINPLAYERS = 1;
     private static final int MAXPLAYERS = 3;
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
     private int port;

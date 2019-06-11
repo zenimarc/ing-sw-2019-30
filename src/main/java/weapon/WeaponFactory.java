@@ -17,37 +17,6 @@ public class WeaponFactory {
     private static final String WEAPON_RESOURCES_ADDRESS = "src"+File.separator+
             "resources"+File.separator+
             "weapon" + File.separator;
-    private static File weaponFolder = new File(WEAPON_RESOURCES_ADDRESS);
-
-    /**
-     *
-     * @return
-     * @deprecated cause decided to use Jackson
-*/
-
-    @Deprecated
-    private static List<WeaponCard> loadWeaponCardsGSON() {
-        List<WeaponCard> weaponCards = new ArrayList<>();
-        try {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-
-            BufferedReader bufferedReader;
-
-            for(final File folder : weaponFolder.listFiles()){
-                if (folder.getName().equals(EnumWeaponType.SIMPLE_WEAPON.getName())){
-                    for(final File weaponFile : folder.listFiles()){
-                        bufferedReader = new BufferedReader(new FileReader(weaponFile));
-                        weaponCards.add(gson.fromJson(bufferedReader, new TypeToken<SimpleWeapon>(){}.getType()));
-                    }
-                }
-            }
-            return weaponCards;
-        } catch (FileNotFoundException e) {
-            e.fillInStackTrace();
-        }
-        return Collections.emptyList();
-    }
 
     /**
      * This return a list of weapon stored in WEAPON_RESOURCES_ADDRESS, if weapons don't exist create them
