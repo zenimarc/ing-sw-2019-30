@@ -51,6 +51,7 @@ public class DistanceAttack extends Attack {
     public boolean attack(Player player, List<Player> opponents) {
         for(Player opponent : opponents){
             opponent.addDamage(player, damage);
+            opponent.addMark(player, mark);
         }
         return true;
     }
