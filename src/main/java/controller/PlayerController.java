@@ -122,13 +122,22 @@ public class PlayerController implements Observer {
                 break;
             case SHOOT:
                 WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
+                //Load weapon
                 if(!weaponCard.isReady()){
                     pw.printError("This weapon is not loaded");
                     break;
                 }
+
                 int selector = cmdObj.getWeaponSelector();
-                Attack attack =  selector<weaponCard.getAttacks().size() ?
-                        weaponCard.getAttack(selector) : weaponCard.getAlternativeAttack();
+                //Wrong selector
+                if(selector<-1 || selector > weaponCard.getAttacks().size()-1 ||
+                        (selector==-1 && weaponCard.getAlternativeAttack()==null)) {
+                    pw.printError("Selected attack is not usable");
+                    break;
+                }
+
+                Attack attack =  selector == -1 ?
+                        weaponCard.getAlternativeAttack() : weaponCard.getAttack(selector);
 
                 if(player.canPay(attack.getCost())){
                     List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), attack.getTargetType());

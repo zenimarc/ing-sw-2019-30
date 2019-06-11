@@ -105,20 +105,22 @@ public class PlayerView extends Observable implements Observer{
     }
 
     private boolean shoot() {
-        if(player.getWeapons().isEmpty()){
+        if (player.getWeapons().isEmpty()) {
             printError("You have not loaded weapon, so you can't shoot");
-        }else{
-            int index = chooseWeaponToPlace();
-            //Not want to place weapon
-            if(index==-1) return false;
-            //else want shoot
-            WeaponCard weaponCard = player.getWeapons().get(index);
-
-            index = chooseAttack(weaponCard);
-
-            setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
+            return false;
         }
+
+        int index = chooseWeaponToPlace();
+        //Not want to place weapon
+        if (index == -1) return false;
+        //else want shoot
+        WeaponCard weaponCard = player.getWeapons().get(index);
+
+        index = chooseAttack(weaponCard);
+
+        setChanged();
+        notifyObservers(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
+
         return true;
     }
 
@@ -447,12 +449,15 @@ public class PlayerView extends Observable implements Observer{
             sb.append(")");
             sb.append(attack);
         }
-        sb.append('\n');
-        sb.append("Alternative attack:\n");
-        sb.append("\t");
-        sb.append(wc.getAttacks().size());
-        sb.append(")");
-        sb.append(wc.getAlternativeAttack());
+
+        if(wc.getAlternativeAttack()!=null) {
+            sb.append('\n');
+            sb.append("Alternative attack:\n");
+            sb.append("\t");
+            sb.append(wc.getAttacks().size());
+            sb.append(")");
+            sb.append(wc.getAlternativeAttack());
+        }
 
         sb.append("\nWhich do you prefer?");
         return sb.toString();
@@ -465,7 +470,8 @@ public class PlayerView extends Observable implements Observer{
      */
     private int chooseAttack(WeaponCard wc){
         String read;
-        String format = "[0-"+(wc.getAttacks().size())+"]";
+        int max = wc.getAlternativeAttack()!=null ? wc.getAttacks().size() : wc.getAttacks().size()-1;
+        String format = "[0-"+max+"]";
         String question = stringForChooseAttack(wc);
 
         while(true){
@@ -475,7 +481,7 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-        return Integer.valueOf(read);
+        return Integer.valueOf(read)==wc.getAttacks().size() ? -1 : Integer.valueOf(read) ;
     }
 
     /**
