@@ -194,22 +194,26 @@ public class PlayerBoardView {
      */
     private String printMarks(){
         String textToView;
-        int nameSpace;
+        int totalSpace;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
         stringBuilder.append(V_SEPARATOR);
-        if (!player.getPlayerBoard().getMarks().keySet().isEmpty()) {
-            nameSpace = (((CELL_LENGTH+2) * COLS)-2) / player.getPlayerBoard().getMarks().keySet().size();
-            for (Player player : player.getPlayerBoard().getMarks().keySet()) {
-                textToView = player.getName().substring(0, Math.min(nameSpace-3-String.valueOf(this.player.getMarks(player)).length(), player.getName().length()))
-                        + ": " + this.player.getMarks(player) + " "; //-3 is the length of ": " + " " string (all added strings)
-                stringBuilder.append(stringTrunker(textToView, nameSpace));
+        stringBuilder.append("Marks: ");
+        totalSpace = (((CELL_LENGTH+1)*COLS)+3);
+        if (!this.player.getPlayerBoard().getMarks().keySet().isEmpty()){
+            for (Player curPlayer : this.player.getPlayerBoard().getMarks().keySet()) {
+                stringBuilder.append(
+                        stringTrunker(("    ("+this.player.getMarks(curPlayer)+")"+curPlayer.getName()+" "),
+                                totalSpace/this.player.getPlayerBoard().getMarks().size()));
             }
-            for (int i=0; i< (((((CELL_LENGTH+2) * COLS)-1) % player.getPlayerBoard().getMarks().keySet().size())-1); i++)
+            for (int i=0; i< (totalSpace % this.player.getPlayerBoard().getMarks().size()); i++){
                 stringBuilder.append(" ");
-        } else
-            stringBuilder.append(stringTrunker(" ", (CELL_LENGTH+2)*COLS-2));
-        stringBuilder.append(V_SEPARATOR);
+            }
+            stringBuilder.append(V_SEPARATOR);
+        }else{
+            stringBuilder.append(stringTrunker(" ",totalSpace));
+            stringBuilder.append(V_SEPARATOR);
+        }
         return stringBuilder.toString();
 
 
