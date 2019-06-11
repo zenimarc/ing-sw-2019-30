@@ -1,10 +1,9 @@
 package client;
 
+import controller.PlayerController;
 import player.Player;
 import server.GameServer;
 import server.Lobby;
-import server.LobbyImpl;
-import server.TurnHandler;
 import view.PlayerBoardView;
 import view.PlayerView;
 
@@ -165,6 +164,15 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
             System.out.println("impossibile riconnettere");
             return false;
         }
+    }
+
+    /**
+     * this function asks to the server for the player controller of this client (Player)
+     * @return the controller associated to this client (Player)
+     * @throws RemoteException
+     */
+    public PlayerController getPlayerController() throws RemoteException{
+        return gameServer.getPlayerController(this);
     }
 
     public String getName() {

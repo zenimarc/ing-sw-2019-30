@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
-
+    private static final int SECONDS_BEFORE_START_GAME = 30;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
     private transient ArrayList<ClientInfo> clients;
     private transient ArrayList<Client> offlineClients;
@@ -23,7 +23,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private UUID gameToken;
     private boolean gameStarted;
     private int turn;
-    private TurnHandler turnHandler;
+    private transient TurnHandler turnHandler;
+    private transient Thread beginCountdown;
 
     public GameServerImpl(int minPlayer, int maxPlayer) throws RemoteException {
         boardController = new BoardController();
@@ -34,13 +35,14 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         this.gameToken = UUID.randomUUID();
         this.gameStarted = false;
         this.turn = 0;
+        this.beginCountdown = new Thread();
     }
 
     /**
      * this function checks if the server is full
      * @return true if it's full, and false if it isn't full.
      */
-    public boolean isFull(){
+    public synchronized boolean isFull(){
         System.out.println("ci sono "+clients.size()+" players" +" e il max e: "+ maxPlayer);
         return (clients.size() >= maxPlayer);
     }
@@ -65,8 +67,21 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         return this.gameStarted;
     }
 
-    public synchronized void startGame(){
+    private void beginCountdown(){
+        try {
+            Thread.sleep(SECONDS_BEFORE_START_GAME * 1000);
+            if(canBeginGame())
+                startGame();
+            else
+                Thread.currentThread().interrupt();
+        }catch (InterruptedException ie){
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void startGame(){
         //TODO: far partire il gioco e avvisare tutti i client
+        System.out.println("il gameserver: "+this.getGameToken()+" ha startato il game");
         this.gameStarted = true;
         turnHandler = new TurnHandler(this);
         turnHandler.start();
@@ -87,12 +102,26 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     /**
-     * this functions add a ClientInfo data to the gameserver
+     * this functions add a ClientInfo data to the gameserver and check if the game can start,
+     * in this case start a countdown to begin the game.
      * @param client is the ClientInfo of remote client
      */
     public synchronized void addClient(ClientInfo client){
         this.clients.add(client);
         System.out.println("ho appena aggiunto "+ client);
+
+        if (canBeginGame() && !beginCountdown.isAlive()) {
+            beginCountdown = new Thread(this::beginCountdown);
+            beginCountdown.start();
+        }
+    }
+
+    /**
+     * this function checks if there are enough players to start the game
+     * @return true if there are enough players to start, else false.
+     */
+    private boolean canBeginGame(){
+        return getActiveClients().size()>=minPlayer;
     }
 
     /**
@@ -205,7 +234,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             }
         }
         removeClient(client);
-        System.out.println(client + " removed for inactivity");
+        System.out.println("\n"+client + " removed for inactivity");
     }
 
     public synchronized int changeTurn() {
@@ -233,7 +262,6 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      */
     public void start(){
         new Thread(this::checkOfflineClients).start();
-        startGame();
         //TODO: far partire il checkoogìfline e anche il timer del turno (2 min per azione)
     }
 }
