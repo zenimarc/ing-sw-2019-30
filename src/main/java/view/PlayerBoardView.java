@@ -1,10 +1,14 @@
 package view;
 import player.Player;
 
+import java.util.Observable;
+import java.util.Observer;
+
 /**
  * TODO: aggiungere munizioni che ha il player, armi che ha il player, potenziamenti che ha il player.
  */
-public class PlayerBoardView {
+
+public class PlayerBoardView implements Observer {
     private Player player;
     private static final int CELL_LENGTH=8;
     private static final int CELL_HEIGHT=8;
@@ -329,4 +333,11 @@ public class PlayerBoardView {
         this.player = player;
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o.getClass()==Player.class && arg.getClass()==Player.class){
+            player = (Player) arg;
+            drawPlayerboard();
+        }
+    }
 }

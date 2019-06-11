@@ -28,9 +28,7 @@ public class PlayerView extends Observable implements Observer{
     }
 
     public void myTurn() {
-
         PlayerCommand command = choosePlayerAction();
-
         switch (command) {
             case MOVE:
                 move(PlayerCommand.MOVE);
@@ -75,20 +73,31 @@ public class PlayerView extends Observable implements Observer{
         return true;
     }
 
+    /**
+     * This ask eventually new position than invoke grabAmmo orr grabWeapon
+     * @return
+     */
     public boolean grab() {
         if(player.getCell().getClass() == NormalCell.class) return grabAmmo();
         else if (player.getCell().getClass()== RegenerationCell.class) return grabWeapon();
         return false;
     }
 
+    /**
+     * This ask which weapon want and notify that action
+     * @return
+     */
     private boolean grabWeapon(){
         int drawIndex = chooseWeaponCard();
-
         setChanged();
         notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, drawIndex));
         return true;
     }
 
+    /**
+     * This notify to grab ammo
+     * @return
+     */
     private boolean grabAmmo(){
         setChanged();
         notifyObservers(new CommandObj(PlayerCommand.GRAB_AMMO, player.getCell(),0));
@@ -112,6 +121,60 @@ public class PlayerView extends Observable implements Observer{
         }
         return true;
     }
+
+    /**
+     * Ask player if he want load some weapon and notify that
+     * @return
+     */
+    public boolean loadWeapon(){
+
+        List<WeaponCard> notLoaded = player.getNotLoaded();
+        if(notLoaded.isEmpty()) return true;
+
+        if(wantLoad()) {
+            int index = chooseWeaponToLoad();
+            if(index==-1) return true;
+
+            setChanged();
+            notifyObservers(new CommandObj(PlayerCommand.LOAD_WEAPONCARD, player.getNotLoaded().get(index)));
+
+            loadWeapon();
+        }
+        return  true;
+    }
+
+    /**
+     * This ask player if want load some weapon
+     * @return
+     */
+    private boolean wantLoad(){
+        String format = "[0-1]";
+        String read;
+        while(true) {
+            print("Do you want load weapon? [0: Yes, 1: No] ");
+            read = reader.next();
+            if(read.matches(format)) break;
+        }
+        return read.equals("0");
+    }
+
+    /**
+     * Ask player which weapon want to load and retun index
+     * @return
+     */
+    private int chooseWeaponToLoad(){
+        String format = "[0-" + player.getNotLoaded().size() + "]";
+        String read;
+        while (true) {
+            print("What weapon want load?\n");
+            print(stringWeaponFromList(player.getNotLoaded(), true));
+            read = reader.next();
+            if (read.matches(format)) break;
+        }
+
+        return Integer.valueOf(read)-1;
+    }
+
 
     /**
      * This ask player which opponents want to hit from a list
@@ -322,12 +385,6 @@ public class PlayerView extends Observable implements Observer{
         StringBuilder sb = new StringBuilder();
         sb.append("Weapon card in this cell are:");
         sb.append(stringWeaponFromList(cell.getCards(), false));
-      /*  for(WeaponCard weaponCard : cell.getCards()){
-            sb.append('\t');
-            sb.append(cell.getCards().indexOf(weaponCard));
-            sb.append(") ");
-            sb.append(weaponCard);
-        }*/
         sb.append("\nWhich do you want? ");
         return sb.toString();
     }
@@ -387,11 +444,14 @@ public class PlayerView extends Observable implements Observer{
         for(Attack attack : wc.getAttacks()){
             sb.append("\n\t");
             sb.append(wc.getAttacks().indexOf(attack));
-            sb.append(") ");
+            sb.append(")");
             sb.append(attack);
         }
         sb.append('\n');
-        sb.append("Alternative attack: ");
+        sb.append("Alternative attack:\n");
+        sb.append("\t");
+        sb.append(wc.getAttacks().size());
+        sb.append(")");
         sb.append(wc.getAlternativeAttack());
 
         sb.append("\nWhich do you prefer?");

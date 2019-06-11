@@ -9,7 +9,6 @@ import deck.AmmoCard;
 import deck.Bullet;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
-import player.PlayerBoard;
 import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
@@ -42,6 +41,7 @@ public class PlayerController implements Observer {
         this.playerView = new PlayerView(player, this);
         this.playerBoardView = new PlayerBoardView(player);
         this.player.addObserver(playerView);
+        this.player.addObserver(playerBoardView);
 
     }
 
@@ -79,7 +79,6 @@ public class PlayerController implements Observer {
     @Override
     public void update(Observable view, Object obj){
         if(view.getClass() != PlayerView.class) return;
-
         CommandObj cmdObj = (CommandObj) obj;
         PlayerView pw = (PlayerView) view;
         switch (cmdObj.getCmd()) {
@@ -98,13 +97,15 @@ public class PlayerController implements Observer {
                 }else {
                     viewPrintError(view);
                 }
+                 player.notifyEndAction();
                 break;
             case GRAB_WEAPON:
                 grabWeapon(view, (int) cmdObj.getObject());
+                player.notifyEndAction();
                 break;
-            // case POWERUP:
+             case POWERUP:
             //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
-            //break;
+            break;
             case END_TURN:
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
@@ -117,6 +118,7 @@ public class PlayerController implements Observer {
                 break;
             case DISCARD_WEAPON:
                 player.rmWeapon((int) cmdObj.getObject());
+                player.notifyEndAction();
                 break;
             case SHOOT:
                 WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
@@ -138,10 +140,23 @@ public class PlayerController implements Observer {
                     if(potentialTargets.containsAll(opponents)){
                         weaponCard.shoot(cmdObj.getWeaponSelector(), player, opponents, null);
                         numAction++;
+                        player.notifyEndAction();
                     }
-                }else {
+                }else{
                     pw.printError("You have not enough bullet to use this attack");
                 }
+                break;
+            case LOAD_WEAPONCARD:
+                WeaponCard wc = (WeaponCard) cmdObj.getObject();
+
+                if(!player.getNotLoaded().contains(wc)) pw.printError("This weapon is not in not loaded weapon");
+                if(player.canPay(Bullet.toIntArray(wc.getCost()))){
+                    wc.setLoaded();
+                    player.useAmmo(Bullet.toIntArray(wc.getCost()));
+                } else{
+                    pw.printError("You have not enough ammo to load this weapon");
+                }
+                player.notifyEndAction();
                 break;
             default: 
                 break;
@@ -390,6 +405,7 @@ public class PlayerController implements Observer {
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
             playerView.myTurn();
         }
+        playerView.loadWeapon();
         numAction = 0;
     }
 
