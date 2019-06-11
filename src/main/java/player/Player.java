@@ -10,6 +10,7 @@ import powerup.PowerCard;
 import weapon.WeaponCard;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static constants.Color.*;
 import static deck.Bullet.mapToString;
@@ -26,7 +27,6 @@ public class Player extends Observable implements Cloneable {
     private ArrayList<WeaponCard> weapons;
     private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
-    private ArrayList<WeaponCard> placedWeapons;
 
     /**
      * Default constructors
@@ -38,7 +38,6 @@ public class Player extends Observable implements Cloneable {
         this.points = 0; //a new player has 0 points
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
-        this.placedWeapons = new ArrayList<>();
         this.ammo = new EnumMap<>(Color.class);
         ammo.put(RED,0);
         ammo.put(YELLOW, 0);
@@ -111,6 +110,10 @@ public class Player extends Observable implements Cloneable {
         return this.powerups;
     }
 
+    public List<WeaponCard> getNotLoaded(){
+        return weapons.stream().filter(x -> !x.isReady()).collect(Collectors.toList());
+    }
+
     /**
      * @return an HashMap containing player's ammo by color.
      */
@@ -164,8 +167,8 @@ public class Player extends Observable implements Cloneable {
     public boolean useAmmo(int[] ammo) {
         if (canPay(ammo)) {
             addAmmo(Arrays.stream(ammo).map(x -> -x).toArray());
-            setChanged();
-            notifyObservers(this.clonePlayer());
+   //         setChanged();
+     //       notifyObservers(this.clonePlayer());
             return true;
         } else
             return false;
@@ -189,8 +192,8 @@ public class Player extends Observable implements Cloneable {
         this.ammo.put(BLUE, (this.ammo.get(BLUE) != null) ?
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), this.ammo.get(BLUE) + ammo[2]) :
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), ammo[2]));
-        setChanged();
-        notifyObservers(this.clonePlayer());
+  //      setChanged();
+    //    notifyObservers(this.clonePlayer());
     }
 
     /**
@@ -202,8 +205,8 @@ public class Player extends Observable implements Cloneable {
     public boolean addWeapon(WeaponCard weaponCard) {
         if (weapons.size() < Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
             weapons.add(weaponCard);
-            setChanged();
-            notifyObservers(this.clonePlayer());
+   //         setChanged();
+     //       notifyObservers(this.clonePlayer());
             return true;
         }
         return false;
@@ -230,8 +233,9 @@ public class Player extends Observable implements Cloneable {
      */
     public void addDamage(Player opponent, int shots) {
         this.playerBoard.addDamage(opponent, shots);
-        setChanged();
-        notifyObservers(this.clonePlayer());
+      //  setChanged();
+      //  notifyObservers(this.clonePlayer());
+    //    opponent.notifyEndAction();
     }
 
     public void addDamage(Player opponent) {
@@ -247,8 +251,9 @@ public class Player extends Observable implements Cloneable {
      */
     public void addMark(Player opponent, int mark) {
         this.playerBoard.addMark(opponent, mark);
-        setChanged();
-        notifyObservers(this.clonePlayer());
+     //   setChanged();
+      //  notifyObservers(this.clonePlayer());
+ //       opponent.notifyEndAction();
     }
 
     /**
@@ -279,10 +284,6 @@ public class Player extends Observable implements Cloneable {
         return this.playerBoard.getNumDamages();
     }
 
-    public ArrayList<WeaponCard> getPlacedWeapons() {
-        return placedWeapons;
-    }
-
     /**
      * This function verifies if a player is visible
      *
@@ -306,8 +307,8 @@ public class Player extends Observable implements Cloneable {
     public boolean addPowerCard(PowerCard powerCard) {
         if (powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
             powerups.add(powerCard);
-            setChanged();
-            notifyObservers(this.clonePlayer());
+      //      setChanged();
+        //    notifyObservers(this.clonePlayer());
             return true;
         }
         return false;
@@ -409,6 +410,11 @@ public class Player extends Observable implements Cloneable {
         stringBuilder.append("B:" + ammo.get(BLUE) + "]");
 
         return stringBuilder.toString();
+    }
+
+    public void notifyEndAction(){
+        setChanged();
+        notifyObservers(this.clonePlayer());
     }
 
 }
