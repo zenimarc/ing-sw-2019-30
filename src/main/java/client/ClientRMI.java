@@ -3,8 +3,6 @@ package client;
 import player.Player;
 import server.GameServer;
 import server.Lobby;
-import server.LobbyImpl;
-import server.TurnHandler;
 import view.PlayerBoardView;
 import view.PlayerView;
 
