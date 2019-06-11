@@ -16,11 +16,11 @@ import static constants.Constants.MAX_WEAPON_REGENERATIONCELL;
  */
 public class BoardViewCLI implements Observer {
     private Board board;
-    private int N = 4; //Number of horizontal cells
-    private int A = 3;  //Number of vertical cells
-    private int M = 6; //Size of vertical board and at least it must be > L+2
-    private int L = 3; //variable used for drawing doors
-    private int Z = 3; //variable used to print in a proportional way
+    private int horizontalCells = 4; //Number of horizontal cells
+    private int verticalCells = 3;  //Number of vertical cells
+    private int numLength = 6; //Size of vertical board and at least it must be > doorSize+2
+    private int doorSize = 3; //variable used for drawing doors
+    private int length = 3; //variable used to print in a proportional way
 
     public BoardViewCLI(Board board){
         this.board = board;
@@ -42,11 +42,11 @@ public class BoardViewCLI implements Observer {
 
     public void drawCLI() {
         printHighBoard();
-        for(int i = 0; i < A; i++){
-            for(int x = i*M; x < i*M+M-1; x++)
+        for(int i = 0; i < verticalCells; i++){
+            for(int x = i* numLength; x < i* numLength + numLength -1; x++)
                 printThings(x);
             printCards(i);
-            if(i < A-1)
+            if(i < verticalCells -1)
                 printMiddleBoard(i);
             else printLowBoard();}
     }
@@ -56,13 +56,13 @@ public class BoardViewCLI implements Observer {
      */
     private void printHighBoard() {
         StringBuilder stream = new StringBuilder();
-        for (int Board = 0; Board < N; Board++) {
+        for (int Board = 0; Board < horizontalCells; Board++) {
             if(getCell(0, Board) == null){
                 if(Board == 0)
                     stream.append(" ");
                 else if(getCell(0, Board-1) == null)
                     stream.append(" ");
-                for(int i = 0; i < (M+Z)*Z; i++)
+                for(int i = 0; i < (numLength + length)* length; i++)
                     stream.append(" ");
             }
             else{
@@ -70,7 +70,7 @@ public class BoardViewCLI implements Observer {
                     stream.append("┌");
                 else if(getCell(0, Board-1) == null)
                     stream.append(" ");
-                for(int i = 0; i < (M+Z)*Z; i++)
+                for(int i = 0; i < (numLength + length)* length; i++)
                     stream.append("─");
                 if(getCell(0, Board+1) == null)
                     stream.append("┐");
@@ -97,15 +97,15 @@ public class BoardViewCLI implements Observer {
                 stream.append("└");
             else stream.append("├");
 
-        for (int Board = 0; Board < N; Board++) {
+        for (int Board = 0; Board < horizontalCells; Board++) {
 
-            for (int i = 0; i < (M + Z) * Z; i++) {
+            for (int i = 0; i < (numLength + length) * length; i++) {
                 if (getCell(x + 1, Board) == null && getCell(x, Board) == null)
                     stream.append(" ");
                 else if (getCell(x + 1, Board) == null || getCell(x, Board) == null)
                         stream.append("─");
                      else {
-                        if (i >= M + Z && i <= (M + Z) * 2) {
+                        if (i >= numLength + length && i <= (numLength + length) * 2) {
                             if (board.getBillboard().hasDoor(getCell(x, Board), getCell(x + 1, Board)) || board.getBillboard().hasSameColor(getCell(x, Board), getCell(x + 1, Board)))
                                 stream.append(" ");
                             else
@@ -115,7 +115,7 @@ public class BoardViewCLI implements Observer {
                     }
                 }
 
-            if(Board != N-1){
+            if(Board != horizontalCells -1){
                 if(getCell(x, Board) == null){//cella in cui si è è nulla
                     if(getCell(x,Board+1) != null && getCell(x+1,Board) != null) //cella in diagonale nulla
                         stream.append("┼");
@@ -150,12 +150,12 @@ public class BoardViewCLI implements Observer {
             }
         }
 
-        if(getCell(x,N-1) != null){
-            if(getCell(x+1,N-1) != null)
+        if(getCell(x, horizontalCells -1) != null){
+            if(getCell(x+1, horizontalCells -1) != null)
                 stream.append("┤");
             else  stream.append("┘");}
         else {
-            if (getCell(x + 1, N-1) != null)
+            if (getCell(x + 1, horizontalCells -1) != null)
                 stream.append("┐");
             else stream.append(" ");
         }
@@ -169,24 +169,24 @@ public class BoardViewCLI implements Observer {
      */
     private void printLowBoard() {
         StringBuilder stream = new StringBuilder();
-        for (int Board = 0; Board < N; Board++) {
-        if(getCell(A-1, Board) == null){
+        for (int Board = 0; Board < horizontalCells; Board++) {
+        if(getCell(verticalCells -1, Board) == null){
             if(Board == 0)
                 stream.append(" ");
-            else if(getCell(A-1, Board-1) == null)
+            else if(getCell(verticalCells -1, Board-1) == null)
                 stream.append(" ");
-            for(int i = 0; i < (M+Z)*Z; i++)
+            for(int i = 0; i < (numLength + length)* length; i++)
                 stream.append(" ");
         }
         else{
             if (Board == 0)
                 stream.append("└");
-            else if(getCell(A-1, Board-1) == null)
+            else if(getCell(verticalCells -1, Board-1) == null)
                 stream.append("└");
 
-            for(int i = 0; i < (M+Z)*Z; i++)
+            for(int i = 0; i < (numLength + length)* length; i++)
                 stream.append("─");
-            if(getCell(A-1, Board+1) == null)
+            if(getCell(verticalCells -1, Board+1) == null)
                 stream.append("┘");
             else stream.append("┴");
         }
@@ -201,11 +201,11 @@ public class BoardViewCLI implements Observer {
      */
     private void printThings(int x) {
         StringBuilder stream = new StringBuilder();
-        for(int square = 0; square < N; square++)
-            if(getCell(x/M, square) == null){
-                for(int i = 0; i < (M+Z)*Z+1; i++)
+        for(int square = 0; square < horizontalCells; square++)
+            if(getCell(x/ numLength, square) == null){
+                for(int i = 0; i < (numLength + length)* length +1; i++)
                     stream.append(" ");
-                if (getCell(x/M, square+1) != null)
+                if (getCell(x/ numLength, square+1) != null)
                     stream.append("│");
                 else stream.append(" ");
             }
@@ -213,9 +213,9 @@ public class BoardViewCLI implements Observer {
                 if(square == 0)
                     stream.append("│");
                 stream.append(printName(x, square));
-                for(int i = 0; i < M+Z; i++)
+                for(int i = 0; i < numLength + length; i++)
                     stream.append(" ");
-                if(x%M == 0)
+                if(x% numLength == 0)
                     stream.append(printColor(x, square));
                 else
                     stream.append(printDoors(x, square));
@@ -232,13 +232,13 @@ public class BoardViewCLI implements Observer {
      */
     private StringBuilder printName(int x, int y){
         StringBuilder stream = new StringBuilder();
-        if(getCell(x/M, y).getPawns().size() > x%M){
-            String name = (getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().substring(0, Math.min(getCell(x/M, y).getPawns().get(x%M).getPlayer().getName().length(),M+Z-1)));
+        if(getCell(x/ numLength, y).getPawns().size() > x% numLength){
+            String name = (getCell(x/ numLength, y).getPawns().get(x% numLength).getPlayer().getName().substring(0, Math.min(getCell(x/ numLength, y).getPawns().get(x% numLength).getPlayer().getName().length(), numLength + length -1)));
             stream.append(name);
-            for (int f = name.length(); f < M+Z; f++)
+            for (int f = name.length(); f < numLength + length; f++)
                 stream.append(" ");
         }
-        else for (int f = 0; f < M+Z; f++)
+        else for (int f = 0; f < numLength + length; f++)
             stream.append(" ");
         return stream;
     }
@@ -251,14 +251,14 @@ public class BoardViewCLI implements Observer {
      */
     private StringBuilder printColor(int x, int y){
         StringBuilder stream = new StringBuilder();
-        if(getCell(x/M, y) == null){
-            for(int i = 0; i< M+Z; i++)
+        if(getCell(x/ numLength, y) == null){
+            for(int i = 0; i< numLength + length; i++)
                 stream.append(" ");
         }
         else {
-            for(int i = getCell(x/M, y).getColor().name().length(); i< M+Z; i++)
+            for(int i = getCell(x/ numLength, y).getColor().name().length(); i< numLength + length; i++)
                 stream.append(" ");
-            stream.append(getCell(x/M, y).getColor());
+            stream.append(getCell(x/ numLength, y).getColor());
 
                 stream.append("│");
         }
@@ -273,28 +273,28 @@ public class BoardViewCLI implements Observer {
      */
     private StringBuilder printDoors(int x, int square) {
         StringBuilder stream = new StringBuilder();
-        if (x % M == 1){
-            for(int i = 0; i < M+Z-board.getBillboard().getCellPosition(getCell(x/M, square)).toString().length(); i++)
+        if (x % numLength == 1){
+            for(int i = 0; i < numLength + length -board.getBillboard().getCellPosition(getCell(x/ numLength, square)).toString().length(); i++)
                 stream.append(" ");
             stream.append(printCoordinates(x, square));
             stream.append("│");
             }
-        else if (x%M > L / 2 && x%M < M - L / 2) {
-            if(x % M == 2 && getCell(x/M, square).getClass() == RegenerationCell.class){
-                for (int i = 0; i < M-2; i++)
+        else if (x% numLength > doorSize / 2 && x% numLength < numLength - doorSize / 2) {
+            if(x % numLength == 2 && getCell(x/ numLength, square).getClass() == RegenerationCell.class){
+                for (int i = 0; i < numLength -2; i++)
                     stream.append(" ");
                 stream.append("Regen");}
-            else for (int i = 0; i < M+Z; i++)
+            else for (int i = 0; i < numLength + length; i++)
                 stream.append(" ");
-            if(square == N|| getCell(x/M, square+1) == null)
+            if(square == horizontalCells || getCell(x/ numLength, square+1) == null)
                 stream.append("│");
-            else if (board.getBillboard().hasDoor(getCell(x/M , square), getCell(x/M , square+1))|| board.getBillboard().hasSameColor(getCell(x/M , square), getCell(x/M , square+1)))
+            else if (board.getBillboard().hasDoor(getCell(x/ numLength, square), getCell(x/ numLength, square+1))|| board.getBillboard().hasSameColor(getCell(x/ numLength, square), getCell(x/ numLength, square+1)))
                 stream.append(" ");
             else
                 stream.append("│");
         }
         else {
-            for (int i = 0; i < M+Z; i++)
+            for (int i = 0; i < numLength + length; i++)
                 stream.append(" ");
             stream.append("│");
         }
@@ -309,7 +309,7 @@ public class BoardViewCLI implements Observer {
      */
     private StringBuilder printCoordinates(int x, int y){
         StringBuilder stream = new StringBuilder();
-        stream.append(board.getBillboard().getCellPosition(getCell(x/M, y)).toString());
+        stream.append(board.getBillboard().getCellPosition(getCell(x/ numLength, y)).toString());
         return stream;
     }
 
@@ -320,13 +320,13 @@ public class BoardViewCLI implements Observer {
     private void printCards(int x) {
         StringBuilder stream = new StringBuilder();
         for(int i = MAX_WEAPON_REGENERATIONCELL.getValue() -1; i > -1; i--){
-            for (int y = 0; y < N; y++) {
+            for (int y = 0; y < horizontalCells; y++) {
                 if (getCell(x, y) == null){
                     if(y == 0)
                        stream.append(" ");
-                    for(int j = 0; j < (Z+M)*Z;j++)
+                    for(int j = 0; j < (length + numLength)* length; j++)
                         stream.append(" ");
-                    if(y != N - 1 && getCell(x, y+1) != null)
+                    if(y != horizontalCells - 1 && getCell(x, y+1) != null)
                         stream.append("│");
                 }
                 else {
@@ -356,7 +356,7 @@ public class BoardViewCLI implements Observer {
             for (int i = 0; i < cell.getCard(0).toString().length(); i++)
                 stream.append(" ");
 
-        for(int j = cell.getCard(0).toString().length(); j < (M+Z)*Z; j++)
+        for(int j = cell.getCard(0).toString().length(); j < (numLength + length)* length; j++)
             stream.append(" ");
         stream.append("│");
         return stream;
@@ -384,7 +384,7 @@ public class BoardViewCLI implements Observer {
         StringBuilder stream = new StringBuilder();
             if (cell.getCard(pos) != null)
                 stream.append(printWeaponName((WeaponCard) cell.getCard(pos)));
-            else for(int j = 0; j < (M+Z)*Z; j++)
+            else for(int j = 0; j < (numLength + length)* length; j++)
                 stream.append(" ");
         stream.append("│");
         return stream;
@@ -397,12 +397,12 @@ public class BoardViewCLI implements Observer {
      */
     private StringBuilder printWeaponName(WeaponCard weapon){
         StringBuilder stream = new StringBuilder();
-        String name = weapon.getName().substring(0, Math.min(weapon.getName().length(),M+Z-1));
+        String name = weapon.getName().substring(0, Math.min(weapon.getName().length(), numLength + length -1));
         stream.append(name);
-        for(int i = name.length(); i < M+Z; i++)
+        for(int i = name.length(); i < numLength + length; i++)
             stream.append(" ");
         stream.append(weapon.getGrabCostCLI());
-        for(int i = stream.length(); i < (M+Z)*Z; i++)
+        for(int i = stream.length(); i < (numLength + length)* length; i++)
             stream.append(" ");
         return stream;
     }

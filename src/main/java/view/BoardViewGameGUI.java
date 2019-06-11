@@ -4,6 +4,8 @@ import board.Board;
 import board.Position;
 import board.billboard.BillboardGenerator;
 import client.Client;
+import client.ClientRMI;
+import controller.BoardController;
 import controller.PlayerCommand;
 import controller.PlayerController;
 import javafx.application.Application;
@@ -23,6 +25,7 @@ import weapon.WeaponCard;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -31,17 +34,24 @@ import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
 
 //TODO fare pulizia di codice, finire qualche pulsante, sistemare le nuove immagini di Marco
-public class BoardViewGameGUI extends Application {
+public class BoardViewGameGUI extends Application  {
     private int stageHeight = 700;
     private int stageWidth = 920;
     private Board board;
-    private ArrayList<Client> client;
+    private ClientRMI client = new ClientRMI();
+    private ArrayList<Client> clients;
     private ArrayList<Player> players;
     private Player player = new Player("Marco");
     private PlayerCommand command = CHOOSE_ACTION;
     private PlayerController controller;
+    private BoardController boardController;
     private int random;
+    private int blankCells = 1;
     private int test = 1;
+
+    public BoardViewGameGUI() throws RemoteException {
+    }
+
 
     private Player getPlayer(){return this.player;}
 
@@ -49,11 +59,15 @@ public class BoardViewGameGUI extends Application {
         return (WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos);
     }
 
-    private void initialize(/*, ArrayList<Client> client*/){
-        player = new Player("Marco");
+    private void initialize(/*, ArrayList<Client> client*/) throws RemoteException, InterruptedException {
         this.random = new Random().nextInt(3) + 1;
         this.board = new Board(8, BillboardGenerator.createBillboard(test));
         player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(1, 1)));
+        if(test == 1 || test == 4)
+            blankCells = 1;
+        if(test == 2)
+            blankCells = 2;
+
         //this.players = players;
         //this.client = client;
     }
@@ -68,7 +82,7 @@ public class BoardViewGameGUI extends Application {
      * @throws FileNotFoundException if files are not found
      */
     @Override
-    public void start(Stage primaryStage) throws FileNotFoundException {
+    public void start(Stage primaryStage) throws FileNotFoundException, RemoteException, InterruptedException {
         initialize();
         Pane pane = createGame(test);
         pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -165,7 +179,7 @@ public class BoardViewGameGUI extends Application {
         map.getChildren().add(tableWeaponCards(powerPath("powerCard"), 255, -160));
 
         generateBoard(map, number);
-        actionButtons(map);
+        actionButtons(map, map.getChildren().size());
 
 
 return map;
@@ -183,8 +197,12 @@ return map;
         for(int i = 0; i < 3; i++) {
             playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 110, 80,80 - i * 40, 0, 0));
             playerBoard.getChildren().get(2*i+1).setVisible(false);
-            playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 110, 80,680 - i * 40, 0, 0));
-            playerBoard.getChildren().get(2*i+2).setVisible(false);
+            /*if(i != 2)
+                playerBoard.getChildren().add(generateCard(powerPath(player.getPowerups().get(i).stringGUI()), 110, 80, 680 - i * 40, 0, 0));
+                else{*///TODO serve Boardcontroller
+                playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 110, 80, 680 - i * 40, 0, 0));
+                playerBoard.getChildren().get(2 * i + 2).setVisible(false);
+            //}
         }
 
         playerBoard.getChildren().add(generateCard(damagePath("yellow"), 30, 30, 30, 0, 0));
@@ -492,18 +510,20 @@ return playerBoard;
         changeSizeButton(button, height, width);
         button.setTranslateX(transX);
         button.setTranslateY(transY);
-        button.setOpacity(0.5);
+        button.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(5))));
+        button.setStyle("-fx-background-color: transparent;");
+        button.setOpacity(0);
 
         return button;
     }
 
 
-    private void actionButtons(Pane map){
-        map.getChildren().add(activateButton("moveFrenzy2", MOVE,15, map));
-        map.getChildren().add(activateButton("grabFrenzy2", GRAB,28, map));
-        map.getChildren().add(activateButton("shootFrenzy2", SHOOT,40, map));
-        map.getChildren().add(activateButton("grabFrenzy1", GRAB,70, map));
-        map.getChildren().add(activateButton("shootFrenzy1", SHOOT,85, map));
+    private void actionButtons(Pane map, int size){
+        map.getChildren().add(activateButton("moveFrenzy2", MOVE,15, map, size));
+        map.getChildren().add(activateButton("grabFrenzy2", GRAB_MOVE,28, map, size));
+        map.getChildren().add(activateButton("shootFrenzy2", SHOOT_MOVE,40, map, size));
+        map.getChildren().add(activateButton("grabFrenzy1", GRAB,70, map, size));
+        map.getChildren().add(activateButton("shootFrenzy1", SHOOT,85, map, size));
     }
 
     /**
@@ -525,27 +545,36 @@ return playerBoard;
         return buttons;
     }
 
-    private Button activateButton(String string, PlayerCommand command, int transY, Pane map){
+    private Button activateButton(String string, PlayerCommand command, int transY, Pane map, int size){
         Button button = createButton(string, 8, 40, 0, transY);
-        setActionPlayer(button, command, map);
+        setActionPlayer(button, command, map, size);
         return button;
     }
 
     private int setCellOnAction(Pane map, int x, int y, int i, int test){
         if(!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))){
-            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, (ImageView) map.getChildren().get(13+i));
+            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, (ImageView) map.getChildren().get(13+i), map);
             i++;
         }
         else
-            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, null);
+            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, null, map);
         return i;
     }
 
-    private void illuminateCells(Pane map, PlayerCommand order, int x, int y){
+    private void illuminateCells(Pane map, PlayerCommand order, int x, int y, int i, int steps){
 
-        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 3)) {
+        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), steps)) {
+                illuminateCell((Button) map.getChildren().get(21+x+y*3-i), true);
         }
+        else illuminateCell((Button) map.getChildren().get(21+x+y*3-i), false);
     }
+
+    private void illuminateCell(Button cell,  boolean canReach){
+        cell.setVisible(canReach);
+        if(canReach)
+            cell.setOpacity(1);
+    }
+
 
     private void changeGraphics(Button button, ImageView image){
         Node node = button.getGraphic();
@@ -647,35 +676,61 @@ return playerBoard;
     }
 
     //azioni che giocatore può fare
-    private void setActionPlayer(Button action, PlayerCommand order, Pane map){
+    private void setActionPlayer(Button action, PlayerCommand order, Pane map, int size){
+        action.setOpacity(1);
+
         action.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                int steps = 0;
+                int i = 0;
+                steps = setSteps(steps, order);
                 //verifica se è il proprio turno
                 if(command == CHOOSE_ACTION){
+                    action.setOpacity(1);
                     //If per la frenzy
                     command = order;
                     for(int y = 0; y < 4; y++)
-                        for(int x = 0; x < 3; x++)
-                         illuminateCells(map, order, x, y);
-
+                        for(int x = 0; x < 3; x++) {
+                            if(x == 0 && y == 3 && (test ==4 || test == 2)) {
+                                x++;
+                                i++;
+                            }
+                            illuminateCells(map, order, x, y, i, steps);
+                            if(x == 1 && y == 0 && (test == 2 || test == 1)){
+                                x++;
+                                i++;
+                            }
                         }
+                    for (int j = size-1; j < size+5; j++){
+                        illuminateCell((Button) map.getChildren().get(j), false);
+                    }
+                }
                 else action.disabledProperty();
             }
         });
     }
 
     //Azioni che può fare cella
-    private void setCellAction(Button cell, int x, int y, ImageView ammo){
+    private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map){
         cell.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                int steps = 0;
+                steps = setSteps(steps, command);
                 switch (command) {
+                    case CHOOSE_ACTION:
+                        cell.setVisible(false);
+                        break;
                     case MOVE:
-                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 3)) {
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), steps)) {
                             player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
                             System.out.print("x: "+ x + " y: " + y + "\n");
-                            //cambio posizione pedina
+                            for(int i = 21; i < 33; i++){
+                                illuminateCell((Button) map.getChildren().get(i), false);
+                                if((test == 1 || test == 4) && i == 31 || (test == 2 && i == 30))
+                                    i = 33;
+                            }
                             command = CHOOSE_ACTION;
 
                         }
@@ -691,17 +746,23 @@ return playerBoard;
 
                         break;
                     case GRAB_MOVE://scegliere la carta da prendere
-                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 1)) {
-                            cell.setVisible(true);
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), steps)) {
                             player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
-                            ammo.setVisible(false);
+                            if(ammo != null){
+                                ammo.setVisible(false);
+                            }
+                            for(int i = 21; i < 33; i++){
+                                illuminateCell((Button) map.getChildren().get(i), false);
+                                if((test == 1 || test == 4) && i == 31 || (test == 2 && i == 30))
+                                    i = 33;
+                            }
                             command = CHOOSE_ACTION;
 
                             //da ammo e power up
                             //CHOOSE ACTION o END TURN
                         }
                     case SHOOT_MOVE:
-                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 2)) {
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), steps)) {
                             cell.setVisible(true);
                             player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
                             command = SHOOT;
@@ -726,7 +787,6 @@ return playerBoard;
                     case CHOOSE_ACTION:
                         if(getPlayer().getPowerups().get(1).getPowerUp() == TELEPORTER || getPlayer().getPowerups().get(1).getPowerUp() == KINETICRAY)
 
-                            //else attack.disableProperty();
                         break;
                     case SHOOT://after shooting
                         if(getPlayer().getPowerups().get(1).getPowerUp() == GUNSIGHT && getPlayer().getBullets().size() > 0)
@@ -735,6 +795,8 @@ return playerBoard;
                     case END_TURN:// after getting hit
                         if(getPlayer().getPowerups().get(1).getPowerUp() == VENOMGRENADE)
                         break;
+                    case DISCARD_WEAPON: // Discsard power up
+                        attack.setVisible(false);
                     default:
                         attack.disableProperty();
                 }
@@ -742,28 +804,60 @@ return playerBoard;
         });
     }
 
-    private void shootAction(Button attack){
+    private void weaponAction(Button attack, ImageView weapon, int i){
         attack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 switch (command){
-                    case CHOOSE_ACTION:
-                        if(getPlayer().getPowerups().get(1).getPowerUp() == TELEPORTER || getPlayer().getPowerups().get(1).getPowerUp() == KINETICRAY)
-
-                            //else attack.disableProperty();
-                            break;
                     case SHOOT://after shooting
-                        if(getPlayer().getPowerups().get(1).getPowerUp() == GUNSIGHT && getPlayer().getBullets().size() > 0)
-
-                            break;
-                    case END_TURN:// after getting hit
-                        if(getPlayer().getPowerups().get(1).getPowerUp() == VENOMGRENADE)
-                            break;
+                        if(getPlayer().getWeapons().get(i).isReady()) {
+                            changeImage(attack, weapon);
+                            command = CHOOSE_ACTION;
+                        }
+                        else attack.disableProperty();
+                        break;
+                    case DISCARD_WEAPON:// after getting hit
+                        attack.setVisible(false);
+                        command = CHOOSE_ACTION;
+                        break;
                     default:
                         attack.disableProperty();
                 }
             }
         });
+    }
+    private void shootAction(Button attack, ImageView weapon, int numAttacks, WeaponCard card){
+        attack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                if(player.getWeapons().get(0).getAttacks().size() == numAttacks)
+                    attack.setVisible(true);
+
+                else attack.disableProperty();
+                }
+
+        });
+    }
+
+
+    private int setSteps(int steps, PlayerCommand order){
+        switch(order){
+            case MOVE:
+                steps = 3;
+                return steps;
+            case GRAB_MOVE:
+                if(getPlayer().getNumDamages() > 2)
+                    steps = 2;
+                else steps = 1;
+                return steps;
+            case SHOOT_MOVE:
+                if(getPlayer().getNumDamages() > 2)
+                    steps = 1;
+                return steps;
+
+        }
+        return steps;
     }
 
 }

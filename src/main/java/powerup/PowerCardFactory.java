@@ -18,24 +18,6 @@ public class PowerCardFactory {
             "cards" + File.separator +
             "powercards.json";
 
-    private List<PowerCard> PowerCardJson() {
-        try {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            bufferedReader = new BufferedReader(new FileReader(POWERCARD_RESOURCES_ADDRESS));
-            return gson.fromJson(bufferedReader, new TypeToken<ArrayList<PowerCard>>() {
-            }.getType());
-        } catch (FileNotFoundException e) {
-            e.fillInStackTrace();
-        } finally {
-            try {bufferedReader.close();}
-            catch(IOException ioe){
-                ioe.fillInStackTrace();
-            }
-        }
-        return Collections.emptyList();
-    }
-
     private List<PowerCard> powerCardsJackson(){
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -64,12 +46,5 @@ public class PowerCardFactory {
         return powerCardsJackson();
     }
 
-    public static void main(String[] args) {
-
-        ArrayList<PowerCard>  powerCards = (ArrayList<PowerCard>) new PowerCardFactory().getPowerCardsList();
-        for (PowerCard p : powerCards){
-            System.out.println(p);
-        }
-    }
 }
 

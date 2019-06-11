@@ -16,7 +16,6 @@ import java.util.*;
 public class Board extends Observable implements Cloneable {
 
     private int numSkulls;
-    private HashMap<Player, Integer> playerSkulls;
     private Billboard billboard;
     private Deck weaponDeck;
     private Deck ammoDeck;
@@ -33,13 +32,11 @@ public class Board extends Observable implements Cloneable {
 
     public Board(int numskull) {
         this.numSkulls = numskull;
-        this.playerSkulls = new HashMap<>();
         this.billboard = new Billboard();
     }
 
     public Board(int numskull, Billboard board) {
         this.numSkulls = numskull;
-        this.playerSkulls = new HashMap<>();
         this.billboard = board;
         this.ammoDiscardDeck = new Deck();
         this.powerUpDiscardDeck = new Deck();
@@ -79,7 +76,8 @@ public class Board extends Observable implements Cloneable {
     }
 
     /**
-     * @return
+     * This function clones the board
+     * @return a clone of the board
      */
     public Board cloneBoard() {
         try{

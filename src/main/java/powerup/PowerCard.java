@@ -47,4 +47,13 @@ public class PowerCard extends Card {
 
         return sb.toString();
     }
+
+    @Override
+    public String stringGUI() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(cardType);
+        sb.append(bullet.stringGUI());
+        return sb.toString();
+    }
 }

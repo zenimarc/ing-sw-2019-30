@@ -15,7 +15,7 @@ public class Deck {
      */
 
     public Deck() {
-        this.cards = new ArrayList<Card>();
+        this.cards = new ArrayList<>();
     }
 
     public Deck(List<Card> cards) {
@@ -27,13 +27,6 @@ public class Deck {
      * @return a list of cards
      */
     public List<Card> getCards(){return this.cards;}
-
-    /**
-     * This function shuffles the deck
-     */
-    public void shuffle() {
-        Collections.shuffle(this.cards);
-    }
 
     /**
      * This function picks a random card from the deck
@@ -76,7 +69,7 @@ public class Deck {
      * this function removes card in position "index"
      * @param index index of card to remove
      */
-    public void removeCard(int index){
+    private void removeCard(int index){
         this.cards.remove(index);
     }
 

@@ -79,13 +79,13 @@ public class RegenerationCell extends Cell {
     }
 
     /**
-     * This adds 3 cards in the RegenerationCell at the beginning of the game
+     * This adds 3 cards in the RegenerationCell at the beginning of the game //TODO serve davvero il for ?
      * @param weaponCards to be added
      * @return
      */
     public void setCards(WeaponCard[] weaponCards){
         for(int i=0;i<3;i++){
-            this.weaponCard[i] = weaponCards[i];
+            this.weaponCard = weaponCards;
         }
     }
 

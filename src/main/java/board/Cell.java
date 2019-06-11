@@ -13,7 +13,7 @@ import java.util.*;
 public abstract class  Cell {
 
     protected Color color;
-    protected ArrayList<Pawn> pawns;
+    private ArrayList<Pawn> pawns;
 
     /**
      * Constructors

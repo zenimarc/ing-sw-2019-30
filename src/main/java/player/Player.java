@@ -122,17 +122,6 @@ public class Player extends Observable implements Cloneable {
     }
 
     /**
-     * This set player cell
-     *
-     * @param c
-     * @deprecated use setPawnCell
-     */
-    @Deprecated
-    private void setCell(Cell c) {
-        this.pawn.setCell(c);
-    }
-
-    /**
      * This function modifies the cell of the player and changes the pawn list of initial and destination cell
      *
      * @param cell of destination

@@ -55,7 +55,7 @@ public class BillboardGenerator extends Billboard {
      * This function creates the board with a blank cell on the left and a blank cell on the right
      * @return a billboard
      */
-    public static Billboard generateBillboard2() {
+    private static Billboard generateBillboard2() {
         HashMap<Cell, Position> map = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
         createLeftMap1(map);
@@ -72,16 +72,15 @@ public class BillboardGenerator extends Billboard {
      * This function creates the board with no blank cells
      * @return a billboard
      */
-    public static Billboard generateBillboard3() {
+    private static Billboard generateBillboard3() {
         HashMap<Cell, Position> map = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
 
-createLeftMap2(map);
-createRightMap1(map);
+        createLeftMap2(map);
+        createRightMap1(map);
 
-createDoor4(map, doors);
-createDoor5(map, doors);
-
+        createDoor4(map, doors);
+        createDoor5(map, doors);
 
         return new Billboard(map, doors);
     }
@@ -213,7 +212,6 @@ createDoor5(map, doors);
 
     private static void createDoor1(HashMap<Cell, Position> map, ArrayList<Door> doors){
 
-
         doors.add(new Door(getCellsFromPosition(map, new Position(0, 0)), getCellsFromPosition(map, new Position(1, 0))));
         doors.add(new Door(getCellsFromPosition(map, new Position(0, 2)), getCellsFromPosition(map, new Position(1, 2))));
         doors.add(new Door(getCellsFromPosition(map, new Position(1, 1)), getCellsFromPosition(map, new Position(2, 1))));
@@ -221,6 +219,7 @@ createDoor5(map, doors);
 
     private static void createDoor2(HashMap<Cell, Position> map, ArrayList<Door> doors){
 
+        doors.add(new Door(getCellsFromPosition(map, new Position(0, 2)), getCellsFromPosition(map, new Position(0, 3))));
         doors.add(new Door(getCellsFromPosition(map, new Position(0, 3)), getCellsFromPosition(map, new Position(1, 3))));
         createDoor7(map, doors);
     }

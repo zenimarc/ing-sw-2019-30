@@ -72,4 +72,8 @@ public class Bullet {
 
         return intArrayToString(bullets);
     }
+
+    public String stringGUI() {
+        return color.getFirstLetter();
+    }
 }

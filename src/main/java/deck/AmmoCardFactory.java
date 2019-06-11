@@ -24,24 +24,6 @@ public class AmmoCardFactory {
      * @return an ammoCard deck
      */
 
-   private static List<AmmoCard> ammoCardJson() {
-        try {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            bufferedReader = new BufferedReader(new FileReader(ammoResourcesAddress));
-            return gson.fromJson(bufferedReader, new TypeToken<ArrayList<AmmoCard>>() {
-            }.getType());
-
-        } catch (FileNotFoundException e) {
-            e.fillInStackTrace();
-        }
-        return Collections.emptyList();
-    }
-
-    private static void storeAmmoCardsJackson() {
-        //TODO ha senso fare load e store nella stessa factory - Gio'
-    }
-
     private static List<AmmoCard> ammoCardsJackson(){
        ObjectMapper objectMapper = new ObjectMapper();
 
