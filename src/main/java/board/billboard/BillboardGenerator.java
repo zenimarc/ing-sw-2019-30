@@ -94,11 +94,11 @@ createDoor5(map, doors);
         HashMap<Cell, Position> map = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
 
-createLeftMap2(map);
+        createLeftMap2(map);
         createRightMap2(map);
 
-createDoor4(map, doors);
-createDoor6(map, doors);
+        createDoor4(map, doors);
+        createDoor6(map, doors);
 
         return new Billboard(map, doors);
     }

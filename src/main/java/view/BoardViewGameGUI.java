@@ -1,22 +1,15 @@
 package view;
 
 import board.Board;
-import board.Cell;
 import board.Position;
-import board.billboard.Billboard;
 import board.billboard.BillboardGenerator;
 import client.Client;
-import controller.CommandObj;
 import controller.PlayerCommand;
 import controller.PlayerController;
-import deck.AmmoCard;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,7 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import player.Player;
 import weapon.WeaponCard;
@@ -32,7 +24,6 @@ import weapon.WeaponCard;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Random;
 
 import static controller.PlayerCommand.*;
@@ -52,10 +43,17 @@ public class BoardViewGameGUI extends Application {
     private int random;
     private int test = 1;
 
+    private Player getPlayer(){return this.player;}
+
+    private WeaponCard getWeapon(int x, int y, int pos){
+        return (WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos);
+    }
+
     private void initialize(/*, ArrayList<Client> client*/){
         player = new Player("Marco");
         this.random = new Random().nextInt(3) + 1;
         this.board = new Board(8, BillboardGenerator.createBillboard(test));
+        player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(1, 1)));
         //this.players = players;
         //this.client = client;
     }
@@ -142,7 +140,7 @@ public class BoardViewGameGUI extends Application {
         StackPane map = new StackPane();
 
         //Card you want to see 0
-        map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 0, 115, 0));
+        map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 0, 115));
         changeSizeImage((ImageView) map.getChildren().get(0), 200, 150);
         map.getChildren().get(0).setVisible(false);
 
@@ -163,10 +161,11 @@ public class BoardViewGameGUI extends Application {
             setAction((Button)map.getChildren().get(7+i), (ImageView) map.getChildren().get(0), 2, 3, i, playerboard);
         }
         //deck not to be modified 10-11
-        map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 250, -55, 0));
-        map.getChildren().add(tableWeaponCards(powerPath("powerCard"), 255, -160, 0));
+        map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 250, -55));
+        map.getChildren().add(tableWeaponCards(powerPath("powerCard"), 255, -160));
 
         generateBoard(map, number);
+        actionButtons(map);
 
 
 return map;
@@ -179,7 +178,7 @@ return map;
      */
     private Pane createBoards() throws FileNotFoundException {
         Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(playerBoard(playerBoardPath(), 110, 600, 0));
+        playerBoard.getChildren().add(generateCard(playerBoardPath(), 110, 600,0,0, 0));
 
         for(int i = 0; i < 3; i++) {
             playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 110, 80,80 - i * 40, 0, 0));
@@ -187,6 +186,8 @@ return map;
             playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 110, 80,680 - i * 40, 0, 0));
             playerBoard.getChildren().get(2*i+2).setVisible(false);
         }
+
+        playerBoard.getChildren().add(generateCard(damagePath("yellow"), 30, 30, 30, 0, 0));
 
         return playerBoard;
 
@@ -261,57 +262,152 @@ return map;
 return playerBoard;
     }
 
-    /**
-     * This function create an Image of an ammo card
-     * @param path from which you pick the image of the ammo card
-     * @param transX x position to set card
-     * @param transY y position to set card
-     * @return an image of the ammo card
-     * @throws FileNotFoundException if file is not found
-     */
-    private ImageView ammoCards(String path, int transX, int transY) throws FileNotFoundException {
-        ImageView ammo = new ImageView(new Image(new FileInputStream(path)));
-        ammo.setFitHeight(25);
-        ammo.setFitWidth(25);
-        ammo.setTranslateX(transX);
-        ammo.setTranslateY(transY);
-        return ammo;
+    private void generateBoard(Pane map, int number) throws FileNotFoundException {
+        int i = 0;
+        int test = 0;
+        ImageView mapImage = new ImageView(new Image(new FileInputStream("src/resources/images/gametable/map/board"+number+".png")));
+        changeSizeImage(mapImage, 430, 600);
+        map.getChildren().add(mapImage);
+        map.getChildren().get(12).toBack();
+        switch (number){
+            case 1:
+                generateBoardLeft1(map);
+                generateBoardRight1(map);//8
+                generateBoardButtonsLeft1(map);
+                generateBoardButtonsRight1(map);//11
+
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        i = setCellOnAction(map, x, y, i, test);
+                        if(x == 1 && y == 0) {
+                            x++;
+                            test++;
+                        }
+                    }
+                break;
+            case 2:
+                generateBoardLeft1(map);
+                generateBoardRight2(map);
+                generateBoardButtonsLeft2(map);
+                generateBoardButtonsRight1(map);
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        if(x == 0 && y == 3) {
+                            x = 1;
+                            test++;
+                        }
+                        i = setCellOnAction(map, x, y, i, test);
+                        if(x == 1 && y == 0){
+                            x = 3;
+                            test++;
+                        }
+                    }break;
+            case 3:
+                generateBoardLeft2(map);
+                generateBoardRight1(map);
+                generateBoardButtonsLeft1(map);
+                generateBoardButtonsRight2(map);
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        i = setCellOnAction(map, x, y, i, test);
+                    }break;
+            case 4:
+                generateBoardLeft2(map);
+                generateBoardRight2(map);
+                generateBoardButtonsLeft2(map);
+                generateBoardButtonsRight2(map);
+                for(int y = 0; y < 4; y++)
+                    for(int x = 0; x < 3; x++) {
+                        if(x == 0 && y == 3){
+                            x = 1;
+                            test++;
+                        }
+                        i = setCellOnAction(map, x, y, i, test);
+                    }break;
+        }
     }
 
-    /**
-     * This function create an Image of an weapon card
-     * @param path from which you pick the image of the weapon card
-     * @param transX x position to set card
-     * @param transY y position to set card
-     * @param grades to rotate cards
-     * @return an Image of a weapon
-     * @throws FileNotFoundException if file is not found
-     */
-    private ImageView tableWeaponCards(String path, int transX, int transY, int grades) throws FileNotFoundException {
-        ImageView weaponImage = new ImageView(new Image(new FileInputStream(path)));
-        weaponImage.setFitHeight(90);
-        weaponImage.setFitWidth(60);
-        weaponImage.setTranslateX(transX);
-        weaponImage.setTranslateY(transY);
-        weaponImage.rotateProperty().setValue(grades);
-        return weaponImage;
+    private void generateBoardLeft1(Pane map) throws FileNotFoundException {
+        //first line 13-16
+        map.getChildren().add(ammoCards(ammoPath(getString(0, 0, 0)), -170, -100));
+
+        map.getChildren().add(ammoCards(ammoPath(getString(0, 1, 0)), -75, -50));
+        generateBoardCloned(map);
+
     }
 
-    /**
-     * This function draws the playerboard of a player
-     * @param path from which the image of playerboard is picked
-     * @param height dimension of playerboard
-     * @param width dimension of playerboard
-     * @param grades to rotate playerboard
-     * @return the image of the playerboard
-     * @throws FileNotFoundException if file is not found
-     */
-    private ImageView playerBoard(String path, int height, int width, int grades) throws FileNotFoundException {
-        ImageView playerBoardImage = new ImageView(new Image(new FileInputStream(path)));
-        playerBoardImage.setFitHeight(height);
-        playerBoardImage.setFitWidth(width);
-        playerBoardImage.rotateProperty().setValue(grades);
-        return playerBoardImage;
+    private void generateBoardRight1(Pane map) throws FileNotFoundException {
+        //first line 17/18-20/21
+        map.getChildren().add(ammoCards(ammoPath(getString(1, 2, 0)), 35, 48));
+        map.getChildren().add(ammoCards(ammoPath(getString(2, 2, 0)), 40, 128));
+
+        map.getChildren().add(ammoCards(ammoPath(getString(0, 3, 0)), 170, -52));
+        map.getChildren().add(ammoCards(ammoPath(getString(1, 3, 0)), 125, 48));
+
+    }
+
+    private void generateBoardLeft2(Pane map) throws FileNotFoundException {
+        //first line 13-17
+        map.getChildren().add(ammoCards(ammoPath(getString(0, 0, 0)), -162, -52));
+        map.getChildren().add(ammoCards(ammoPath(getString(2, 0, 0)), -162, 128));
+
+        map.getChildren().add(ammoCards(ammoPath(getString(0, 1, 0)), -70, -100));
+        generateBoardCloned(map);
+
+    }
+
+    private void generateBoardRight2(Pane map) throws FileNotFoundException {
+        //17/18-20/21
+        map.getChildren().add(ammoCards(ammoPath(getString(1, 2, 0)), 35, 30));
+        map.getChildren().add(ammoCards(ammoPath(getString(2, 2, 0)), 25, 130));
+        map.getChildren().add(ammoCards(ammoPath(getString(1, 3, 0)), 170, 30));
+
+    }
+
+    private void generateBoardCloned(Pane map) throws FileNotFoundException {
+        map.getChildren().add(ammoCards(ammoPath(getString(1, 1, 0)), -80, 20));
+        map.getChildren().add(ammoCards(ammoPath(getString(2, 1, 0)), -80, 128));
+    }
+
+    private void generateBoardButtonsLeft1(Pane map){
+
+        map.getChildren().add(createButton("c00",90, 105, -150, -80));
+        map.getChildren().add(createButton("c10",100, 100, -150, 20));
+        map.getChildren().add(createButton("c01",90, 95, -45, -80));
+        map.getChildren().add(createButton("c11",100, 95, -50, 20));
+        map.getChildren().add(createButton("c21",90, 105, -60, 120));
+
+    }
+
+    private void generateBoardButtonsRight1(Pane map){
+
+        map.getChildren().add(createButton("c02",90, 105, 55, -80));
+        map.getChildren().add(createButton("c12",100, 95, 55, 20));
+        map.getChildren().add(createButton("c22",105, 95, 55, 120));
+        map.getChildren().add(createButton("c03",90, 95, 155, -80));
+        map.getChildren().add(createButton("c13",100, 95, 155, 20));
+        map.getChildren().add(createButton("c23",105, 95, 155, 120));
+
+    }
+
+    private void generateBoardButtonsLeft2(Pane map){
+
+        map.getChildren().add(createButton("c00",90, 95, -160, -80));
+        map.getChildren().add(createButton("c10",100, 90, -160, 20));
+        map.getChildren().add(createButton("c20",90, 105, -155, 125));
+        map.getChildren().add(createButton("c01",90, 105, -55, -80));
+        map.getChildren().add(createButton("c11",100, 105, -60, 20));
+        map.getChildren().add(createButton("c21",90, 105, -50, 125));
+
+    }
+
+    private void generateBoardButtonsRight2(Pane map){
+
+        map.getChildren().add(createButton("c02",90, 105, 55, -80));
+        map.getChildren().add(createButton("c12",100, 115, 50, 20));
+        map.getChildren().add(createButton("c22",90, 100, 55, 125));
+        map.getChildren().add(createButton("c13",100, 95, 155, 20));
+        map.getChildren().add(createButton("c23",100, 95, 155, 120));
     }
 
     /**
@@ -342,6 +438,17 @@ return playerBoard;
     }
 
     /**
+     * TODO assegnare colori giusti
+     * This function returns the path of a damage counter
+     * @param path name
+     * @return the path
+     */
+    private String damagePath(String path){
+        return "src/resources/images/gametable/damages/"+ path + "Damage.png";
+    }
+
+    /**
+     * TODO assegnare path giusto
      * This function returns the path of a playerboard image
      * @return the path
      */
@@ -372,27 +479,6 @@ return playerBoard;
     }
 
     /**
-     * This function creates buttons to check or to use cards
-     * @return ArrayList of buttons
-     */
-    private ArrayList<Button> cardViewButtonSet(){
-        ArrayList<Button> buttons = new ArrayList<>();
-        //no attacks
-        buttons.add(createButton("viewcard", 200, 150, 0, 115));
-        //one attack
-        buttons.add(createButton("monoattack", 130, 150, 0, 150));
-        //> 1 attack
-        buttons.add(createButton("multiattack", 55, 150, 0, 130));
-        //2 attacks
-        buttons.add(createButton("biAttack", 55, 150, 0, 185));
-        //3 attacks
-        buttons.add(createButton("triAttack1", 55, 75, -40, 185));
-        buttons.add(createButton("triAttack2", 55, 75, 40, 185));
-
-        return buttons;
-    }
-
-    /**
      * This function creates buttons
      * @param string name
      * @param height height
@@ -411,15 +497,101 @@ return playerBoard;
         return button;
     }
 
-    private ArrayList<Button> actionButtons(){
+
+    private void actionButtons(Pane map){
+        map.getChildren().add(activateButton("moveFrenzy2", MOVE,15, map));
+        map.getChildren().add(activateButton("grabFrenzy2", GRAB,28, map));
+        map.getChildren().add(activateButton("shootFrenzy2", SHOOT,40, map));
+        map.getChildren().add(activateButton("grabFrenzy1", GRAB,70, map));
+        map.getChildren().add(activateButton("shootFrenzy1", SHOOT,85, map));
+    }
+
+    /**
+     * This function creates buttons to check or to use cards
+     * @return ArrayList of buttons
+     */
+    private ArrayList<Button> cardViewButtonSet(){
         ArrayList<Button> buttons = new ArrayList<>();
-        buttons.add(createButton("move", 8, 40, 0,15));
-        buttons.add(createButton("move", 8, 40, 0,28));
-        buttons.add(createButton("move", 8, 40, 0,40));
-        buttons.add(createButton("move", 8, 40, 0,70));
-        buttons.add(createButton("move", 8, 40, 0,85));
+        //one attack
+        buttons.add(createButton("monoattack", 130, 150, 0, 150));
+        //> 1 attack
+        buttons.add(createButton("multiattack", 55, 150, 0, 130));
+        //2 attacks
+        buttons.add(createButton("biAttack", 55, 150, 0, 185));
+        //3 attacks
+        buttons.add(createButton("triAttack1", 55, 75, -40, 185));
+        buttons.add(createButton("triAttack2", 55, 75, 40, 185));
+
         return buttons;
     }
+
+    private Button activateButton(String string, PlayerCommand command, int transY, Pane map){
+        Button button = createButton(string, 8, 40, 0, transY);
+        setActionPlayer(button, command, map);
+        return button;
+    }
+
+    private int setCellOnAction(Pane map, int x, int y, int i, int test){
+        if(!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))){
+            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, (ImageView) map.getChildren().get(13+i));
+            i++;
+        }
+        else
+            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, null);
+        return i;
+    }
+
+    private void illuminateCells(Pane map, PlayerCommand order, int x, int y){
+
+        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 3)) {
+        }
+    }
+
+    private void changeGraphics(Button button, ImageView image){
+        Node node = button.getGraphic();
+        ImageView imageView = (ImageView) node;
+        image.setImage(imageView.getImage());
+    }
+
+    private void changeImage(Button button, ImageView image){
+        button.setGraphic(image);
+        button.setVisible(true);
+    }
+
+    /**
+     * This function create an Image of an ammo card
+     * @param path from which you pick the image of the ammo card
+     * @param transX x position to set card
+     * @param transY y position to set card
+     * @return an image of the ammo card
+     * @throws FileNotFoundException if file is not found
+     */
+    private ImageView ammoCards(String path, int transX, int transY) throws FileNotFoundException {
+        ImageView ammo = new ImageView(new Image(new FileInputStream(path)));
+        ammo.setFitHeight(25);
+        ammo.setFitWidth(25);
+        ammo.setTranslateX(transX);
+        ammo.setTranslateY(transY);
+        return ammo;
+    }
+
+    /**
+     * This function create an Image of an weapon card
+     * @param path from which you pick the image of the weapon card
+     * @param transX x position to set card
+     * @param transY y position to set card
+     * @return an Image of a weapon
+     * @throws FileNotFoundException if file is not found
+     */
+    private ImageView tableWeaponCards(String path, int transX, int transY) throws FileNotFoundException {
+        ImageView weaponImage = new ImageView(new Image(new FileInputStream(path)));
+        weaponImage.setFitHeight(90);
+        weaponImage.setFitWidth(60);
+        weaponImage.setTranslateX(transX);
+        weaponImage.setTranslateY(transY);
+        return weaponImage;
+    }
+
 
     private Button generateCard(String name, int height, int width, int transX, int transY, int grades) throws FileNotFoundException {
 
@@ -474,30 +646,8 @@ return playerBoard;
         });
     }
 
-    private void playerboardCardAction(Button card, ImageView image){
-        card.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                switch (command) {
-                    case MOVE: //guarda la carta
-
-                        break;
-                    case END_TURN://carta da usare
-                        Node cardNode = card.getGraphic();
-                        ImageView image = (ImageView) cardNode;
-                        image.setImage(image.getImage());
-                        //verifica se è weapon o ammo, se ammo la può usare subito
-
-                        break;
-                    default: card.disabledProperty();
-
-                }
-            }
-        });
-    }
-
     //azioni che giocatore può fare
-    private void setActionPlayer(Button action, PlayerCommand order){
+    private void setActionPlayer(Button action, PlayerCommand order, Pane map){
         action.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -505,25 +655,28 @@ return playerBoard;
                 if(command == CHOOSE_ACTION){
                     //If per la frenzy
                     command = order;
-                    action.setVisible(false);
-                }
+                    for(int y = 0; y < 4; y++)
+                        for(int x = 0; x < 3; x++)
+                         illuminateCells(map, order, x, y);
+
+                        }
                 else action.disabledProperty();
             }
         });
     }
 
-    //Azioni che èuò fare cella
-    private void setCellAction(Button cell, int x, int y, Optional<ImageView> ammo){
+    //Azioni che può fare cella
+    private void setCellAction(Button cell, int x, int y, ImageView ammo){
         cell.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 switch (command) {
                     case MOVE:
                         if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 3)) {
-                            cell.setVisible(true);
                             player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
+                            System.out.print("x: "+ x + " y: " + y + "\n");
                             //cambio posizione pedina
-                            //CHOOSE ACTION o END TURN
+                            command = CHOOSE_ACTION;
 
                         }
 
@@ -538,12 +691,11 @@ return playerBoard;
 
                         break;
                     case GRAB_MOVE://scegliere la carta da prendere
-                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 2)) {
+                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 1)) {
                             cell.setVisible(true);
                             player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
-                            if(ammo.isPresent()) {
-                                ammo.get().setVisible(false);
-                            }
+                            ammo.setVisible(false);
+                            command = CHOOSE_ACTION;
 
                             //da ammo e power up
                             //CHOOSE ACTION o END TURN
@@ -577,11 +729,11 @@ return playerBoard;
                             //else attack.disableProperty();
                         break;
                     case SHOOT://after shooting
-                        if(getPlayer().getPowerups().get(1).getPowerUp() == GUNSIGHT && getPlayer().getBullets().size() > 0);
+                        if(getPlayer().getPowerups().get(1).getPowerUp() == GUNSIGHT && getPlayer().getBullets().size() > 0)
 
                         break;
                     case END_TURN:// after getting hit
-                        if(getPlayer().getPowerups().get(1).getPowerUp() == VENOMGRENADE);
+                        if(getPlayer().getPowerups().get(1).getPowerUp() == VENOMGRENADE)
                         break;
                     default:
                         attack.disableProperty();
@@ -590,171 +742,29 @@ return playerBoard;
         });
     }
 
+    private void shootAction(Button attack){
+        attack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch (command){
+                    case CHOOSE_ACTION:
+                        if(getPlayer().getPowerups().get(1).getPowerUp() == TELEPORTER || getPlayer().getPowerups().get(1).getPowerUp() == KINETICRAY)
 
-    private void changeGraphics(Button button, ImageView image){
-        Node node = button.getGraphic();
-        ImageView imageView = (ImageView) node;
-        image.setImage(imageView.getImage());
+                            //else attack.disableProperty();
+                            break;
+                    case SHOOT://after shooting
+                        if(getPlayer().getPowerups().get(1).getPowerUp() == GUNSIGHT && getPlayer().getBullets().size() > 0)
+
+                            break;
+                    case END_TURN:// after getting hit
+                        if(getPlayer().getPowerups().get(1).getPowerUp() == VENOMGRENADE)
+                            break;
+                    default:
+                        attack.disableProperty();
+                }
+            }
+        });
     }
 
-    private void changeImage(Button button, ImageView image){
-        button.setGraphic(image);
-        button.setVisible(true);
-    }
-
-    private Player getPlayer(){return this.player;}
-
-    private WeaponCard getWeapon(int x, int y, int pos){
-        return (WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos);
-    }
-
-    private void generateBoard(Pane map, int number) throws FileNotFoundException {
-        int i = 0;
-        ImageView mapImage = new ImageView(new Image(new FileInputStream("src/resources/images/gametable/map/board"+number+".png")));
-        changeSizeImage(mapImage, 430, 600);
-        map.getChildren().add(mapImage);
-        map.getChildren().get(12).toBack();
-        switch (number){
-            case 1:
-                generateBoardLeft1(map);
-                generateBoardRight1(map);//8
-                generateBoardButtonsLeft1(map);
-                generateBoardButtonsRight1(map);//11
-
-                for(int y = 0; y < 4; y++)
-                    for(int x = 0; x < 3; x++) {
-                        i = setCellOnAction(map, x, y, i);
-                        if(x == 1 && y == 0)
-                            x++;
-                    }
-                break;
-            case 2:
-                generateBoardLeft1(map);
-                generateBoardRight2(map);
-                generateBoardButtonsLeft2(map);
-                generateBoardButtonsRight1(map);
-                for(int y = 0; y < 4; y++)
-                    for(int x = 0; x < 3; x++) {
-                        if(x == 0 && y == 3)
-                            x++;
-                        i = setCellOnAction(map, x, y, i);
-                        if(x == 1 && y == 0)
-                            x++;
-                    }break;
-            case 3:
-                generateBoardLeft2(map);
-                generateBoardRight1(map);
-                generateBoardButtonsLeft1(map);
-                generateBoardButtonsRight2(map);
-                for(int y = 0; y < 4; y++)
-                    for(int x = 0; x < 3; x++) {
-                        i = setCellOnAction(map, x, y, i);
-                    }break;
-            case 4:
-                generateBoardLeft2(map);
-                generateBoardRight2(map);
-                generateBoardButtonsLeft2(map);
-                generateBoardButtonsRight2(map);
-                for(int y = 0; y < 4; y++)
-                    for(int x = 0; x < 3; x++) {
-                        if(x == 0 && y == 3)
-                            x++;
-                        i = setCellOnAction(map, x, y, i);
-                    }break;
-        }
-    }
-
-    private void generateBoardLeft1(Pane map) throws FileNotFoundException {
-        //first line 13-16
-        map.getChildren().add(ammoCards(ammoPath(getString(0, 0, 0)), -170, -100));
-
-        map.getChildren().add(ammoCards(ammoPath(getString(0, 1, 0)), -75, -50));
-        generateBoardCloned(map);
-
-    }
-
-    private void generateBoardRight1(Pane map) throws FileNotFoundException {
-        //first line 17/18-20/21
-        map.getChildren().add(ammoCards(ammoPath(getString(1, 2, 0)), 35, 48));
-        map.getChildren().add(ammoCards(ammoPath(getString(2, 2, 0)), 40, 128));
-
-        map.getChildren().add(ammoCards(ammoPath(getString(0, 3, 0)), 170, -52));
-        map.getChildren().add(ammoCards(ammoPath(getString(1, 3, 0)), 125, 48));
-
-    }
-
-    private void generateBoardLeft2(Pane map) throws FileNotFoundException {
-        //first line 13-17
-        map.getChildren().add(ammoCards(ammoPath(getString(0, 0, 0)), -162, -52));
-        map.getChildren().add(ammoCards(ammoPath(getString(2, 0, 0)), -162, 128));
-
-        map.getChildren().add(ammoCards(ammoPath(getString(0, 1, 0)), -70, -100));
-        generateBoardCloned(map);
-
-    }
-
-    private void generateBoardRight2(Pane map) throws FileNotFoundException {
-        //17/18-20/21
-        map.getChildren().add(ammoCards(ammoPath(getString(1, 2, 0)), 35, 30));
-        map.getChildren().add(ammoCards(ammoPath(getString(2, 2, 0)), 25, 130));
-        map.getChildren().add(ammoCards(ammoPath(getString(1, 3, 0)), 170, 30));
-
-    }
-
-    private void generateBoardCloned(Pane map) throws FileNotFoundException {
-        map.getChildren().add(ammoCards(ammoPath(getString(1, 1, 0)), -80, 20));
-        map.getChildren().add(ammoCards(ammoPath(getString(2, 1, 0)), -80, 128));
-    }
-
-    private void generateBoardButtonsLeft1(Pane map) throws FileNotFoundException {
-
-        map.getChildren().add(createButton("c00",90, 105, -150, -80));
-        map.getChildren().add(createButton("c01",100, 100, -150, 20));
-        map.getChildren().add(createButton("c10",90, 95, -45, -80));
-        map.getChildren().add(createButton("c11",100, 95, -50, 20));
-        map.getChildren().add(createButton("c12",90, 105, -60, 120));
-
-    }
-
-    private void generateBoardButtonsRight1(Pane map) throws FileNotFoundException {
-
-        map.getChildren().add(createButton("c02",90, 105, 55, -80));
-        map.getChildren().add(createButton("c12",100, 95, 55, 20));
-        map.getChildren().add(createButton("c22",105, 95, 55, 120));
-        map.getChildren().add(createButton("c03",90, 95, 155, -80));
-        map.getChildren().add(createButton("c13",100, 95, 155, 20));
-        map.getChildren().add(createButton("c23",105, 95, 155, 120));
-
-    }
-
-    private void generateBoardButtonsLeft2(Pane map) throws FileNotFoundException {
-
-        map.getChildren().add(createButton("c00",90, 95, -160, -80));
-        map.getChildren().add(createButton("c01",100, 90, -160, 20));
-        map.getChildren().add(createButton("c02",90, 105, -155, 125));
-        map.getChildren().add(createButton("c10",90, 105, -55, -80));
-        map.getChildren().add(createButton("c11",100, 105, -60, 20));
-        map.getChildren().add(createButton("c12",90, 105, -50, 125));
-
-    }
-
-    private void generateBoardButtonsRight2(Pane map) throws FileNotFoundException {
-
-        map.getChildren().add(createButton("c02",90, 105, 55, -80));
-        map.getChildren().add(createButton("c12",100, 115, 50, 20));
-        map.getChildren().add(createButton("c22",90, 100, 55, 125));
-        map.getChildren().add(createButton("c13",100, 95, 155, 20));
-        map.getChildren().add(createButton("c23",100, 95, 155, 120));
-    }
-
-    private int setCellOnAction(Pane map, int x, int y, int i){
-        if(!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))){
-            setCellAction((Button) map.getChildren().get(21 + x + y*3), x, y, Optional.of((ImageView) map.getChildren().get(13+i)));
-            i++;
-        }
-        else
-            setCellAction((Button) map.getChildren().get(21+x+y), x, y, Optional.empty());
-        return i;
-    }
 }
 
