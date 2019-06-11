@@ -36,6 +36,7 @@ public abstract class WeaponCard extends Card {
     protected EnumWeapon weaponType;
 
     protected List<Attack> attacks;
+    protected Attack alternativeAttack;
     protected boolean isLoaded;
 
     //Default constructor
@@ -57,9 +58,13 @@ public abstract class WeaponCard extends Card {
     }
 
     public WeaponCard(String name, List<Bullet> cost, List<Attack> attacks) {
-        this.name = name;
-        this.cost = cost;
+        this(name, cost);
         this.attacks = attacks;
+    }
+    
+    public WeaponCard(String name, List<Bullet> cost, Attack alternativeAttack){
+        this(name, cost);
+        this.alternativeAttack = alternativeAttack;
     }
 
     /**
@@ -97,6 +102,9 @@ public abstract class WeaponCard extends Card {
      */
     public String getName(){return this.name;}
 
+    public Attack getAlternativeAttack() {
+        return alternativeAttack;
+    }
 
     @JsonIgnore
     public boolean isReady(){return this.isLoaded;}
@@ -138,7 +146,7 @@ public abstract class WeaponCard extends Card {
                 attacks.get(0).attack(shooter, opponents);
                 break;
             case 1:
-                attacks.get(1).attack(shooter, opponents);
+                alternativeAttack.attack(shooter, opponents);
                 break;
             default:
                 return false;
@@ -168,6 +176,8 @@ public abstract class WeaponCard extends Card {
     public void setLoaded() {
         isLoaded = true;
     }
+
+    public void  setNotLoaded(){isLoaded = false;}
 
     @Override
     public String stringGUI(){

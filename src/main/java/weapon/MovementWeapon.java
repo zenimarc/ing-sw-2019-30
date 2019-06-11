@@ -30,8 +30,8 @@ public class MovementWeapon extends WeaponCard {
         switch (weaponType){
             case TRACTOR_BEAM:
                 attacks.add(new MoveAttack(VISIBLE, BASE_ATTACK_NAME,2,1,1));
-                attacks.add(new MoveAttack(SAME_CELL,TRACTOR_BEAN_OPT1,2,3,1));
-                attacks.get(1).setCost(new int[]{1,1,0});
+                alternativeAttack = new MoveAttack(SAME_CELL,TRACTOR_BEAN_OPT1,2,3,1);
+                alternativeAttack.setCost(new int[]{1,1,0});
                 break;
             case VORTEX_CANNON:
                 attacks.add(new MoveAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1));
@@ -40,12 +40,12 @@ public class MovementWeapon extends WeaponCard {
                 break;
             case SHOTGUN:
                 attacks.add(new MoveAttack(SAME_CELL,BASE_ATTACK_NAME, 1,3,1));
-                attacks.add(new DistanceAttack(VISIBLE,SHOTGUN_OP1, 2,0,1,1,1));
+                alternativeAttack = new DistanceAttack(VISIBLE,SHOTGUN_OP1, 2,0,1,1,1);
                 break;
             case SLEDGEHAMMER:
                 attacks.add(new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME,2,0,1));
-                attacks.add(new MoveAttack(SAME_CELL,SLEDGE_HAMMER,2,3,1));
-                attacks.get(1).setCost(new int[]{1,0,0});
+                alternativeAttack = new MoveAttack(SAME_CELL,SLEDGE_HAMMER,2,3,1);
+                alternativeAttack.setCost(new int[]{1,0,0});
                 break;
                 default:
                     //TODO ERROR
@@ -57,10 +57,12 @@ public class MovementWeapon extends WeaponCard {
     protected MovementWeapon(@JsonProperty("name") String name,
                              @JsonProperty("cost") List<Bullet> cost,
                              @JsonProperty("attacks")List<Attack> attacks,
+                             @JsonProperty("alternativeAttack") Attack alternativeAttack,
                              @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
+        this.alternativeAttack = alternativeAttack;
         this.weaponType = weaponType;
         this.isLoaded = false;
     }
@@ -79,7 +81,7 @@ public class MovementWeapon extends WeaponCard {
                 attacks.get(0).attack(shooter,opponent,cell);
                 break;
             case 1:
-                attacks.get(1).attack(shooter,opponent,cell);
+                alternativeAttack.attack(shooter,opponent,cell);
                 break;
                 default:
                     return false;
@@ -118,7 +120,7 @@ public class MovementWeapon extends WeaponCard {
                 attacks.get(0).attack(shooter, opponents,cell.get());
                 break;
             case 1:
-                attacks.get(0).attack(shooter,opponents);
+                alternativeAttack.attack(shooter,opponents);
                 break;
                 default:
                     return false;
@@ -133,7 +135,7 @@ public class MovementWeapon extends WeaponCard {
                 break;
             case 1:
                 if(!cell.isPresent()) return false;
-                attacks.get(1).attack(shooter,opponents,cell.get());
+                alternativeAttack.attack(shooter,opponents,cell.get());
                 break;
             default:
                 return false;
@@ -151,19 +153,28 @@ public class MovementWeapon extends WeaponCard {
      */
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+
+        boolean result;
+
         switch (weaponType){
             case TRACTOR_BEAM:
                 if(!cell.isPresent()) return false;
-                return tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
+                result = tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
+                break;
             case VORTEX_CANNON:
                 if(!cell.isPresent()) return false;
-                return vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                result = vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                break;
             case SHOTGUN:
-                return shotgunShoot(typeAttack,shooter,opponents,cell);
+                result = shotgunShoot(typeAttack,shooter,opponents,cell);
+                break;
             case SLEDGEHAMMER:
-                return sledgehammerShot(typeAttack,shooter,opponents,cell);
+                result = sledgehammerShot(typeAttack,shooter,opponents,cell);
+                break;
                 default:
-                    return false;
+                    result = false;
         }
+        this.setNotLoaded();
+        return result;
     }
 }

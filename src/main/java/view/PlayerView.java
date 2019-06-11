@@ -10,7 +10,6 @@ import player.Player;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
-import java.time.Period;
 import java.util.*;
 
 /**
@@ -40,7 +39,7 @@ public class PlayerView extends Observable implements Observer{
                 move(PlayerCommand.GRAB_MOVE);
                 break;
             case SHOOT:
-                chooseAttack();
+                shoot();
                 break;
             case END_TURN:
                 setChanged();
@@ -96,7 +95,7 @@ public class PlayerView extends Observable implements Observer{
         return false;
     }
 
-    private boolean chooseAttack() {
+    private boolean shoot() {
         if(player.getWeapons().isEmpty()){
             printError("You have not loaded weapon, so you can't shoot");
         }else{
@@ -106,17 +105,20 @@ public class PlayerView extends Observable implements Observer{
             //else want shoot
             WeaponCard weaponCard = player.getWeapons().get(index);
 
-            Attack attack = chooseAttack(weaponCard);
+            index = chooseAttack(weaponCard);
 
             setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.CHOOSE_ATTACK, attack));
+            notifyObservers(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
         }
-
         return true;
     }
 
+    /**
+     * This ask player which opponents want to hit from a list
+     * @param possibleTarget possible target list
+     * @return player who can hit
+     */
     public Player chooseTarget(List<Player> possibleTarget){
-
         if(possibleTarget.isEmpty()){
             printError("There are not possible target");
             return null;
@@ -135,38 +137,30 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-
         return index==-1 ? null : possibleTarget.get(index);
     }
 
     /**
      * This ask player which opponents want hit from possible target
      * @param numTarget max target to hit
-     * @param possibleTarget all possible target
+     * @param checkedList all possible target
      * @return list of opponents to hit
      */
-    public List<Player> chooseTargets(int numTarget, List<Player> possibleTarget){
+    public List<Player> chooseTargets(int numTarget, List<Player> checkedList){
+        ArrayList<Player> possibleTargets = (ArrayList<Player>) ((ArrayList<Player>)checkedList).clone();
         List<Player> targets = new ArrayList<>();
         Player p;
 
         for(int i=0; i<numTarget;i++){
-            p = chooseTarget(possibleTarget);
+            p = chooseTarget(possibleTargets);
             if(p!=null){
                 targets.add(p);
-                possibleTarget.remove(p);
-                if(possibleTarget.isEmpty()) break;
-            }else
-                i=numTarget;
+                possibleTargets.remove(p);
+                if(possibleTargets.isEmpty()) break;
+            }
         }
-
         return targets;
     }
-
-    private void shoot(Attack attack){
-
-        //shoot
-    }
-
 
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
@@ -396,6 +390,9 @@ public class PlayerView extends Observable implements Observer{
             sb.append(") ");
             sb.append(attack);
         }
+        sb.append('\n');
+        sb.append("Alternative attack: ");
+        sb.append(wc.getAlternativeAttack());
 
         sb.append("\nWhich do you prefer?");
         return sb.toString();
@@ -404,11 +401,11 @@ public class PlayerView extends Observable implements Observer{
     /**
      * This ask player which attack want to use
      * @param wc WeaponCard
-     * @return attack to use
+     * @return index of attack to use
      */
-    private Attack chooseAttack(WeaponCard wc){
+    private int chooseAttack(WeaponCard wc){
         String read;
-        String format = "[0-"+(wc.getAttacks().size()-1)+"]";
+        String format = "[0-"+(wc.getAttacks().size())+"]";
         String question = stringForChooseAttack(wc);
 
         while(true){
@@ -418,7 +415,7 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-        return wc.getAttack(Integer.valueOf(read));
+        return Integer.valueOf(read);
     }
 
     /**

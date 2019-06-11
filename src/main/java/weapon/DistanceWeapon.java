@@ -2,10 +2,12 @@ package weapon;
 
 import attack.Attack;
 import attack.DistanceAttack;
+import attack.SimpleAttack;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import controller.EnumTargetSet;
 import deck.Bullet;
 import player.Player;
 
@@ -29,14 +31,14 @@ public class DistanceWeapon extends WeaponCard {
                 attacks.add(new DistanceAttack(VISIBLE,BASE_ATTACK_NAME,3,2,1,2,-1));
                 break;
             case HELLION:
-                attacks.add(new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1,0,1,1,-1));
-                attacks.add(new DistanceAttack(VISIBLE, SUPPORT_ATTACK, 0,1,-1,1,-1));
-                attacks.add(new DistanceAttack(VISIBLE,HELLION_OPT1,0,2,-1,1,-1));
-                attacks.get(2).setCost(new int[]{1,0,0});
+                attacks.add(new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1,1,1,1,-1));
+                alternativeAttack = new DistanceAttack(VISIBLE,HELLION_OPT1,1,2,-1,1,-1);
+                alternativeAttack.setCost(new int[]{1,0,0});
                 break;
             case SHOCKWAVE:
                 attacks.add(new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1, 0 , 3,1,1));
-                attacks.add(new DistanceAttack(VISIBLE, SHOCKWAVE_OPT1, 1, 0 , -1,1,1));
+                alternativeAttack = new DistanceAttack(VISIBLE, SHOCKWAVE_OPT1, 1, 0 , -1,1,1);
+                alternativeAttack.setCost(new int[]{0,1,0});
                 break;
             default:
                 //TODO ERROR
@@ -48,23 +50,35 @@ public class DistanceWeapon extends WeaponCard {
     protected DistanceWeapon(@JsonProperty("name") String name,
                              @JsonProperty("cost") List<Bullet> cost,
                              @JsonProperty("attacks")List<Attack> attacks,
+                             @JsonProperty("alternativeAttack") Attack alternativeAttack,
                              @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
+        this.alternativeAttack = alternativeAttack;
         this.weaponType = weaponType;
         this.isLoaded = false;
     }
 
+    /**
+     *
+     * @param typeAttack
+     * @param shooter
+     * @param opponents
+     * @return
+     */
     private boolean hellionShoot(int typeAttack, Player shooter, List<Player> opponents){
+
+        Attack supportAttack = new SimpleAttack(SAME_CELL, SUPPORT_ATTACK, 0, typeAttack+1, -1);
+
         switch (typeAttack){
             case 0:
                 attacks.get(0).attack(shooter,opponents.get(0));
-                attacks.get(1).attack(shooter,opponents);
+                supportAttack.attack(shooter, opponents.subList(1,opponents.size()));
                 break;
-            case 2:
-                attacks.get(0).attack(shooter,opponents.get(0));
-                attacks.get(2).attack(shooter,opponents);
+            case 1:
+                alternativeAttack.attack(shooter,opponents.get(0));
+                supportAttack.attack(shooter, opponents.subList(1,opponents.size()));
                 break;
             default:
                 return false;
@@ -75,17 +89,21 @@ public class DistanceWeapon extends WeaponCard {
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
-
+        boolean result;
         switch (this.weaponType) {
             case WHISPER:
-                attacks.get(0).attack(shooter,opponents.get(0));
-                return true;
+                result = attacks.get(0).attack(shooter,opponents.get(0));
+                break;
             case HELLION:
-                return hellionShoot(typeAttack, shooter, opponents);
+                result = hellionShoot(typeAttack, shooter, opponents);
+                break;
             case SHOCKWAVE:
-                return alternativeSimpleShoot(typeAttack, shooter, opponents);
+                result= alternativeSimpleShoot(typeAttack, shooter, opponents);
+                break;
             default:
                 return false;
         }
+        this.setNotLoaded();
+        return result;
     }
 }

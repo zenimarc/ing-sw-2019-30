@@ -27,9 +27,8 @@ public class AreaWeapon extends WeaponCard {
 
         switch (weaponType) {
             case FURNACE:
-                //TODO: other room - gio
-                attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME,1,0,-1));
-                attacks.add(new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1));
+                attacks.add(new SimpleAttack(VISIBLE_ROOM, BASE_ATTACK_NAME,1,0,-1));
+                alternativeAttack = new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1);
                 break;
             default:
                 //TODO ERROR
@@ -42,22 +41,30 @@ public class AreaWeapon extends WeaponCard {
     protected AreaWeapon(@JsonProperty("name") String name,
                          @JsonProperty("cost") List<Bullet> cost,
                          @JsonProperty("attacks")List<Attack> attacks,
+                         @JsonProperty("alternativeAttack") Attack alternativeAttack,
                          @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
         this.weaponType = weaponType;
+        this.alternativeAttack = alternativeAttack;
         this.isLoaded = false;
     }
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
 
+        boolean result;
+
         switch (weaponType) {
             case FURNACE:
-                return alternativeSimpleShoot(typeAttack,shooter,opponents);
+                result = alternativeSimpleShoot(typeAttack,shooter,opponents);
+                break;
             default:
-                return false;
+                result = false;
         }
+
+        this.setNotLoaded();
+        return result;
     }
 }
