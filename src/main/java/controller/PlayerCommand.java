@@ -21,6 +21,8 @@ public enum PlayerCommand {
     SHOOT_MOVE("Shot move", "Move than Shoot"),
     PLACE_WEAPONCARD("Place WeaponCard","..."),
     CHOOSE_ATTACK("Choose attack","..."),
+    LOAD_WEAPONCARD("Load weapon","..."),
+
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),
