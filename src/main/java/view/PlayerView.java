@@ -59,7 +59,7 @@ public class PlayerView extends Observable implements Observer{
             System.out.println("Where do you want to move?");
             positionString = reader.next();
 
-            if(positionString.matches("[0-2]+,+[0-3]")){
+            if(positionString.matches("[0-2],[0-3]")){
                 break;
             }
         }
@@ -346,11 +346,11 @@ public class PlayerView extends Observable implements Observer{
             print(mex);
             read = reader.next();
             if(read.matches(formatString)){
-                return Integer.valueOf(read)-1;
-            }else {
-                printError();
+                break;
             }
         }
+
+        return Integer.valueOf(read)-1;
     }
 
     /**
@@ -421,14 +421,16 @@ public class PlayerView extends Observable implements Observer{
         String read;
         String formatString = "[0-"+((((RegenerationCell) player.getCell()).getCards().size())-1) +"]";
 
-        print(stringForChooseWeaponCard());
-        while (true){
+        while (true) {
+            print(stringForChooseWeaponCard());
             read = reader.next();
-            if(read.matches(formatString)) {
-                return Integer.valueOf(read);
+            if (read.matches(formatString)) {
+                break;
+            } else {
+                printError();
             }
-            printError();
         }
+        return Integer.valueOf(read);
     }
 
     /**
