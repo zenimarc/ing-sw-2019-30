@@ -121,42 +121,7 @@ public class PlayerController implements Observer {
                 player.notifyEndAction();
                 break;
             case SHOOT:
-                WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
-                //Load weapon
-                if(!weaponCard.isReady()){
-                    pw.printError("This weapon is not loaded");
-                    break;
-                }
-
-                int selector = cmdObj.getWeaponSelector();
-                //Wrong selector
-                if(selector<-1 || selector > weaponCard.getAttacks().size()-1 ||
-                        (selector==-1 && weaponCard.getAlternativeAttack()==null)) {
-                    pw.printError("Selected attack is not usable");
-                    break;
-                }
-
-                Attack attack =  selector == -1 ?
-                        weaponCard.getAlternativeAttack() : weaponCard.getAttack(selector);
-
-                if(player.canPay(attack.getCost())){
-                    List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), attack.getTargetType());
-                    if(potentialTargets.isEmpty()){
-                        pw.printError("You have not any possible targets");
-                        break;
-                    }
-                    List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets);
-                    //User decide to not attack
-                    if(opponents.isEmpty()) break;
-                    //User decide to attack one (or more) opponent
-                    if(potentialTargets.containsAll(opponents)){
-                        weaponCard.shoot(cmdObj.getWeaponSelector(), player, opponents, null);
-                        numAction++;
-                        player.notifyEndAction();
-                    }
-                }else{
-                    pw.printError("You have not enough bullet to use this attack");
-                }
+                checkedShoot(pw, cmdObj);
                 break;
             case LOAD_WEAPONCARD:
                 WeaponCard wc = (WeaponCard) cmdObj.getObject();
@@ -301,7 +266,7 @@ public class PlayerController implements Observer {
         WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(weaponIndex));
         Card discardWeapon = null;
 
-        int grabCost[] = Bullet.toIntArray(grabWeapon.getGrabCost());
+        int[] grabCost = Bullet.toIntArray(grabWeapon.getGrabCost());
         //Can player pay this weaponCard?
         if(player.canPay(grabCost)) {
             //Can player draw an other WeaponCard?
@@ -332,13 +297,117 @@ public class PlayerController implements Observer {
     }
 
     /**
+     * this checked if can SHOOT
+     * @param pw player view
+     * @param cmdObj data to use
+     */
+    private void checkedShoot(PlayerView pw, CommandObj cmdObj) {
+        WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
+        ArrayList<Attack> attacks = new ArrayList<>();
+        //Checked load weapon
+        if (!weaponCard.isReady()) {
+            pw.printError("This weapon is not loaded");
+            return;
+        }
+        //Checked good attack selector
+        int selector = cmdObj.getWeaponSelector();
+        if (!isGoodSelector(selector, weaponCard)) {
+            pw.printError("Selected attack is not usable");
+            return;
+        }
+
+        if (selector == -1) return;
+
+        if (selector==0){
+            attacks.add(weaponCard.getAttack(0));
+        }else if (weaponCard.getAttacks().size() > 1) {
+            List<Integer> indexes = pw.chooseOptionalAttack(weaponCard, true);
+            for (Integer i : indexes) {
+                attacks.add(weaponCard.getAttack(i));
+            }
+        }else if(weaponCard.getAlternativeAttack()!=null){
+            attacks.add(weaponCard.getAlternativeAttack());
+        }
+        for(Attack attack : attacks){shoot(attack, weaponCard, pw, selector);}
+    }
+
+    /**
+     * implements SHOOT action
+     * @param attack
+     * @param weaponCard
+     * @param pw
+     * @param selector
+     * @return
+     */
+    private boolean shoot(Attack attack, WeaponCard weaponCard, PlayerView pw, int selector) {
+        if (!player.canPay(attack.getCost())) {
+            pw.printError("You have not enough bullet to use this attack");
+            return false;
+        }
+        List<Player> opponents = chooseTarget(pw, attack);
+        //User can't attack or decided to not attack
+        if (opponents.isEmpty()) return false;
+        //Add null opponents to have opponents.size() == attack.target
+        stdPlayerList(opponents, attack.getTarget());
+        //FINALLY SHOOT!!
+        weaponCard.shoot(selector, player, opponents, null);
+        numAction++;
+        player.notifyEndAction();
+        return true;
+    }
+
+    /**
      * This function verifies if the target is hittable or not
+     * @param pw player's PlayerView
      * @param attack the attack the player wants to use
-     * @param obj a cell o a list of target to hit
      * @return true if the attack was successful, false otherwise
      */
-    public boolean chooseTarget(Attack attack, Object obj) {
-        return true;
+    private List<Player> chooseTarget(PlayerView pw, @NotNull Attack attack) {
+        List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), attack.getTargetType());
+        if(potentialTargets.isEmpty()) {
+            pw.printError("You have not any possible targets");
+            return Collections.emptyList();
+        }
+        List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets);
+
+        if(opponents.isEmpty()) return Collections.emptyList();
+        if(!potentialTargets.containsAll(opponents)){
+            pw.printError("You can't attack one (or more) selected player(s)");
+            return Collections.emptyList();
+        }
+        return opponents;
+    }
+
+    /**
+     * This verify that attack selector is good,
+     * Only BaseAttack -> 0-1
+     * BaseAttack + OptionalAttack -> 0-num_of_optional_attack+1
+     * AlternativeAttack -> 0-2
+     * @param selector
+     * @param wc
+     * @return
+     */
+    private boolean isGoodSelector(int selector, @NotNull WeaponCard wc){
+
+        if(wc.getAttacks().size()==1 && wc.getAlternativeAttack()==null){
+            return (selector==0 || selector == -1);
+        }else if(wc.getAttacks().size()>1 ^ wc.getAlternativeAttack()!=null){
+            return (selector>=-1 && selector<=1);
+        }
+        return false;
+    }
+
+    /**
+     * This increase players's size to num (add null Player)
+     * @param players list of players
+     * @param num final num of players in players list
+     */
+    private void stdPlayerList(@NotNull List<Player> players, int num){
+        if (players.size() < num) {
+            for (int diff = 0; diff < num; diff++) {
+                players.add(null);
+            }
+        }
     }
 
     /**
@@ -409,7 +478,7 @@ public class PlayerController implements Observer {
         setCell(cell);
     }
 
-    public void myTurn(){
+    protected void myTurn(){
         modifyCell = new ArrayList<>();
 
         if(player.getCell()==null) playerView.regPawn();
