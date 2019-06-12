@@ -233,9 +233,6 @@ public class Player extends Observable implements Cloneable {
      */
     public void addDamage(Player opponent, int shots) {
         this.playerBoard.addDamage(opponent, shots);
-      //  setChanged();
-      //  notifyObservers(this.clonePlayer());
-    //    opponent.notifyEndAction();
     }
 
     public void addDamage(Player opponent) {
@@ -251,9 +248,6 @@ public class Player extends Observable implements Cloneable {
      */
     public void addMark(Player opponent, int mark) {
         this.playerBoard.addMark(opponent, mark);
-     //   setChanged();
-      //  notifyObservers(this.clonePlayer());
- //       opponent.notifyEndAction();
     }
 
     /**
