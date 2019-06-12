@@ -289,9 +289,9 @@ public class BoardController{
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
-            pc.getPlayerView().print("********** TURN OF "+pc.getPlayer().getName()+" **********");
             pc.getPlayerBoardView().drawPlayerboard();
             getBoardViewToString();
+            pc.getPlayerView().print("********** TURN OF "+pc.getPlayer().getName()+" **********");
             pc.myTurn();
             restoreCell(pc.getModifyCell());
         }
