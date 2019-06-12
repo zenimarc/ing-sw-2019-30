@@ -146,6 +146,9 @@ public class PlayerController implements Observer {
                         break;
                     }
                     List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets);
+                    //User decide to not attack
+                    if(opponents.isEmpty()) break;
+                    //User decide to attack one (or more) opponent
                     if(potentialTargets.containsAll(opponents)){
                         weaponCard.shoot(cmdObj.getWeaponSelector(), player, opponents, null);
                         numAction++;
