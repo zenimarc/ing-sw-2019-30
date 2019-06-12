@@ -49,9 +49,11 @@ public class DistanceAttack extends Attack {
 
     @Override
     public boolean attack(Player player, List<Player> opponents) {
-        for(Player opponent : opponents){
-            opponent.addDamage(player, damage);
-            opponent.addMark(player, mark);
+        for(Player opponent : opponents) {
+            if (opponent != null) {
+                opponent.addDamage(player, damage);
+                opponent.addMark(player, mark);
+            }
         }
         return true;
     }

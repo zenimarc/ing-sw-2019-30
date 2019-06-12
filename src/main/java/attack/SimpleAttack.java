@@ -59,27 +59,11 @@ public class SimpleAttack extends Attack {
      */
     @Override
     public boolean attack(Player player, List<Player> opponents) {
-
-        if (opponents.size() > target && target != -1) {
-            opponents = opponents.subList(0, target);
-        }
-
         for (Player opponent : opponents) {
-            singleAttack(player, opponent);
+            if (opponent != null) {
+                opponent.addDamage(player, damage);
+                opponent.addMark(player, mark);            }
         }
-        return true;
-    }
-
-    /**
-     * Add damage and mark to single opponent by player
-     *
-     * @param player   Player who attack
-     * @param opponent Player hit
-     * @return true
-     */
-    public boolean singleAttack(Player player, Player opponent) {
-        opponent.addDamage(player, damage);
-        opponent.addMark(player, mark);
         return true;
     }
 
