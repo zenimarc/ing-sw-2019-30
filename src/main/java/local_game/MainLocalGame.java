@@ -2,7 +2,6 @@ package local_game;
 
 import controller.BoardController;
 import player.Player;
-import powerup.PowerCard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +23,7 @@ public class MainLocalGame {
 
 
         int i=0;
-        while (i<10) {
+        while (true) {
             playerWhoPlay = boardController.getPlayer();
 
             boardController.playerPlay(playerWhoPlay);
@@ -38,14 +37,18 @@ public class MainLocalGame {
     private ArrayList<Player> initializePlayer(){
         Player p1 = new Player("Aldo");
         Player p2 = new Player("Bob");
-     //   Player p3 = new Player("Carlo");
+        Player p3 = new Player("Carl");
+        Player p4 = new Player("Doc");
 
         p1.addAmmo(new int[]{1,1,1});
         p2.addAmmo(new int[]{1,1,1});
-       // p3.addAmmo(new int[]{1,1,1});
+        p3.addAmmo(new int[]{1,1,1});
+        p4.addAmmo(new int[]{1,1,1});
 
-        return new ArrayList<>(Arrays.asList(p1,p2));
+       // return new ArrayList<>(Arrays.asList(p1,p2));
        // return new ArrayList<>(Arrays.asList(p1,p2,p3));
+        return new ArrayList<>(Arrays.asList(p1,p2,p3,p4));
+
     }
 
 
