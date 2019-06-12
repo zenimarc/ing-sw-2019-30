@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import deck.Bullet;
+import org.jetbrains.annotations.NotNull;
 import player.Player;
 
 import java.util.List;
@@ -27,14 +28,14 @@ public class SimpleWeapon extends WeaponCard{
         switch (weaponType){
             case LOCK_RIFLE:
                 attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 2,1,1));
-                attacks.add(new SimpleAttack(VISIBLE, LOCK_RIFLE_OPT1, 0,1,1));
+                attacks.add(new SimpleAttack(VISIBLE, LOCK_RIFLE_OPT1, 0,1,2));
                 attacks.get(1).setCost(new int[]{1,0,0});
                 break;
             case MACHINE_GUN:
                 attacks.add(new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 1,0,2));
-                attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP1, 1,0,1));
+                attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP1, 1,0,2));
                 attacks.get(1).setCost(new int[]{0,1,0});
-                attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP2, 1,0,2));
+                attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP2, 1,0,3));
                 attacks.get(2).setCost(new int[]{0,0,1});
                 break;
             case ELECTROSCYTHE:
@@ -72,17 +73,17 @@ public class SimpleWeapon extends WeaponCard{
     public EnumWeapon getType(){return this.weaponType;}
 
 
-    private boolean lockrifleShoot(int typeAttack, Player shooter, List<Player> opponents){
+    private boolean lockrifleShoot(int typeAttack, Player shooter, @NotNull List<Player> opponents){
         attacks.get(0).attack(shooter, opponents.get(0));
-        if(typeAttack==1){
+        if(typeAttack==1 && opponents.size()==2){
             attacks.get(1).attack(shooter, opponents.get(1));
         }
         return true;
     }
 
     private boolean machinegunShoot(int typeAttack, Player shooter, List<Player> opponents){
-        //Base Attack
-        attacks.get(0).attack(shooter,opponents);
+
+        attacks.get(0).attack(shooter,opponents.subList(0,2));
 
         switch (typeAttack){
             case 0:
@@ -91,18 +92,17 @@ public class SimpleWeapon extends WeaponCard{
                 attacks.get(1).attack(shooter, opponents.get(0));
                 break;
             case 2:
-                attacks.get(2).attack(shooter,opponents.subList(1,2));
+                attacks.get(2).attack(shooter,opponents.subList(1,3));
                 break;
-            case 12:
+            case 3:
                 attacks.get(1).attack(shooter, opponents.get(0));
-                attacks.get(2).attack(shooter,opponents.subList(1,2));
+                attacks.get(2).attack(shooter,opponents.subList(1,3));
                 break;
             default:
                 return false;
         }
         return true;
     }
-
 
     private boolean zx2Shoot(int typeAttack, Player shooter, List<Player> opponents){
         switch (typeAttack){
