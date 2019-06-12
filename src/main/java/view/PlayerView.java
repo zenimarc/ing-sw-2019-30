@@ -177,7 +177,6 @@ public class PlayerView extends Observable implements Observer{
         return Integer.valueOf(read)-1;
     }
 
-
     /**
      * This ask player which opponents want to hit from a list
      * @param possibleTarget possible target list
@@ -222,6 +221,8 @@ public class PlayerView extends Observable implements Observer{
                 targets.add(p);
                 possibleTargets.remove(p);
                 if(possibleTargets.isEmpty()) break;
+            }else{
+                break;
             }
         }
         return targets;
@@ -433,35 +434,106 @@ public class PlayerView extends Observable implements Observer{
         return Integer.valueOf(read);
     }
 
+
+    private String stringOnlyBaseAttack(WeaponCard wc){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\t1)");
+        sb.append(wc.getAttack(0));
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private String stringOptionalAttack(WeaponCard wc){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\t1)If you want use only base attack:\n");
+        sb.append("\t\t");
+        sb.append(wc.getAttack(0));
+        sb.append("\n");
+        sb.append("\t2)If you want use one (or more) optional attack(s):");
+        for(Attack attack : wc.getAttacks().subList(1,wc.getAttacks().size())){
+            sb.append("\n\t\t");
+            sb.append(attack);
+        }
+        sb.append('\n');
+
+        return sb.toString();
+    }
+
+
+    private String stringForChooseAttackInList(List<Attack> attacks){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("What optional attack do you want to use?\n");
+        sb.append("\t0)No one\n");
+        for(Attack attack : attacks){
+            sb.append('\t');
+            sb.append(attacks.indexOf(attack)+1);
+            sb.append(")");
+            sb.append(attack);
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
+    public List<Integer> chooseOptionalAttack(WeaponCard wc, boolean canRandom){
+        ArrayList<Integer> indexes = new ArrayList<>();
+        String format;
+        String read;
+
+        List<Attack> attacks = wc.getAttacks().subList(1,wc.getAttacks().size());
+
+        if(canRandom) {
+            while (true) {
+                if(attacks.isEmpty()) break;
+                format = "[0-"+attacks.size()+"]";
+                print(stringForChooseAttackInList(attacks));
+                read = reader.next();
+                if(read.matches(format)) {
+                    if (!read.equals("0")){
+                        indexes.add(Integer.valueOf(read)-1);
+                        attacks.remove(Integer.valueOf(read)-1);
+                    }
+                    else break;
+                }
+
+            }
+        }
+        return indexes;
+    }
+
+    private String stringAlternativeAttack(WeaponCard wc){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\tBase attack is:\n");
+        sb.append(stringOnlyBaseAttack(wc));
+        sb.append("\tor else you can choose alterative attack:");
+        sb.append("\t\t2)");
+        sb.append(wc.getAlternativeAttack());
+        return sb.toString();
+    }
+
     /**
      * Create string for choose which attack want to use
      * @param wc WeaponCard
      * @return String contains possible attack
      */
-    private String stringForChooseAttack(WeaponCard wc){
+    private String stringForChooseAttack(WeaponCard wc) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Attacks for ");
         sb.append(wc.getName());
-        sb.append(":");
+        sb.append(":\n");
 
-        for(Attack attack : wc.getAttacks()){
-            sb.append("\n\t");
-            sb.append(wc.getAttacks().indexOf(attack));
-            sb.append(")");
-            sb.append(attack);
+        if(wc.getAttacks().size()==1 && wc.getAlternativeAttack()==null){
+            sb.append(stringOnlyBaseAttack(wc));
+        }else if(wc.getAttacks().size()>1){
+            sb.append(stringOptionalAttack(wc));
+        }else if(wc.getAlternativeAttack()!=null){
+            sb.append(stringAlternativeAttack(wc));
         }
 
-        if(wc.getAlternativeAttack()!=null) {
-            sb.append('\n');
-            sb.append("Alternative attack:\n");
-            sb.append("\t");
-            sb.append(wc.getAttacks().size());
-            sb.append(")");
-            sb.append(wc.getAlternativeAttack());
-        }
-
-        sb.append("\nWhich do you prefer?");
+        sb.append("\nWhich do you prefer? [0 not attack]");
         return sb.toString();
     }
 
@@ -472,7 +544,7 @@ public class PlayerView extends Observable implements Observer{
      */
     private int chooseAttack(WeaponCard wc){
         String read;
-        int max = wc.getAlternativeAttack()!=null ? wc.getAttacks().size() : wc.getAttacks().size()-1;
+        int max = wc.getAlternativeAttack()!=null ? 2 : wc.getAttacks().size();
         String format = "[0-"+max+"]";
         String question = stringForChooseAttack(wc);
 
@@ -483,7 +555,8 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-        return Integer.valueOf(read)==wc.getAttacks().size() ? -1 : Integer.valueOf(read) ;
+
+        return Integer.valueOf(read)-1 ;
     }
 
     /**
