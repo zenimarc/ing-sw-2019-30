@@ -36,6 +36,7 @@ public abstract class WeaponCard extends Card {
     protected EnumWeapon weaponType;
 
     protected List<Attack> attacks;
+    protected Attack baseAttack;
     protected Attack alternativeAttack;
     protected boolean isLoaded;
 
@@ -143,7 +144,7 @@ public abstract class WeaponCard extends Card {
     protected boolean alternativeSimpleShoot(int typeAttack, Player shooter, List<Player> opponents){
         switch (typeAttack) {
             case 0:
-                attacks.get(0).attack(shooter, opponents);
+                baseAttack.attack(shooter, opponents);
                 break;
             case 1:
                 alternativeAttack.attack(shooter, opponents);

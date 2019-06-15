@@ -29,21 +29,21 @@ public class MovementWeapon extends WeaponCard {
 
         switch (weaponType){
             case TRACTOR_BEAM:
-                attacks.add(new MoveAttack(VISIBLE, BASE_ATTACK_NAME,2,1,1));
+                baseAttack = new MoveAttack(VISIBLE, BASE_ATTACK_NAME,2,1,1);
                 alternativeAttack = new MoveAttack(SAME_CELL,TRACTOR_BEAN_OPT1,2,3,1);
                 alternativeAttack.setCost(new int[]{1,1,0});
                 break;
             case VORTEX_CANNON:
-                attacks.add(new MoveAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1));
+                baseAttack = new MoveAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1);
                 attacks.add(new MoveAttack(VISIBLE,VORTEX_CANNON_OPT1, 1, 1,2));
-                attacks.get(1).setCost(new int[]{1,0,0});
+                baseAttack.setCost(new int[]{1,0,0});
                 break;
             case SHOTGUN:
-                attacks.add(new MoveAttack(SAME_CELL,BASE_ATTACK_NAME, 1,3,1));
+                baseAttack = new MoveAttack(SAME_CELL,BASE_ATTACK_NAME, 1,3,1);
                 alternativeAttack = new DistanceAttack(VISIBLE,SHOTGUN_OP1, 2,0,1,1,1);
                 break;
             case SLEDGEHAMMER:
-                attacks.add(new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME,2,0,1));
+                baseAttack = new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME,2,0,1);
                 alternativeAttack = new MoveAttack(SAME_CELL,SLEDGE_HAMMER,2,3,1);
                 alternativeAttack.setCost(new int[]{1,0,0});
                 break;
@@ -57,11 +57,13 @@ public class MovementWeapon extends WeaponCard {
     protected MovementWeapon(@JsonProperty("name") String name,
                              @JsonProperty("cost") List<Bullet> cost,
                              @JsonProperty("attacks")List<Attack> attacks,
+                             @JsonProperty("baseAttack") Attack baseAttack,
                              @JsonProperty("alternativeAttack") Attack alternativeAttack,
                              @JsonProperty("type") EnumWeapon weaponType){
         this.name = name;
         this.cost = cost;
         this.attacks = attacks;
+        this.baseAttack = baseAttack;
         this.alternativeAttack = alternativeAttack;
         this.weaponType = weaponType;
         this.isLoaded = false;
@@ -78,7 +80,7 @@ public class MovementWeapon extends WeaponCard {
     private boolean tractorBeamShoot(int typeAttack, Player shooter, Player opponent, Cell cell){
         switch (typeAttack){
             case 0:
-                attacks.get(0).attack(shooter,opponent,cell);
+               baseAttack.attack(shooter,opponent,cell);
                 break;
             case 1:
                 alternativeAttack.attack(shooter,opponent,cell);
@@ -98,9 +100,9 @@ public class MovementWeapon extends WeaponCard {
      * @return if hit true
      */
     private boolean vortexCannonShoot(int typeAttack, Player shooter, List<Player> opponents, Cell cell){
-        attacks.get(0).attack(shooter,opponents.get(0),cell);
+      baseAttack.attack(shooter,opponents.get(0),cell);
         if(typeAttack==1){
-            attacks.get(1).attack(shooter,opponents.subList(1,2),cell);
+            baseAttack.attack(shooter,opponents.subList(1,2),cell);
         }
         return true;
     }
@@ -117,7 +119,7 @@ public class MovementWeapon extends WeaponCard {
         switch (typeAttack){
             case 0:
                 if(!cell.isPresent()) return false;
-                attacks.get(0).attack(shooter, opponents,cell.get());
+                baseAttack.attack(shooter, opponents,cell.get());
                 break;
             case 1:
                 alternativeAttack.attack(shooter,opponents);
@@ -131,7 +133,7 @@ public class MovementWeapon extends WeaponCard {
     private boolean sledgehammerShot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
         switch (typeAttack) {
             case 0:
-                attacks.get(0).attack(shooter,opponents);
+                baseAttack.attack(shooter,opponents);
                 break;
             case 1:
                 if(!cell.isPresent()) return false;
