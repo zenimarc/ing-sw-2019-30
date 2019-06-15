@@ -476,12 +476,19 @@ public class PlayerView extends Observable implements Observer{
         return sb.toString();
     }
 
+    /**
+     * This ask user what optional attack want use
+     * @param wc selected weapon card
+     * @param canRandom user can use optional attack whitout order
+     * @return list of index of choosen optional attack
+     */
     public List<Integer> chooseOptionalAttack(WeaponCard wc, boolean canRandom){
         ArrayList<Integer> indexes = new ArrayList<>();
         String format;
         String read;
 
-        List<Attack> attacks = wc.getAttacks().subList(1,wc.getAttacks().size());
+        List<Attack> attacks = new ArrayList<>();
+        attacks.addAll(wc.getAttacks().subList(1,wc.getAttacks().size()));
 
         if(canRandom) {
             while (true) {
