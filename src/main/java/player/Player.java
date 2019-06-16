@@ -143,7 +143,6 @@ public class Player extends Observable implements Cloneable {
         this.points += points;
     }
 
-
     /**
      * This function checks if the player can pay for the indicated ammo.
      *
@@ -205,8 +204,6 @@ public class Player extends Observable implements Cloneable {
     public boolean addWeapon(WeaponCard weaponCard) {
         if (weapons.size() < Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
             weapons.add(weaponCard);
-   //         setChanged();
-     //       notifyObservers(this.clonePlayer());
             return true;
         }
         return false;
