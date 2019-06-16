@@ -3,13 +3,9 @@ package weapon;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class WeaponFactory {
@@ -114,6 +110,7 @@ public class WeaponFactory {
     }
 
     public List<WeaponCard> getWeaponCardList(){
+
         return loadWeaponCardsJackson();
     }
 
