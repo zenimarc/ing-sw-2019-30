@@ -116,7 +116,7 @@ public class PlayerView extends Observable implements Observer{
         //else want shoot
         WeaponCard weaponCard = player.getWeapons().get(index);
 
-        index = chooseAttack(weaponCard);
+        index = chooseTypeAttack(weaponCard);
 
         setChanged();
         notifyObservers(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
@@ -182,12 +182,11 @@ public class PlayerView extends Observable implements Observer{
      * @param possibleTarget possible target list
      * @return player who can hit
      */
-    public Player chooseTarget(List<Player> possibleTarget){
+    private Player chooseTarget(List<Player> possibleTarget){
         if(possibleTarget.isEmpty()){
             printError("There are not possible target");
             return null;
         }
-
         String format = "[0-"+possibleTarget.size()+"]";
         String question = stringForChooseTarget(possibleTarget);
         String read;
@@ -216,11 +215,11 @@ public class PlayerView extends Observable implements Observer{
         Player p;
 
         for(int i=0; i<numTarget;i++){
+            if(possibleTargets.isEmpty()) break;
             p = chooseTarget(possibleTargets);
             if(p!=null){
                 targets.add(p);
                 possibleTargets.remove(p);
-                if(possibleTargets.isEmpty()) break;
             }else{
                 break;
             }
@@ -434,11 +433,10 @@ public class PlayerView extends Observable implements Observer{
         return Integer.valueOf(read);
     }
 
-
     private String stringOnlyBaseAttack(WeaponCard wc){
         StringBuilder sb = new StringBuilder();
         sb.append("\t1)");
-        sb.append(wc.getAttack(0));
+        sb.append(wc.getBaseAttack());
         sb.append("\n");
         return sb.toString();
     }
@@ -448,10 +446,10 @@ public class PlayerView extends Observable implements Observer{
 
         sb.append("\t1)If you want use only base attack:\n");
         sb.append("\t\t");
-        sb.append(wc.getAttack(0));
+        sb.append(wc.getBaseAttack());
         sb.append("\n");
         sb.append("\t2)If you want use one (or more) optional attack(s):");
-        for(Attack attack : wc.getAttacks().subList(1,wc.getAttacks().size())){
+        for(Attack attack : wc.getAttacks()){
             sb.append("\n\t\t");
             sb.append(attack);
         }
@@ -459,7 +457,6 @@ public class PlayerView extends Observable implements Observer{
 
         return sb.toString();
     }
-
 
     private String stringForChooseAttackInList(List<Attack> attacks){
         StringBuilder sb = new StringBuilder();
@@ -488,7 +485,7 @@ public class PlayerView extends Observable implements Observer{
         String read;
 
         List<Attack> attacks = new ArrayList<>();
-        attacks.addAll(wc.getAttacks().subList(1,wc.getAttacks().size()));
+        attacks.addAll(wc.getAttacks());
 
         if(canRandom) {
             while (true) {
@@ -498,7 +495,7 @@ public class PlayerView extends Observable implements Observer{
                 read = reader.next();
                 if(read.matches(format)) {
                     if (!read.equals("0")){
-                        indexes.add(Integer.valueOf(read)-1);
+                        indexes.add(wc.getAttacks().indexOf(attacks.get(Integer.valueOf(read)-1)));
                         attacks.remove(Integer.valueOf(read)-1);
                     }
                     else break;
@@ -512,9 +509,9 @@ public class PlayerView extends Observable implements Observer{
     private String stringAlternativeAttack(WeaponCard wc){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\tBase attack is:\n");
+        sb.append("\tBase attack is:\n\t");
         sb.append(stringOnlyBaseAttack(wc));
-        sb.append("\tor else you can choose alterative attack:");
+        sb.append("\tor else you can choose alterative attack:\n");
         sb.append("\t\t2)");
         sb.append(wc.getAlternativeAttack());
         return sb.toString();
@@ -532,9 +529,9 @@ public class PlayerView extends Observable implements Observer{
         sb.append(wc.getName());
         sb.append(":\n");
 
-        if(wc.getAttacks().size()==1 && wc.getAlternativeAttack()==null){
+        if(wc.getAttacks().isEmpty() && wc.getAlternativeAttack()==null){
             sb.append(stringOnlyBaseAttack(wc));
-        }else if(wc.getAttacks().size()>1){
+        }else if(!wc.getAttacks().isEmpty()){
             sb.append(stringOptionalAttack(wc));
         }else if(wc.getAlternativeAttack()!=null){
             sb.append(stringAlternativeAttack(wc));
@@ -545,13 +542,14 @@ public class PlayerView extends Observable implements Observer{
     }
 
     /**
-     * This ask player which attack want to use
+     * This ask player which attack want to use: BaseAttack or use OptionalAttack or use AlternativeAttack
      * @param wc WeaponCard
      * @return index of attack to use
      */
-    private int chooseAttack(WeaponCard wc){
+    private int chooseTypeAttack(WeaponCard wc){
         String read;
-        int max = wc.getAlternativeAttack()!=null ? 2 : wc.getAttacks().size();
+        int max = (wc.getAlternativeAttack()!=null && wc.getAttacks().isEmpty()) ? 1 : 2;
+
         String format = "[0-"+max+"]";
         String question = stringForChooseAttack(wc);
 
@@ -562,7 +560,6 @@ public class PlayerView extends Observable implements Observer{
                 break;
             }
         }
-
         return Integer.valueOf(read)-1 ;
     }
 

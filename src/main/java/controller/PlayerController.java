@@ -130,7 +130,7 @@ public class PlayerController implements Observer {
                 if(player.canPay(Bullet.toIntArray(wc.getCost()))){
                     wc.setLoaded();
                     player.useAmmo(Bullet.toIntArray(wc.getCost()));
-                } else{
+                }else{
                     pw.printError("You have not enough ammo to load this weapon");
                 }
                 player.notifyEndAction();
@@ -303,7 +303,6 @@ public class PlayerController implements Observer {
      */
     private void checkedShoot(PlayerView pw, CommandObj cmdObj) {
         WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
-        ArrayList<Attack> attacks = new ArrayList<>();
         //Checked load weapon
         if (!weaponCard.isReady()) {
             pw.printError("This weapon is not loaded");
@@ -319,56 +318,134 @@ public class PlayerController implements Observer {
         if (selector == -1) return;
 
         if (selector==0){
-            attacks.add(weaponCard.getAttack(0));
-        }else if (weaponCard.getAttacks().size() > 1) {
-            List<Integer> indexes = pw.chooseOptionalAttack(weaponCard, true);
-            for (Integer i : indexes) {
-                attacks.add(weaponCard.getAttack(i));
-            }
+            //BASE ATTACK
+            if(!shootBaseAttack(weaponCard, pw)) return;
+        }else if (!weaponCard.getAttacks().isEmpty()) {
+            //BASE ATTACK + OPTIONAL ATTACK
+            if(!shootOptionalAttack(weaponCard,pw)) return;
         }else if(weaponCard.getAlternativeAttack()!=null){
-            attacks.add(weaponCard.getAlternativeAttack());
+            //ALTERNATIVE ATTACK
+            if(!shootAlternativeAttack(weaponCard, pw)) return;
         }
-        for(Attack attack : attacks){shoot(attack, weaponCard, pw, selector);}
+
+        numAction++;
+        player.notifyEndAction();
     }
 
     /**
-     * implements SHOOT action
-     * @param attack
-     * @param weaponCard
-     * @param pw
-     * @param selector
-     * @return
+     * This ask shooter which optional attack want to use and target to hit.
+     * Than shoot using base attack and selected optional attack
+     * @param weaponCard weaponCard to use
+     * @param pw shooter playerView
+     * @return true if min one opponent was hit
      */
-    private boolean shoot(Attack attack, WeaponCard weaponCard, PlayerView pw, int selector) {
-        if (!player.canPay(attack.getCost())) {
-            pw.printError("You have not enough bullet to use this attack");
-            return false;
+    private boolean shootOptionalAttack(WeaponCard weaponCard, PlayerView pw) {
+        int maxTarget;
+        List<Attack> attacks = new ArrayList<>();
+
+        List<Integer> indexes = pw.chooseOptionalAttack(weaponCard, true);
+        if (indexes.isEmpty()) {
+            return shootBaseAttack(weaponCard, pw);
         }
-        List<Player> opponents = chooseTarget(pw, attack);
+
+        attacks.add(weaponCard.getBaseAttack());
+        indexes.forEach(x -> attacks.add(weaponCard.getAttack(x)));
+
+        maxTarget = attacks.stream().mapToInt(Attack::getTarget).max().orElse(0);
+        List<Player> opponents = chooseTarget(pw, weaponCard.getBaseAttack().getTargetType(), maxTarget);
         //User can't attack or decided to not attack
         if (opponents.isEmpty()) return false;
         //Add null opponents to have opponents.size() == attack.target
-        stdPlayerList(opponents, attack.getTarget());
+        stdPlayerList(opponents, maxTarget);
+
+        weaponCard.shoot(0,player, opponents, null);
+
+        for(Integer index : indexes) {
+            if (!player.canPay(weaponCard.getAttack(index).getCost())) {
+                pw.printError("You have not enough bullet to use this attack");
+            }else{
+                int i = index +1;
+                weaponCard.shoot(i, player, opponents, null);
+                player.useAmmo(weaponCard.getAttack(index).getCost());
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This invoke shootSingleAttack to use BaseAttack
+     * @param weaponCard WeaponCard  to use to attack
+     * @param pw shooter playerView
+     * @return
+     */
+    private boolean shootBaseAttack(WeaponCard weaponCard, PlayerView pw){
+        return shootSingleAttack(weaponCard,pw, true);
+    }
+
+    /**
+     * This invoke shootSingleAttack to use AlternativeAttack
+     * @param weaponCard WeaponCard  to use to attack
+     * @param pw shooter playerView
+     * @return
+     */
+    private boolean shootAlternativeAttack(WeaponCard weaponCard, PlayerView pw) {
+        if (!player.canPay(weaponCard.getAlternativeAttack().getCost())) {
+            pw.printError("You have not enough bullet to use this attack");
+            return false;
+        }
+
+        if (shootSingleAttack(weaponCard, pw, false)) {
+            player.useAmmo(weaponCard.getAlternativeAttack().getCost());
+            return true;
+        } else return false;
+    }
+
+
+    /**
+     * This ask player opponents to hit, verify if them are shootable and shoot
+     * @param weaponCard Weponcard to use to shoot
+     * @param pw Shooter PlayerView
+     * @param baseAttack if true use baseAttack or else use alternativeAttack
+     * @return if shooter shoot
+     */
+    private boolean shootSingleAttack(WeaponCard weaponCard, PlayerView pw,  boolean baseAttack){
+        int attackSelector;
+        int maxTarget;
+        Attack attack;
+
+        if(baseAttack){
+            attackSelector = 0;
+            maxTarget = weaponCard.getBaseAttack().getTarget();
+            attack = weaponCard.getBaseAttack();
+        }else {
+            attackSelector = 1;
+            maxTarget = weaponCard.getAlternativeAttack().getTarget();
+            attack = weaponCard.getAlternativeAttack();
+        }
+
+        List<Player> opponents = chooseTarget(pw, attack.getTargetType(), maxTarget);
+
+        if (opponents.isEmpty()) return false;
+        //Add null opponents to have opponents.size() == attack.target
+        stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
-        weaponCard.shoot(selector, player, opponents, null);
-        numAction++;
-        player.notifyEndAction();
+        weaponCard.shoot(attackSelector, player, opponents, null);
         return true;
     }
 
     /**
      * This function verifies if the target is hittable or not
      * @param pw player's PlayerView
-     * @param attack the attack the player wants to use
+     * @param maxTarget max opponets to shoot
      * @return true if the attack was successful, false otherwise
      */
-    private List<Player> chooseTarget(PlayerView pw, @NotNull Attack attack) {
-        List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), attack.getTargetType());
+    private List<Player> chooseTarget(PlayerView pw, @NotNull EnumTargetSet targetType, int maxTarget) {
+        List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), targetType);
         if(potentialTargets.isEmpty()) {
             pw.printError("You have not any possible targets");
             return Collections.emptyList();
         }
-        List<Player> opponents = pw.chooseTargets(attack.getTarget(), potentialTargets);
+        List<Player> opponents = pw.chooseTargets(maxTarget, potentialTargets);
 
         if(opponents.isEmpty()) return Collections.emptyList();
         if(!potentialTargets.containsAll(opponents)){
@@ -389,9 +466,9 @@ public class PlayerController implements Observer {
      */
     private boolean isGoodSelector(int selector, @NotNull WeaponCard wc){
 
-        if(wc.getAttacks().size()==1 && wc.getAlternativeAttack()==null){
+        if(wc.getAttacks().isEmpty() && wc.getAlternativeAttack()==null){
             return (selector==0 || selector == -1);
-        }else if(wc.getAttacks().size()>1 ^ wc.getAlternativeAttack()!=null){
+        }else if(!wc.getAttacks().isEmpty() ^ wc.getAlternativeAttack()!=null){
             return (selector>=-1 && selector<=1);
         }
         return false;
