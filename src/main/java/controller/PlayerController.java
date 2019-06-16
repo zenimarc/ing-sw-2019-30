@@ -445,14 +445,20 @@ public class PlayerController implements Observer {
             pw.printError("You have not any possible targets");
             return Collections.emptyList();
         }
-        List<Player> opponents = pw.chooseTargets(maxTarget, potentialTargets);
 
-        if(opponents.isEmpty()) return Collections.emptyList();
-        if(!potentialTargets.containsAll(opponents)){
-            pw.printError("You can't attack one (or more) selected player(s)");
-            return Collections.emptyList();
+        if(maxTarget==-1){
+            return potentialTargets;
+        }else {
+
+            List<Player> opponents = pw.chooseTargets(maxTarget, potentialTargets);
+
+            if (opponents.isEmpty()) return Collections.emptyList();
+            if (!potentialTargets.containsAll(opponents)) {
+                pw.printError("You can't attack one (or more) selected player(s)");
+                return Collections.emptyList();
+            }
+            return opponents;
         }
-        return opponents;
     }
 
     /**
