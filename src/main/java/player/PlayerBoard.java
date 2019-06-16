@@ -100,9 +100,10 @@ public class PlayerBoard {
         //se ne ha già 12 non fa niente
         int marksToAdd = getMarks(player);
         for (int i=0; i<marksToAdd; i++) {
-            if (damageTrack.size()<Constants.MAX_DAMAGE.getValue())
+            if (damageTrack.size() < Constants.MAX_DAMAGE.getValue()) {
                 damageTrack.add(player);
-            removeMark(player);
+                removeMark(player);
+            }
         }
     }
 
