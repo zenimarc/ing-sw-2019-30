@@ -548,7 +548,7 @@ public class PlayerView extends Observable implements Observer{
      */
     private int chooseTypeAttack(WeaponCard wc){
         String read;
-        int max = (wc.getAlternativeAttack()!=null && wc.getAttacks().isEmpty()) ? 1 : 2;
+        int max = (wc.getAlternativeAttack()==null && wc.getAttacks().isEmpty()) ? 1 : 2;
 
         String format = "[0-"+max+"]";
         String question = stringForChooseAttack(wc);
