@@ -28,16 +28,16 @@ public class DistanceWeapon extends WeaponCard {
 
         switch (weaponType){
             case WHISPER:
-                baseAttack = new DistanceAttack(VISIBLE,BASE_ATTACK_NAME,3,2,1,2,-1);
+                baseAttack = new DistanceAttack(VISIBLE,WHISPER_BASE,3,1,1,2,-1);
                 break;
             case HELLION:
-                baseAttack = new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1,1,1,1,-1);
-                alternativeAttack = new DistanceAttack(VISIBLE,HELLION_OPT1,1,2,-1,1,-1);
+                baseAttack = new DistanceAttack(VISIBLE, HELLION_BASE, 1,0,1,1,-1);
+                alternativeAttack = new DistanceAttack(VISIBLE,HELLION_OPT1,1,0,1,1,-1);
                 alternativeAttack.setCost(new int[]{1,0,0});
                 break;
             case SHOCKWAVE:
-                baseAttack = new DistanceAttack(VISIBLE, BASE_ATTACK_NAME, 1, 0 , 3,1,1);
-                alternativeAttack = new DistanceAttack(VISIBLE, SHOCKWAVE_OPT1, 1, 0 , -1,1,1);
+                baseAttack = new DistanceAttack(VISIBLE, SHOCK_WAVE_BASE, 1, 0 , 3,1,1);
+                alternativeAttack = new DistanceAttack(VISIBLE, SHOCK_WAVE_OPT1, 1, 0 , -1,1,1);
                 alternativeAttack.setCost(new int[]{0,1,0});
                 break;
             default:
@@ -88,6 +88,23 @@ public class DistanceWeapon extends WeaponCard {
         return true;
     }
 
+    private boolean shockWaveShoot(int typeAttack, Player shooter, List<Player> opponents){
+        switch (typeAttack) {
+            case 0:
+                if(opponents.stream().filter(x-> x!=null).map(Player::getCell).distinct().count()<opponents.stream().filter(x->x!=null).count()){
+                    return false;
+                }
+                baseAttack.attack(shooter, opponents);
+                break;
+            case 1:
+                alternativeAttack.attack(shooter, opponents);
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
@@ -100,7 +117,7 @@ public class DistanceWeapon extends WeaponCard {
                 result = hellionShoot(typeAttack, shooter, opponents);
                 break;
             case SHOCKWAVE:
-                result = alternativeSimpleShoot(typeAttack, shooter, opponents);
+                result = shockWaveShoot(typeAttack, shooter, opponents);
                 break;
             default:
                 return false;
