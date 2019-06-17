@@ -1,5 +1,6 @@
 package controller;
 import attack.Attack;
+import attack.DistanceAttack;
 import board.*;
 import board.Cell;
 import board.billboard.Billboard;
@@ -13,6 +14,7 @@ import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
 import view.PlayerView;
+import weapon.EnumWeapon;
 import weapon.WeaponCard;
 
 import java.util.*;
@@ -317,19 +319,24 @@ public class PlayerController implements Observer {
 
         if (selector == -1) return;
 
+        boolean isGoodAttack = false;
         if (selector==0){
             //BASE ATTACK
-            if(!shootBaseAttack(weaponCard, pw)) return;
+            if(shootBaseAttack(weaponCard, pw)) isGoodAttack = true;
         }else if (!weaponCard.getAttacks().isEmpty()) {
             //BASE ATTACK + OPTIONAL ATTACK
-            if(!shootOptionalAttack(weaponCard,pw)) return;
+            if(shootOptionalAttack(weaponCard,pw)) isGoodAttack = true;
         }else if(weaponCard.getAlternativeAttack()!=null){
             //ALTERNATIVE ATTACK
-            if(!shootAlternativeAttack(weaponCard, pw)) return;
+            if(shootAlternativeAttack(weaponCard, pw)) isGoodAttack = true;
         }
 
-        numAction++;
-        player.notifyEndAction();
+        if(isGoodAttack) {
+            numAction++;
+            player.notifyEndAction();
+        }else {
+            pw.printError("Failed attack");
+        }
     }
 
     /**
@@ -352,7 +359,7 @@ public class PlayerController implements Observer {
         indexes.forEach(x -> attacks.add(weaponCard.getAttack(x)));
 
         maxTarget = attacks.stream().mapToInt(Attack::getTarget).max().orElse(0);
-        List<Player> opponents = chooseTarget(pw, weaponCard.getBaseAttack().getTargetType(), maxTarget);
+        List<Player> opponents = getTargets(pw, weaponCard.getBaseAttack().getTargetType(), maxTarget);
         //User can't attack or decided to not attack
         if (opponents.isEmpty()) return false;
         //Add null opponents to have opponents.size() == attack.target
@@ -400,7 +407,6 @@ public class PlayerController implements Observer {
         } else return false;
     }
 
-
     /**
      * This ask player opponents to hit, verify if them are shootable and shoot
      * @param weaponCard Weponcard to use to shoot
@@ -422,15 +428,36 @@ public class PlayerController implements Observer {
             maxTarget = weaponCard.getAlternativeAttack().getTarget();
             attack = weaponCard.getAlternativeAttack();
         }
+        List<Player> opponents;
 
-        List<Player> opponents = chooseTarget(pw, attack.getTargetType(), maxTarget);
-
+        if(attack.getClass() == DistanceAttack.class){
+            if(weaponCard.getWeaponType()!= EnumWeapon.HELLION) {
+                opponents = getTargets(pw, attack.getTargetType(), maxTarget,
+                        ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), false);
+            }else {
+                opponents = getTargets(pw, attack.getTargetType(), maxTarget,
+                        ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), true);
+            }
+        }else {
+            opponents = getTargets(pw, attack.getTargetType(), maxTarget);
+        }
         if (opponents.isEmpty()) return false;
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
-        weaponCard.shoot(attackSelector, player, opponents, null);
-        return true;
+        return weaponCard.shoot(attackSelector, player, opponents, null);
+
+    }
+
+    private List<Player> getTargets(PlayerView pw, EnumTargetSet targetType, int maxTarget, int minDistance, int maxDistance, boolean hitOpponentSameCell) {
+        List<Player> potentialTarget = boardController.getPotentialTargets(player.getCell(), targetType, minDistance, maxDistance);
+        List<Player> choosenTargets = chooseTargets(pw, potentialTarget, maxTarget);
+        if (!hitOpponentSameCell) {
+            return choosenTargets;
+        }else {
+            choosenTargets.addAll(boardController.getPotentialTargets(choosenTargets.get(0).getCell(), EnumTargetSet.SAME_CELL));
+            return choosenTargets;
+        }
     }
 
     /**
@@ -439,8 +466,12 @@ public class PlayerController implements Observer {
      * @param maxTarget max opponets to shoot
      * @return true if the attack was successful, false otherwise
      */
-    private List<Player> chooseTarget(PlayerView pw, @NotNull EnumTargetSet targetType, int maxTarget) {
+    private List<Player> getTargets(PlayerView pw, @NotNull EnumTargetSet targetType, int maxTarget) {
         List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), targetType);
+        return chooseTargets(pw, potentialTargets, maxTarget);
+    }
+
+    private List<Player> chooseTargets(PlayerView pw, List<Player> potentialTargets, int maxTarget){
         if(potentialTargets.isEmpty()) {
             pw.printError("You have not any possible targets");
             return Collections.emptyList();
@@ -449,16 +480,31 @@ public class PlayerController implements Observer {
         if(maxTarget==-1){
             return potentialTargets;
         }else {
-
             List<Player> opponents = pw.chooseTargets(maxTarget, potentialTargets);
 
-            if (opponents.isEmpty()) return Collections.emptyList();
-            if (!potentialTargets.containsAll(opponents)) {
-                pw.printError("You can't attack one (or more) selected player(s)");
+            if(areGoodTarget(pw, potentialTargets, opponents)){
+                return opponents;
+            }else{
                 return Collections.emptyList();
             }
-            return opponents;
         }
+
+    }
+
+    /**
+     * Check if selected opponents are good targets
+     * @param pw shooter playerView
+     * @param potentialTargets potential good targets
+     * @param selectedTargets selected target by shooter
+     * @return if selected target are good target
+     */
+    private boolean areGoodTarget(PlayerView pw, List<Player> potentialTargets, List<Player> selectedTargets){
+        if (selectedTargets.isEmpty()) return false;
+        if (!potentialTargets.containsAll(selectedTargets)) {
+            pw.printError("You can't attack one (or more) selected player(s)");
+            return false;
+        }
+        return true;
     }
 
     /**
