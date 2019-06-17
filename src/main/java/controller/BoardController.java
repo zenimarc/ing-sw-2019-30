@@ -242,11 +242,40 @@ public class BoardController{
     }
 
     /**
-     * This function returns a subset of Cell from billboard where the player can move in tot steps
-     * @param shooterCell is the player's cell
-     * @param steps are the maximum steps available
-     * @return a list of Cell reachable from shooterCell in tot steps
+     * This function, given the shooter cell, returns a list of players who are possible targets compatible with the attack's target type
+     * who are in cell in range [minDistance;maxDistance]
+     * @param shooterCell is the shooter's Cell
+     * @param targetType is the attack's target type, examples: Visible, Same room... (see EnumTargetSet for complete enumeration)
+     * @param minDistance min distance of opponents
+     * @param maxDistance  max distance of opponents
+     * @return a list of players the shooter che hit with the selected targetType
      */
+    public List<Player> getPotentialTargets(Cell shooterCell, EnumTargetSet targetType, int minDistance, int maxDistance) {
+
+        List<Player> opponents = getPotentialTargets(shooterCell, targetType);
+        if(opponents.isEmpty()) return Collections.emptyList();
+        if(minDistance==-1 && maxDistance!=-1) {
+            return opponents.stream()
+                    .filter(x -> board.getBillboard().cellDistance(shooterCell, x.getCell()) <= maxDistance)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }else if(minDistance!=-1 && maxDistance==-1){
+            return opponents.stream()
+                    .filter(x -> board.getBillboard().cellDistance(shooterCell, x.getCell()) >= minDistance)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }else {
+            return opponents.stream()
+                    .filter(x -> board.getBillboard().cellDistance(shooterCell, x.getCell()) >= minDistance &&
+                            board.getBillboard().cellDistance(shooterCell, x.getCell()) <= maxDistance)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+    }
+
+        /**
+         * This function returns a subset of Cell from billboard where the player can move in tot steps
+         * @param shooterCell is the player's cell
+         * @param steps are the maximum steps available
+         * @return a list of Cell reachable from shooterCell in tot steps
+         */
     public List<Cell> getPotentialDestinationCells(Cell shooterCell, int steps){
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
     }
