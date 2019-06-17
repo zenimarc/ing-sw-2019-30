@@ -1,0 +1,34 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "ZX-2",
+  "cost" : [ {
+    "color" : "YELLOW"
+  }, {
+    "color" : "RED"
+  } ],
+  "attacks" : [ ],
+  "baseAttack" : {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "ZX_2_BASE",
+    "description" : "Deal 1 damage and 2 marks to 1 target you can see.",
+    "damage" : 1,
+    "mark" : 2,
+    "target" : 1,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "ZX_2_OP1",
+    "description" : "Choose up 3 targets you can see and deal 1 mark to each.",
+    "damage" : 0,
+    "mark" : 1,
+    "target" : 3,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "type" : "ZX_2",
+  "weaponType" : "ZX_2",
+  "grabCostCLI" : "[R:1,Y:0,B:0]",
+  "weaponCostCLI" : "[R:1,Y:1,B:0]"
+}

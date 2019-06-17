@@ -1,0 +1,43 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "Machinegun",
+  "cost" : [ {
+    "color" : "BLUE"
+  }, {
+    "color" : "RED"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "MACHINE_GUN_OP1",
+    "description" : "Deal 1 additional damage to the first of those targets.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 2,
+    "cost" : [ 0, 0, 0 ]
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "MACHINE_GUN_OP2",
+    "description" : "Deal 1 additional damage to the second of those targets and/or deal 1 damage to a third target you can see.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 3,
+    "cost" : [ 0, 0, 1 ]
+  } ],
+  "baseAttack" : {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "MACHINE_GUN_BASE",
+    "description" : "Deal 1 damage to two different target",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 2,
+    "cost" : [ 0, 1, 0 ]
+  },
+  "alternativeAttack" : null,
+  "type" : "MACHINE_GUN",
+  "weaponType" : "MACHINE_GUN",
+  "grabCostCLI" : "[R:1,Y:0,B:0]",
+  "weaponCostCLI" : "[R:1,Y:0,B:1]"
+}
