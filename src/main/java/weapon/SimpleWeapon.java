@@ -39,12 +39,12 @@ public class SimpleWeapon extends WeaponCard{
                 attacks.get(1).setCost(new int[]{0,0,1});
                 break;
             case ELECTROSCYTHE:
-                baseAttack = new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME, 1,0,-1);
+                baseAttack = new SimpleAttack(SAME_CELL, ELECTROSCYHE_BASE, 1,0,-1);
                 alternativeAttack = new SimpleAttack(SAME_CELL, ELECTROSCYHE_OPT1, 2,0,-1);
                 alternativeAttack.setCost(new int[]{1,0,1});
                 break;
             case HEATSEEKER:
-                baseAttack = new SimpleAttack(NOT_VISIBLE, BASE_ATTACK_NAME, 3,0,1);
+                baseAttack = new SimpleAttack(NOT_VISIBLE, HEATSEEKER_BASE, 3,0,1);
                 break;
             case ZX_2:
                 baseAttack = new SimpleAttack(VISIBLE, ZX_2_BASE, 1,2,1);
