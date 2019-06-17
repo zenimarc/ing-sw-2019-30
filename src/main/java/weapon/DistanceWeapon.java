@@ -35,7 +35,7 @@ public class DistanceWeapon extends WeaponCard {
                 alternativeAttack = new DistanceAttack(VISIBLE,HELLION_OPT1,1,0,1,1,-1);
                 alternativeAttack.setCost(new int[]{1,0,0});
                 break;
-            case SHOCKWAVE:
+            case SHOCK_WAVE:
                 baseAttack = new DistanceAttack(VISIBLE, SHOCK_WAVE_BASE, 1, 0 , 3,1,1);
                 alternativeAttack = new DistanceAttack(VISIBLE, SHOCK_WAVE_OPT1, 1, 0 , -1,1,1);
                 alternativeAttack.setCost(new int[]{0,1,0});
@@ -116,7 +116,7 @@ public class DistanceWeapon extends WeaponCard {
             case HELLION:
                 result = hellionShoot(typeAttack, shooter, opponents);
                 break;
-            case SHOCKWAVE:
+            case SHOCK_WAVE:
                 result = shockWaveShoot(typeAttack, shooter, opponents);
                 break;
             default:
