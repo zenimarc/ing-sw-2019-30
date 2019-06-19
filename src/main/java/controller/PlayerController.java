@@ -10,14 +10,17 @@ import deck.AmmoCard;
 import deck.Bullet;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
+import player.Pawn;
 import powerup.PowerCard;
 import player.Player;
 import view.PlayerBoardView;
 import view.PlayerView;
+import weapon.AreaWeapon;
 import weapon.EnumWeapon;
 import weapon.WeaponCard;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
@@ -428,25 +431,42 @@ public class PlayerController implements Observer {
             maxTarget = weaponCard.getAlternativeAttack().getTarget();
             attack = weaponCard.getAlternativeAttack();
         }
-        List<Player> opponents;
+        List<Player> opponents = new ArrayList<>();
 
-        if(attack.getClass() == DistanceAttack.class){
-            if(weaponCard.getWeaponType()!= EnumWeapon.HELLION) {
-                opponents = getTargets(pw, attack.getTargetType(), maxTarget,
-                        ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), false);
+        if(attack.getClass() == DistanceAttack.class && weaponCard.getClass()!=AreaWeapon.class) {
+            opponents.addAll(getDistanceAttackTargets(pw, weaponCard, attack, maxTarget));
+        }else if(weaponCard.getWeaponType()==EnumWeapon.FURNACE){
+            if(baseAttack){
+                //TODO choose room
+                opponents.addAll(boardController.getPotentialTargets(opponents.get(0).getCell(), EnumTargetSet.SAME_ROOM));
             }else {
-                opponents = getTargets(pw, attack.getTargetType(), maxTarget,
-                        ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), true);
+                List<Cell> possibleCells = boardController.getPotentialDestinationCells(player.getCell(), 1);
+                Cell c = pw.chooseCellToAttack(billboard, possibleCells);
+                if(possibleCells.contains(c)){
+                    opponents.addAll(c.getPawns().stream().map(Pawn::getPlayer).collect(Collectors.toList()));
+                }else pw.printError("Selected cell cannot be selected");
             }
-        }else {
-            opponents = getTargets(pw, attack.getTargetType(), maxTarget);
+        } else {
+            opponents.addAll(getTargets(pw, attack.getTargetType(), maxTarget));
         }
+
+
         if (opponents.isEmpty()) return false;
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
         return weaponCard.shoot(attackSelector, player, opponents, null);
 
+    }
+
+    private List<Player> getDistanceAttackTargets(PlayerView pw, WeaponCard weaponCard, Attack attack, int maxTarget){
+        if (weaponCard.getWeaponType() != EnumWeapon.HELLION) {
+            return getTargets(pw, attack.getTargetType(), maxTarget,
+                    ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), false);
+        } else {
+            return  getTargets(pw, attack.getTargetType(), maxTarget,
+                    ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), true);
+        }
     }
 
     private List<Player> getTargets(PlayerView pw, EnumTargetSet targetType, int maxTarget, int minDistance, int maxDistance, boolean hitOpponentSameCell) {
