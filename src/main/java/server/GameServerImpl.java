@@ -27,7 +27,6 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private transient Thread beginCountdown;
 
     public GameServerImpl(int minPlayer, int maxPlayer) throws RemoteException {
-        boardController = new BoardController();
         this.clients = new ArrayList<>();
         this.offlineClients = new ArrayList<>();
         this.minPlayer = minPlayer;
@@ -92,6 +91,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 players.add(onePlayer);
                 remoteClient.setPlayer(onePlayer);
             }
+            boardController = new BoardController(players, 8);
         }catch (RemoteException re){
             //TODO cancel this game and notify players
         }
