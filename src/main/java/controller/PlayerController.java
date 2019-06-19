@@ -30,7 +30,7 @@ import static controller.PlayerCommand.*;
 /**
  * PlayerController is used to control if a player can do certain actions
  */
-public class PlayerController extends Observable implements Observer {
+public class PlayerController extends Observable implements Observer{
     private BoardController boardController;
     private Billboard billboard;
     private PlayerView playerView;
@@ -73,10 +73,11 @@ public class PlayerController extends Observable implements Observer {
     }
 
     @Override
-    public void update(Observable view, Object obj){
-        if(view.getClass() != PlayerView.class) return;
+    public void update(Observable o, Object arg) {
+    }
+
+    public void reciveCmd(Object obj){
         CommandObj cmdObj = (CommandObj) obj;
-        PlayerView pw = (PlayerView) view;
         switch (cmdObj.getCmd()) {
             case MOVE:
             case GRAB_MOVE:
@@ -124,12 +125,12 @@ public class PlayerController extends Observable implements Observer {
             case LOAD_WEAPONCARD:
                 WeaponCard wc = (WeaponCard) cmdObj.getObject();
 
-                if(!player.getNotLoaded().contains(wc)) pw.printError("This weapon is not in not loaded weapon");
+                if(!player.getNotLoaded().contains(wc)) viewPrintError("This weapon is not in not loaded weapon");
                 if(player.canPay(Bullet.toIntArray(wc.getCost()))){
                     wc.setLoaded();
                     player.useAmmo(Bullet.toIntArray(wc.getCost()));
                 }else{
-                    pw.printError("You have not enough ammo to load this weapon");
+                    viewPrintError("You have not enough ammo to load this weapon");
                 }
                 player.notifyEndAction();
                 break;
@@ -348,7 +349,6 @@ public class PlayerController extends Observable implements Observer {
      * This ask shooter which optional attack want to use and target to hit.
      * Than shoot using base attack and selected optional attack
      * @param weaponCard weaponCard to use
-     * @param pw shooter playerView
      * @return true if min one opponent was hit
      */
     private void askWichOptionalAttack(WeaponCard weaponCard) {
