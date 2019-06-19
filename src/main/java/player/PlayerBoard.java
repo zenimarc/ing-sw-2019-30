@@ -240,6 +240,13 @@ public class PlayerBoard {
         return string.toString();
     }
 
+    /**
+     * This clear damage track
+     */
+    public void resetDamage(){
+        this.damageTrack.clear();
+    }
+
     public boolean isDead(){return isDead;}
 
     public void resurrect(){

@@ -138,6 +138,7 @@ public class Player extends Observable implements Cloneable {
      */
     public void addPoints(int points) {
         this.points += points;
+        notifyEndAction();
     }
 
     /**
@@ -293,6 +294,10 @@ public class Player extends Observable implements Cloneable {
             System.out.println("problema");
             return null;
         }
+    }
+
+    public void resetDamage(){
+        this.getPlayerBoard().clearDamages();
     }
 
     @Override
