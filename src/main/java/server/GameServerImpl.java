@@ -26,6 +26,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private int turn;
     private transient TurnHandler turnHandler;
     private transient Thread beginCountdown;
+    private ServerUpdateManager serverUpdateManager;
 
     public GameServerImpl(int minPlayer, int maxPlayer) throws RemoteException {
         this.clients = new ArrayList<>();
@@ -53,6 +54,19 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     public Player getPlayer(Client remoteClient) throws RemoteException{
         return boardController.getPlayer(remoteClient.getNickname());
+    }
+
+    /**
+     * this function returns the Client associated to the indicated Player
+     * @param player
+     * @return the client associated to Player or Null if not found
+     */
+    private Client getClient(Player player){
+        Optional<ClientInfo> clientInfo = clients.stream().filter(x->x.getPlayer().equals(player)).findFirst();
+        if(clientInfo.isPresent())
+            return clientInfo.get().getClient();
+        else
+            return null;
     }
 
     /**
@@ -96,20 +110,38 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 remoteClient.setPlayer(onePlayer);
             }
             boardController = new BoardController(players, 8);
+            this.serverUpdateManager = new ServerUpdateManager(this, boardController);
         }catch (RemoteException re){
             //TODO cancel this game and notify players
         }
     }
 
-    public void sendToAllCMD(CommandObj cmd){
+    void sendCMD(CommandObj cmd, Player receiverPlayer) throws RemoteException{
+        Client remoteClient = getClient(receiverPlayer);
+        if (remoteClient != null){
+            remoteClient.receiveCMD(cmd);
+        }
+    }
+
+    public void receiveCMD(CommandObj cmd) throws RemoteException{
+        //serverUpdateManager.
+    }
+
+    /**
+     * this function send to all clients a cloned Player who has changed status and need to be updated in the
+     * view of each client
+     * @param playerCloned player cloned object coming from server
+     */
+    void sendToAll(Player playerCloned){
         for (Client client : getActiveClients()) {
             try {
-                client.sendCMD(cmd);
+                client.receiveObj(playerCloned);
             }catch (RemoteException re){
                 re.fillInStackTrace();
             }
         }
     }
+
 
     public synchronized void endGame(){
         this.gameStarted = false;
