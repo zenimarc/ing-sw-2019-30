@@ -25,11 +25,12 @@ import java.util.stream.Collectors;
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
 import static controller.PlayerCommand.MOVE;
+import static controller.PlayerCommand.PRINT_ERROR;
 
 /**
  * PlayerController is used to control if a player can do certain actions
  */
-public class PlayerController implements Observer {
+public class PlayerController extends Observable implements Observer {
     private BoardController boardController;
     private Billboard billboard;
     private PlayerView playerView;
@@ -55,14 +56,6 @@ public class PlayerController implements Observer {
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
 
-    }
-
-    public void setPlayerView(PlayerView playerView){
-        this.playerView = playerView;
-    }
-
-    public void setPlayerBoardView(PlayerBoardView playerBoardView){
-        this.playerBoardView = playerBoardView;
     }
 
     public PlayerView getPlayerView() {
@@ -93,14 +86,15 @@ public class PlayerController implements Observer {
                     if(cmdObj.getCmd()==MOVE) numAction++;
                     else ((PlayerView) view).grab();
                 }else {
-                    viewPrintError(view);
+                    viewPrintError();
                 }
                 break;
             case GRAB_AMMO:
                  if(grabAmmo((NormalCell) cmdObj.getCell())){
                     numAction++;
                 }else {
-                    viewPrintError(view);
+                    viewPrintError();
+                    
                 }
                  player.notifyEndAction();
                 break;
@@ -294,10 +288,10 @@ public class PlayerController implements Observer {
                 numAction++;
                 player.useAmmo(grabCost);
             } else {
-                viewPrintError(view, "You can't draw an other WeaponCard");
+                viewPrintError("You can't draw an other WeaponCard");
             }
         }else {
-            viewPrintError(view, "You have no bullets to grab this weapon!");
+            viewPrintError("You have no bullets to grab this weapon!");
         }
     }
 
@@ -639,19 +633,17 @@ public class PlayerController implements Observer {
         numAction = 0;
     }
 
-    /**
-     *
-     * @param view
-     */
-    private void viewPrintError(@NotNull Observable view){
-        if(view.getClass() == PlayerView.class) {
-            ((PlayerView) view).printError();
-        }
+    private void viewPrintError(){
+        viewPrintError("");
     }
 
-    private void viewPrintError(@NotNull Observable view, String mex){
-        if(view.getClass() == PlayerView.class) {
-            ((PlayerView) view).printError(mex);
-        }
+
+    private void viewPrintError(String mex){
+        cmdForView(new CommandObj(PRINT_ERROR, mex));
+    }
+    
+    private void cmdForView(CommandObj cmd){
+        setChanged();
+        notifyObservers(cmd);
     }
 }
