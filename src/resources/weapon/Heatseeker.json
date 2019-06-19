@@ -12,8 +12,8 @@
   "baseAttack" : {
     "type" : "attack.SimpleAttack",
     "targetType" : "NOT_VISIBLE",
-    "name" : "BASE_ATTACK_NAME",
-    "description" : "",
+    "name" : "HEATSEEKER_BASE",
+    "description" : "Choose 1 target you cannot see and deal 3 damage to it.",
     "damage" : 3,
     "mark" : 0,
     "target" : 1,

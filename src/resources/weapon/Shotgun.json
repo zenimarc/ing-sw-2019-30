@@ -24,6 +24,8 @@
     "damage" : 2,
     "mark" : 0,
     "target" : 1,
+    "minDistance" : 1,
+    "maxDistance" : 1,
     "description" : "lorem ipsum",
     "cost" : [ 0, 0, 0 ]
   },

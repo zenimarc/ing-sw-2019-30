@@ -14,17 +14,17 @@
     "damage" : 0,
     "mark" : 1,
     "target" : 2,
-    "cost" : [ 0, 0, 0 ]
+    "cost" : [ 1, 0, 0 ]
   } ],
   "baseAttack" : {
     "type" : "attack.SimpleAttack",
     "targetType" : "VISIBLE",
-    "name" : "BASE_ATTACK_NAME",
-    "description" : "",
+    "name" : "LOCK_RIFLE_BASE",
+    "description" : "Deal 2 damage and 1 mark to a target you can see.",
     "damage" : 2,
     "mark" : 1,
     "target" : 1,
-    "cost" : [ 1, 0, 0 ]
+    "cost" : [ 0, 0, 0 ]
   },
   "alternativeAttack" : null,
   "type" : "LOCK_RIFLE",

@@ -12,9 +12,9 @@
     "targetType" : "VISIBLE_ROOM",
     "name" : "BASE_ATTACK_NAME",
     "description" : "",
-    "damage" : 1,
+    "damage" : 0,
     "mark" : 0,
-    "target" : -1,
+    "target" : 1,
     "cost" : [ 0, 0, 0 ]
   },
   "alternativeAttack" : {
@@ -23,7 +23,9 @@
     "name" : "FURNACE_OPT1",
     "damage" : 1,
     "mark" : 1,
-    "target" : -1,
+    "target" : 1,
+    "minDistance" : 1,
+    "maxDistance" : 1,
     "description" : "lorem ipsum",
     "cost" : [ 0, 0, 0 ]
   },

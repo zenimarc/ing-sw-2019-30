@@ -12,11 +12,13 @@
   "baseAttack" : {
     "type" : "attack.DistanceAttack",
     "targetType" : "VISIBLE",
-    "name" : "BASE_ATTACK_NAME",
+    "name" : "WHISPER_BASE",
     "damage" : 3,
-    "mark" : 2,
+    "mark" : 1,
     "target" : 1,
-    "description" : "",
+    "minDistance" : 2,
+    "maxDistance" : -1,
+    "description" : "Deal 3 damage and 1 mark to 1 target you can see. Your target must be at least 2 moves away from you",
     "cost" : [ 0, 0, 0 ]
   },
   "alternativeAttack" : null,
