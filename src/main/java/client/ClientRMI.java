@@ -120,7 +120,8 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
 
     public void gameStarted() throws RemoteException{
-
+        System.out.println("ho ricevuto che il game è iniziato");
+        this.playerView = new PlayerView(gameServer.getPlayer(this), this);
     }
 
     public PlayerView createPlayerView() throws RemoteException{
@@ -228,7 +229,6 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
                     userName = scanner.nextLine();
                     setNickname(userName);
                 }
-            this.playerView = new PlayerView(gameServer.getPlayer(this), this);
         } catch (RemoteException re) {
             re.fillInStackTrace();
         }

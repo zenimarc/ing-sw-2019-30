@@ -9,6 +9,7 @@ import deck.Bullet;
 import deck.Card;
 import player.Player;
 
+import java.io.Serializable;
 import java.util.*;
 
 import static deck.Bullet.intArrayToString;
@@ -29,7 +30,7 @@ import static deck.Bullet.toIntArray;
         @JsonSubTypes.Type(value = AreaWeapon.class)
 })
 
-public abstract class WeaponCard extends Card {
+public abstract class WeaponCard extends Card implements Serializable {
 
     protected String name;
     protected List<Bullet> cost;

@@ -3,13 +3,14 @@ package player;
 import board.Board;
 import constants.Constants;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  *  PlayerBoard contains all information about the situation of the player
  */
-public class PlayerBoard {
+public class PlayerBoard implements Serializable {
     private static final int[] REWARDS_BY_DAMAGE = {8, 6, 4, 2, 1, 1};
     private static final int[] FRENZY_REWARDS_BY_DAMAGE = {2, 1, 1, 1};
     private ArrayList<Player> damageTrack;

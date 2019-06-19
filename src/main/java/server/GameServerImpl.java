@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
-    private static final long SECONDS_BEFORE_START_GAME = 30;
+    private static final long SECONDS_BEFORE_START_GAME = 5;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
     private transient ArrayList<ClientInfo> clients;
     private transient ArrayList<Client> offlineClients;
@@ -53,7 +53,11 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     public Player getPlayer(Client remoteClient) throws RemoteException{
-        return boardController.getPlayer(remoteClient.getNickname());
+        return boardController.getPlayer(remoteClient.getNickname()).clonePlayer();
+    }
+
+    public List<Player> getPlayers(){
+        return boardController.getListOfPlayers();
     }
 
     /**
@@ -94,11 +98,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     public void startGame(){
-        //TODO: far partire il gioco e avvisare tutti i client
         System.out.println("il gameserver: "+this.getGameToken()+" ha startato il game");
         this.gameStarted = true;
-        turnHandler = new TurnHandler(this);
-        turnHandler.start();
         List<Player> players = new ArrayList<>();
         try {
             //this code create a Player for each active clients and store it in ClientsInfo list.
@@ -107,14 +108,32 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 Optional<ClientInfo> client = clients.stream().filter(x->x.getClient().equals(remoteClient)).findFirst();
                 if (client.isPresent())
                     client.get().setPlayer(onePlayer);
-                remoteClient.setPlayer(onePlayer);
                 players.add(onePlayer);
             }
             boardController = new BoardController(players, 8);
             this.serverUpdateManager = new ServerUpdateManager(this, boardController);
+            notifyAllGameStarted();
+            boardController.playerPlay(getPlayers().get(0));
+            turnHandler = new TurnHandler(this);
+            turnHandler.start();
         }catch (RemoteException re){
+            re.fillInStackTrace();
+            re.printStackTrace();
             //TODO cancel this game and notify players
         }
+    }
+
+    /**
+     * this function notify to all active clients that the game has started
+     */
+    private void notifyAllGameStarted(){
+        for (Client client : getActiveClients())
+            try {
+                client.gameStarted();
+            }catch (RemoteException re){
+                re.fillInStackTrace();
+                re.printStackTrace();
+            }
     }
 
     void sendCMD(CommandObj cmd, Player receiverPlayer) throws RemoteException{

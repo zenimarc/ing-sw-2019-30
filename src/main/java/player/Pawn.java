@@ -2,10 +2,12 @@ package player;
 
 import board.Cell;
 
+import java.io.Serializable;
+
 /**
  * Pawn is an association between player and position
  */
-public class Pawn {
+public class Pawn implements Serializable {
 
     private Player player;
     private Cell position;

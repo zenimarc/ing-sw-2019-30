@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ import static deck.Bullet.mapToString;
 /**
  * Player saves all information about a player
  */
-public class Player extends Observable implements Cloneable {
+public class Player extends Observable implements Cloneable, Serializable {
 
     private String nickname;
     private Pawn pawn;

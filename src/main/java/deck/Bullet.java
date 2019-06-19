@@ -6,12 +6,13 @@ import constants.Color;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * TODO Bullet is used for graphics
  */
-public class Bullet {
+public class Bullet implements Serializable {
 
     private Color color;
 
