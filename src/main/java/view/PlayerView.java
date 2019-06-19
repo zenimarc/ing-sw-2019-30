@@ -22,9 +22,9 @@ public class PlayerView extends Observable implements Observer{
     /**
      * Default constructor
      */
-    public PlayerView(Player player, Observer playerController) {
+    public PlayerView(Player player, Observer clientUpdateManager) {
         this.player = player;
-        this.addObserver(playerController);
+        this.addObserver(clientUpdateManager);
     }
 
     public void myTurn() {

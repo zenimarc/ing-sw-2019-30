@@ -8,7 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Observable;
 import java.util.Observer;
 
-public class ServerUpdateManager extends UnicastRemoteObject implements RemoteController, Observer {
+public class ServerUpdateManager implements Observer {
     private BoardController boardController;
     private GameServer gameServer;
 
