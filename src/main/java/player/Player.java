@@ -44,11 +44,6 @@ public class Player extends Observable implements Cloneable {
         ammo.put(BLUE, 0);
     }
 
-    public Player(String nickname, Board board) {
-        this(nickname);
-        this.playerBoard = new PlayerBoard(board);
-    }
-
     /**
      * This function returns the pawn of the player
      * @return pawn of the player
@@ -275,26 +270,6 @@ public class Player extends Observable implements Cloneable {
      */
     public int getNumDamages() {
         return this.playerBoard.getNumDamages();
-    }
-
-    /**
-     * This function verifies if a player is visible
-     *
-     * @param opponent you want to verify if he is visible
-     * @return true if visible, else false
-     */
-    public boolean canView(Player opponent) {
-        return (playerBoard.getBoard().getBillboard().isVisible(this.pawn.getCell(), opponent.pawn.getCell()));
-    }
-
-    /**
-     * This function adds a power up card to the player
-     *
-     * @return true if it was possible, else false
-     */
-
-    public boolean addPowerCard() {
-        return addPowerCard((PowerCard) playerBoard.getBoard().getPowerUpDeck().draw());
     }
 
     public boolean addPowerCard(PowerCard powerCard) {
