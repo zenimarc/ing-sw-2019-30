@@ -16,6 +16,7 @@ public class PlayerBoard {
     private ArrayList<Player> damageTrack;
     private HashMap<Player, Integer> marks;
     private int numDeaths;
+    private boolean isDead;
 
     /**
      * Constructors
@@ -24,6 +25,7 @@ public class PlayerBoard {
         this.damageTrack = new ArrayList<>();
         this.marks = new HashMap<>();
         this.numDeaths = 0;
+        this.isDead = false;
     }
 
     public PlayerBoard(Board board) {
@@ -104,6 +106,9 @@ public class PlayerBoard {
                 damageTrack.add(player);
                 removeMark(player);
             }
+        }
+        if(getNumDamages()==Constants.KILL_SHOOT.getValue()){
+            isDead = true;
         }
     }
 
@@ -245,5 +250,11 @@ public class PlayerBoard {
             else string.append("]");
         }
         return string.toString();
+    }
+
+    public boolean isDead(){return isDead;}
+
+    public void resurrect(){
+        isDead = false;
     }
 }

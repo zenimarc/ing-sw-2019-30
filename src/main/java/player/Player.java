@@ -92,6 +92,8 @@ public class Player extends Observable implements Cloneable {
         return this.playerBoard;
     }
 
+    public boolean isDead(){return this.playerBoard.isDead();}
+
     /**
      * This function returns the list of weapons the player has
      *
