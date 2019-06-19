@@ -13,10 +13,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class ClientRMI extends UnicastRemoteObject implements Client {
+public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     private String nickname;
     private transient Registry registry;
     private transient Lobby lobby;
@@ -25,10 +27,18 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
     private PlayerView playerView;
     private PlayerBoardView playerBoardView;
     private Player player;
+    private ClientUpdateManager clientUpdateManager;
 
+
+    @Override
+    public void update(Observable o, Object arg) {
+
+    }
 
     public ClientRMI() throws RemoteException {
         //new generic client RMI
+        clientUpdateManager = new ClientUpdateManager();
+        playerView = new PlayerView(gameServer.getPlayer(this), this);
     }
 
     public void connect(String host) throws RemoteException {
@@ -64,8 +74,18 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
         return true;
     }
 
-    public void sendCMD(CommandObj cmd) throws RemoteException{
+    public void receiveCMD(CommandObj cmd) throws RemoteException{
         //TODO elaborate command and send to gui or send direclty to gui
+    }
+
+    public void receiveObj(Object obj) throws RemoteException{
+        if(obj.getClass().equals(Player.class)){
+            //TODO notificare la view che deve aggiornare i dati del Player clonato che ha ricevuto
+        }
+    }
+
+    public void sendCMD(CommandObj cmd) throws RemoteException{
+        gameServer.receiveCMD(cmd);
     }
 
     /**
