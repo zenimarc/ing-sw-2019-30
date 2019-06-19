@@ -27,6 +27,7 @@ public enum PlayerCommand {
 
     //Controller to View
     PRINT_ERROR("Print error",""),
+    CHOOSE_OPTIONAL_ATTACK("Choose optional attack",""),
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),
