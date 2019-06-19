@@ -19,10 +19,10 @@ class PlayerBoardTest {
     @BeforeEach
     public void before() {
         board = new Board(1);
-        p1 = new Player("Marco", board);
-        p2 = new Player("Christian", board);
-        p3 = new Player("Giovanni", board);
-        p4 = new Player("Paolo", board);
+        p1 = new Player("Marco");
+        p2 = new Player("Christian");
+        p3 = new Player("Giovanni");
+        p4 = new Player("Paolo");
     }
 
     @Test
@@ -74,9 +74,9 @@ class PlayerBoardTest {
         p1.addDamage(p2);
         p1.addDamage(p3);
         p1.addDamage(p4);
-        assertEquals(9, p1.getPlayerBoard().getPoints().get(p4));
-        assertEquals(6, p1.getPlayerBoard().getPoints().get(p3));
-        assertEquals(4, p1.getPlayerBoard().getPoints().get(p2));
+        assertEquals(9, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p4));
+        assertEquals(6, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p3));
+        assertEquals(4, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p2));
     }
 
     @Test
@@ -88,20 +88,20 @@ class PlayerBoardTest {
         p1.addDamage(p2);
         p1.addDamage(p3);
         p1.addDamage(p4);
-        assertEquals(7, p1.getPlayerBoard().getPoints().get(p4));
-        assertEquals(4, p1.getPlayerBoard().getPoints().get(p3));
-        assertEquals(2, p1.getPlayerBoard().getPoints().get(p2));
+        assertEquals(7, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p4));
+        assertEquals(4, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p3));
+        assertEquals(2, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p2));
         p1.getPlayerBoard().addSkull();
         p1.getPlayerBoard().addSkull();
         p1.getPlayerBoard().addSkull();
-        assertEquals(2, p1.getPlayerBoard().getPoints().get(p4));
-        assertEquals(1, p1.getPlayerBoard().getPoints().get(p3));
-        assertEquals(1, p1.getPlayerBoard().getPoints().get(p2));
+        assertEquals(2, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p4));
+        assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p3));
+        assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p2));
         p1.getPlayerBoard().addSkull();
         p1.getPlayerBoard().addSkull();
-        assertEquals(2, p1.getPlayerBoard().getPoints().get(p4));
-        assertEquals(1, p1.getPlayerBoard().getPoints().get(p3));
-        assertEquals(1, p1.getPlayerBoard().getPoints().get(p2));
+        assertEquals(2, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p4));
+        assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p3));
+        assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p2));
 
     }
 
@@ -115,9 +115,9 @@ class PlayerBoardTest {
         p1.addDamage(p2);
         p1.addDamage(p3);
         p1.addDamage(p4);
-        assertEquals(2, p1.getPlayerBoard().getPoints().get(p4));
-        assertEquals(1, p1.getPlayerBoard().getPoints().get(p3));
-        assertEquals(1, p1.getPlayerBoard().getPoints().get(p2));
+        assertEquals(2, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p4));
+        assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p3));
+        assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p2));
     }
 
     @Test

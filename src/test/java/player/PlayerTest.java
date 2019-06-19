@@ -16,7 +16,7 @@ class PlayerTest {
     @BeforeEach
     void setUp(){
         board = new Board();
-        p1 = new Player("marco", board);
+        p1 = new Player("marco");
     }
 
     @Test

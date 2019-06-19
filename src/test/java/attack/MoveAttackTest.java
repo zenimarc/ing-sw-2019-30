@@ -26,13 +26,12 @@ class MoveAttackTest {
 
     @BeforeAll
     public static void init(){
-        board = new Board();
 
         moveAttack = new MoveAttack(EnumTargetSet.VISIBLE, EnumAttackName.BASE_ATTACK_NAME, "description", 2,damage,1);
 
-        p1 = new Player("first",board);
-        p2 = new Player("second",board);
-        p3 = new Player("third",board);
+        p1 = new Player("first");
+        p2 = new Player("second");
+        p3 = new Player("third");
     }
 
     @Test

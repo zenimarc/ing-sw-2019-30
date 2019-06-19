@@ -50,10 +50,10 @@ class BoardControllerTest {
 
     @BeforeEach
     public void init(){
-        p1 = new Player("Marco", board);
-        p2 = new Player("Christian", board);
-        p3 = new Player("Giovanni", board);
-        p4 = new Player("Paolo", board);
+        p1 = new Player("Marco");
+        p2 = new Player("Christian");
+        p3 = new Player("Giovanni");
+        p4 = new Player("Paolo");
         players.add(p1);
         players.add(p2);
         players.add(p3);

@@ -13,7 +13,7 @@ class PawnTest {
     private Player player1;
     @BeforeEach
     void setUp(){
-        player1 = new Player("marco", new Board());
+        player1 = new Player("marco");
         pawn = new Pawn(player1);
         cell1 = new RegenerationCell();
     }
