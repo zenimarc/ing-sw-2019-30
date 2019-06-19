@@ -401,7 +401,7 @@ public class BoardViewCLI implements Observer {
         stream.append(name);
         for(int i = name.length(); i < numLength + length; i++)
             stream.append(" ");
-        stream.append(weapon.getGrabCostCLI());
+        stream.append(weapon.getWeaponCostCLI());
         for(int i = stream.length(); i < (numLength + length)* length; i++)
             stream.append(" ");
         return stream;
