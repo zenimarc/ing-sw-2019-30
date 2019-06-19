@@ -1,5 +1,6 @@
 package client;
 
+import controller.CommandObj;
 import player.Player;
 import server.GameServer;
 
@@ -14,4 +15,5 @@ public interface Client extends Remote {
     String getNickname() throws RemoteException;
     void setPlayer(Player player) throws RemoteException;
     Player getPlayer() throws RemoteException;
+    void sendCMD(CommandObj cmd) throws RemoteException;
 }

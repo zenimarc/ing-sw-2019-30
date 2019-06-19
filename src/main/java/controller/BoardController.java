@@ -213,18 +213,18 @@ public class BoardController{
 
         switch (targetType) {
             case VISIBLE:
-                return opponents.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toList());
             case NOT_VISIBLE:
-                return opponents.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toList());
             case VISIBLE_ROOM:
-                return opponents.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toList());
             case SAME_ROOM:
-                return opponents.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toList());
             case SAME_CELL:
-                return opponents.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toCollection(ArrayList::new));
+                return opponents.stream().filter(x -> x.getCell().equals(shooterCell)).collect(Collectors.toList());
             case CARDINAL_WALL_BYPASS:
                 return opponents.stream().filter(x -> (board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
-                        board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY()).collect(Collectors.toCollection(ArrayList::new));
+                        board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY()).collect(Collectors.toList());
             case CARDINAL:
                 /*
                 it's the same of Cardinal_Wall_Bypass but it has to check if there are walls that obstacle the line.
@@ -236,7 +236,7 @@ public class BoardController{
                  */
                 return opponents.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
-                        && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toCollection(ArrayList::new));
+                        && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -257,16 +257,16 @@ public class BoardController{
         if(minDistance==-1 && maxDistance!=-1) {
             return opponents.stream()
                     .filter(x -> board.getBillboard().cellDistance(shooterCell, x.getCell()) <= maxDistance)
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    .collect(Collectors.toList());
         }else if(minDistance!=-1 && maxDistance==-1){
             return opponents.stream()
                     .filter(x -> board.getBillboard().cellDistance(shooterCell, x.getCell()) >= minDistance)
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    .collect(Collectors.toList());
         }else {
             return opponents.stream()
                     .filter(x -> board.getBillboard().cellDistance(shooterCell, x.getCell()) >= minDistance &&
                             board.getBillboard().cellDistance(shooterCell, x.getCell()) <= maxDistance)
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    .collect(Collectors.toList());
         }
     }
 

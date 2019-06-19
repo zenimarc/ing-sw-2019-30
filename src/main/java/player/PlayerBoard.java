@@ -146,10 +146,13 @@ public class PlayerBoard {
 
     /**
      * This function removes a mark inflicted by a specific player
+     * if marks are 0 the entry is removed from the map.
      * @param player who gave the mark
      */
     public void removeMark(Player player){
         marks.put(player, marks.get(player)-1);
+        if (marks.get(player).equals(0))
+            marks.remove(player);
     }
 
     /**

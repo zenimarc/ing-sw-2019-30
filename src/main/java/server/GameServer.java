@@ -1,10 +1,12 @@
 package server;
 
 import client.Client;
+import controller.CommandObj;
 import controller.PlayerController;
 import player.Player;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.UUID;
 
 public interface GameServer extends Remote {
@@ -12,4 +14,5 @@ public interface GameServer extends Remote {
     Player getPlayer(Client remoteClient) throws RemoteException;
     PlayerController getPlayerController(Client remoteClient) throws RemoteException;
     void changeTurn(Client remoteClient) throws RemoteException;
+    void sendToAllCMD(CommandObj cmd) throws RemoteException;
 }
