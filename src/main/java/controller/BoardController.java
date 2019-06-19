@@ -116,7 +116,7 @@ public class BoardController{
      * This function changes the number to decide which turn is
      */
     public int changeTurn() {
-        if(playerTurn == listOfPlayers.size()-1)
+        if(playerTurn >= listOfPlayers.size()-1)
             playerTurn = 0;
         else playerTurn++;
 
