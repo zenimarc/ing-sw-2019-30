@@ -1,8 +1,10 @@
 package view;
 import attack.Attack;
+import board.Cell;
 import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
+import board.billboard.Billboard;
 import constants.Constants;
 import controller.CommandObj;
 import controller.PlayerCommand;
@@ -40,8 +42,7 @@ public class PlayerView extends Observable implements Observer{
                 shoot();
                 break;
             case END_TURN:
-                setChanged();
-                notifyObservers(new CommandObj(PlayerCommand.END_TURN));
+                notifyServer(new CommandObj(PlayerCommand.END_TURN));
                 break;
             default:
                 break;
@@ -56,7 +57,7 @@ public class PlayerView extends Observable implements Observer{
     public boolean move(PlayerCommand playerCommand) {
         String positionString;
         while (true) {
-            System.out.println("Where do you want to move?");
+            print("Where do you want to move?");
             positionString = reader.next();
 
             if(positionString.matches("[0-2],[0-3]")){
@@ -68,8 +69,7 @@ public class PlayerView extends Observable implements Observer{
                 Integer.valueOf(positionString.split(",")[0]),
                 Integer.valueOf(positionString.split(",")[1]));
 
-        setChanged();
-        notifyObservers(new CommandObj(playerCommand, newPosition));
+        notifyServer(new CommandObj(playerCommand, newPosition));
         return true;
     }
 
@@ -89,8 +89,7 @@ public class PlayerView extends Observable implements Observer{
      */
     private boolean grabWeapon(){
         int drawIndex = chooseWeaponCard();
-        setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.GRAB_WEAPON, drawIndex));
+        notifyServer(new CommandObj(PlayerCommand.GRAB_WEAPON, drawIndex));
         return true;
     }
 
@@ -99,8 +98,7 @@ public class PlayerView extends Observable implements Observer{
      * @return
      */
     private boolean grabAmmo(){
-        setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.GRAB_AMMO, player.getCell(),0));
+        notifyServer(new CommandObj(PlayerCommand.GRAB_AMMO, player.getCell(),0));
         return false;
     }
 
@@ -118,8 +116,7 @@ public class PlayerView extends Observable implements Observer{
 
         index = chooseTypeAttack(weaponCard);
 
-        setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
+        notifyServer(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
 
         return true;
     }
@@ -137,8 +134,7 @@ public class PlayerView extends Observable implements Observer{
             int index = chooseWeaponToLoad();
             if(index==-1) return true;
 
-            setChanged();
-            notifyObservers(new CommandObj(PlayerCommand.LOAD_WEAPONCARD, player.getNotLoaded().get(index)));
+           notifyServer(new CommandObj(PlayerCommand.LOAD_WEAPONCARD, player.getNotLoaded().get(index)));
 
             loadWeapon();
         }
@@ -214,8 +210,9 @@ public class PlayerView extends Observable implements Observer{
         List<Player> targets = new ArrayList<>();
         Player p;
 
+        if(possibleTargets.isEmpty()) return Collections.emptyList();
+
         for(int i=0; i<numTarget;i++){
-            if(possibleTargets.isEmpty()) break;
             p = chooseTarget(possibleTargets);
             if(p!=null){
                 targets.add(p);
@@ -229,8 +226,7 @@ public class PlayerView extends Observable implements Observer{
 
     public boolean regPawn(){
         int index = choosePowerUp4Regeneration();
-        setChanged();
-        notifyObservers(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index)));
+        notifyServer(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index)));
         return true;
     }
 
@@ -484,12 +480,11 @@ public class PlayerView extends Observable implements Observer{
         String format;
         String read;
 
-        List<Attack> attacks = new ArrayList<>();
-        attacks.addAll(wc.getAttacks());
+        List<Attack> attacks = new ArrayList<>(wc.getAttacks());
+        if(attacks.isEmpty()) return Collections.emptyList();
 
         if(canRandom) {
             while (true) {
-                if(attacks.isEmpty()) break;
                 format = "[0-"+attacks.size()+"]";
                 print(stringForChooseAttackInList(attacks));
                 read = reader.next();
@@ -563,6 +558,35 @@ public class PlayerView extends Observable implements Observer{
         return Integer.valueOf(read)-1 ;
     }
 
+    private String stringForChooseCell(String mex, String query, Billboard billboard, List<Cell> cells){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(mex);
+        sb.append("\nPossible position:\n");
+        for(Cell cell : cells){
+            sb.append('\t');
+            sb.append(cells.indexOf(cell)+1);
+            sb.append(")");
+            sb.append(billboard.getCellPosition(cell));
+            sb.append('\n');
+        }
+        sb.append(query);
+        return  sb.toString();
+    }
+
+    public Cell chooseCellToAttack(Billboard billboard, List<Cell> cells){
+        String mex = stringForChooseCell("This is an AreaAttack.", "Which do you want shoot? ", billboard, cells);
+        String format = "[1-"+cells.size()+"]";
+        String read;
+        while (true) {
+            print(mex);
+            read = reader.next();
+            if (read.matches(format)) {
+                return cells.get(Integer.valueOf(read)-1);
+            }
+        }
+    }
+
     /**
      * Print default error
      */
@@ -595,5 +619,10 @@ public class PlayerView extends Observable implements Observer{
         if(o.getClass()==Player.class && arg.getClass()==Player.class){
             this.player = (Player) arg;
         }
+    }
+
+    private void notifyServer(CommandObj cmd){
+        setChanged();
+        notifyObservers(cmd);
     }
 }
