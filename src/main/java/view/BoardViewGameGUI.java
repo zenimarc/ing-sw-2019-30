@@ -2,6 +2,7 @@ package view;
 
 import board.Board;
 import board.Position;
+import board.RegenerationCell;
 import board.billboard.BillboardGenerator;
 import client.Client;
 import client.ClientRMI;
@@ -9,6 +10,9 @@ import controller.BoardController;
 import controller.PlayerCommand;
 import controller.PlayerController;
 import javafx.application.Application;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Observable;
 import java.util.Random;
 
 import static controller.PlayerCommand.*;
@@ -48,7 +53,6 @@ public class BoardViewGameGUI extends Application {
     private int random;
     private int blankCells = 1;
     private int test = 4;
-    private PlayerCommandGUI command2 = new PlayerCommandGUI(CHOOSE_ACTION);
 
     public BoardViewGameGUI() throws RemoteException {
     }
@@ -166,6 +170,7 @@ public class BoardViewGameGUI extends Application {
         map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 0, 115));
         changeSizeImage((ImageView) map.getChildren().get(0), 200, 150);
         map.getChildren().get(0).setVisible(false);
+        map.getChildren().get(0).toFront();
 
         //red weapon 1-3
         for(int i = 0; i< 3; i++) {
@@ -187,8 +192,8 @@ public class BoardViewGameGUI extends Application {
         map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 250, -55));
         map.getChildren().add(tableWeaponCards(powerPath("powerCard"), 255, -160));
 
-        generateBoard(map, number);
-        actionButtons(map, map.getChildren().size());
+        generateBoard(map, number, actionButtons(map, map.getChildren().size()));
+
         for(int i = 0; i < 8; i++)
             map.getChildren().add(addSkull(40, -245 + i*25, -180, 0));
 
@@ -316,7 +321,7 @@ public class BoardViewGameGUI extends Application {
         return playerBoard;
     }
 
-    private void generateBoard(Pane map, int number) throws FileNotFoundException {
+    private void generateBoard(Pane map, int number, ArrayList<Button> buttons) throws FileNotFoundException {
         int i = 0;
         int test = 0;
         ImageView mapImage = new ImageView(new Image(new FileInputStream("src/resources/images/gametable/map/board"+number+".png")));
@@ -332,7 +337,7 @@ public class BoardViewGameGUI extends Application {
 
                 for(int y = 0; y < 4; y++)
                     for(int x = 0; x < 3; x++) {
-                        i = setCellOnAction(map, x, y, i, test);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                         if(x == 1 && y == 0) {
                             x++;
                             test++;
@@ -350,7 +355,7 @@ public class BoardViewGameGUI extends Application {
                             x = 1;
                             test++;
                         }
-                        i = setCellOnAction(map, x, y, i, test);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                         if(x == 1 && y == 0){
                             x = 3;
                             test++;
@@ -363,7 +368,7 @@ public class BoardViewGameGUI extends Application {
                 generateBoardButtonsRight2(map);
                 for(int y = 0; y < 4; y++)
                     for(int x = 0; x < 3; x++) {
-                        i = setCellOnAction(map, x, y, i, test);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                     }break;
             case 4:
                 generateBoardLeft2(map);
@@ -376,9 +381,17 @@ public class BoardViewGameGUI extends Application {
                             x = 1;
                             test++;
                         }
-                        i = setCellOnAction(map, x, y, i, test);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                     }break;
         }
+
+        setActionPlayer(buttons.get(0), MOVE, map, map.getChildren().size(), buttons);
+        map.getChildren().add(buttons.get(0));
+        setActionPlayer(buttons.get(1), GRAB_MOVE, map, map.getChildren().size(), buttons);
+        map.getChildren().add(buttons.get(1));
+        setActionPlayer(buttons.get(2), SHOOT_MOVE, map, map.getChildren().size(), buttons);
+        map.getChildren().add(buttons.get(2));
+
     }
 
     private void generateBoardLeft1(Pane map) throws FileNotFoundException {
@@ -565,12 +578,14 @@ public class BoardViewGameGUI extends Application {
     }
 
 
-    private void actionButtons(Pane map, int size){
-        map.getChildren().add(activateButton(" ", MOVE,-282, 245, map, size));//"moveFrenzy2"
-        map.getChildren().add(activateButton(" ", GRAB_MOVE,-282, 262, map, size));//"grabFrenzy2",
-        map.getChildren().add(activateButton(" ",  SHOOT_MOVE,-282,280, map, size));//"shootFrenzy2",
-        map.getChildren().add(activateButton( " ", GRAB,-255, 70, map, size));//"grabFrenzy1",
-        map.getChildren().add(activateButton( " ", SHOOT,-255,85, map, size));//"shootFrenzy1",
+    private ArrayList<Button> actionButtons(Pane map, int size){
+        ArrayList<Button> actionButtons =  new ArrayList<>();
+        actionButtons.add(activateButton(" ", MOVE,-282, 245, map, size));//"moveFrenzy2"
+        actionButtons.add(activateButton(" ", GRAB_MOVE,-282, 262, map, size));//"grabFrenzy2",
+        actionButtons.add(activateButton(" ",  SHOOT_MOVE,-282,280, map, size));//"shootFrenzy2",
+        actionButtons.add(activateButton( " ", GRAB,-255, 70, map, size));//"grabFrenzy1",
+        actionButtons.add(activateButton( " ", SHOOT,-255,85, map, size));//"shootFrenzy1",
+        return actionButtons;
     }
 
     /**
@@ -595,17 +610,17 @@ public class BoardViewGameGUI extends Application {
     private Button activateButton(String string, PlayerCommand command, int transX, int transY, Pane map, int size){
         Button button = createButton(" ", 40, 10, transX, transY);
         button.rotateProperty().setValue(90);
-        setActionPlayer(button, command, map, size);
+
         return button;
     }
 
-    private int setCellOnAction(Pane map, int x, int y, int i, int test){
+    private int setCellOnAction(Pane map, int x, int y, int i, int test, ArrayList<Button> buttons){
         if(!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))){
-            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, (ImageView) map.getChildren().get(13+i), map, map.getChildren().size());
+            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, (ImageView) map.getChildren().get(13+i), map, map.getChildren().size(), buttons);
             i++;
         }
         else
-            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, null, map, map.getChildren().size());
+            setCellAction((Button) map.getChildren().get(21 + x + y*3 - test), x, y, null, map, map.getChildren().size(), buttons);
         return i;
     }
 
@@ -627,6 +642,15 @@ public class BoardViewGameGUI extends Application {
         Node node = button.getGraphic();
         ImageView imageView = (ImageView) node;
         image.setImage(imageView.getImage());
+    }
+
+    private void changeGraphicButtons(Button button, Button image){
+        Node node = image.getGraphic();
+        ImageView imageView = (ImageView) node;
+        changeSizeImage(imageView, 110, 80);
+        button.setGraphic(imageView);
+        button.setVisible(true);
+
     }
 
     private void changeImage(Button button, ImageView image){
@@ -707,11 +731,10 @@ public class BoardViewGameGUI extends Application {
                             buttonCard.disabledProperty();
                         else if(getPlayer().getWeapons().size() <= 3){
                             getPlayer().addWeapon((WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos));
-                            System.out.print("funziona");
-                            changeImage((Button)playerboard.getChildren().get(3), image);
-                            image.setVisible(false);
+                            playerboard.getChildren().get(4).setVisible(true);
+                            changeGraphicButtons((Button)playerboard.getChildren().get(3), buttonCard);
                             buttonCard.setVisible(false);
-                            //turno ++
+                            command = CHOOSE_ACTION;
                         }
                         else command = DISCARD_WEAPON;
                         break;
@@ -723,20 +746,21 @@ public class BoardViewGameGUI extends Application {
     }
 
     //azioni che giocatore può fare
-    private void setActionPlayer(Button action, PlayerCommand order, Pane map, int size){
+    private void setActionPlayer(Button action, PlayerCommand order, Pane map, int size, ArrayList<Button> buttons){
         action.setOpacity(1);
 
         action.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
-
                 int steps = 0;
                 int i = 0;
                 steps = setSteps(steps, order);
+                for(Button button: buttons)
+                    button.setVisible(false);
                 //verifica se è il proprio turno
                 if(command == CHOOSE_ACTION){
-
+                    boardController.getPotentialDestinationCells(getPlayer().getCell(), steps);
                     //If per la frenzy
                     command = order;
                     for(int y = 0; y < 4; y++)
@@ -753,13 +777,19 @@ public class BoardViewGameGUI extends Application {
                         }
                 }
 
-
-            }
-        });
+            }});
     }
 
     //Azioni che può fare cella
-    private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map, int size){
+    private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map, int size, ArrayList<Button> buttons){
+        cell.onActionProperty().addListener(new ChangeListener<EventHandler<ActionEvent>>() {
+            @Override
+            public void changed(ObservableValue<? extends EventHandler<ActionEvent>> test, EventHandler<ActionEvent> arg1, EventHandler<ActionEvent> arg2)
+            {
+                if(command != CHOOSE_ACTION)
+                    cell.disableProperty();
+            }
+        });
         cell.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -773,6 +803,8 @@ public class BoardViewGameGUI extends Application {
                                 i = 33;
                         }
                         command = CHOOSE_ACTION;
+                        for(Button button: buttons)
+                            button.setVisible(true);
 
 
                     /*case FRENZY_MOVE:
@@ -786,8 +818,26 @@ public class BoardViewGameGUI extends Application {
 
                         break;
                     case GRAB_MOVE://scegliere la carta da prendere
-                        if(ammo != null)
+                        if(ammo != null) {
                             ammo.setVisible(false);
+                            command = CHOOSE_ACTION;
+                        }
+                        else {
+                            if(board.getBillboard().getCellFromPosition(new Position(x, y)).getColor() == constants.Color.RED)
+                                for(int i = 0; i < 3; i++){
+                                    if(board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i) == null /*|| !getPlayer().canPay(((WeaponCard)board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i)).getGrabCost()*/)
+                                        map.getChildren().get(i+1).disableProperty();
+                                }
+                                if(board.getBillboard().getCellFromPosition(new Position(x, y)).getColor() == constants.Color.YELLOW)for(int i = 0; i < 3; i++){
+                                    if(board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i) == null /*|| !getPlayer().canPay(((WeaponCard)board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i)).getGrabCost()*/)
+                                        map.getChildren().get(i+4).disableProperty();
+                                }
+                                    if(board.getBillboard().getCellFromPosition(new Position(x, y)).getColor() == constants.Color.BLUE)for(int i = 0; i < 3; i++){
+                                        if(board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i) == null /*|| !getPlayer().canPay(((WeaponCard)board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i)).getGrabCost()*/)
+                                            map.getChildren().get(i+7).disableProperty();
+                                    }
+                            command = GRAB_WEAPON;
+                        }
                         //prende ammo o arma
 
                         for(int i = 21; i < 33; i++){
@@ -795,14 +845,25 @@ public class BoardViewGameGUI extends Application {
                             if((test == 1 || test == 4) && i == 31 || (test == 2 && i == 30))
                                 i = 33;
                         }
-                        command = CHOOSE_ACTION;
+
+                        for(Button button: buttons)
+                            button.setVisible(true);
+
                         break;
 
                     //da ammo e power up
                     //CHOOSE ACTION o END TURN
 
                     case SHOOT_MOVE:
+                        for(int i = 21; i < 33; i++){
+                            illuminateCell((Button) map.getChildren().get(i), false);
+                            if((test == 1 || test == 4) && i == 31 || (test == 2 && i == 30))
+                                i = 33;
+                        }
                         command = SHOOT;
+                        for(Button button: buttons)
+                            button.setVisible(true);
+
                         break;
                     default: cell.disableProperty();
                 }
@@ -815,13 +876,21 @@ public class BoardViewGameGUI extends Application {
 
     //azioni power up
     private void setPowerUp(Button powerUp, ArrayList<Button> Buttons){
+        powerUp.onActionProperty().addListener(new ChangeListener<EventHandler<ActionEvent>>() {
+            @Override
+            public void changed(ObservableValue<? extends EventHandler<ActionEvent>> test, EventHandler<ActionEvent> arg1, EventHandler<ActionEvent> arg2)
+            {
+                if(command != CHOOSE_ACTION)
+                    powerUp.disableProperty();
+            }
+        });
         powerUp.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 switch (command){
                     case CHOOSE_ACTION:
                         if(getPlayer().getPowerups().get(1).getPowerUp() == TELEPORTER || getPlayer().getPowerups().get(1).getPowerUp() == KINETICRAY){
-                            command = CHOOSE_ACTION; //Kincetic o Teleporter
+                            command = MOVE; //Kinetic o Teleporter
                         }
                         else powerUp.disableProperty();
                         break;
@@ -971,6 +1040,7 @@ public class BoardViewGameGUI extends Application {
         pawn.setTranslateX(-140 + board.getBillboard().getCellPosition(player.getCell()).getX()*distance + 20*(player.getCell().getPawns().size()%2));
         pawn.setTranslateY(-110 + board.getBillboard().getCellPosition(player.getCell()).getY()*100  + 30*(player.getCell().getPawns().size()%3));
     }
+
 }
 
 /*

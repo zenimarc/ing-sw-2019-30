@@ -114,7 +114,6 @@ public class WeaponFactory {
         return loadWeaponCardsJackson();
     }
 
-
     public static void main(String[] arg) {
         WeaponFactory factory = new WeaponFactory();
 

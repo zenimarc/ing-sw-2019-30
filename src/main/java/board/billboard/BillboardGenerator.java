@@ -89,7 +89,7 @@ public class BillboardGenerator extends Billboard {
      * This function creates the board with a blank cell on the right
      * @return a billboard
      */
-    public static Billboard generateBillboard4() {
+    private static Billboard generateBillboard4() {
         HashMap<Cell, Position> map = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
 
@@ -235,6 +235,7 @@ public class BillboardGenerator extends Billboard {
 
         doors.add(new Door(getCellsFromPosition(map, new Position(0, 0)), getCellsFromPosition(map, new Position(0, 1))));
         doors.add(new Door(getCellsFromPosition(map, new Position(1, 0)), getCellsFromPosition(map, new Position(2, 0))));
+        doors.add(new Door(getCellsFromPosition(map, new Position(0, 1)), getCellsFromPosition(map, new Position(1, 1))));
         doors.add(new Door(getCellsFromPosition(map, new Position(1, 1)), getCellsFromPosition(map, new Position(2, 1))));
         doors.add(new Door(getCellsFromPosition(map, new Position(0, 2)), getCellsFromPosition(map, new Position(1, 2))));
 
