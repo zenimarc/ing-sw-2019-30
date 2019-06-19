@@ -4,6 +4,7 @@ import attack.DistanceAttack;
 import board.*;
 import board.Cell;
 import board.billboard.Billboard;
+import constants.Color;
 import constants.Constants;
 import constants.EnumActionParam;
 import deck.AmmoCard;
@@ -24,8 +25,7 @@ import java.util.stream.Collectors;
 
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
-import static controller.PlayerCommand.MOVE;
-import static controller.PlayerCommand.PRINT_ERROR;
+import static controller.PlayerCommand.*;
 
 /**
  * PlayerController is used to control if a player can do certain actions
@@ -58,15 +58,13 @@ public class PlayerController extends Observable implements Observer {
 
     }
 
-    public PlayerView getPlayerView() {
-        return playerView;
-    }
-
     public PlayerBoardView getPlayerBoardView() {
         return playerBoardView;
     }
 
     public void setBillboard(Billboard board){this.billboard = board;}
+
+
 
     public void setBoardController(BoardController board){this.boardController = board;}
 
@@ -84,7 +82,8 @@ public class PlayerController extends Observable implements Observer {
             case GRAB_MOVE:
                 if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
                     if(cmdObj.getCmd()==MOVE) numAction++;
-                    else ((PlayerView) view).grab();
+                    //else ((PlayerView) view).grab();
+                    else cmdForView(new CommandObj(GRAB));
                 }else {
                     viewPrintError();
                 }
@@ -99,7 +98,7 @@ public class PlayerController extends Observable implements Observer {
                  player.notifyEndAction();
                 break;
             case GRAB_WEAPON:
-                grabWeapon(view, (int) cmdObj.getObject());
+                checkCanGrabWeapon((int) cmdObj.getObject());
                 player.notifyEndAction();
                 break;
              case POWERUP:
@@ -120,7 +119,7 @@ public class PlayerController extends Observable implements Observer {
                 player.notifyEndAction();
                 break;
             case SHOOT:
-                checkedShoot(pw, cmdObj);
+                checkedShoot(cmdObj);
                 break;
             case LOAD_WEAPONCARD:
                 WeaponCard wc = (WeaponCard) cmdObj.getObject();
@@ -258,12 +257,10 @@ public class PlayerController extends Observable implements Observer {
 
     /**
      * This controls GRAB action for RegenerationCEll (Grab Weapon)
-     * @param view player view
-     * @param weaponIndex index of weapon to grab
+     * @param grabWeaponIndex index of weapon to grab
      */
-    private void grabWeapon(Observable view, int weaponIndex){
-        WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(weaponIndex));
-        Card discardWeapon = null;
+    private void checkCanGrabWeapon(int grabWeaponIndex){
+        WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(grabWeaponIndex));
 
         int[] grabCost = Bullet.toIntArray(grabWeapon.getGrabCost());
         //Can player pay this weaponCard?
@@ -271,46 +268,56 @@ public class PlayerController extends Observable implements Observer {
             //Can player draw an other WeaponCard?
             if (player.getWeapons().size() == Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
                 //He can't
-                int discardIndex = ((PlayerView) view).chooseWeaponToDiscard();
-                if (discardIndex == -1) return;
-                discardWeapon = player.rmWeapon(discardIndex);
-            }
-            //Draw weaponCard
-            Card card = boardController.getBoard().giveCardFromCell(player.getCell(), player, weaponIndex);
-            if (card!=null) {
-                //Set weapon load
-                ((WeaponCard) card).setLoaded();
-                //Add cell to modify cell
-                modifyCell.add(player.getCell());
-                if (discardWeapon != null) {
-                    boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
-                }
-                numAction++;
-                player.useAmmo(grabCost);
-            } else {
-                viewPrintError("You can't draw an other WeaponCard");
+                cmdForView(new CommandObj(DISCARD_WEAPON, grabWeaponIndex));
+            }else {
+                grabWeapon(grabWeaponIndex, null);
             }
         }else {
             viewPrintError("You have no bullets to grab this weapon!");
+        }
+
+    }
+
+    private void discardWeapon(int discardIndex, int grabIndex) {
+        if (discardIndex == -1) return;
+        Card discardWeapon = player.rmWeapon(discardIndex);
+        grabWeapon(grabIndex, (WeaponCard) discardWeapon);
+    }
+
+    private void grabWeapon(int weaponIndex, WeaponCard discardWeapon) {
+        //Draw weaponCard
+        WeaponCard weaponCard = (WeaponCard) boardController.getBoard().giveCardFromCell(player.getCell(), player, weaponIndex);
+        if (weaponCard != null) {
+            //Set weapon load
+            weaponCard.setLoaded();
+            //Add cell to modify cell
+            modifyCell.add(player.getCell());
+            if (discardWeapon != null) {
+                boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
+            }
+            numAction++;
+            player.useAmmo(Bullet.toIntArray(weaponCard.getGrabCost()));
+        } else {
+            viewPrintError("You can't draw an other WeaponCard");
+
         }
     }
 
     /**
      * this checked if can SHOOT
-     * @param pw player view
      * @param cmdObj data to use
      */
-    private void checkedShoot(PlayerView pw, CommandObj cmdObj) {
+    private void checkedShoot(CommandObj cmdObj) {
         WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
         //Checked load weapon
         if (!weaponCard.isReady()) {
-            pw.printError("This weapon is not loaded");
+            viewPrintError("This weapon is not loaded");
             return;
         }
         //Checked good attack selector
         int selector = cmdObj.getWeaponSelector();
         if (!isGoodSelector(selector, weaponCard)) {
-            pw.printError("Selected attack is not usable");
+            viewPrintError("Selected attack is not usable");
             return;
         }
 
@@ -319,20 +326,21 @@ public class PlayerController extends Observable implements Observer {
         boolean isGoodAttack = false;
         if (selector==0){
             //BASE ATTACK
-            if(shootBaseAttack(weaponCard, pw)) isGoodAttack = true;
+        //    if(shootBaseAttack(weaponCard)) isGoodAttack = true;
         }else if (!weaponCard.getAttacks().isEmpty()) {
             //BASE ATTACK + OPTIONAL ATTACK
-            if(shootOptionalAttack(weaponCard,pw)) isGoodAttack = true;
+            //if(shootOptionalAttack(weaponCard)) isGoodAttack = true;
+            askWichOptionalAttack(weaponCard);
         }else if(weaponCard.getAlternativeAttack()!=null){
             //ALTERNATIVE ATTACK
-            if(shootAlternativeAttack(weaponCard, pw)) isGoodAttack = true;
+      //      if(shootAlternativeAttack(weaponCard)) isGoodAttack = true;
         }
 
         if(isGoodAttack) {
             numAction++;
             player.notifyEndAction();
         }else {
-            pw.printError("Failed attack");
+            viewPrintError("Failed attack");
         }
     }
 
@@ -343,22 +351,29 @@ public class PlayerController extends Observable implements Observer {
      * @param pw shooter playerView
      * @return true if min one opponent was hit
      */
-    private boolean shootOptionalAttack(WeaponCard weaponCard, PlayerView pw) {
+    private void askWichOptionalAttack(WeaponCard weaponCard) {
+        //List<Integer> indexes = playerView.chooseOptionalAttack(weaponCard, true);
+        cmdForView(new CommandObj(CHOOSE_OPTIONAL_ATTACK, new ArrayList<>(Arrays.asList(weaponCard, true))));
+    }
+
+    private void setOptionalAttacks(WeaponCard weaponCard, List<Integer> indexes){
+        if (indexes.isEmpty()) {
+ //           return shootBaseAttack(weaponCard);
+        }
+
         int maxTarget;
         List<Attack> attacks = new ArrayList<>();
-
-        List<Integer> indexes = pw.chooseOptionalAttack(weaponCard, true);
-        if (indexes.isEmpty()) {
-            return shootBaseAttack(weaponCard, pw);
-        }
 
         attacks.add(weaponCard.getBaseAttack());
         indexes.forEach(x -> attacks.add(weaponCard.getAttack(x)));
 
         maxTarget = attacks.stream().mapToInt(Attack::getTarget).max().orElse(0);
-        List<Player> opponents = getTargets(pw, weaponCard.getBaseAttack().getTargetType(), maxTarget);
+        List<Player> opponents = getTargets(weaponCard.getBaseAttack().getTargetType(), maxTarget);
         //User can't attack or decided to not attack
-        if (opponents.isEmpty()) return false;
+        if (opponents.isEmpty()){
+            viewPrintError("Failed attack");
+            return;
+        }
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
 
@@ -366,14 +381,13 @@ public class PlayerController extends Observable implements Observer {
 
         for(Integer index : indexes) {
             if (!player.canPay(weaponCard.getAttack(index).getCost())) {
-                pw.printError("You have not enough bullet to use this attack");
+                viewPrintError("You have not enough bullet to use this attack");
             }else{
                 int i = index +1;
                 weaponCard.shoot(i, player, opponents, null);
                 player.useAmmo(weaponCard.getAttack(index).getCost());
             }
         }
-        return true;
     }
 
     /**
@@ -428,7 +442,7 @@ public class PlayerController extends Observable implements Observer {
         List<Player> opponents = new ArrayList<>();
 
         if(attack.getClass() == DistanceAttack.class && weaponCard.getClass()!=AreaWeapon.class) {
-            opponents.addAll(getDistanceAttackTargets(pw, weaponCard, attack, maxTarget));
+            opponents.addAll(getDistanceAttackTargets(weaponCard, attack, maxTarget));
         }else if(weaponCard.getWeaponType()==EnumWeapon.FURNACE){
             if(baseAttack){
                 //TODO choose room
@@ -441,7 +455,7 @@ public class PlayerController extends Observable implements Observer {
                 }else pw.printError("Selected cell cannot be selected");
             }
         } else {
-            opponents.addAll(getTargets(pw, attack.getTargetType(), maxTarget));
+            opponents.addAll(getTargets(attack.getTargetType(), maxTarget));
         }
 
 
@@ -453,19 +467,19 @@ public class PlayerController extends Observable implements Observer {
 
     }
 
-    private List<Player> getDistanceAttackTargets(PlayerView pw, WeaponCard weaponCard, Attack attack, int maxTarget){
+    private List<Player> getDistanceAttackTargets(WeaponCard weaponCard, Attack attack, int maxTarget){
         if (weaponCard.getWeaponType() != EnumWeapon.HELLION) {
-            return getTargets(pw, attack.getTargetType(), maxTarget,
+            return getTargets(attack.getTargetType(), maxTarget,
                     ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), false);
         } else {
-            return  getTargets(pw, attack.getTargetType(), maxTarget,
+            return  getTargets(attack.getTargetType(), maxTarget,
                     ((DistanceAttack) attack).getMinDistance(), ((DistanceAttack) attack).getMaxDistance(), true);
         }
     }
 
-    private List<Player> getTargets(PlayerView pw, EnumTargetSet targetType, int maxTarget, int minDistance, int maxDistance, boolean hitOpponentSameCell) {
+    private List<Player> getTargets(EnumTargetSet targetType, int maxTarget, int minDistance, int maxDistance, boolean hitOpponentSameCell) {
         List<Player> potentialTarget = boardController.getPotentialTargets(player.getCell(), targetType, minDistance, maxDistance);
-        List<Player> choosenTargets = chooseTargets(pw, potentialTarget, maxTarget);
+        List<Player> choosenTargets = chooseTargets(potentialTarget, maxTarget);
         if (!hitOpponentSameCell) {
             return choosenTargets;
         }else {
@@ -476,27 +490,26 @@ public class PlayerController extends Observable implements Observer {
 
     /**
      * This function verifies if the target is hittable or not
-     * @param pw player's PlayerView
      * @param maxTarget max opponets to shoot
      * @return true if the attack was successful, false otherwise
      */
-    private List<Player> getTargets(PlayerView pw, @NotNull EnumTargetSet targetType, int maxTarget) {
+    private List<Player> getTargets(@NotNull EnumTargetSet targetType, int maxTarget) {
         List<Player> potentialTargets = boardController.getPotentialTargets(player.getCell(), targetType);
-        return chooseTargets(pw, potentialTargets, maxTarget);
+        return chooseTargets(potentialTargets, maxTarget);
     }
 
-    private List<Player> chooseTargets(PlayerView pw, List<Player> potentialTargets, int maxTarget){
+    private List<Player> chooseTargets(List<Player> potentialTargets, int maxTarget){
         if(potentialTargets.isEmpty()) {
-            pw.printError("You have not any possible targets");
+            viewPrintError("You have not any possible targets");
             return Collections.emptyList();
         }
 
         if(maxTarget==-1){
             return potentialTargets;
         }else {
-            List<Player> opponents = pw.chooseTargets(maxTarget, potentialTargets);
+            List<Player> opponents = playerView.chooseTargets(maxTarget, potentialTargets);
 
-            if(areGoodTarget(pw, potentialTargets, opponents)){
+            if(areGoodTarget(potentialTargets, opponents)){
                 return opponents;
             }else{
                 return Collections.emptyList();
@@ -507,15 +520,14 @@ public class PlayerController extends Observable implements Observer {
 
     /**
      * Check if selected opponents are good targets
-     * @param pw shooter playerView
      * @param potentialTargets potential good targets
      * @param selectedTargets selected target by shooter
      * @return if selected target are good target
      */
-    private boolean areGoodTarget(PlayerView pw, List<Player> potentialTargets, List<Player> selectedTargets){
+    private boolean areGoodTarget(List<Player> potentialTargets, List<Player> selectedTargets){
         if (selectedTargets.isEmpty()) return false;
         if (!potentialTargets.containsAll(selectedTargets)) {
-            pw.printError("You can't attack one (or more) selected player(s)");
+            viewPrintError("You can't attack one (or more) selected player(s)");
             return false;
         }
         return true;
