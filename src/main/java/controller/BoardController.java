@@ -323,6 +323,9 @@ public class BoardController{
             pc.getPlayerView().print("********** TURN OF "+pc.getPlayer().getName()+" **********");
             pc.myTurn();
             restoreCell(pc.getModifyCell());
+            if(listOfPlayers.stream().anyMatch(Player::isDead)){
+                scoring(listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList()));
+            }
         }
     }
 
@@ -330,7 +333,7 @@ public class BoardController{
      * Restore NormalCell and/or RegenerationCell that player modify in his turn
      * @param cells modify cells
      */
-    public void restoreCell(List<Cell> cells){
+    private void restoreCell(List<Cell> cells){
         for(Cell cell : cells){
             if(cell.getClass()== NormalCell.class){
                 NormalCell nc = (NormalCell) cell;
@@ -345,6 +348,33 @@ public class BoardController{
             }
 
         }
+    }
+
+    private void scoring(List<Player> deadPlayers){
+       for(Player player : deadPlayers){
+           String points = givePoints(player);
+           playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.getPlayerView().print(points));
+           board.decrementSkull();
+           if(board.getSkulls()>0) {
+               player.getPlayerBoard().addSkull();
+               player.resetDamage();
+               player.getPlayerBoard().resurrect();
+           }
+       }
+    }
+
+    private String givePoints(Player deadPlayer){
+        StringBuilder sb = new StringBuilder();
+            Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(board.getSkulls()<=0);
+            points.keySet().forEach(x-> {
+                x.addPoints(points.get(x));
+                sb.append(x);
+                sb.append(": ");
+                sb.append(points.get(x));
+                sb.append('\n');
+            });
+            return sb.toString();
+
     }
 
 }
