@@ -310,6 +310,10 @@ public class BoardController{
         return false;
     }
 
+    public void firstPlay(){
+        playerPlay(listOfPlayers.get(0));
+    }
+
     /**
      * Say to playerController of player to start his turn
      * @param player Player how can play
@@ -320,12 +324,13 @@ public class BoardController{
             playerWhoPlay = pc.getPlayer();
             pc.getPlayerBoardView().drawPlayerboard();
             getBoardViewToString();
-            pc.getPlayerView().print("********** TURN OF "+pc.getPlayer().getName()+" **********");
+            pc.viewPrintError("********** TURN OF "+pc.getPlayer().getName()+" **********");
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){
                 scoring(listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList()));
             }
+            playerPlay(listOfPlayers.get(changeTurn()));
         }
     }
 
@@ -353,7 +358,7 @@ public class BoardController{
     private void scoring(List<Player> deadPlayers){
        for(Player player : deadPlayers){
            String points = givePoints(player);
-           playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.getPlayerView().print(points));
+           playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.viewPrintError(points));
            board.decrementSkull();
            if(board.getSkulls()>0) {
                player.getPlayerBoard().addSkull();

@@ -37,8 +37,6 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
 
     public ClientRMI() throws RemoteException {
         //new generic client RMI
-        clientUpdateManager = new ClientUpdateManager();
-        playerView = new PlayerView(gameServer.getPlayer(this), this);
     }
 
     public void connect(String host) throws RemoteException {
@@ -85,7 +83,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
 
     public void sendCMD(CommandObj cmd) throws RemoteException{
-        gameServer.receiveCMD(cmd);
+        gameServer.receiveCMD(cmd, this);
     }
 
     /**
@@ -213,7 +211,31 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
 
     }
 
+    public void init() {
+        try {
+            connect("127.0.0.1", 1099);
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter username (min 3 chars max 15 chars)");
+            String userName = scanner.nextLine();
+            setNickname(userName);
+            System.out.println("Enter connect or reconnect");
+            if (scanner.nextLine().equals("reconnect")) {
+                System.out.println("Enter your userToken");
+                reconnect(userName, UUID.fromString(scanner.nextLine()));
+            } else
+                while (!register(getNickname())) {
+                    System.out.println("Enter another username");
+                    userName = scanner.nextLine();
+                    setNickname(userName);
+                }
+            this.playerView = new PlayerView(gameServer.getPlayer(this), this);
+        } catch (RemoteException re) {
+            re.fillInStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
+
         try {
             ClientRMI clientRMI = new ClientRMI();
             clientRMI.connect("127.0.0.1", 1099);
@@ -232,6 +254,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
                     userName = scanner.nextLine();
                     clientRMI.setNickname(userName);
                 }
+
             String command = scanner.nextLine();
             while(!command.equals("exit")) {
                 try {

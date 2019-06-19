@@ -22,6 +22,10 @@ public class ServerUpdateManager implements Observer {
 
     }
 
+    public void receiveCmd(CommandObj cmd, Player player){
+        boardController.getPlayerController(player).reciveCmd(cmd);
+    }
+
     @Override
     public void update(Observable observable, Object obj) {
         //In this case the update come from a player, so send to all client the player cloned to get infos

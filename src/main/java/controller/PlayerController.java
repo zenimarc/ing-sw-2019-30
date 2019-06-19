@@ -650,7 +650,7 @@ public class PlayerController extends Observable implements Observer{
     }
 
 
-    private void viewPrintError(String mex){
+    public void viewPrintError(String mex){
         cmdForView(new CommandObj(PRINT_ERROR, mex));
     }
     

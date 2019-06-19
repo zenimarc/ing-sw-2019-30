@@ -108,6 +108,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 if (client.isPresent())
                     client.get().setPlayer(onePlayer);
                 remoteClient.setPlayer(onePlayer);
+                players.add(onePlayer);
             }
             boardController = new BoardController(players, 8);
             this.serverUpdateManager = new ServerUpdateManager(this, boardController);
@@ -123,8 +124,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         }
     }
 
-    public void receiveCMD(CommandObj cmd) throws RemoteException{
-        //serverUpdateManager.
+    public void receiveCMD(CommandObj cmd, Client remoteClient) throws RemoteException{
+        serverUpdateManager.receiveCmd(cmd, getPlayer(remoteClient));
     }
 
     /**
@@ -290,9 +291,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     public synchronized int changeTurn() {
         turnHandler.interrupt();
-        if(turn >= clients.size()-1)
-            turn = 0;
-        else turn++;
+        boardController.changeTurn();
         turnHandler = new TurnHandler(this);
         turnHandler.start();
         System.out.println("server: "+this.getGameToken()+"\nè il turno di "+this.getTurn());
