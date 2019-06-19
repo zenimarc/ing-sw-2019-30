@@ -1,5 +1,6 @@
 package client;
 
+import controller.CommandObj;
 import controller.PlayerController;
 import player.Player;
 import server.GameServer;
@@ -61,6 +62,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client {
      */
     public boolean isActive() throws RemoteException{
         return true;
+    }
+
+    public void sendCMD(CommandObj cmd) throws RemoteException{
+        //TODO elaborate command and send to gui or send direclty to gui
     }
 
     /**

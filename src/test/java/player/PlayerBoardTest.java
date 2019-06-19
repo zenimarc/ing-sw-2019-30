@@ -103,6 +103,7 @@ class PlayerBoardTest {
         assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p3));
         assertEquals(1, p1.getPlayerBoard().getPoints(board.isFinalFrenzy()).get(p2));
 
+
     }
 
     @Test

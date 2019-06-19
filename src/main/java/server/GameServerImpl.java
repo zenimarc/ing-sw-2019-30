@@ -2,6 +2,7 @@ package server;
 
 import client.Client;
 import controller.BoardController;
+import controller.CommandObj;
 import controller.PlayerController;
 import player.Player;
 
@@ -86,14 +87,27 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         turnHandler.start();
         List<Player> players = new ArrayList<>();
         try {
+            //this code create a Player for each active clients and store it in ClientsInfo list.
             for (Client remoteClient : getActiveClients()) {
                 Player onePlayer = new Player(remoteClient.getNickname());
-                players.add(onePlayer);
+                Optional<ClientInfo> client = clients.stream().filter(x->x.getClient().equals(remoteClient)).findFirst();
+                if (client.isPresent())
+                    client.get().setPlayer(onePlayer);
                 remoteClient.setPlayer(onePlayer);
             }
             boardController = new BoardController(players, 8);
         }catch (RemoteException re){
             //TODO cancel this game and notify players
+        }
+    }
+
+    public void sendToAllCMD(CommandObj cmd){
+        for (Client client : getActiveClients()) {
+            try {
+                client.sendCMD(cmd);
+            }catch (RemoteException re){
+                re.fillInStackTrace();
+            }
         }
     }
 
@@ -114,6 +128,11 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             beginCountdown = new Thread(this::beginCountdown);
             beginCountdown.start();
         }
+    }
+
+    public List<Client> getClientsFromPlayers(List<Player> players){
+        return this.clients.stream().filter(x -> !x.isOffline()
+                && players.contains(x.getPlayer())).map(ClientInfo::getClient).collect(Collectors.toList());
     }
 
     /**

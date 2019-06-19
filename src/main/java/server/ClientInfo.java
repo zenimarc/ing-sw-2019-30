@@ -1,11 +1,13 @@
 package server;
 
 import client.Client;
+import player.Player;
 
 import java.util.UUID;
 
 public class ClientInfo {
     private Client client;
+    private Player player;
     private UUID gameToken;
     private UUID userToken;
     private boolean isOffline;
@@ -29,9 +31,13 @@ public class ClientInfo {
     public void setClient(Client remoteClient){
         this.client = remoteClient;
     }
+    public void setPlayer(Player player){
+        this.player = player;
+    }
     public Client getClient(){
         return this.client;
     }
+    public Player getPlayer() {return this.player;}
     public void setOff(){
         this.isOffline = true;
     }
