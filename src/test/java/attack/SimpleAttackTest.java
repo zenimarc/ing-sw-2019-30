@@ -12,15 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimpleAttackTest {
 
     private static Player p1, p2;
-    private static Board board;
     private static SimpleAttack simpleAttack;
     private final static int testDamage = 3, testMark = 1;
 
     @BeforeAll
     static void init(){
-        board = new Board();
-        p1 = new Player("p1", board);
-        p2 = new Player("p2", board);
+        p1 = new Player("p1");
+        p2 = new Player("p2");
 
         simpleAttack = new SimpleAttack(EnumTargetSet.VISIBLE, EnumAttackName.TEST_ATTACK, "Lorem ipsum",testDamage,testMark,1);
     }

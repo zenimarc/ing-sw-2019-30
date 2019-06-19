@@ -17,10 +17,10 @@ class PlayerBoardViewTest {
     @BeforeEach
     void setUp() {
         gameBoard = new Board(1);
-        p1 = new Player("Marco", gameBoard);
-        p2 = new Player("Giorgio389729878831718332oijjoi", gameBoard);
-        p3 = new Player("Chiara", gameBoard);
-        p4 = new Player("Paolo", gameBoard);
+        p1 = new Player("Marco");
+        p2 = new Player("Giorgio389729878831718332oijjoi");
+        p3 = new Player("Chiara");
+        p4 = new Player("Paolo");
         p5 = new Player("Massimo");
         p1.addDamage(new Player("Alberto"), 8);
         p1.addDamage(new Player("L"), 6);

@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 public class PlayerBoard {
     private static final int[] REWARDS_BY_DAMAGE = {8, 6, 4, 2, 1, 1};
     private static final int[] FRENZY_REWARDS_BY_DAMAGE = {2, 1, 1, 1};
-    private Board board;
     private ArrayList<Player> damageTrack;
     private HashMap<Player, Integer> marks;
     private int numDeaths;
     private boolean isDead;
+    private boolean isFinalFrenzy;
 
     /**
      * Constructors
@@ -28,10 +28,6 @@ public class PlayerBoard {
         this.isDead = false;
     }
 
-    public PlayerBoard(Board board) {
-        this();
-        this.board = board;
-    }
 
     /**
      * This function returns the number of times the layer has died
@@ -71,13 +67,6 @@ public class PlayerBoard {
     public Map<Player, Integer> getMarks(){
         return this.marks;
     }
-
-    /**
-     * This function returns the boardof the player
-     * @return the board of the player
-     */
-
-    public Board getBoard(){return this.board;}
 
     /**
      * This function is a cycle for adding damage
@@ -123,7 +112,6 @@ public class PlayerBoard {
      * This function adds a death to the PlayerBoard, (increment numDeath by 1)
      */
     public void addSkull(){
-        if (this.board.getSkulls() > 0)
             this.numDeaths++;
     }
 
@@ -171,20 +159,20 @@ public class PlayerBoard {
      * to give based on damage count and order of infliction.
      * @return a HashMap containing players and points they should obtain.
      */
-    public Map<Player, Integer> getPoints() {
+    public Map<Player, Integer> getPoints(boolean isFinalFrenzy) {
 
         Map<Player, Integer> pointsMap = new HashMap<>();
 
         //assegna un punto al giocatore che ha colpito per primo se non siamo in frenzy
-        if (!board.isFinalFrenzy())
+        if (!isFinalFrenzy)
             pointsMap.putIfAbsent(damageTrack.get(0), 1 );
 
         //controlla i danni dei giocatori e assegna loro i punteggi
         Integer currentDamage;
         for (int i=0; i<getPlayersByDamage().size(); i++){
-            currentDamage = pointsMap.putIfAbsent(getPlayersByDamage().get(i), getRewardPoints(i));
+            currentDamage = pointsMap.putIfAbsent(getPlayersByDamage().get(i), getRewardPoints(i, isFinalFrenzy));
             if (currentDamage != null)
-                pointsMap.replace(getPlayersByDamage().get(i), currentDamage + getRewardPoints(i));
+                pointsMap.replace(getPlayersByDamage().get(i), currentDamage + getRewardPoints(i, isFinalFrenzy));
         }
         return pointsMap;
     }
@@ -195,9 +183,9 @@ public class PlayerBoard {
      * @param position position of the player in the list of players ordered by damage
      * @return points to assign to this player
      */
-    private int getRewardPoints(int position){
+    private int getRewardPoints(int position, boolean isFinalFrenzy){
         int[] rewardsByDamage;
-        if (board.isFinalFrenzy())
+        if (isFinalFrenzy)
             rewardsByDamage = FRENZY_REWARDS_BY_DAMAGE;
         else
             rewardsByDamage = REWARDS_BY_DAMAGE;
@@ -233,10 +221,10 @@ public class PlayerBoard {
 
     }
 
-    public String rewardPointstoString(){
+    public String rewardPointstoString(boolean isFinalFrenzy){
         StringBuilder string = new StringBuilder();
         string.append("Points given: [");
-        if(!board.isFinalFrenzy())
+        if(!isFinalFrenzy)
             for(int i = numDeaths; i < REWARDS_BY_DAMAGE.length; i++) {
                 string.append(REWARDS_BY_DAMAGE[i]);
                 if(i < REWARDS_BY_DAMAGE.length-1)

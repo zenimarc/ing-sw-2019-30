@@ -75,19 +75,19 @@ class PlayerControllerTest {
         myBillboard = new Billboard(mappaProva,doors);
         myBoard = new Board(1, myBillboard);
 
-        player = new Player("Marco", myBoard);
+        player = new Player("Marco");
         controller = new PlayerController(player);
         controller.setBillboard(myBillboard);
 
-        p2 = new Player("Christian", myBoard);
+        p2 = new Player("Christian");
         controller2 = new PlayerController(p2);
         controller2.setBillboard(myBillboard);
 
-        p3 = new Player("Giovanni", myBoard);
+        p3 = new Player("Giovanni");
         controller3 = new PlayerController(p3);
         controller3.setBillboard(myBillboard);
 
-        p4 = new Player("Paolo", myBoard);
+        p4 = new Player("Paolo");
         controller4 = new PlayerController(p4);
         controller4.setBillboard(myBillboard);
 

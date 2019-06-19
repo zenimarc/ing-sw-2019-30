@@ -22,13 +22,11 @@ class DistanceAttackTest {
 
     @BeforeAll
     public static void init(){
-        board = new Board();
-
         distanceAttack = new DistanceAttack(EnumTargetSet.VISIBLE, EnumAttackName.SUPPORT_ATTACK, damage,1,1,2,3);
 
-        p1 = new Player("first",board);
-        p2 = new Player("second",board);
-        p3 = new Player("third",board);
+        p1 = new Player("first");
+        p2 = new Player("second");
+        p3 = new Player("third");
 
     }
 
