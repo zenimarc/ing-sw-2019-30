@@ -4,6 +4,8 @@ import board.Cell;
 import constants.Color;
 import weapon.WeaponCard;
 
+import java.util.List;
+
 /**
 è un oggetto utile al fine di move e grab e shoot per il controller in particolare
 nel metodo update() degli observer va passato un object quindi se abbiamo bisogno di più parametri, serve un oggetto
@@ -15,6 +17,7 @@ public class CommandObj {
     private int weaponSelector;
     private Cell cell;
     private Object object;
+    private List<Object> objects;
 
     public CommandObj(PlayerCommand cmd, Cell cell, int sel){
         this.cmd = cmd;
@@ -31,6 +34,11 @@ public class CommandObj {
     public CommandObj(PlayerCommand cmd, Object o){
         this.cmd = cmd;
         this.object = o;
+    }
+
+    public CommandObj(PlayerCommand cmd, List<Object> objs){
+        this.cmd = cmd;
+        this.objects = objs;
     }
 
     public CommandObj(PlayerCommand cmd){
