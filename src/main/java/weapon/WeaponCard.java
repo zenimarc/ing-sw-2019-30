@@ -47,9 +47,8 @@ public abstract class WeaponCard extends Card {
     }
 
     public WeaponCard(String name) {
+        this();
         this.name = name;
-        this.cost = new ArrayList<>();
-        this.attacks = new ArrayList<>();
     }
 
     public WeaponCard(String name,List<Bullet> cost) {
@@ -105,6 +104,10 @@ public abstract class WeaponCard extends Card {
 
     public Attack getAlternativeAttack() {
         return alternativeAttack;
+    }
+
+    public Attack getBaseAttack() {
+        return baseAttack;
     }
 
     @JsonIgnore

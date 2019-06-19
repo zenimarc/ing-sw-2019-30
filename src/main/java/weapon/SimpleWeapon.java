@@ -27,9 +27,9 @@ public class SimpleWeapon extends WeaponCard{
 
         switch (weaponType){
             case LOCK_RIFLE:
-                baseAttack = new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 2,1,1);
+                baseAttack = new SimpleAttack(VISIBLE, LOCK_RIFLE_BASE, 2,1,1);
                 attacks.add(new SimpleAttack(VISIBLE, LOCK_RIFLE_OPT1, 0,1,2));
-                baseAttack.setCost(new int[]{1,0,0});
+                attacks.get(0).setCost(new int[]{1,0,0});
                 break;
             case MACHINE_GUN:
                 baseAttack = new SimpleAttack(VISIBLE, MACHINE_GUN_BASE, 1,0,2);
@@ -39,15 +39,15 @@ public class SimpleWeapon extends WeaponCard{
                 attacks.get(1).setCost(new int[]{0,0,1});
                 break;
             case ELECTROSCYTHE:
-                baseAttack = new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME, 1,0,-1);
+                baseAttack = new SimpleAttack(SAME_CELL, ELECTROSCYHE_BASE, 1,0,-1);
                 alternativeAttack = new SimpleAttack(SAME_CELL, ELECTROSCYHE_OPT1, 2,0,-1);
                 alternativeAttack.setCost(new int[]{1,0,1});
                 break;
             case HEATSEEKER:
-                baseAttack = new SimpleAttack(NOT_VISIBLE, BASE_ATTACK_NAME, 3,0,1);
+                baseAttack = new SimpleAttack(NOT_VISIBLE, HEATSEEKER_BASE, 3,0,1);
                 break;
             case ZX_2:
-                baseAttack = new SimpleAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1);
+                baseAttack = new SimpleAttack(VISIBLE, ZX_2_BASE, 1,2,1);
                 alternativeAttack = new SimpleAttack(VISIBLE, ZX_2_OP1, 0,1,3);
                 break;
             default:
@@ -76,19 +76,25 @@ public class SimpleWeapon extends WeaponCard{
 
 
     private boolean lockrifleShoot(int typeAttack, Player shooter, @NotNull List<Player> opponents){
-        baseAttack.attack(shooter, opponents.get(0));
-        if(typeAttack==1 && opponents.size()==2){
-            attacks.get(1).attack(shooter, opponents.get(1));
+
+        switch (typeAttack) {
+            case 0:
+                baseAttack.attack(shooter, opponents.get(0));
+                break;
+            case 1:
+                attacks.get(0).attack(shooter, opponents.get(1));
+                break;
+            default:
+                return false;
         }
         return true;
     }
 
     private boolean machinegunShoot(int typeAttack, Player shooter, List<Player> opponents){
 
-        baseAttack.attack(shooter,opponents.subList(0,2));
-
         switch (typeAttack){
             case 0:
+                baseAttack.attack(shooter,opponents.subList(0,2));
                 break;
             case 1:
                 attacks.get(0).attack(shooter, opponents.get(0));
@@ -96,36 +102,18 @@ public class SimpleWeapon extends WeaponCard{
             case 2:
                 attacks.get(1).attack(shooter,opponents.subList(1,3));
                 break;
-            case 3:
-                attacks.get(0).attack(shooter, opponents.get(0));
-                attacks.get(1).attack(shooter,opponents.subList(1,3));
-                break;
             default:
                 return false;
         }
         return true;
     }
 
-    private boolean zx2Shoot(int typeAttack, Player shooter, List<Player> opponents){
-        switch (typeAttack){
-            case 0:
-                baseAttack.attack(shooter, opponents.get(0));
-                break;
-            case 1:
-                alternativeAttack.attack(shooter, opponents);
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
 
         boolean result;
 
-        if(typeAttack>=attacks.size()) return false;
         switch (this.weaponType) {
             case LOCK_RIFLE:
                 result = lockrifleShoot(typeAttack,shooter,opponents);
@@ -134,14 +122,12 @@ public class SimpleWeapon extends WeaponCard{
                 result = machinegunShoot(typeAttack,shooter,opponents);
                 break;
             case ELECTROSCYTHE:
+            case ZX_2:
                 result = alternativeSimpleShoot(typeAttack,shooter, opponents);
                 break;
             case HEATSEEKER:
                 baseAttack.attack(shooter,opponents.get(0));
                 result = true;
-                break;
-            case ZX_2:
-                result = zx2Shoot(typeAttack, shooter, opponents);
                 break;
             default:
                 result = false;

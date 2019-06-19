@@ -58,4 +58,11 @@ public class DistanceAttack extends Attack {
         return true;
     }
 
+    public int getMaxDistance() {
+        return maxDistance;
+    }
+
+    public int getMinDistance() {
+        return minDistance;
+    }
 }
