@@ -23,7 +23,7 @@ public class ServerUpdateManager implements Observer {
     }
 
     public void receiveCmd(CommandObj cmd, Player player){
-        boardController.getPlayerController(player).reciveCmd(cmd);
+        boardController.getPlayerController(player).receiveCmd(cmd);
     }
 
     @Override

@@ -258,7 +258,7 @@ public class PlayerBoardView implements Observer {
         stringBuilder.append(V_SEPARATOR);
 
         if(i +1 <= player.getWeapons().size()){
-            weapon = player.getWeapons().get(i).toString() + " " + player.getWeapons().get(i).getGrabCostCLI() + " " + player.getWeapons().get(i).isLoadedCLI() + " " ;
+            weapon = player.getWeapons().get(i).toString() + " " + player.getWeapons().get(i).getWeaponCostCLI() + " " + player.getWeapons().get(i).isLoadedCLI() + " " ;
             stringBuilder.append(weapon);
             for (int j = weapon.length(); j < CELL_LENGTH*COLS/2+COLS-1; j++)
                 stringBuilder.append(" ");
@@ -297,8 +297,7 @@ public class PlayerBoardView implements Observer {
         for (int i = 0; i < 8; i++)
             stringBuilder.append(" ");
 
-        //TODO verificare perchè non printa i punti
-        //stringBuilder.append(player.getPlayerBoard().rewardPointstoString());
+        stringBuilder.append(player.getPlayerBoard().rewardPointstoString());
 
         for(int i = stringBuilder.length(); i< CELL_LENGTH*COLS + 2*COLS - 1; i++)
             stringBuilder.append(" ");

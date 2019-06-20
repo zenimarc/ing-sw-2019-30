@@ -353,6 +353,11 @@ public class Player extends Observable implements Cloneable, Serializable {
         return sb.toString();
     }
 
+    public boolean canPayPower(PowerCard power){
+        return(ammo.get(power.getColor()) >= 1);
+
+    }
+
     public boolean usePowerUp(PowerCard power, boolean discard){
         if(discard){
             powerups.remove(power);

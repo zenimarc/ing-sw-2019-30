@@ -113,7 +113,7 @@ public class PlayerBoard implements Serializable {
      * This function adds a death to the PlayerBoard, (increment numDeath by 1)
      */
     public void addSkull(){
-            this.numDeaths++;
+        this.numDeaths++;
     }
 
     /**
@@ -225,7 +225,7 @@ public class PlayerBoard implements Serializable {
 
     }
 
-    public String rewardPointstoString(boolean isFinalFrenzy){
+    public String rewardPointstoString(){
         StringBuilder string = new StringBuilder();
         string.append("Points given: [");
         if(!isFinalFrenzy)
@@ -255,5 +255,9 @@ public class PlayerBoard implements Serializable {
 
     public void resurrect(){
         isDead = false;
+    }
+
+    public void setFrenzy(boolean isFrenzy) {
+        this.isFinalFrenzy = isFrenzy;
     }
 }

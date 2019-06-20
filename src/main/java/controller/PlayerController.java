@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import player.Pawn;
 import powerup.PowerCard;
 import player.Player;
+import powerup.PowerUp;
 import view.PlayerBoardView;
 import view.PlayerView;
 import weapon.AreaWeapon;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
 import static controller.PlayerCommand.*;
+import static deck.Bullet.toIntArray;
+import static powerup.PowerUp.*;
 
 /**
  * PlayerController is used to control if a player can do certain actions
@@ -76,7 +79,7 @@ public class PlayerController extends Observable implements Observer{
     public void update(Observable o, Object arg) {
     }
 
-    public void reciveCmd(Object obj){
+    public void receiveCmd(Object obj){
         CommandObj cmdObj = (CommandObj) obj;
         switch (cmdObj.getCmd()) {
             case MOVE:
@@ -102,9 +105,29 @@ public class PlayerController extends Observable implements Observer{
                 checkCanGrabWeapon((int) cmdObj.getObject());
                 player.notifyEndAction();
                 break;
-             case POWERUP:
-            //verifyPowerUp(((CommandObj)obj).getCell(), ((CommandObj)obj).getWeaponSelector());
-            break;
+                //powerups
+            case CHECKPOWERUP:
+                playerView.usePowerUp(getPotentialPowerUps(cmdObj));
+                break;
+                case PAYGUNSIGHT:
+                    playerView.askPayGunsight(payCubeGunsight(), (PowerCard)cmdObj.getObject());
+                    break;
+            /*case CHECK:
+                player.canPayGunsight((Color) cmdObj.getObject());
+                break;*/
+            case PAYPOWERUP:
+                if(player.canPayPowerUp((PowerCard)cmdObj.getObject()))
+                    playerView.askToPay((PowerCard)cmdObj.getObject());
+                else player.usePowerUp((PowerCard)cmdObj.getObject(), true);
+                break;
+            case POWERUP:
+                player.usePowerUp((PowerCard) cmdObj.getObject(), true);
+                    receiveCmd(verifyPowerUp((PowerCard) cmdObj.getObject()));
+                break;
+            case USE_TELEPORTER:
+                player.setPawnCell(cmdObj.getCell());
+                notifyObservers();
+                break;
             case END_TURN:
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
@@ -125,10 +148,10 @@ public class PlayerController extends Observable implements Observer{
             case LOAD_WEAPONCARD:
                 WeaponCard wc = (WeaponCard) cmdObj.getObject();
 
-                if(!player.getNotLoaded().contains(wc)) viewPrintError("This weapon is not in not loaded weapon");
-                if(player.canPay(Bullet.toIntArray(wc.getCost()))){
+                if(!player.getNotLoaded().contains(wc)) viewPrintError("This weapon is already loaded");
+                if(player.canPay(toIntArray(wc.getCost()))){
                     wc.setLoaded();
-                    player.useAmmo(Bullet.toIntArray(wc.getCost()));
+                    player.useAmmo(toIntArray(wc.getCost()));
                 }else{
                     viewPrintError("You have not enough ammo to load this weapon");
                 }
@@ -149,7 +172,7 @@ public class PlayerController extends Observable implements Observer{
 
         EnumActionParam actionParam;
         if(!boardController.isFinalFrenzy()) {
-            //NOT FINAL FREZY
+            //NOT FINAL FRENZY
             switch (playerCommand) {
                 case MOVE: //normal mode
                     actionParam = NORMAL_MOVE;
@@ -263,7 +286,7 @@ public class PlayerController extends Observable implements Observer{
     private void checkCanGrabWeapon(int grabWeaponIndex){
         WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(grabWeaponIndex));
 
-        int[] grabCost = Bullet.toIntArray(grabWeapon.getGrabCost());
+        int[] grabCost = toIntArray(grabWeapon.getGrabCost());
         //Can player pay this weaponCard?
         if(player.canPay(grabCost)) {
             //Can player draw an other WeaponCard?
@@ -297,7 +320,7 @@ public class PlayerController extends Observable implements Observer{
                 boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
             }
             numAction++;
-            player.useAmmo(Bullet.toIntArray(weaponCard.getGrabCost()));
+            player.useAmmo(toIntArray(weaponCard.getGrabCost()));
         } else {
             viewPrintError("You can't draw an other WeaponCard");
 
@@ -584,27 +607,39 @@ public class PlayerController extends Observable implements Observer{
         this.boardController.getBoard().setPlayerCell(this.player,cell);
     }
 
-    public boolean verifyPowerUp(PowerCard power, Object object) {
-        if(!player.usePowerUp(power, false))
-            return false; //chiederà al giocatore se vuole scartarla o meno
-
+    private CommandObj verifyPowerUp(PowerCard power) {
         switch(power.getPowerUp()) {
             case KINETICRAY:
-                return(useKineticRay(player, (Cell)object)); //verrà chiesta la cella di destinazione nel caso
+                //playerView.useKineticRay();
+                break;
             case GUNSIGHT:
-                if(player.canPayGunsight(power.getColor())) {
-                    useGunsight((Player) object);
-                    return true;
-                }
-                else return false;
+                //playerView.useGunsight();
+                break;
             case VENOMGRENADE:
-                useGranade((Player) object);
-                return true;
+                //playerView.useGrenade();
+                break;
             case TELEPORTER:
-                useTeleporter((Cell) object);
-                return true;
+                return new CommandObj(USE_TELEPORTER);
+
         }
-        return false;
+        return null;
+    }
+
+    private ArrayList<PowerCard> getPotentialPowerUps(CommandObj obj){
+        ArrayList<PowerCard> powers = new ArrayList<>();
+        for(PowerCard power: player.getPowerups()){
+            if(obj.getCmd() == USE_VENOMGRENADE && power.getPowerUp() == VENOMGRENADE)
+                powers.add(power);
+            else {
+                if(obj.getCmd() == SHOOT && power.getPowerUp() == GUNSIGHT) {
+                    if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 1, 0})))
+                        powers.add(power);
+                }
+                else powers.add(power);
+
+            }
+        }
+        return powers;
     }
 
     private boolean useKineticRay(Player player, Cell cell){
@@ -657,5 +692,21 @@ public class PlayerController extends Observable implements Observer{
     private void cmdForView(CommandObj cmd){
         setChanged();
         notifyObservers(cmd);
+    }
+
+    private int[] payCubeGunsight(){
+        int[] array = {0, 0, 0};
+        if(player.getBullets().get(Color.RED) > 0)
+            array[0] = 1;
+        if(player.getBullets().get(Color.YELLOW) > 0)
+            array[1] = 1;
+        if(player.getBullets().get(Color.BLUE) > 0)
+            array[2] = 1;
+        return array;
+    }
+
+    private void setPlayerboardFrenzy(){
+        if(boardController.isFinalFrenzy())
+            player.getPlayerBoard().setFrenzy(true);
     }
 }

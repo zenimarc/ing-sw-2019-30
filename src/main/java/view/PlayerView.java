@@ -10,9 +10,12 @@ import controller.CommandObj;
 import controller.PlayerCommand;
 import player.Player;
 import powerup.PowerCard;
+import powerup.PowerUp;
 import weapon.WeaponCard;
 
 import java.util.*;
+
+import static controller.PlayerCommand.*;
 
 /**
  * 
@@ -40,6 +43,9 @@ public class PlayerView extends Observable implements Observer{
                 break;
             case SHOOT:
                 shoot();
+                break;
+            case POWERUP:
+                notifyServer(new CommandObj(CHECKPOWERUP, POWERUP));
                 break;
             case END_TURN:
                 notifyServer(new CommandObj(PlayerCommand.END_TURN));
@@ -149,7 +155,7 @@ public class PlayerView extends Observable implements Observer{
         String format = "[0-1]";
         String read;
         while(true) {
-            print("Do you want load weapon? [0: Yes, 1: No] ");
+            print("Do you want to load your weapon? [1: Yes, 0: No] ");
             read = reader.next();
             if(read.matches(format)) break;
         }
@@ -157,14 +163,14 @@ public class PlayerView extends Observable implements Observer{
     }
 
     /**
-     * Ask player which weapon want to load and retun index
+     * Ask player which weapon want to load and return index
      * @return
      */
     private int chooseWeaponToLoad(){
         String format = "[0-" + player.getNotLoaded().size() + "]";
         String read;
         while (true) {
-            print("What weapon want load?\n");
+            print("What weapon do you want to load?\n");
             print(stringWeaponFromList(player.getNotLoaded(), true));
             read = reader.next();
             if (read.matches(format)) break;
@@ -180,7 +186,7 @@ public class PlayerView extends Observable implements Observer{
      */
     private Player chooseTarget(List<Player> possibleTarget){
         if(possibleTarget.isEmpty()){
-            printError("There are not possible target");
+            printError("There are no possible targets");
             return null;
         }
         String format = "[0-"+possibleTarget.size()+"]";
@@ -587,6 +593,31 @@ public class PlayerView extends Observable implements Observer{
         }
     }
 
+    private boolean discardOrPayPowerUp(PowerCard powerUp){
+        if (player.canPayPowerUp(powerUp)) {
+            System.out.print("Do you want to pay or to discard your power up?");
+            return true;
+        }
+        else return false;
+    }
+
+    private String choosePowerUp(List<PowerCard> powerups){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Usable Power ups are:\n");
+        sb.append("0) No one\t");
+        for(PowerCard power : powerups){
+                sb.append(powerups.indexOf(power) + 1);
+                sb.append(") ");
+                sb.append(power.toString());
+                sb.append("\t");
+        }
+        sb.append("\nWhich Power up do you want to use?");
+        return sb.toString();
+    }
+
+
+
     /**
      * Print default error
      */
@@ -625,4 +656,47 @@ public class PlayerView extends Observable implements Observer{
         setChanged();
         notifyObservers(cmd);
     }
+
+    public boolean usePowerUp(ArrayList<PowerCard> powerCards) {
+        if (powerCards.isEmpty()) {
+            printError("You have no power ups, so you can't use one");
+            return false;
+        }
+        choosePowerUp(powerCards);
+        String format = "[0-" + player.getPowerups().size() + "]";
+        String read = "";
+        while (!read.matches(format)) {
+            print("Which power up do you want to use?\n");
+            print(choosePowerUp(powerCards));
+            read = reader.next();
+        }
+        notifyServer(new CommandObj(POWERUP, player.getPowerups().get(Integer.valueOf(read)-1)));
+        return true;
+    }
+
+    public void askPayGunsight(int[] payCubeGunsight, PowerCard power) {
+        String format = "[0-"+ payCubeGunsight.length+"]";
+        String read = "";
+
+        while (!read.matches(format)) {
+            print("Which cube do you want to use to pay? [0: Red, 1: Yellow, 2: Blue]");
+            read = reader.next();
+        }
+        ArrayList<Object>obj = new ArrayList<Object>();
+        obj.add(power);
+        obj.add(Integer.valueOf(read));
+        notifyServer(new CommandObj(PAYGUNSIGHT, obj));
+    }
+
+    public void askToPay(PowerCard power) {
+        String format = "[0-1]";
+        String read = "";
+
+        while (!read.matches(format)) {
+            print("Do you want to pay or to discard your power up? [1: Yes, 0: No]");
+            read = reader.next();
+        }
+        notifyServer(new CommandObj(POWERUP, power));
+    }
+
 }

@@ -2,9 +2,6 @@ package powerup;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class PowerCardFactory {
-    private BufferedReader bufferedReader;
     private static final String POWERCARD_RESOURCES_ADDRESS = "src" + File.separator +
             "resources"+ File.separator +
             "cards" + File.separator +

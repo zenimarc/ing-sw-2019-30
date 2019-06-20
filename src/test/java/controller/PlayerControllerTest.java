@@ -5,9 +5,12 @@ import board.Cell;
 import board.NormalCell;
 import board.RegenerationCell;
 import board.billboard.Billboard;
+import client.ClientUpdateManager;
 import constants.Color;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import player.Player;
+import view.PlayerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,6 +109,11 @@ class PlayerControllerTest {
         control = new BoardController(players, myBoard, PlayerControllers);
         controller.setBoardController(control);
         controller3.setBoardController(control);
+    }
+
+    @Test
+    void powerUpTest(){
+
     }
 
   /*  @Test

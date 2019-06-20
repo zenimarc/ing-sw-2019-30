@@ -16,43 +16,37 @@ public abstract class Card {
     public Card() {
     }
 
-
+    /**
+     * This function convert a AmmoCard List into a Card one
+     * @param ammoCards cards to be converted
+     * @return a List of Card
+     */
     public static List<Card> ammoCardsToCards(List<AmmoCard> ammoCards){
-        List<Card> cards = new ArrayList<>();
-        for (AmmoCard ammoCard : ammoCards) {
-            cards.add(ammoCard);
-        }
-        return cards;
+        return new ArrayList<>(ammoCards);
     }
 
     /**
-     * Cast List of WeaponCard in List of Card
-     * @param weaponCards
-     * @return
+     * This function convert a WeaponCard List into a Card one
+     * @param weaponCards cards to be converted
+     * @return a List of Card
      */
     public static List<Card> weponCardsToCards(List<WeaponCard> weaponCards){
-        List<Card> cards = new ArrayList<>();
-        for (WeaponCard weaponCard : weaponCards) {
-            cards.add(weaponCard);
-        }
-        return cards;
+        return new ArrayList<>(weaponCards);
+
     }
 
     /**
-     * Cast List of PowerCard in List of Card
-     * @param powerCards
-     * @return
+     * This function convert a PowerCard List into a Card one
+     * @param powerCards cards to be converted
+     * @return a List of Card
      */
     public static List<Card> powerCardsToCards(List<PowerCard> powerCards){
-        List<Card> cards = new ArrayList<>();
-        for (PowerCard powerCard : powerCards) {
-            cards.add(powerCard);
-        }
-        return cards;
-
+        return new ArrayList<>(powerCards);
     }
 
-
+    /**
+     * This function is implemented by sons
+     */
     public String stringGUI() {
         return "";
     }

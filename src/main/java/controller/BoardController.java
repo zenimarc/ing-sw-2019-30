@@ -370,7 +370,7 @@ public class BoardController{
 
     private String givePoints(Player deadPlayer){
         StringBuilder sb = new StringBuilder();
-            Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(board.getSkulls()<=0);
+            Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(isFinalFrenzy());
             points.keySet().forEach(x-> {
                 x.addPoints(points.get(x));
                 sb.append(x);

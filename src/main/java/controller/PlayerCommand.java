@@ -25,6 +25,15 @@ public enum PlayerCommand {
     CHOOSE_ATTACK("Choose attack","..."),
     LOAD_WEAPONCARD("Load weapon","..."),
 
+    //Power ups
+    CHECKPOWERUP("check usable power ups", "..."),
+    PAYPOWERUP("check payable power up", "..."),
+    PAYGUNSIGHT("check if can pay Gunsight", "..."),
+    USE_GUNSIGHT("Use Gunsight power Up", "..."),
+    USE_TELEPORTER("Use Teleporter power Up", "..."),
+    USE_VENOMGRENADE("Use Venom Grenade power Up", "..."),
+    USE_KINETICRAY("Use Kinetic Ray power Up", "..."),
+
     //Controller to View
     PRINT_ERROR("Print error",""),
     CHOOSE_OPTIONAL_ATTACK("Choose optional attack",""),
