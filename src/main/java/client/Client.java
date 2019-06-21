@@ -18,4 +18,5 @@ public interface Client extends Remote {
     void receiveCMD(CommandObj cmd) throws RemoteException;
     void receiveObj(Object obj) throws RemoteException;
     void gameStarted() throws RemoteException;
+    void init();
 }
