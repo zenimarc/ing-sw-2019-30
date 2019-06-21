@@ -4,6 +4,7 @@ import board.Cell;
 import constants.Color;
 import weapon.WeaponCard;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ nel metodo update() degli observer va passato un object quindi se abbiamo bisogn
 che li contenga tutti, ecco il motivo di questa classe
 TODO: è giusto mettere questa classe in questo package o meglio di no? -Marco
  */
-public class CommandObj {
+public class CommandObj implements Serializable {
     private PlayerCommand cmd;
     private int weaponSelector;
     private Cell cell;
