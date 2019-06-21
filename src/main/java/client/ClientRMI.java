@@ -7,6 +7,7 @@ import server.GameServer;
 import server.Lobby;
 import view.PlayerBoardView;
 import view.PlayerView;
+import view.View;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -32,11 +33,9 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
     }
 
     public ClientRMI() throws RemoteException {
-        //new generic client RMI
     }
 
     public void connect(String host) throws RemoteException {
@@ -74,6 +73,13 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
 
     public void receiveCMD(CommandObj cmd) throws RemoteException{
         //TODO elaborate command and send to gui or send direclty to gui
+        switch (cmd.getCmd()){
+            case YOUR_TURN:
+                playerView.myTurn();
+                break;
+                default:
+                    break;
+        }
     }
 
     public void receiveObj(Object obj) throws RemoteException{

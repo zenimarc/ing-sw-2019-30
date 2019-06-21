@@ -20,7 +20,7 @@ import static controller.PlayerCommand.*;
 /**
  * 
  */
-public class PlayerView extends Observable implements Observer{
+public class PlayerView extends Observable implements Observer, View{
     private Player player;
     private Scanner reader = new Scanner(System.in);
 
@@ -32,6 +32,7 @@ public class PlayerView extends Observable implements Observer{
         this.addObserver(clientUpdateManager);
     }
 
+    @Override
     public void myTurn() {
         PlayerCommand command = choosePlayerAction();
         switch (command) {
@@ -131,6 +132,7 @@ public class PlayerView extends Observable implements Observer{
      * Ask player if he want load some weapon and notify that
      * @return
      */
+    @Override
     public boolean loadWeapon(){
 
         List<WeaponCard> notLoaded = player.getNotLoaded();
@@ -616,14 +618,13 @@ public class PlayerView extends Observable implements Observer{
         return sb.toString();
     }
 
-
-
     /**
      * Print default error
      */
     public void printError(){
         printError("");
     }
+
     /**
      * Print error in error format
      * @param mex error message
@@ -699,4 +700,18 @@ public class PlayerView extends Observable implements Observer{
         notifyServer(new CommandObj(POWERUP, power));
     }
 
+    @Override
+    public void giveError(String error) {
+        printError(error);
+    }
+
+    @Override
+    public void gameStart() {
+
+    }
+
+    @Override
+    public void giveMessage(String title, String mex) {
+        print(mex);
+    }
 }

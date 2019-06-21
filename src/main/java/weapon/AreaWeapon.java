@@ -20,15 +20,15 @@ import static controller.EnumTargetSet.*;
 
 public class AreaWeapon extends WeaponCard {
 
-    protected AreaWeapon(EnumWeapon weaponType){
+    public AreaWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
         this.name = weaponType.getName();
         this.cost = weaponType.getCost();
 
         switch (weaponType) {
             case FURNACE:
-                baseAttack = new SimpleAttack(VISIBLE_ROOM, BASE_ATTACK_NAME,1,0,-1);
-                alternativeAttack = new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,-1,1,1);
+                baseAttack = new SimpleAttack(VISIBLE_ROOM, BASE_ATTACK_NAME,0,0,1);
+                alternativeAttack = new DistanceAttack(VISIBLE,FURNACE_OPT1,1,0,1,1,1);
                 break;
             default:
                 //TODO ERROR
@@ -53,6 +53,26 @@ public class AreaWeapon extends WeaponCard {
         this.isLoaded = false;
     }
 
+    private boolean furnaceShoot(int typeAttack, Player shooter, List<Player> opponents){
+
+        Attack supportAttack = new SimpleAttack(SAME_CELL, SUPPORT_ATTACK, 1, 1, -1);
+        Attack supportBaseAttack = new SimpleAttack(SAME_ROOM, SUPPORT_ATTACK, 1,0,-1);
+
+        switch (typeAttack) {
+            case 0:
+                //baseAttack.attack(shooter,opponents);
+                supportBaseAttack.attack(shooter, opponents);
+                break;
+            case 1:
+                alternativeAttack.attack(shooter, opponents);
+                supportAttack.attack(shooter, opponents.subList(1, opponents.size()));
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
 
@@ -60,7 +80,8 @@ public class AreaWeapon extends WeaponCard {
 
         switch (weaponType) {
             case FURNACE:
-                result = alternativeSimpleShoot(typeAttack,shooter,opponents);
+                //TODO NON VA
+                result = furnaceShoot(typeAttack,shooter,opponents);
                 break;
             default:
                 result = false;

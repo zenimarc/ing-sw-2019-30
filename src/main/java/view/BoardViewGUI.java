@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 import java.util.TimerTask;
 
 //TODO far partire il gioco da CLI, gestire la reconnect
-public class BoardViewGUI extends Application implements View {
+public class BoardViewGUI extends Application {
     private float mainMenuWidth = 870;
     private float mainMenuHeight = 650;
 
@@ -236,8 +236,4 @@ for(int i = 0; i < 100; i++) {
 
     }
 
-    @Override
-    public void gameStart() {
-
-    }
 }
