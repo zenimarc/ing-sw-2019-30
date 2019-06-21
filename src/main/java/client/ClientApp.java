@@ -3,7 +3,7 @@ package client;
 import java.rmi.RemoteException;
 
 public class ClientApp {
-    private ClientRMI connection;
+    private Client connection;
 
     public ClientApp(){
         try {
