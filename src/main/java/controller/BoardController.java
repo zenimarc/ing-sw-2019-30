@@ -322,9 +322,7 @@ public class BoardController{
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
-            pc.getPlayerBoardView().drawPlayerboard();
-            getBoardViewToString();
-            pc.viewPrintError("********** TURN OF "+pc.getPlayer().getName()+" **********");
+            //TODO roba da togliere
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){

@@ -671,12 +671,12 @@ public class PlayerController extends Observable implements Observer{
     protected void myTurn(){
         modifyCell = new ArrayList<>();
 
-        if(player.getCell()==null) playerView.regPawn();
+        if(player.getCell()==null) cmdForView(new CommandObj(REG_CELL));
 
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
-            playerView.myTurn();
+            cmdForView(new CommandObj(YOUR_TURN));
         }
-        playerView.loadWeapon();
+        cmdForView(new CommandObj(LOAD_WEAPONCARD));
         numAction = 0;
     }
 
