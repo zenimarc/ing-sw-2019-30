@@ -1,9 +1,12 @@
 package client;
 
+import view.View;
+
 import java.rmi.RemoteException;
 
 public class ClientApp {
-    private Client connection;
+    private ClientRMI connection;
+    private View view;
 
     public ClientApp(){
         try {
