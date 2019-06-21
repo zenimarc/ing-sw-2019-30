@@ -211,7 +211,7 @@ public class Player extends Observable implements Cloneable, Serializable {
     /**
      * Remove weaponCard in position index
      * @param index index of card to remove
-     * @return
+     * @return null
      */
     public Card rmWeapon(int index){
         if(index < weapons.size()){
@@ -274,6 +274,11 @@ public class Player extends Observable implements Cloneable, Serializable {
         return this.playerBoard.getNumDamages();
     }
 
+    /**
+     * This function add a Power Card to player
+     * @param powerCard to be added
+     * @return if possible without discarding another one
+     */
     public boolean addPowerCard(PowerCard powerCard) {
         if (powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
             powerups.add(powerCard);
@@ -297,10 +302,17 @@ public class Player extends Observable implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * This function resets damages given to player
+     */
     public void resetDamage(){
         this.getPlayerBoard().clearDamages();
     }
 
+    /**
+     * This function return a string with some info about the player
+     * @return a string
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -310,9 +322,11 @@ public class Player extends Observable implements Cloneable, Serializable {
         sb.append(" -.-.-.-.-.-\n");
 
 //        sb.append("Position: " + pawn.getCell() + '\n');
-        sb.append("Ammo: " + mapToString(ammo));
+        sb.append("Ammo: ");
+        sb.append(mapToString(ammo));
         sb.append('\t');
-        sb.append("Points: " + points + '\n');
+        sb.append("Points: ");
+        sb.append(points + '\n');
 
         sb.append(weaponsToString("WeaponCards in my hand", true));
         sb.append(weaponsToString("Placed WeaponCards", false));
@@ -329,13 +343,20 @@ public class Player extends Observable implements Cloneable, Serializable {
         sb.append('\n');
 
         sb.append("-.-.-.-.- ");
-        sb.append("end " + nickname);
+        sb.append("end ");
+        sb.append(nickname);
         sb.append(" -.-.-.-.-\n");
 
         return sb.toString();
     }
 
-    public String weaponsToString(String name, boolean loaded){
+    /**
+     * This function
+     * @param name
+     * @param loaded
+     * @return
+     */
+    private String weaponsToString(String name, boolean loaded){
         StringBuilder sb =new StringBuilder();
         sb.append(name);
         sb.append(": ");
@@ -353,11 +374,22 @@ public class Player extends Observable implements Cloneable, Serializable {
         return sb.toString();
     }
 
+    /**
+     *
+     * @param power
+     * @return
+     */
     public boolean canPayPower(PowerCard power){
         return(ammo.get(power.getColor()) >= 1);
 
     }
 
+    /**
+     *
+     * @param power
+     * @param discard
+     * @return
+     */
     public boolean usePowerUp(PowerCard power, boolean discard){
         if(discard){
             powerups.remove(power);
@@ -366,6 +398,11 @@ public class Player extends Observable implements Cloneable, Serializable {
         else return(canPayPowerUp(power));
     }
 
+    /**
+     *
+     * @param power
+     * @return
+     */
     public boolean canPayPowerUp(PowerCard power){
         if(ammo.get(power.getColor()) >= 1){
             ammo.replace(power.getColor(), ammo.get(power.getColor()) -1);
@@ -373,6 +410,11 @@ public class Player extends Observable implements Cloneable, Serializable {
         else return false;
     }
 
+    /**
+     *
+     * @param color
+     * @return
+     */
     public boolean canPayGunsight(Color color){
         if(ammo.get(color) >= 1){
             ammo.replace(color, ammo.get(color)-1);
@@ -380,17 +422,18 @@ public class Player extends Observable implements Cloneable, Serializable {
         else return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public String printPlayerAmmo(){
-        StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("Ammo: [");
-        stringBuilder.append("R:" + ammo.get(RED) + ",");
-        stringBuilder.append("Y:"+ ammo.get(YELLOW) + ",");
-        stringBuilder.append("B:" + ammo.get(BLUE) + "]");
-
-        return stringBuilder.toString();
+        return "Ammo: [R:" + ammo.get(RED) + ",Y:"+ ammo.get(YELLOW) + ",B:" + ammo.get(BLUE) + "]";
     }
 
+    /**
+     *
+     */
     public void notifyEndAction(){
         setChanged();
         notifyObservers(this.clonePlayer());

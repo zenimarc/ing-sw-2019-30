@@ -18,6 +18,7 @@ public class CommandObj implements Serializable {
     private int weaponSelector;
     private Cell cell;
     private Object object;
+    private Object object2;
     private List<Object> objects;
 
     public CommandObj(PlayerCommand cmd, Cell cell, int sel){
@@ -35,6 +36,12 @@ public class CommandObj implements Serializable {
     public CommandObj(PlayerCommand cmd, Object o){
         this.cmd = cmd;
         this.object = o;
+    }
+
+    public CommandObj(PlayerCommand cmd, Object o, Object obj2){
+        this.cmd = cmd;
+        this.object = o;
+        this.object2 = obj2;
     }
 
     public CommandObj(PlayerCommand cmd, List<Object> objs){
@@ -61,5 +68,9 @@ public class CommandObj implements Serializable {
 
     public Object getObject() {
         return object;
+    }
+
+    public Object getObject2() {
+        return object2;
     }
 }

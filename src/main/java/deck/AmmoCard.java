@@ -61,6 +61,10 @@ public class AmmoCard extends Card {
         return stringBuilder.toString();
     }
 
+    /**
+     * This funciton is used to search a specific Image of AmmoCard for GUI purposes
+     * @return a string
+     */
     @Override
     public String stringGUI(){
         StringBuilder stringBuilder = new StringBuilder();

@@ -5,9 +5,11 @@ import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
 import board.billboard.Billboard;
+import constants.Color;
 import constants.Constants;
 import controller.CommandObj;
 import controller.PlayerCommand;
+import deck.Bullet;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -15,6 +17,7 @@ import weapon.WeaponCard;
 
 import java.util.*;
 
+import static constants.Color.convertToColor;
 import static controller.PlayerCommand.*;
 
 /**
@@ -62,15 +65,11 @@ public class PlayerView extends Observable implements Observer, View{
      * @return movement success
      */
     public boolean move(PlayerCommand playerCommand) {
-        String positionString;
-        while (true) {
+        String positionString = "";
+        while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");
             positionString = reader.next();
-
-            if(positionString.matches("[0-2],[0-3]")){
-                break;
             }
-        }
 
         Position newPosition = new Position(
                 Integer.valueOf(positionString.split(",")[0]),
@@ -155,11 +154,10 @@ public class PlayerView extends Observable implements Observer, View{
      */
     private boolean wantLoad(){
         String format = "[0-1]";
-        String read;
-        while(true) {
+        String read = "";
+        while(!read.matches(format)) {
             print("Do you want to load your weapon? [1: Yes, 0: No] ");
             read = reader.next();
-            if(read.matches(format)) break;
         }
         return read.equals("0");
     }
@@ -170,12 +168,11 @@ public class PlayerView extends Observable implements Observer, View{
      */
     private int chooseWeaponToLoad(){
         String format = "[0-" + player.getNotLoaded().size() + "]";
-        String read;
-        while (true) {
-            print("What weapon do you want to load?\n");
+        String read = "";
+        while (!read.matches(format)) {
+            print("Which weapon do you want to load?\n");
             print(stringWeaponFromList(player.getNotLoaded(), true));
             read = reader.next();
-            if (read.matches(format)) break;
         }
 
         return Integer.valueOf(read)-1;
@@ -186,7 +183,7 @@ public class PlayerView extends Observable implements Observer, View{
      * @param possibleTarget possible target list
      * @return player who can hit
      */
-    private Player chooseTarget(List<Player> possibleTarget){
+    public Player chooseTarget(List<Player> possibleTarget){
         if(possibleTarget.isEmpty()){
             printError("There are no possible targets");
             return null;
@@ -271,14 +268,14 @@ public class PlayerView extends Observable implements Observer, View{
 
         while (true) {
             StringBuilder sb = new StringBuilder();
-            sb.append("Set your RegenerationCell. Your PowerUpCard are:\n");
+            sb.append("Set your RegenerationCell. Your PowerUpCards are:\n");
             for (PowerCard pc : powerUps) {
                 sb.append(powerUps.indexOf(pc));
                 sb.append(") ");
                 sb.append(pc);
                 sb.append('\n');
             }
-            sb.append("What RegenerationCell color you want? (Enter number)[0] ");
+            sb.append("In which Regeneration cell do you want to go? (Enter number)[0] ");
 
             print(sb.toString());
 
@@ -293,7 +290,7 @@ public class PlayerView extends Observable implements Observer, View{
      */
     private String stringForPlayerAction(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Possible Action: \n");
+        sb.append("Possible Actions: \n");
         for(PlayerCommand action : PlayerCommand.PlayerAction){
             sb.append(action.ordinal());
             sb.append(") ");
@@ -314,7 +311,7 @@ public class PlayerView extends Observable implements Observer, View{
 
         while(true) {
             print(stringForPlayerAction());
-            print("What do you want?");
+            print("What do you want to do?");
             read =reader.next();
             slt = read.matches(formatString) ? Integer.valueOf(read) : PlayerCommand.PlayerAction.size();
             if(slt<PlayerCommand.PlayerAction.size()){
@@ -583,7 +580,7 @@ public class PlayerView extends Observable implements Observer, View{
     }
 
     public Cell chooseCellToAttack(Billboard billboard, List<Cell> cells){
-        String mex = stringForChooseCell("This is an AreaAttack.", "Which do you want shoot? ", billboard, cells);
+        String mex = stringForChooseCell("This is an AreaAttack.", "Where do you want shoot? ", billboard, cells);
         String format = "[1-"+cells.size()+"]";
         String read;
         while (true) {
@@ -658,6 +655,17 @@ public class PlayerView extends Observable implements Observer, View{
         notifyObservers(cmd);
     }
 
+    public boolean askForPowerUp(ArrayList<PowerCard> powerCards){
+        String format = "[0-1]";
+        String read = "";
+        while (!read.matches(format)) {
+            print("Do you want to use a Power up? [1: Yes, 0: No] ");
+            print(choosePowerUp(powerCards));
+            read = reader.next();
+        }
+        return Boolean.valueOf(read);
+    }
+
     public boolean usePowerUp(ArrayList<PowerCard> powerCards) {
         if (powerCards.isEmpty()) {
             printError("You have no power ups, so you can't use one");
@@ -671,7 +679,9 @@ public class PlayerView extends Observable implements Observer, View{
             print(choosePowerUp(powerCards));
             read = reader.next();
         }
-        notifyServer(new CommandObj(POWERUP, player.getPowerups().get(Integer.valueOf(read)-1)));
+        if(powerCards.get(0).getPowerUp() == PowerUp.GUNSIGHT)
+            notifyServer(new CommandObj(PAYGUNSIGHT, player.getPowerups().get(Integer.valueOf(read)-1)));
+        else notifyServer(new CommandObj(PAYPOWERUP, player.getPowerups().get(Integer.valueOf(read)-1)));
         return true;
     }
 
@@ -683,10 +693,7 @@ public class PlayerView extends Observable implements Observer, View{
             print("Which cube do you want to use to pay? [0: Red, 1: Yellow, 2: Blue]");
             read = reader.next();
         }
-        ArrayList<Object>obj = new ArrayList<Object>();
-        obj.add(power);
-        obj.add(Integer.valueOf(read));
-        notifyServer(new CommandObj(PAYGUNSIGHT, obj));
+        notifyServer(new CommandObj(GUNSIGHTPAID, power, convertToColor(Integer.valueOf(read))));
     }
 
     public void askToPay(PowerCard power) {
@@ -694,10 +701,41 @@ public class PlayerView extends Observable implements Observer, View{
         String read = "";
 
         while (!read.matches(format)) {
-            print("Do you want to pay or to discard your power up? [1: Yes, 0: No]");
+            print("Do you want to pay or to discard your power up? [1: Discard, 0: Pay]");
             read = reader.next();
         }
-        notifyServer(new CommandObj(POWERUP, power));
+        notifyServer(new CommandObj(PAIDPOWERUP, power, Boolean.valueOf(read)));
+    }
+
+    public boolean moveTeleporter() {
+        String positionString = "";
+        while (!positionString.matches("[0-2],[0-3]")) {
+            print("Where do you want to move?");
+            positionString = reader.next();
+        }
+
+        Position newPosition = new Position(
+                Integer.valueOf(positionString.split(",")[0]),
+                Integer.valueOf(positionString.split(",")[1]));
+
+        notifyServer(new CommandObj(TELEPORTER, newPosition));
+        return true;
+    }
+
+    public boolean moveKineticray(Player player, List<Position> cells) {
+        String positionString = "";
+        while (!positionString.matches("[0-2],[0-3]")) {
+            print("Where do you want to move?");
+            positionString = reader.next();
+            Position newPosition = new Position(
+                    Integer.valueOf(positionString.split(",")[0]),
+                    Integer.valueOf(positionString.split(",")[1]));
+            if (cells.contains(newPosition)) {
+                notifyServer(new CommandObj(KINETICRAY, player, newPosition));
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

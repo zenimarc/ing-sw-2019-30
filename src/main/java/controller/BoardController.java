@@ -291,10 +291,24 @@ public class BoardController{
     }
 
     /**
-     * Set RegenerationCell of a player hasn't pawn in billboard
+     * This function returns a subset of Positions of Cells from billboard where the player can put another player using
+     * Kinetic ray power up
+     * @param playerCell of other player
+     * @return a list
+     */
+    protected List<Position> getCellsKineticRay(Cell playerCell){
+        List<Cell> cells = board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().cellDistance(playerCell, x) <= 2).collect(Collectors.toList());
+        ArrayList<Position> positions = new ArrayList<>();
+        for(Cell cell: cells)
+            positions.add(board.getBillboard().getCellPosition(cell));
+        return positions;
+        }
+
+    /**
+     * Set RegenerationCell of a player which pawn was removed from billboard
      * @param player Player out of game
      * @param color Color of Regeneration Cell
-     * @return
+     * @return true if it is valid, else false
      */
     public boolean setRegenerationCell(Player player, Color color){
         Cell regenerationCell = board.getBillboard().getRegenerationCell()
