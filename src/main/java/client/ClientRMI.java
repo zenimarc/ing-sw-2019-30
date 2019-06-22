@@ -191,7 +191,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     /**
      * this function asks to the server for the player controller of this client (Player)
      * @return the controller associated to this client (Player)
-     * @throws RemoteException
+     * @throws RemoteException error
      */
     public PlayerController getPlayerController() throws RemoteException{
         return gameServer.getPlayerController(this);
@@ -233,10 +233,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
     
     private void clientLog(String mex){
-        StringBuilder sb = new StringBuilder();
-        sb.append("ClRMI: ");
-        sb.append(mex);
-        System.out.println(sb.toString());
+        System.out.println("ClRMI: " + mex);
     }
 
     public static void main(String[] args) {

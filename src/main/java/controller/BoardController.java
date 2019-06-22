@@ -29,11 +29,6 @@ public class BoardController{
      * Default constructor
      */
 
-    public BoardController() {
-        this.listOfPlayers = new ArrayList<>();
-        this.playerControllers = new ArrayList<>();
-    }
-
     public BoardController(List<Player> players, Board board) {
         this(players, 8);
         this.board = board;
@@ -193,8 +188,7 @@ public class BoardController{
         //If there are not opponents return empty list
         if(this.listOfPlayers.size()==1) return Collections.emptyList();
 
-        List<Player> opponents = new ArrayList<>();
-        opponents.addAll(this.listOfPlayers);
+        List<Player> opponents = new ArrayList<>(this.listOfPlayers);
         opponents.remove(playerWhoPlay);
 
         switch (targetType) {

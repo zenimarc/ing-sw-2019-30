@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import player.Pawn;
 import powerup.PowerCard;
 import player.Player;
+import powerup.PowerUp;
 import view.PlayerBoardView;
 import view.PlayerView;
 import weapon.AreaWeapon;
@@ -29,6 +30,7 @@ import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
 import static powerup.PowerUp.VENOMGRENADE;
 
+//TODO gestire meglio i power up nel caso si spari e si voglia usare un power up
 /**
  * PlayerController is used to control if a player can do certain actions
  */
@@ -102,7 +104,7 @@ public class PlayerController extends Observable implements Observer{
                 else playerView.usePowerUp(cards);
                 break;
             case CHECKPOWERUP:
-                playerView.usePowerUp(getPotentialPowerUps(cmdObj));
+                cmdForView(new CommandObj(CHECKPOWERUP, getPotentialPowerUps(cmdObj)));
                 break;
             case PAYGUNSIGHT:
                 playerView.askPayGunsight(payCubeGunsight(), (PowerCard)cmdObj.getObject());
@@ -128,10 +130,10 @@ public class PlayerController extends Observable implements Observer{
                 break;
             case USE_TELEPORTER:
                 playerView.moveTeleporter();
-                notifyObservers();
                 break;
             case TELEPORTER:
                 player.setPawnCell((Cell)cmdObj.getObject());
+                notifyObservers();
                 break;
             case USE_KINETICRAY:
                 playerView.moveKineticray(playerView.chooseTarget(boardController.getListOfPlayers()), boardController.getCellsKineticRay(player.getCell()));
@@ -147,10 +149,12 @@ public class PlayerController extends Observable implements Observer{
             case VENOMGRENADE:
                 ((Player)cmdObj.getObject()).addMark(player);
                 notifyObservers();
+                receiveCmd(new CommandObj(ASKFORPOWERUP, VENOMGRENADE));
                 break;
             case USE_GUNSIGHT:
                 ((Player)cmdObj.getObject()).addDamage(player);
                 notifyObservers();
+                receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
                 break;
             case END_TURN:
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
@@ -385,6 +389,11 @@ public class PlayerController extends Observable implements Observer{
         }
 
         if(isGoodAttack) {
+            receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
+            /*chiederà ad altri giocatori che possono se usare la venomgranade
+                for()
+            boardController.getPlayerController().receiveCmd((new CommandObj(ASKFORPOWERUP, VENOMGRENADE)));
+             */
             numAction++;
             player.notifyEndAction();
         }else {
@@ -396,7 +405,6 @@ public class PlayerController extends Observable implements Observer{
      * This function asks a shooter which optional attack wants to use and targets he wants to hit.
      * Then he shoots using base attack and selected optional attack
      * @param weaponCard weaponCard to use
-     * @return true if min one opponent was hit
      */
     private void askWhichOptionalAttack(WeaponCard weaponCard) {
         //List<Integer> indexes = playerView.chooseOptionalAttack(weaponCard, true);
@@ -667,7 +675,8 @@ public class PlayerController extends Observable implements Observer{
                     if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 1, 0})))
                         powers.add(power);
                 }
-                else powers.add(power);
+                else if(power.getPowerUp() == PowerUp.TELEPORTER || power.getPowerUp() == PowerUp.KINETICRAY)
+                    powers.add(power);
 
             }
         }

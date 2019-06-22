@@ -197,7 +197,6 @@ public class PlayerBoardView implements Observer {
      * @return a string
      */
     private String printMarks(){
-        String textToView;
         int totalSpace;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.getProperty("line.separator"));
@@ -313,7 +312,7 @@ public class PlayerBoardView implements Observer {
      * @param size number of characters the new string will have
      * @return string shortened
      */
-    public String stringTrunker(String string, int size){
+    private String stringTrunker(String string, int size){
         StringBuilder stringBuilder = new StringBuilder();
         if (string.length() > size)
             return string.substring(0, size);

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
-    private static final int MINPLAYERS = 2;
+    private static final int MINPLAYERS = 1;
     private static final int MAXPLAYERS = 3;
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
     private int port;
@@ -145,11 +145,11 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     }
 
     /**
-     * This function validate nickname
+     * This function validates a nickname
      * valid chars: a-z, A-Z, 0-9, '.' '_' '-',
      * min lenght: 3, max length: 15
-     * @param nick
-     * @return
+     * @param nick to be validated
+     * @return true if it is fine, else false
      */
     private boolean validateNickname(String nick){
         Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);

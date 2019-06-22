@@ -1,10 +1,13 @@
 package view;
 
+import client.Client;
+import client.ClientApp;
 import client.ClientRMI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -21,7 +24,7 @@ import java.rmi.RemoteException;
 import java.util.TimerTask;
 
 //TODO far partire il gioco da CLI, gestire la reconnect
-public class BoardViewGUI extends Application {
+public class BoardViewGUI extends Application{
     private float mainMenuWidth = 870;
     private float mainMenuHeight = 650;
 
@@ -55,34 +58,26 @@ public class BoardViewGUI extends Application {
 
         Button CLI = setButtons("CLI", mainMenuWidth/2-30,mainMenuHeight/2+100, true);
         Button GUI = setButtons("GUI", mainMenuWidth/2+30, mainMenuHeight/2+100, true);
-
         Button RMI = setButtons("RMI", mainMenuWidth/2-30, mainMenuHeight/2+100, false);
         Button Socket = setButtons("Socket", mainMenuWidth/2+30, mainMenuHeight/2+100, false);
-
         Button confirm = setButtons("Confirm", 0, 0, false);
         Button back = setButtons("Return", mainMenuWidth / 2 + 65, mainMenuHeight / 2 + 138, false);
 
-        TextField prova = new TextField();
         GridPane Name = askName();
-
-        ProgressIndicator test = createBar();
-        test.setVisible(false);
+        TextField inputName = new TextField();
+        ProgressIndicator progress = createBar();
+        progress.setVisible(false);
+        Label wait = new Label("Waiting for the game to begin");
+        wait.setStyle("-fx-font-weight: bold");
+        wait.setLayoutX(mainMenuWidth/2-60);
+        wait.setLayoutY(mainMenuHeight/2+80);
+        wait.setVisible(false);
+        //Button thread = new Button();
 
         Name.add(confirm, 1, 2);
         Name.add(back, 2, 2);
-
-
-        root.getChildren().add(RMI);
-        root.getChildren().add(Socket);
-        root.getChildren().add(CLI);
-        root.getChildren().add(GUI);
-        root.getChildren().add(Name);
-        root.getChildren().add(back);
-        root.getChildren().add(test);
-
-
-
-        Name.add(prova, 1, 1);
+        Name.add(inputName, 1, 1);
+        root.getChildren().addAll(RMI, Socket, CLI, GUI, Name, back, progress, wait);
 
         CLI.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -131,23 +126,28 @@ public class BoardViewGUI extends Application {
         confirm.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String name = prova.getText();
+                String name = inputName.getText();
 
 
                     if(isRMI[0] = true){
                         try {
-                            ClientRMI clientRMI = new ClientRMI();
+                            ClientApp client = new ClientApp();
+                            ClientRMI clientRMI = new ClientRMI(client);
                             clientRMI.connect("127.0.0.1");
 
                             if(clientRMI.register(name) /*|| clientRMI.reconnect(name, )*/){
                                 Name.setVisible(false);
                                 confirm.setVisible(false);
+                                back.setVisible(false);
                                 Name.getChildren().get(1).setVisible(false);
-                                test.setVisible(true);
-
-                                Platform.exit();
+                                progress.setVisible(true);
+                                wait.setVisible(true);
+                                //gameStart(clientRMI);
+                               // setOnAction(thread, clientRMI);
+                               // thread.fire();
                             }
                             else Name.getChildren().get(1).setVisible(true);
+
                         }
                         catch (RemoteException e) {
                             e.fillInStackTrace();
@@ -156,6 +156,8 @@ public class BoardViewGUI extends Application {
                     //else parte socket
                 }
         });
+
+
 
         back.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -170,6 +172,19 @@ public class BoardViewGUI extends Application {
 
         return root;
     }
+
+   /* private void setOnAction(Button thread, ClientRMI clientRMI) {
+        thread.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                while(true) {
+                        if(clientRMI.hasStarted())
+                            Platform.exit();
+
+                    }
+                }
+        });
+    }*/
 
     private BackgroundImage menuBackground() {
         try {
@@ -214,26 +229,28 @@ public class BoardViewGUI extends Application {
 
     private ProgressBar createBar(){
         ProgressBar progress = new ProgressBar(0);
-for(int i = 0; i < 100; i++) {
-    progress.setProgress(i++);
-    System.out.print(i);
-}
-
-        /*final Slider slider = new Slider();
-        slider.setMin(0);
-        slider.setMax(50);
-        slider.valueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> ov,
-                                Number old_val, Number new_val) {
-                progress.setProgress(new_val.doubleValue()/50);
-
-            }
-        });*/
-
-        progress.setLayoutX(mainMenuWidth/2-30);
+        progress.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+        progress.setPrefWidth(200);
+        progress.setPrefHeight(20);
+        progress.setLayoutX(mainMenuWidth/2-80);
         progress.setLayoutY(mainMenuHeight/2+100);
         return progress;
 
     }
+
+    /*private void gameStart(Client client) {
+        Task task = new Task<Void>() {
+            @Override
+            protected Void call() {
+                while(true)
+                    if (client.hasStarted(client))
+                        return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+        Platform.exit();
+    }*/
 
 }
