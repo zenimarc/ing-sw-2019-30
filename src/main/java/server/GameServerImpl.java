@@ -4,7 +4,6 @@ import board.Board;
 import client.Client;
 import controller.BoardController;
 import controller.CommandObj;
-import controller.PlayerCommand;
 import controller.PlayerController;
 import player.Player;
 
@@ -17,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
-    private static final long SECONDS_BEFORE_START_GAME = 5;
+    private static final long SECONDS_BEFORE_START_GAME = 1;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
     private transient ArrayList<ClientInfo> clients;
     private transient ArrayList<Client> offlineClients;
@@ -113,10 +112,14 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 players.add(onePlayer);
             }
             boardController = new BoardController(players, 8);
-            this.serverUpdateManager = new ServerUpdateManager(this, boardController);
+            //Create ServerUpdate Manager
+            serverUpdateManager = new ServerUpdateManager(this, boardController);
+            //Add Observer to Board and Players
+            boardController.getBoard().addObserver(serverUpdateManager);
+            players.forEach(x -> x.addObserver(serverUpdateManager));
+            //Start Game
             notifyAllGameStarted();
             boardController.firstPlay();
-            //clients.get(0).getClient().receiveCMD(new CommandObj(PlayerCommand.YOUR_TURN));
             turnHandler = new TurnHandler(this);
             turnHandler.start();
         }catch (RemoteException re){
@@ -156,14 +159,13 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     /**
-     * this function send to all clients a cloned Player who has changed status and need to be updated in the
-     * view of each client
-     * @param playerCloned player cloned object coming from server
+     * this function send to all clients a command object
+     * @param commandObj command object coming from server
      */
-    void sendToAll(Player playerCloned){
+    void sendToAll(CommandObj commandObj){
         for (Client client : getActiveClients()) {
             try {
-                client.receiveObj(playerCloned);
+                client.receiveCMD(commandObj);
             }catch (RemoteException re){
                 re.fillInStackTrace();
             }
