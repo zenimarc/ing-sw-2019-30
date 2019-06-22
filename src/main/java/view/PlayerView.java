@@ -5,11 +5,9 @@ import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
 import board.billboard.Billboard;
-import constants.Color;
 import constants.Constants;
 import controller.CommandObj;
-import controller.PlayerCommand;
-import deck.Bullet;
+import controller.EnumCommand;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -18,12 +16,12 @@ import weapon.WeaponCard;
 import java.util.*;
 
 import static constants.Color.convertToColor;
-import static controller.PlayerCommand.*;
+import static controller.EnumCommand.*;
 
 /**
  * 
  */
-public class PlayerView extends Observable implements Observer{
+public class PlayerView extends Observable{
     private Player player;
     private Scanner reader = new Scanner(System.in);
 
@@ -36,13 +34,13 @@ public class PlayerView extends Observable implements Observer{
     }
 
     public void myTurn() {
-        PlayerCommand command = choosePlayerAction();
+        EnumCommand command = choosePlayerAction();
         switch (command) {
             case MOVE:
-                move(PlayerCommand.MOVE);
+                move(EnumCommand.MOVE);
                 break;
             case GRAB:
-                move(PlayerCommand.GRAB_MOVE);
+                move(EnumCommand.GRAB_MOVE);
                 break;
             case SHOOT:
                 shoot();
@@ -51,19 +49,23 @@ public class PlayerView extends Observable implements Observer{
                 notifyServer(new CommandObj(CHECKPOWERUP, POWERUP));
                 break;
             case END_TURN:
-                notifyServer(new CommandObj(PlayerCommand.END_TURN));
+                notifyServer(new CommandObj(EnumCommand.END_TURN));
                 break;
             default:
                 break;
         }
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     /**
      * This ask new position and notify MOVE action
-     * @param playerCommand type of movement
+     * @param enumCommand type of movement
      * @return movement success
      */
-    public boolean move(PlayerCommand playerCommand) {
+    public boolean move(EnumCommand enumCommand) {
         String positionString = "";
         while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");
@@ -74,7 +76,7 @@ public class PlayerView extends Observable implements Observer{
                 Integer.valueOf(positionString.split(",")[0]),
                 Integer.valueOf(positionString.split(",")[1]));
 
-        notifyServer(new CommandObj(playerCommand, newPosition));
+        notifyServer(new CommandObj(enumCommand, newPosition));
         return true;
     }
 
@@ -94,7 +96,7 @@ public class PlayerView extends Observable implements Observer{
      */
     private boolean grabWeapon(){
         int drawIndex = chooseWeaponCard();
-        notifyServer(new CommandObj(PlayerCommand.GRAB_WEAPON, drawIndex));
+        notifyServer(new CommandObj(EnumCommand.GRAB_WEAPON, drawIndex));
         return true;
     }
 
@@ -103,7 +105,7 @@ public class PlayerView extends Observable implements Observer{
      * @return
      */
     private boolean grabAmmo(){
-        notifyServer(new CommandObj(PlayerCommand.GRAB_AMMO, player.getCell(),0));
+        notifyServer(new CommandObj(EnumCommand.GRAB_AMMO, player.getCell(),0));
         return false;
     }
 
@@ -121,7 +123,7 @@ public class PlayerView extends Observable implements Observer{
 
         index = chooseTypeAttack(weaponCard);
 
-        notifyServer(new CommandObj(PlayerCommand.SHOOT, weaponCard, index));
+        notifyServer(new CommandObj(EnumCommand.SHOOT, weaponCard, index));
 
         return true;
     }
@@ -139,7 +141,7 @@ public class PlayerView extends Observable implements Observer{
             int index = chooseWeaponToLoad();
             if(index==-1) return true;
 
-           notifyServer(new CommandObj(PlayerCommand.LOAD_WEAPONCARD, player.getNotLoaded().get(index)));
+           notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, player.getNotLoaded().get(index)));
 
             loadWeapon();
         }
@@ -227,9 +229,9 @@ public class PlayerView extends Observable implements Observer{
         return targets;
     }
 
-    public boolean regPawn(){
+    public boolean regeneratesPlayer(){
         int index = choosePowerUp4Regeneration();
-        notifyServer(new CommandObj(PlayerCommand.REG_CELL, player.getPowerups().get(index)));
+        notifyServer(new CommandObj(EnumCommand.REG_CELL, player.getPowerups().get(index)));
         return true;
     }
 
@@ -289,7 +291,7 @@ public class PlayerView extends Observable implements Observer{
     private String stringForPlayerAction(){
         StringBuilder sb = new StringBuilder();
         sb.append("Possible Actions: \n");
-        for(PlayerCommand action : PlayerCommand.PlayerAction){
+        for(EnumCommand action : EnumCommand.PlayerAction){
             sb.append(action.ordinal());
             sb.append(") ");
             sb.append(action.getName());
@@ -302,18 +304,18 @@ public class PlayerView extends Observable implements Observer{
      * Ask Player wich action want to do
      * @return Player command
      */
-    private PlayerCommand choosePlayerAction(){
+    private EnumCommand choosePlayerAction(){
         int slt;
         String read;
-        String formatString = "[0-"+PlayerCommand.PlayerAction.size()+"]";
+        String formatString = "[0-"+ EnumCommand.PlayerAction.size()+"]";
 
         while(true) {
             print(stringForPlayerAction());
             print("What do you want to do?");
             read =reader.next();
-            slt = read.matches(formatString) ? Integer.valueOf(read) : PlayerCommand.PlayerAction.size();
-            if(slt<PlayerCommand.PlayerAction.size()){
-                return PlayerCommand.values()[slt];
+            slt = read.matches(formatString) ? Integer.valueOf(read) : EnumCommand.PlayerAction.size();
+            if(slt< EnumCommand.PlayerAction.size()){
+                return EnumCommand.values()[slt];
             }
         }
     }
@@ -663,13 +665,6 @@ public class PlayerView extends Observable implements Observer{
         sb.append(sbStar.reverse().toString());
 
         return sb.toString();
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if(o.getClass()==Player.class && arg.getClass()==Player.class){
-            this.player = (Player) arg;
-        }
     }
 
     private void notifyServer(CommandObj cmd){

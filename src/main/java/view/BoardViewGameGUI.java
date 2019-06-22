@@ -6,7 +6,7 @@ import board.RegenerationCell;
 import board.billboard.BillboardGenerator;
 import client.Client;
 import controller.BoardController;
-import controller.PlayerCommand;
+import controller.EnumCommand;
 import controller.PlayerController;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static controller.PlayerCommand.*;
+import static controller.EnumCommand.*;
 import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
 import static powerup.PowerUp.KINETICRAY;
@@ -46,7 +46,7 @@ public class BoardViewGameGUI extends Application {
     private ArrayList<Client> clients;
     private ArrayList<Player> players = new ArrayList<>();
     private Player player = new Player("Marco");
-    private PlayerCommand command = CHOOSE_ACTION;
+    private EnumCommand command = CHOOSE_ACTION;
     private PlayerController controller;
     private BoardController boardController;
     private int random;
@@ -688,7 +688,7 @@ public class BoardViewGameGUI extends Application {
         return buttons;
     }
 
-    private Button activateButton(String string, PlayerCommand command, int transX, int transY, Pane map, int size){
+    private Button activateButton(String string, EnumCommand command, int transX, int transY, Pane map, int size){
         Button button = createButton(" ", 40, 10, transX, transY);
         button.rotateProperty().setValue(90);
         return button;
@@ -704,7 +704,7 @@ public class BoardViewGameGUI extends Application {
         return i;
     }
 
-    private void illuminateCells(Pane map, PlayerCommand order, int x, int y, int i, int ammo, int steps){
+    private void illuminateCells(Pane map, EnumCommand order, int x, int y, int i, int ammo, int steps){
         if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), steps)) {
             illuminateCell((Button) map.getChildren().get(ammo+x+y*3-i), true);
         }
@@ -830,7 +830,7 @@ public class BoardViewGameGUI extends Application {
     }
 
     //azioni che giocatore può fare
-    private void setActionPlayer(Button action, PlayerCommand order, Pane map, int ammoSize, ArrayList<Button> buttons){
+    private void setActionPlayer(Button action, EnumCommand order, Pane map, int ammoSize, ArrayList<Button> buttons){
         action.setOpacity(1);
 
         action.setOnAction(new EventHandler<ActionEvent>() {
@@ -1025,7 +1025,7 @@ public class BoardViewGameGUI extends Application {
     }
 
 
-    private int setSteps(int steps, PlayerCommand order){
+    private int setSteps(int steps, EnumCommand order){
         switch(order){
             case MOVE:
                 steps = 3;

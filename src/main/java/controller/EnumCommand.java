@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * 
  */
-public enum PlayerCommand {
+public enum EnumCommand {
     MOVE("Move", "Move your pawn"),
     GRAB("Grab", "..."),
     SHOOT("Shoot", "..."),
@@ -46,6 +46,8 @@ public enum PlayerCommand {
     YOUR_TURN("Play!","It's your turn"),
     NOT_YOUR_TURN("Not your turn","Wait a moment..."),
     SHOW_BOARD("Show bord",""),
+    UPDATE_PLAYER("Update Player","Modify local Player"),
+    UPDATE_BOARD("Update Board","Modify local Board"),
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),
@@ -53,7 +55,7 @@ public enum PlayerCommand {
 
     ;
 
-    public static final Set<PlayerCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+    public static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
 
     private String name;
     private String description;
@@ -61,7 +63,7 @@ public enum PlayerCommand {
     /**
      * Constructor
      */
-    PlayerCommand(String name, String desc){
+    EnumCommand(String name, String desc){
         this.name = name;
         this.description = desc;
     }
@@ -82,8 +84,8 @@ public enum PlayerCommand {
         return description;
     }
 
-    public static PlayerCommand getPlayerActionFromIndex(int i){
-        for(PlayerCommand command : PlayerCommand.PlayerAction){
+    public static EnumCommand getPlayerActionFromIndex(int i){
+        for(EnumCommand command : EnumCommand.PlayerAction){
             if(i==command.ordinal())
                 return command;
         }

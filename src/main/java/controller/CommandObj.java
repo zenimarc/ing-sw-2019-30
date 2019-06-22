@@ -1,7 +1,6 @@
 package controller;
 
 import board.Cell;
-import constants.Color;
 import weapon.WeaponCard;
 
 import java.io.Serializable;
@@ -14,42 +13,42 @@ che li contenga tutti, ecco il motivo di questa classe
 TODO: è giusto mettere questa classe in questo package o meglio di no? -Marco
  */
 public class CommandObj implements Serializable {
-    private PlayerCommand cmd;
+    private EnumCommand cmd;
     private int weaponSelector;
     private Cell cell;
     private Object object;
     private Object object2;
     private List<Object> objects;
 
-    public CommandObj(PlayerCommand cmd, Cell cell, int sel){
+    public CommandObj(EnumCommand cmd, Cell cell, int sel){
         this.cmd = cmd;
         this.weaponSelector = sel;
         this.cell = cell;
     }
 
-    public CommandObj(PlayerCommand cmd, WeaponCard weaponCard, int index){
+    public CommandObj(EnumCommand cmd, WeaponCard weaponCard, int index){
         this.cmd = cmd;
         this.object = weaponCard;
         this.weaponSelector = index;
     }
 
-    public CommandObj(PlayerCommand cmd, Object o){
+    public CommandObj(EnumCommand cmd, Object o){
         this.cmd = cmd;
         this.object = o;
     }
 
-    public CommandObj(PlayerCommand cmd, Object o, Object obj2){
+    public CommandObj(EnumCommand cmd, Object o, Object obj2){
         this.cmd = cmd;
         this.object = o;
         this.object2 = obj2;
     }
 
-    public CommandObj(PlayerCommand cmd, List<Object> objs){
+    public CommandObj(EnumCommand cmd, List<Object> objs){
         this.cmd = cmd;
         this.objects = objs;
     }
 
-    public CommandObj(PlayerCommand cmd){
+    public CommandObj(EnumCommand cmd){
         this.cmd = cmd;
     }
 
@@ -62,7 +61,7 @@ public class CommandObj implements Serializable {
         return cell;
     }
 
-    public PlayerCommand getCmd() {
+    public EnumCommand getCmd() {
         return cmd;
     }
 
