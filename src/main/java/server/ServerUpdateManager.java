@@ -1,7 +1,9 @@
 package server;
 
+import board.Board;
 import controller.BoardController;
 import controller.CommandObj;
+import controller.EnumCommand;
 import controller.PlayerController;
 import player.Player;
 import java.rmi.RemoteException;
@@ -31,10 +33,14 @@ public class ServerUpdateManager implements Observer {
     public void update(Observable observable, Object obj) {
         //In this case the update come from a player, so send to all client the player cloned to get infos
         if (observable.getClass().equals(Player.class)) {
-            gameServer.sendToAll((Player) obj);
-
+            gameServer.sendToAll(new CommandObj(EnumCommand.UPDATE_PLAYER, obj));
         }
-        //in this case the update come from a PlayerController so, the object is a PlayerCommand
+
+        if(observable.getClass().equals(Board.class)){
+            gameServer.sendToAll(new CommandObj(EnumCommand.UPDATE_BOARD, obj));
+        }
+
+        //in this case the update come from a PlayerController so, the object is a EnumCommand
         if (observable.getClass().equals(PlayerController.class)){
             try{
                 gameServer.sendCMD((CommandObj)obj, ((PlayerController) observable).getPlayer());
