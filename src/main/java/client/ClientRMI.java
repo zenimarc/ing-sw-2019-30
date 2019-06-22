@@ -1,12 +1,11 @@
 package client;
 
+import board.Board;
 import controller.CommandObj;
 import controller.PlayerController;
 import player.Player;
 import server.GameServer;
 import server.Lobby;
-import view.PlayerBoardView;
-import view.PlayerView;
 import view.View;
 
 import java.rmi.NotBoundException;
@@ -25,18 +24,28 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     private transient Lobby lobby;
     private transient GameServer gameServer;
     private UUID userToken;
-    private PlayerView playerView;
-    private PlayerBoardView playerBoardView;
     private Player player;
-    private ClientUpdateManager clientUpdateManager;
+    private View view;
+    private ClientApp clientApp;
 
 
     @Override
     public void update(Observable o, Object arg) {
+        if(arg.getClass().equals(CommandObj.class)) {
+            try {
+                sendCMD((CommandObj) arg);
+            } catch (RemoteException re) {
+                view.giveError(re.getMessage());
+            }
+        }
     }
 
-    public ClientRMI() throws RemoteException {
+    public ClientRMI(ClientApp clientApp) throws RemoteException{
+        this.clientApp = clientApp;
     }
+
+    @Deprecated
+    public ClientRMI() throws RemoteException{}
 
     public void connect(String host) throws RemoteException {
         connect(host, 1099);
@@ -71,14 +80,17 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         return true;
     }
 
-    public void receiveCMD(CommandObj cmd) throws RemoteException{
+    public void receiveCMD(CommandObj cmd) throws RemoteException {
         //TODO elaborate command and send to gui or send direclty to gui
-        switch (cmd.getCmd()){
-            case YOUR_TURN:
-                playerView.myTurn();
+        switch (cmd.getCmd()) {
+            case SHOW_BOARD:
+                view.showBoard();
                 break;
-                default:
-                    break;
+            case YOUR_TURN:
+                view.myTurn();
+                break;
+            default:
+                break;
         }
     }
 
@@ -126,17 +138,12 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
 
     public void gameStarted() throws RemoteException{
-        System.out.println("ho ricevuto che il game è iniziato");
-        this.playerView = new PlayerView(gameServer.getPlayer(this), this);
-        System.out.println("playerview inizializzata correttamente");
-    }
-
-    public PlayerView createPlayerView() throws RemoteException{
-        return this.playerView = new PlayerView(gameServer.getPlayer(this), gameServer.getPlayerController(this));
-    }
-
-    public PlayerBoardView createPlayerBoardView() throws RemoteException{
-        return this.playerBoardView = new PlayerBoardView(gameServer.getPlayer(this));
+        this.player = gameServer.getPlayer(this);
+        Board board = gameServer.getBoard();
+        clientApp.createView(player, board, this);
+        this.view = clientApp.getView();
+        view.giveMessage("","Ho ricevuto che il game è iniziato");
+        view.gameStart();
     }
 
     /**
