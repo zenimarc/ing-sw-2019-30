@@ -1,5 +1,6 @@
 package server;
 
+import board.Board;
 import client.Client;
 import controller.CommandObj;
 import controller.PlayerController;
@@ -15,4 +16,5 @@ public interface GameServer extends Remote {
     PlayerController getPlayerController(Client remoteClient) throws RemoteException;
     void changeTurn(Client remoteClient) throws RemoteException;
     void receiveCMD(CommandObj cmd, Client remoteClient) throws RemoteException;
+    Board getBoard() throws RemoteException;
 }

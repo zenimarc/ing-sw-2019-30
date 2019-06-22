@@ -6,5 +6,6 @@ public interface View {
     public void giveError(String error);
     public boolean loadWeapon();
     public void myTurn();
+    public void showBoard();
 
 }
