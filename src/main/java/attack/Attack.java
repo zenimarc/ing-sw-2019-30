@@ -52,7 +52,7 @@ public abstract class Attack implements Serializable {
     }
 
     /**
-     * This return the attack's description
+     * This returns the attack's description
      * @return attack's description
      */
     public String getDescription(){
@@ -60,7 +60,7 @@ public abstract class Attack implements Serializable {
     }
 
     /**
-     * set how many bullets need to use this attack
+     * sets how many bullets are needed to use this attack
      * @param bulletsColor int[num of R, num of Y, num of B]
      */
     public void setCost(int[] bulletsColor) {
@@ -68,7 +68,7 @@ public abstract class Attack implements Serializable {
     }
 
     /**
-     * Get how many bullets need to use this attack
+     * Get how many bullets are needed to use this attack
      * @return int[num of R, num of Y, num of B]
      */
     public int[] getCost() {

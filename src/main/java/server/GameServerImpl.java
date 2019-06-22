@@ -63,7 +63,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     /**
      * this function returns the Client associated to the indicated Player
-     * @param player
+     * @param player associated to client
      * @return the client associated to Player or Null if not found
      */
     private Client getClient(Player player){
@@ -214,6 +214,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         if (clientInfo.isPresent())
             clients.remove(clientInfo.get());
     }
+
     public synchronized List<Client> getClients(){
         return this.clients.stream().map(ClientInfo::getClient).collect(Collectors.toList());
     }

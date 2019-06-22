@@ -23,6 +23,17 @@ public enum EnumWeapon {
     VORTEX_CANNON("Vortex cannon",new ArrayList<>(Arrays.asList(new Bullet(Color.RED), new Bullet(Color.BLUE)))),
     SHOTGUN("Shotgun", new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.RED))) ),
     SLEDGEHAMMER("Sledgehammer",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW)))),
+
+    //TODO aggiungere queste weapon
+    THOR("T.H.O.R.",new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE))) ),
+    CYBERBLADE("Cyberblade",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.RED)))),
+    SHOCKWAVE("ShockWave", new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW))) ),
+    RAILGUN("Railgun",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.YELLOW), new Bullet(Color.BLUE)))),
+    ROCKET_LAUNCHER("Rocket Launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED), new Bullet(Color.RED)))),
+    GRENADE_LAUNCHER("Grenade Launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
+    PLASMA_GUN("Plasma gun", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.YELLOW))) ),
+    FLAMETHROWER("Flamethrowerr",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
+    POWERGLOVE("Cyber glove",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.BLUE)))),
     ;
 
     private String name;

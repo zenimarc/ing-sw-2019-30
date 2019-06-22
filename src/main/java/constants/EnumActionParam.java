@@ -11,7 +11,6 @@ public enum EnumActionParam {
     ADRENALINIC_SECOND_STEP(6)
     ;
 
-
     private int num;
 
     EnumActionParam(int num){

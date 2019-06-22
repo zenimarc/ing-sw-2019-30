@@ -32,6 +32,7 @@ public enum EnumCommand {
     PAYGUNSIGHT("check if can pay Gunsight", "..."),
     GUNSIGHTPAID("", ""),
     PAIDPOWERUP("", ""),
+    DISCARD_POWER ("Discard Power up", ""),
     USE_GUNSIGHT("Use Gunsight power Up", "..."),
     USE_TELEPORTER("Use Teleporter power Up", "..."),
     TELEPORTER("", ""),
