@@ -81,7 +81,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask eventually new position than invoke grabAmmo orr grabWeapon
+     * This invoke grabAmmo or grabWeapon
      * @return
      */
     public boolean grab() {

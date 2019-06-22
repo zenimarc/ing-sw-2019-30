@@ -121,7 +121,6 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     /**
      * This function modifies the cell of the player and changes the pawn list of initial and destination cell
-     *
      * @param cell of destination
      */
     public void setPawnCell(Cell cell) {
@@ -130,6 +129,7 @@ public class Player extends Observable implements Cloneable, Serializable {
         }
         this.pawn.setCell(cell);
         cell.addPawn(this.pawn);
+        notifyEndAction();
     }
 
     /**
@@ -165,8 +165,6 @@ public class Player extends Observable implements Cloneable, Serializable {
     public boolean useAmmo(int[] ammo) {
         if (canPay(ammo)) {
             addAmmo(Arrays.stream(ammo).map(x -> -x).toArray());
-   //         setChanged();
-     //       notifyObservers(this.clonePlayer());
             return true;
         } else
             return false;
@@ -190,8 +188,6 @@ public class Player extends Observable implements Cloneable, Serializable {
         this.ammo.put(BLUE, (this.ammo.get(BLUE) != null) ?
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), this.ammo.get(BLUE) + ammo[2]) :
                 Math.min(Constants.MAX_BULLET_PER_COLOR.getValue(), ammo[2]));
-  //      setChanged();
-    //    notifyObservers(this.clonePlayer());
     }
 
     /**
@@ -282,8 +278,6 @@ public class Player extends Observable implements Cloneable, Serializable {
     public boolean addPowerCard(PowerCard powerCard) {
         if (powerups.size() < Constants.MAX_POWER_HAND_SIZE.getValue()) {
             powerups.add(powerCard);
-      //      setChanged();
-        //    notifyObservers(this.clonePlayer());
             return true;
         }
         return false;
@@ -297,7 +291,7 @@ public class Player extends Observable implements Cloneable, Serializable {
         try{
             return (Player) this.clone();
         }catch (CloneNotSupportedException err){
-            System.out.println("problema");
+            err.printStackTrace();
             return null;
         }
     }
