@@ -40,9 +40,9 @@ public class Player extends Observable implements Cloneable, Serializable {
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
         this.ammo = new EnumMap<>(Color.class);
-        ammo.put(RED,0);
-        ammo.put(YELLOW, 0);
-        ammo.put(BLUE, 0);
+        ammo.put(RED,1);
+        ammo.put(YELLOW, 1);
+        ammo.put(BLUE, 1);
     }
 
     /**
