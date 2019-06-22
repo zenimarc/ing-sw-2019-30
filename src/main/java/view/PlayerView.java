@@ -725,18 +725,7 @@ public class PlayerView extends Observable{
     }
 
     public boolean moveTeleporter() {
-        String positionString = "";
-        while (!positionString.matches("[0-2],[0-3]")) {
-            print("Where do you want to move?");
-            positionString = reader.next();
-        }
-
-        Position newPosition = new Position(
-                Integer.valueOf(positionString.split(",")[0]),
-                Integer.valueOf(positionString.split(",")[1]));
-
-        notifyServer(new CommandObj(TELEPORTER, newPosition));
-        return true;
+        return move(TELEPORTER);
     }
 
     public boolean moveKineticray(Player player, List<Position> cells) {
