@@ -176,7 +176,7 @@ public class BoardController{
      * @return player's PlayerController if present, else null.
      */
     public PlayerController getPlayerController(Player player){
-        return this.playerControllers.stream().filter(x -> x.getPlayer() == player).findFirst().orElse(null);
+        return this.playerControllers.stream().filter(x -> x.getPlayer().getName().equals(player.getName())).findFirst().orElse(null);
     }
 
     /**
@@ -336,7 +336,6 @@ public class BoardController{
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
-            //TODO roba da togliere
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){

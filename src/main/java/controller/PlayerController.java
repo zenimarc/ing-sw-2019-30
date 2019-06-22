@@ -76,8 +76,7 @@ public class PlayerController extends Observable implements Observer{
     public void update(Observable o, Object arg) {
     }
 
-    public void receiveCmd(Object obj){
-        CommandObj cmdObj = (CommandObj) obj;
+    public void receiveCmd(CommandObj cmdObj){
         switch (cmdObj.getCmd()) {
             case MOVE:
             case GRAB_MOVE:
@@ -692,6 +691,8 @@ public class PlayerController extends Observable implements Observer{
 
     protected void myTurn(){
         modifyCell = new ArrayList<>();
+
+        cmdForView(new CommandObj(SHOW_BOARD, boardController.getBoard().cloneBoard()));
 
         if(player.getCell()==null) cmdForView(new CommandObj(REG_CELL));
 

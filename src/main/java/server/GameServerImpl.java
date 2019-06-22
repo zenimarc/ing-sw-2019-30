@@ -1,5 +1,6 @@
 package server;
 
+import board.Board;
 import client.Client;
 import controller.BoardController;
 import controller.CommandObj;
@@ -114,7 +115,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             boardController = new BoardController(players, 8);
             this.serverUpdateManager = new ServerUpdateManager(this, boardController);
             notifyAllGameStarted();
-            boardController.playerPlay(getPlayers().get(0));
+            boardController.firstPlay();
             //clients.get(0).getClient().receiveCMD(new CommandObj(PlayerCommand.YOUR_TURN));
             turnHandler = new TurnHandler(this);
             turnHandler.start();
@@ -147,6 +148,11 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     public void receiveCMD(CommandObj cmd, Client remoteClient) throws RemoteException{
         serverUpdateManager.receiveCmd(cmd, getPlayer(remoteClient));
+    }
+
+    @Override
+    public Board getBoard() throws RemoteException {
+        return boardController.getBoard();
     }
 
     /**
