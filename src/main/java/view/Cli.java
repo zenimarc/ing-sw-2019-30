@@ -44,6 +44,11 @@ public class Cli implements View {
     }
 
     @Override
+    public void notMyTurn(String nameOfWhoPlay) {
+        playerView.print(playerView.stringForTurnOf(nameOfWhoPlay));
+    }
+
+    @Override
     public void showBoard() {
         boardViewCLI.drawCLI();
         playerBoardView.drawPlayerboard();

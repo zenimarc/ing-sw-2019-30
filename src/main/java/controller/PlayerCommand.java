@@ -44,6 +44,8 @@ public enum PlayerCommand {
     PRINT_ERROR("Print error",""),
     CHOOSE_OPTIONAL_ATTACK("Choose optional attack",""),
     YOUR_TURN("Play!","It's your turn"),
+    NOT_YOUR_TURN("Not your turn","Wait a moment..."),
+    SHOW_BOARD("Show bord",""),
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),

@@ -737,4 +737,8 @@ public class PlayerController extends Observable implements Observer{
         if(boardController.isFinalFrenzy())
             player.getPlayerBoard().setFrenzy(true);
     }
+
+    public void notMyTurn(String name){
+        cmdForView(new CommandObj(NOT_YOUR_TURN, name));
+    }
 }

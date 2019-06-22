@@ -641,6 +641,30 @@ public class PlayerView extends Observable implements Observer{
         System.out.println(string);
     }
 
+    public String stringForTurnOf(String name){
+        StringBuilder sb = new StringBuilder();
+        String nameOf = "Turn of: ";
+
+        int totStar = 120;
+        int i;
+
+        StringBuilder sbStar = new StringBuilder();
+
+        sbStar.append('\n');
+        for(i=0;i<totStar;i++){sbStar.append('*');}
+        sbStar.append('\n');
+        int numOfStar = (totStar - name.length() - nameOf.length() -4)/2;
+        for(i=0;i<numOfStar;i++){sbStar.append('*');}
+        sbStar.append("  ");
+
+        sb.append(sbStar.toString());
+        sb.append(nameOf);
+        sb.append(name.toUpperCase());
+        sb.append(sbStar.reverse().toString());
+
+        return sb.toString();
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         if(o.getClass()==Player.class && arg.getClass()==Player.class){

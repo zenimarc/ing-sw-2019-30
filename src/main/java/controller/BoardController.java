@@ -336,13 +336,14 @@ public class BoardController{
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
+            playerControllers.stream().filter(x-> x.getPlayer()!=player).forEach(x -> x.notMyTurn(player.getName()));
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){
                 scoring(listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList()));
             }
-            playerPlay(listOfPlayers.get(changeTurn()));
         }
+        playerPlay(listOfPlayers.get(changeTurn()));
     }
 
     /**
