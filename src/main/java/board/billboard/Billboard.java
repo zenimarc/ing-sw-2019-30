@@ -6,6 +6,7 @@ import board.Door;
 import board.Position;
 import constants.Color;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * Billboards' instance is a billboardCell's abstraction and knows cells position
  */
 
-public class Billboard{
+public class Billboard implements Serializable {
 
     private HashMap<Cell, Position> billboardCell;
     private List<Door> doors;

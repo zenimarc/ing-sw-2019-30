@@ -1,11 +1,12 @@
 package deck;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Deck manages the cards yet to be used or discarded
  */
-public class Deck {
+public class Deck implements Serializable {
 
     private List<Card> cards;
     private Random r = new Random();

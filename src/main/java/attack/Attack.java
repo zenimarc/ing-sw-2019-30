@@ -8,6 +8,7 @@ import controller.EnumTargetSet;
 import deck.Bullet;
 import player.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = SimpleAttack.class)
 })
 
-public abstract class Attack {
+public abstract class Attack implements Serializable {
 
     protected EnumAttackName name;
     protected int damage;

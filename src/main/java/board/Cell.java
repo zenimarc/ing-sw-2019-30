@@ -5,12 +5,13 @@ import constants.Color;
 import player.Pawn;
 import player.Player;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Cell is an abstraction of the areas which create a board
  */
-public abstract class  Cell {
+public abstract class  Cell implements Serializable {
 
     protected Color color;
     private ArrayList<Pawn> pawns;

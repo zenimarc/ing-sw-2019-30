@@ -2,6 +2,7 @@ package board;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import static java.lang.Math.abs;
@@ -10,7 +11,7 @@ import static java.lang.Math.abs;
  * This class is used to determine the position of an object
  */
 
-public class Position implements Comparable {
+public class Position implements Comparable, Serializable {
     private int x;
     private int y;
 

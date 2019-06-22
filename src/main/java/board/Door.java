@@ -1,10 +1,12 @@
 package board;
 
+import java.io.Serializable;
+
 /**
  * Door is a class used to know if two adjacent cells are connected
  */
 
-public class Door {
+public class Door implements Serializable {
 
     private Cell cell1;
     private Cell cell2;

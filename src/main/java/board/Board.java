@@ -8,20 +8,21 @@ import powerup.PowerCard;
 import powerup.PowerCardFactory;
 import weapon.WeaponFactory;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Board is a class which saves all information about the state of game
  */
-public class Board extends Observable implements Cloneable {
+public class Board extends Observable implements Cloneable, Serializable {
 
     private int numSkulls;
     private Billboard billboard;
-    private Deck weaponDeck;
-    private Deck ammoDeck;
-    private Deck powerUpDeck;
-    private Deck ammoDiscardDeck;
-    private Deck powerUpDiscardDeck;
+    private transient Deck weaponDeck;
+    private transient Deck ammoDeck;
+    private transient Deck powerUpDeck;
+    private transient Deck ammoDiscardDeck;
+    private transient Deck powerUpDiscardDeck;
 
     /**
      * Constructors

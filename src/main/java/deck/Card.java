@@ -3,12 +3,13 @@ package deck;
 import powerup.PowerCard;
 import weapon.WeaponCard;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Card is an abstraction to manage the different type of cards
  */
-public abstract class Card {
+public abstract class Card implements Serializable {
 
     /**
      * Default constructor
