@@ -25,4 +25,12 @@ public enum Color {
     public String getFirstLetter() {
         return firstLetter;
     }
+
+    public static Color convertToColor(int i){
+        if(i == 0)
+            return RED;
+        if(i == 1)
+            return YELLOW;
+        return BLUE;
+    }
 }

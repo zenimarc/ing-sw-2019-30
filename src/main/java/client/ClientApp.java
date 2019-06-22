@@ -15,7 +15,7 @@ public class ClientApp {
             re.fillInStackTrace();
         }
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws RemoteException {
         ClientApp clientApp = new ClientApp();
         clientApp.connection.init();
     }

@@ -128,6 +128,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     public void gameStarted() throws RemoteException{
         System.out.println("ho ricevuto che il game è iniziato");
         this.playerView = new PlayerView(gameServer.getPlayer(this), this);
+        System.out.println("playerview inizializzata correttamente");
     }
 
     public PlayerView createPlayerView() throws RemoteException{

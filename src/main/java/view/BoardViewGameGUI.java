@@ -5,12 +5,10 @@ import board.Position;
 import board.RegenerationCell;
 import board.billboard.BillboardGenerator;
 import client.Client;
-import client.ClientRMI;
 import controller.BoardController;
 import controller.PlayerCommand;
 import controller.PlayerController;
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -31,19 +29,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.Random;
 
 import static controller.PlayerCommand.*;
 import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
+import static powerup.PowerUp.KINETICRAY;
+import static powerup.PowerUp.TELEPORTER;
+import static powerup.PowerUp.VENOMGRENADE;
 
 //TODO sistemare Playerboard high multi
 public class BoardViewGameGUI extends Application {
     private int stageHeight = 700;
     private int stageWidth = 930;
     private Board board;
-    private ClientRMI client = new ClientRMI();
     private ArrayList<Client> clients;
     private ArrayList<Player> players = new ArrayList<>();
     private Player player = new Player("Marco");
@@ -80,8 +79,6 @@ public class BoardViewGameGUI extends Application {
         boardController.setBoard(board);
         controller = new PlayerController(player, boardController);
 
-        //this.players = players;
-        //this.client = client;
     }
 
     public static void main(String[] args) {
@@ -180,7 +177,7 @@ public class BoardViewGameGUI extends Application {
                 map.getChildren().add(generateCard(weaponPath("weaponCard"), 80, 55, -250, -30 + i * 65, 90));
                 map.getChildren().get(i+1).setVisible(false);
             }
-            setAction((Button)map.getChildren().get(1+i), (ImageView) map.getChildren().get(0), 1, 0, i, playerboard);
+            setMapCardActions((Button)map.getChildren().get(1+i), (ImageView) map.getChildren().get(0), 1, 0, i, playerboard, map);
         }
         //blue weapon 4-6
         for(int i = 0; i< 3; i++) {
@@ -190,7 +187,7 @@ public class BoardViewGameGUI extends Application {
                 map.getChildren().add(generateCard(weaponPath("weaponCard"), 80, 55, 35 + i * 65, -170, 180));
                 map.getChildren().get(i+4).setVisible(false);
             }
-            setAction((Button)map.getChildren().get(4+i), (ImageView) map.getChildren().get(0), 0,2, i, playerboard);
+            setMapCardActions((Button)map.getChildren().get(4+i), (ImageView) map.getChildren().get(0), 0,2, i, playerboard, map);
         }
 
         //yellow weapon 7-9
@@ -201,7 +198,7 @@ public class BoardViewGameGUI extends Application {
                 map.getChildren().add(generateCard(weaponPath("weaponCard"), 80, 55, 255, 50 + i * 65, 270));
                 map.getChildren().get(i+7).setVisible(false);
             }
-            setAction((Button)map.getChildren().get(7+i), (ImageView) map.getChildren().get(0), 2, 3, i, playerboard);
+            setMapCardActions((Button)map.getChildren().get(7+i), (ImageView) map.getChildren().get(0), 2, 3, i, playerboard, map);
         }
         //deck not to be modified 10-11
         map.getChildren().add(tableWeaponCards(weaponPath("weaponCard"), 250, -55));
@@ -209,7 +206,7 @@ public class BoardViewGameGUI extends Application {
 
         generateBoard(map, number, actionButtons(map, map.getChildren().size()));
         for(int i = 0; i < players.size(); i++) {
-            map.getChildren().add(createButton(pawnPath(giveColor(player)), 20, 20, -40, -10));
+            map.getChildren().add(createButton(pawnPath(giveColor(getPlayerboardPlayer(i))), 20, 20, -40, -10));
 
             map.getChildren().get(map.getChildren().size()-1).setOpacity(1);
             map.getChildren().get(map.getChildren().size()-1).setStyle("-fx-background-color: rgba(0, 100, 100, 1); -fx-background-radius: 50; -fx-padding: 5;\n" +
@@ -235,7 +232,7 @@ public class BoardViewGameGUI extends Application {
         for(int i = 0; i < 3; i++) {
             if(i+1 > player.getWeapons().size()) {
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 110, 80, -120 + i * 40, 0, 0));
-                playerBoard.getChildren().get(2 * i + 1).setVisible(false);
+
             }
             else playerBoard.getChildren().add(generateCard(weaponPath(player.getWeapons().get(i).stringGUI()), 110, 80, -120 + i * 40, 0, 0));
 
@@ -250,7 +247,7 @@ public class BoardViewGameGUI extends Application {
         for(int i = 0; i < player.getNumDamages(); i++)
             playerBoard.getChildren().add(addDamage(player.getPlayerBoard().getDamageTrack().get(i), 30, 50 + i*35, 40, 0));//base x 50, distanza 35
         for(Player player: players)
-            for(int i = 0; i < player.getMarks(player); i++)
+            for(int i = 0; i < this.player.getMarks(player); i++)
                 playerBoard.getChildren().add(addDamage(player, 30, 280+15*i+20*players.indexOf(player), -5, 0));//base x 280, distanza 15 se identici, 20 altrimenti
         for(int i = 0; i < player.getPlayerBoard().getNumDeaths(); i++)
             playerBoard.getChildren().add(addSkull(40, 120 + i*33, 70, 0));//base x 120, distanza 33
@@ -269,13 +266,13 @@ public class BoardViewGameGUI extends Application {
         playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(1))), 75, 280, 0, 0, 270));
 
         for(int i = 0; i < 3; i++) {
-            if(i+1 > player.getWeapons().size()){
+            if(i+1 > getPlayerboardPlayer(1).getWeapons().size()){
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50, 190, -115+i*35, 270));
                 playerBoard.getChildren().get(2*i+1).setVisible(false);
             }
             else playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(1).getWeapons().get(i).stringGUI()), 75, 50, 190, -115+i*35, 270));
 
-            if(i < player.getPowerups().size())
+            if(i < getPlayerboardPlayer(1).getPowerups().size())
                 playerBoard.getChildren().add(generateCard(powerPath(getPlayerboardPlayer(1).getPowerups().get(i).stringGUI()), 75, 50, 190, 115-i*35, 270));
             else{
                 playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 75, 50, 190, 115-i*35, 270));
@@ -283,10 +280,10 @@ public class BoardViewGameGUI extends Application {
             }
         }
 
-        for(int i = 0; i < getPlayerboardPlayer(2).getNumDamages(); i++)
+        for(int i = 0; i < getPlayerboardPlayer(1).getNumDamages(); i++)
             playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(1).getPlayerBoard().getDamageTrack().get(i), 20, 130, 135 -i*16, 270));//base x 50, distanza 35
         for(Player player: players)
-            for(int i = 0; i < player.getMarks(player); i++)
+            for(int i = 0; i < getPlayerboardPlayer(1).getMarks(player); i++)
                 playerBoard.getChildren().add(addDamage(player, 15, 105, 30-5*i-20*players.indexOf(player), 270));//base x 280, distanza 15 se identici, 20 altrimenti
         for(int i = 0; i < getPlayerboardPlayer(1).getPlayerBoard().getNumDeaths(); i++)
             playerBoard.getChildren().add(addSkull(20, 155, 100-i*15, 270));//base x 120, distanza 33
@@ -305,12 +302,12 @@ public class BoardViewGameGUI extends Application {
         playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(2))), 75, 280, 0, 0, 90));
 
         for(int i = 0; i < 3; i++) {
-            if(i+1 > player.getWeapons().size()){
+            if(i+1 > getPlayerboardPlayer(2).getWeapons().size()){
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50, 40, -115-i*35, 90));
                 playerBoard.getChildren().get(2*i+1).setVisible(false);
             }
             else playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(2).getWeapons().get(i).stringGUI()), 75, 50, 40, -115-i*35, 90));
-            if(i < player.getPowerups().size())
+            if(i < getPlayerboardPlayer(1).getPowerups().size())
                 playerBoard.getChildren().add(generateCard(powerPath(getPlayerboardPlayer(2).getPowerups().get(i).stringGUI()), 75, 50, 40, 115-i*35, 90));
             else{
                 playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 75, 50, 40, 115-i*35, 90));
@@ -321,7 +318,7 @@ public class BoardViewGameGUI extends Application {
         for(int i = 0; i < getPlayerboardPlayer(2).getNumDamages(); i++)
             playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(2).getPlayerBoard().getDamageTrack().get(i), 20, 130, -80 +i*16, 90));//base x 50, distanza 35
         for(Player player: players)
-            for(int i = 0; i < player.getMarks(player); i++)
+            for(int i = 0; i < getPlayerboardPlayer(2).getMarks(player); i++)
                 playerBoard.getChildren().add(addDamage(player, 15, 160, 30+5*i+20*players.indexOf(player), 90));//base x 280, distanza 15 se identici, 20 altrimenti
         for(int i = 0; i < getPlayerboardPlayer(2).getPlayerBoard().getNumDeaths(); i++)
             playerBoard.getChildren().add(addSkull(20, 105, -45+i*15, 90));//base x 120, distanza 33
@@ -339,27 +336,27 @@ public class BoardViewGameGUI extends Application {
         playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(i))), 50, 240, 0, 0, 180));
 
         for(int j = 0; j < 3; j++) {
-            if(i+1 > player.getWeapons().size()) {
-                playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50, 70 - j * 35, -90, 90));
-                playerBoard.getChildren().get(2 * j + 1).setVisible(false);
-            }
-            else  playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(i).getWeapons().get(j).stringGUI()), 75, 50, 70 - j * 35, -90, 90));
+            if(i+1 > getPlayerboardPlayer(i).getWeapons().size()) {
+                playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50, 80 - j * 35, -65, 180));
 
-            if(i < player.getPowerups().size())
-                playerBoard.getChildren().add(generateCard(powerPath(getPlayerboardPlayer(i).getPowerups().get(j).stringGUI()), 75, 50, 180-j*35, -90, 90));
+            }
+            else  playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(i).getWeapons().get(j).stringGUI()), 75, 50, 60 - j * 35, -70, 180));
+
+            if(i < getPlayerboardPlayer(i).getPowerups().size())
+                playerBoard.getChildren().add(generateCard(powerPath(getPlayerboardPlayer(i).getPowerups().get(j).stringGUI()), 75, 50, 180-j*35, -70, 180));
             else{
-                playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 75, 50, 180-j*35, -90, 90));
-                playerBoard.getChildren().get(2 * j + 2).setVisible(false);
+                playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 75, 50, 180-j*35, -90, 180));
+
             }
         }
 
-        for(int j = 0; j < getPlayerboardPlayer(3).getNumDamages(); j++)
-            playerBoard.getChildren().add(addDamage(player, 20, 130, -80 +j*16, 90));//base x 50, distanza 35
+        for(int j = 0; j < getPlayerboardPlayer(i).getNumDamages(); j++)
+            playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(2).getPlayerBoard().getDamageTrack().get(j), 15, 205-j*13, 20 , 180));//base x 50, distanza 35
         for(Player player: players)
-            for(int j = 0; j < 12; j++)
-                playerBoard.getChildren().add(addDamage(player, 15, 160, 30+5*j+20*players.indexOf(player), 90));//base x 280, distanza 15 se identici, 20 altrimenti
-        for(int j = 0; j < 8; j++)
-            playerBoard.getChildren().add(addSkull(20, 105, -45+j*15, 90));//base x 120, distanza 33
+            for(int j = 0; j < getPlayerboardPlayer(i).getMarks(player); j++)
+                playerBoard.getChildren().add(addDamage(player, 10, 110-5*j-15*players.indexOf(player), 40, 180));//base x 280, distanza 15 se identici, 20 altrimenti
+        for(int j = 0; j < getPlayerboardPlayer(i).getPlayerBoard().getNumDeaths(); j++)
+            playerBoard.getChildren().add(addSkull(15, 175-j*10, 0, 180));//base x 120, distanza 33
 
 
         return playerBoard;
@@ -376,12 +373,12 @@ public class BoardViewGameGUI extends Application {
         playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(3))), 75, 280, 0, 0, 180));
 
         for(int i = 0; i < 3; i++) {
-            if(i+1 > player.getWeapons().size()) {
+            if(i+1 > getPlayerboardPlayer(3).getWeapons().size()) {
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50, -120 + i * 35, 0, 180));
                 playerBoard.getChildren().get(2 * i + 1).setVisible(false);
             }
             else  playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(3).getPowerups().get(i).stringGUI()), 75, 50, -120 + i * 35, 0, 180));
-            if(i < player.getPowerups().size())
+            if(i < getPlayerboardPlayer(3).getPowerups().size())
                 playerBoard.getChildren().add(generateCard(powerPath(getPlayerboardPlayer(3).getPowerups().get(i).stringGUI()), 75, 50, 350+i*35, 0, 180));
             else{
                 playerBoard.getChildren().add(generateCard(powerPath("powerCard"), 75, 50, 350+i*35, 0, 180));
@@ -392,7 +389,7 @@ public class BoardViewGameGUI extends Application {
         for(int i = 0; i < getPlayerboardPlayer(3).getNumDamages(); i++)
             playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(2).getPlayerBoard().getDamageTrack().get(i), 20, 240 -i*16, 30, 180));//base x 50, distanza 35
         for(Player player: players)
-            for(int i = 0; i < 12; i++)
+            for(int i = 0; i < getPlayerboardPlayer(3).getMarks(player); i++)
                 playerBoard.getChildren().add(addDamage(player, 15, 130-5*i-20*players.indexOf(player), 60, 180));//base x 280, distanza 15 se identici, 20 altrimenti
         for(int i = 0; i < getPlayerboardPlayer(3).getPlayerBoard().getNumDeaths(); i++)
             playerBoard.getChildren().add(addSkull(20, 205-i*15, 5, 180));//base x 120, distanza 33
@@ -795,7 +792,7 @@ public class BoardViewGameGUI extends Application {
     }
 
     //Carte relative alla mappa
-    private void setAction(Button buttonCard, ImageView image, int x, int y, int pos, Pane playerboard){//carte della mappa posso guardarle o pescarle
+    private void setMapCardActions(Button buttonCard, ImageView image, int x, int y, int pos, Pane playerboard, Pane map){//carte della mappa posso guardarle o pescarle
         for(int i = 0; i < 3; i++) {
             weaponAction((Button)playerboard.getChildren().get(2*i+1), image, i);
         }
@@ -817,9 +814,10 @@ public class BoardViewGameGUI extends Application {
                             buttonCard.disabledProperty();
                         else if(getPlayer().getWeapons().size() <= 3){
                             getPlayer().addWeapon((WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos));
-                            playerboard.getChildren().get(7).setVisible(true);
                             changeGraphicButtons((Button)playerboard.getChildren().get(3), buttonCard);
                             buttonCard.setVisible(false);
+                            for(int i = 5; i>-1; i--)
+                                map.getChildren().get(map.getChildren().size()-board.getSkulls()).setVisible(true);
                             command = CHOOSE_ACTION;
                         }
                         else command = DISCARD_WEAPON;
@@ -958,7 +956,7 @@ public class BoardViewGameGUI extends Application {
     }
 
     //azioni power up
-    private void setPowerUp(Button powerUp, ArrayList<Button> Buttons){
+    private void setPowerUp(Button powerUp, ArrayList<Button> Buttons, Pane map){
         powerUp.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

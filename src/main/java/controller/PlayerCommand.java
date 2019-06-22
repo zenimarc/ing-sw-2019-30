@@ -26,13 +26,19 @@ public enum PlayerCommand {
     LOAD_WEAPONCARD("Load weapon","..."),
 
     //Power ups
+    ASKFORPOWERUP("", ""),
     CHECKPOWERUP("check usable power ups", "..."),
     PAYPOWERUP("check payable power up", "..."),
     PAYGUNSIGHT("check if can pay Gunsight", "..."),
+    GUNSIGHTPAID("", ""),
+    PAIDPOWERUP("", ""),
     USE_GUNSIGHT("Use Gunsight power Up", "..."),
     USE_TELEPORTER("Use Teleporter power Up", "..."),
+    TELEPORTER("", ""),
     USE_VENOMGRENADE("Use Venom Grenade power Up", "..."),
+    VENOMGRENADE("Use Venom Grenade power Up", "..."),
     USE_KINETICRAY("Use Kinetic Ray power Up", "..."),
+    KINETICRAY("Use Kinetic Ray power Up", "..."),
 
     //Controller to View
     PRINT_ERROR("Print error",""),
@@ -41,7 +47,7 @@ public enum PlayerCommand {
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),
-    UNSELECT("prova", "...");
+    UNSELECT("prova", "..."),
 
     ;
 
@@ -50,22 +56,34 @@ public enum PlayerCommand {
     private String name;
     private String description;
 
+    /**
+     * Constructor
+     */
     PlayerCommand(String name, String desc){
         this.name = name;
         this.description = desc;
     }
 
+    /**
+     * This function return the name of a Command
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * This function return the description of a Command
+     * @return description
+     */
     public String getDescription() {
         return description;
     }
 
     public static PlayerCommand getPlayerActionFromIndex(int i){
         for(PlayerCommand command : PlayerCommand.PlayerAction){
-            if(i==command.ordinal()) return command;
+            if(i==command.ordinal())
+                return command;
         }
         return null;
     }

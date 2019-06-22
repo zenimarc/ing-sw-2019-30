@@ -3,6 +3,7 @@ package server;
 import client.Client;
 import controller.BoardController;
 import controller.CommandObj;
+import controller.PlayerCommand;
 import controller.PlayerController;
 import player.Player;
 
@@ -114,6 +115,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             this.serverUpdateManager = new ServerUpdateManager(this, boardController);
             notifyAllGameStarted();
             boardController.playerPlay(getPlayers().get(0));
+            //clients.get(0).getClient().receiveCMD(new CommandObj(PlayerCommand.YOUR_TURN));
             turnHandler = new TurnHandler(this);
             turnHandler.start();
         }catch (RemoteException re){

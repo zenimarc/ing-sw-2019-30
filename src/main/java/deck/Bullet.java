@@ -30,9 +30,9 @@ public class Bullet implements Serializable {
     }
 
     /**
-     * From ArrayList of Bullet to int array[num of R,num of Y, num of B]
-     * @param bullets //TODO scrivedre meglio Java doc
-     * @return
+     * This function converts an ArrayList of Bullet int an int array[num of R,num of Y, num of B]
+     * @param bullets to be converted
+     * @return an array
      */
     @Contract(pure = true)
     public static int[] toIntArray(@NotNull List<Bullet> bullets){
@@ -53,27 +53,28 @@ public class Bullet implements Serializable {
         return colorArray;
     }
 
-    public static String intArrayToString(int cubes[]){
+    /**
+     * This function converts an array of cubes into a String
+     * @param cubes with info
+     * @return a string
+     */
+    public static String intArrayToString(int[] cubes){
 
         if(cubes==null) return "";
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("[");
-        stringBuilder.append("R:" + cubes[0] + ",");
-        stringBuilder.append("Y:"+ cubes[1] + ",");
-        stringBuilder.append("B:" + cubes[2] + "]");
-
-        return stringBuilder.toString();
+        else return "[R:"+cubes[0]+",Y:"+cubes[1]+",B:"+cubes[2]+"]";
     }
 
     public static String mapToString(Map<Color, Integer> map){
 
-        int bullets[] = new  int[]{map.get(Color.RED), map.get(Color.YELLOW),map.get(Color.BLUE)};
+        int[] bullets = new  int[]{map.get(Color.RED), map.get(Color.YELLOW),map.get(Color.BLUE)};
 
         return intArrayToString(bullets);
     }
 
+    /**
+     * This function is used for searching a specific AmmoCard for GUI
+     * @return a string
+     */
     public String stringGUI() {
         return color.getFirstLetter();
     }
