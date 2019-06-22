@@ -23,19 +23,18 @@ import static controller.PlayerCommand.*;
 /**
  * 
  */
-public class PlayerView extends Observable implements Observer, View{
+public class PlayerView extends Observable implements Observer{
     private Player player;
     private Scanner reader = new Scanner(System.in);
 
     /**
      * Default constructor
      */
-    public PlayerView(Player player, Observer clientUpdateManager) {
+    public PlayerView(Player player, Observer clientManager) {
         this.player = player;
-        this.addObserver(clientUpdateManager);
+        this.addObserver(clientManager);
     }
 
-    @Override
     public void myTurn() {
         PlayerCommand command = choosePlayerAction();
         switch (command) {
@@ -131,7 +130,6 @@ public class PlayerView extends Observable implements Observer, View{
      * Ask player if he want load some weapon and notify that
      * @return
      */
-    @Override
     public boolean loadWeapon(){
 
         List<WeaponCard> notLoaded = player.getNotLoaded();
@@ -738,18 +736,4 @@ public class PlayerView extends Observable implements Observer, View{
         return false;
     }
 
-    @Override
-    public void giveError(String error) {
-        printError(error);
-    }
-
-    @Override
-    public void gameStart() {
-
-    }
-
-    @Override
-    public void giveMessage(String title, String mex) {
-        print(mex);
-    }
 }
