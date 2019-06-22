@@ -3,9 +3,8 @@ package view;
 import board.Board;
 import player.Player;
 
-import java.util.Observer;
 
-public interface View extends Observer {
+public interface View  {
     void gameStart();
     void giveMessage(String title, String mex);
     void giveError(String error);
@@ -16,5 +15,6 @@ public interface View extends Observer {
     void regeneratePlayer();
     void updatePlayer(Player player);
     void updateBoard(Board board);
+    void grab();
 
 }

@@ -1,11 +1,8 @@
 package view;
 
 import board.Board;
-import client.Client;
-import client.ClientUpdateManager;
 import player.Player;
 
-import java.util.Observable;
 import java.util.Observer;
 
 public class Cli implements View {
@@ -20,9 +17,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void gameStart() {
-        showBoard();
-    }
+    public void gameStart() {}
 
     @Override
     public void giveMessage(String title, String mex) {
@@ -74,11 +69,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
-        if(arg.getClass().equals(Player.class)){
-            updatePlayer((Player) arg);
-        }else if(arg.getClass().equals(Board.class)){
-            updateBoard((Board) arg);
-        }
+    public void grab() {
+        playerView.grab();
     }
 }
