@@ -81,39 +81,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
 
     public void receiveCMD(CommandObj cmd) throws RemoteException {
-        //TODO elaborate command and send to gui or send direclty to gui
-        switch (cmd.getCmd()) {
-            case SHOW_BOARD:
-                view.showBoard();
-                break;
-            case REG_CELL:
-                view.regeneratePlayer();
-                break;
-            case YOUR_TURN:
-                view.myTurn();
-                break;
-            case UPDATE_PLAYER:
-                if(cmd.getObject().getClass().equals(Player.class)) {
-                    clientApp.getClientUpdateManager().setPlayer((Player) cmd.getObject());
-                }
-                break;
-            case UPDATE_BOARD:
-                if(cmd.getObject().getClass().equals(Board.class)) {
-                    clientApp.getClientUpdateManager().setBoard((Board) cmd.getObject());
-                }
-                break;
-            case NOT_YOUR_TURN:
-                view.notMyTurn((String) cmd.getObject());
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void receiveObj(Object obj) throws RemoteException{
-        if(obj.getClass().equals(Player.class)){
-            //TODO notificare la view che deve aggiornare i dati del Player clonato che ha ricevuto
-        }
+        clientApp.getClientUpdateManager().executeCommand(cmd);
     }
 
     public void sendCMD(CommandObj cmd) throws RemoteException{

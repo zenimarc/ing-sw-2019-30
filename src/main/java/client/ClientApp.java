@@ -19,13 +19,12 @@ public class ClientApp {
         }catch (RemoteException re){
             re.fillInStackTrace();
         }
-
         this.clientUpdateManager = new ClientUpdateManager();
     }
 
     protected void createView(Player player, Board board, Observer client){
         createCLIView(player, board, client);
-        clientUpdateManager.addObserver(view);
+        clientUpdateManager.setView(view);
     }
 
     private void createCLIView(Player player, Board board, Observer client){
