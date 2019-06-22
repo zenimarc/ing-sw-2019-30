@@ -25,8 +25,6 @@ public class BoardController{
     private Board board;
     private Player playerWhoPlay;
 
-    private BoardViewCLI boardViewCLI;
-
     /**
      * Default constructor
      */
@@ -39,13 +37,11 @@ public class BoardController{
     public BoardController(List<Player> players, Board board) {
         this(players, 8);
         this.board = board;
-        this.boardViewCLI = new BoardViewCLI(board);
     }
 
     public BoardController(List<Player> players, Board board, List<PlayerController> controllers) {
         this(players, 8);
         this.board = board;
-        this.boardViewCLI = new BoardViewCLI(board);
         this.playerControllers = controllers;
 
     }
@@ -59,8 +55,8 @@ public class BoardController{
         this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
 
+        //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
         this.board = new Board(numskulls, BillboardGenerator.generateBillboard());
-        this.boardViewCLI = new BoardViewCLI(board);
 
         for (Player player : this.listOfPlayers){
             //Create player controller
@@ -68,17 +64,7 @@ public class BoardController{
             //Draw 2 PowerCard
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
-            //set Observers
-            this.board.addObserver(boardViewCLI);
-
         }
-        //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
-
-    }
-
-    //TODO da sistemare, deve diventare un return String
-    public void getBoardViewToString(){
-        boardViewCLI.drawCLI();
     }
 
     /**

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
-import static controller.PlayerCommand.*;
+import static controller.EnumCommand.*;
 import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
 import static powerup.PowerUp.VENOMGRENADE;
@@ -46,18 +46,12 @@ public class PlayerController extends Observable implements Observer{
      */
     public PlayerController(Player player) {
         this.player = player;
-        this.playerView = new PlayerView(player, this);
-        this.playerBoardView = new PlayerBoardView(player);
-        this.player.addObserver(playerView);
-        this.player.addObserver(playerBoardView);
-
     }
 
     public PlayerController(Player player, @NotNull BoardController boardController) {
         this(player);
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
-
     }
 
     public PlayerBoardView getPlayerBoardView() {
@@ -82,7 +76,6 @@ public class PlayerController extends Observable implements Observer{
             case GRAB_MOVE:
                 if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
                     if(cmdObj.getCmd()==MOVE) numAction++;
-                    //else ((PlayerView) view).grab();
                     else cmdForView(new CommandObj(GRAB));
                 }else {
                     viewPrintError();
@@ -93,7 +86,6 @@ public class PlayerController extends Observable implements Observer{
                     numAction++;
                 }else {
                     viewPrintError();
-                    
                 }
                  player.notifyEndAction();
                 break;
@@ -101,7 +93,6 @@ public class PlayerController extends Observable implements Observer{
                 checkCanGrabWeapon((int) cmdObj.getObject());
                 player.notifyEndAction();
                 break;
-                //powerups
             case ASKFORPOWERUP:
                 ArrayList<PowerCard> cards = (getPotentialPowerUps(cmdObj));
                 if(cards.isEmpty())
@@ -165,10 +156,10 @@ public class PlayerController extends Observable implements Observer{
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
             case REG_CELL:
-                PowerCard pc = (PowerCard) cmdObj.getObject();
-                if(boardController.setRegenerationCell(player, pc.getColor())){
-                    player.usePowerUp(pc, true);
-                    boardController.getBoard().addPowerUpDiscardDeck(pc);
+                PowerCard powerCard = (PowerCard) cmdObj.getObject();
+                if(boardController.setRegenerationCell(player, powerCard.getColor())){
+                    player.usePowerUp(powerCard, true);
+                    boardController.getBoard().addPowerUpDiscardDeck(powerCard);
                 }
                 break;
             case DISCARD_WEAPON:
@@ -200,13 +191,13 @@ public class PlayerController extends Observable implements Observer{
      * @param cell of destination
      * @return if the player can move, else false
      */
-    public boolean move(Cell cell, PlayerCommand playerCommand){
+    public boolean move(Cell cell, EnumCommand enumCommand){
         if(player.getCell() == cell) return true;
 
         EnumActionParam actionParam;
         if(!boardController.isFinalFrenzy()) {
             //NOT FINAL FRENZY
-            switch (playerCommand) {
+            switch (enumCommand) {
                 case MOVE: //normal mode
                     actionParam = NORMAL_MOVE;
                     break;
