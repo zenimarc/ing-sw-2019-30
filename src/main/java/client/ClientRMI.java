@@ -25,7 +25,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     private transient GameServer gameServer;
     private UUID userToken;
     private Player player;
-    private View view;
+    private transient View view;
     private ClientApp clientApp;
 
 
@@ -62,10 +62,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         this.registry = LocateRegistry.getRegistry(host, port);
         try {
             this.lobby = (Lobby) registry.lookup("lobby");
-            System.out.println("lobby trovata");
+            clientLog("lobby trovata");
             return true;
         } catch (NotBoundException nbe) {
-            System.out.println(nbe.toString());
+            clientLog(nbe.toString());
             nbe.fillInStackTrace();
             return false;
         }
@@ -88,6 +88,9 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
                 break;
             case YOUR_TURN:
                 view.myTurn();
+                break;
+            case NOT_YOUR_TURN:
+                view.notMyTurn((String) cmd.getObject());
                 break;
             default:
                 break;
@@ -118,13 +121,13 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             if (myToken != null) {
                 this.setNickname(nickname);
                 this.userToken = myToken;
-                System.out.println("ricevuto il mio userToken: "+this.userToken);
+                clientLog("ricevuto il mio userToken: "+this.userToken);
                 return true;
             }
             else
                 return false;
         } catch (RemoteException re) {
-            System.out.println(re.toString());
+            clientLog(re.toString());
             re.fillInStackTrace();
         }
         return false;
@@ -134,7 +137,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
      * this function is called by remote Lobby to notify the player is succesfully login
      */
     public void loggedIn() {
-        System.out.println("Login success");
+        clientLog("Login success");
     }
 
     public void gameStarted() throws RemoteException{
@@ -180,7 +183,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     public void setGameServer(GameServer gameServer) {
         this.gameServer = gameServer;
         try {
-            System.out.println("ho ricevuto il gameserver: " + gameServer.getGameToken());
+            clientLog("ho ricevuto il gameserver: " + gameServer.getGameToken());
         } catch (RemoteException re) {
             re.fillInStackTrace();
         }
@@ -195,11 +198,11 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     public boolean reconnect(String username, UUID userToken) throws RemoteException{
         this.gameServer = lobby.reconnect(username, userToken, this);
         if (gameServer!=null) {
-            System.out.println("mi sono ricollegato a: " + gameServer.getGameToken());
+            clientLog("mi sono ricollegato a: " + gameServer.getGameToken());
             return true;
         }
         else {
-            System.out.println("impossibile riconnettere");
+            clientLog("impossibile riconnettere");
             return false;
         }
     }
@@ -230,22 +233,29 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         try {
             connect("127.0.0.1", 1099);
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter username (min 3 chars max 15 chars)");
+            clientLog("Enter username (min 3 chars max 15 chars)");
             String userName = scanner.nextLine();
             setNickname(userName);
-            System.out.println("Enter connect or reconnect");
+            clientLog("Enter connect or reconnect");
             if (scanner.nextLine().equals("reconnect")) {
-                System.out.println("Enter your userToken");
+                clientLog("Enter your userToken");
                 reconnect(userName, UUID.fromString(scanner.nextLine()));
             } else
                 while (!register(getNickname())) {
-                    System.out.println("Enter another username");
+                    clientLog("Enter another username");
                     userName = scanner.nextLine();
                     setNickname(userName);
                 }
         } catch (RemoteException re) {
             re.fillInStackTrace();
         }
+    }
+    
+    private void clientLog(String mex){
+        StringBuilder sb = new StringBuilder();
+        sb.append("ClRMI: ");
+        sb.append(mex);
+        System.out.println(sb.toString());
     }
 
     public static void main(String[] args) {
@@ -254,17 +264,17 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             ClientRMI clientRMI = new ClientRMI();
             clientRMI.connect("127.0.0.1", 1099);
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter username (min 3 chars max 15 chars)");
+            clientRMI.clientLog("Enter username (min 3 chars max 15 chars)");
             String userName = scanner.nextLine();
             clientRMI.setNickname(userName);
-            System.out.println("Enter connect or reconnect");
+            clientRMI.clientLog("Enter connect or reconnect");
             if(scanner.nextLine().equals("reconnect")) {
-                System.out.println("Enter your userToken");
+                clientRMI.clientLog("Enter your userToken");
                 clientRMI.reconnect(userName, UUID.fromString(scanner.nextLine()));
             }
             else
                 while (!clientRMI.register(clientRMI.getNickname())) {
-                    System.out.println("Enter another username");
+                    clientRMI.clientLog("Enter another username");
                     userName = scanner.nextLine();
                     clientRMI.setNickname(userName);
                 }
@@ -276,7 +286,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
                         clientRMI.changeTurn();
                 }catch (RemoteException re) {
                     re.fillInStackTrace();
-                    System.out.println("errore di connessione");
+                    clientRMI.clientLog("errore di connessione");
                     System.exit(-1);
                 }
                 command = scanner.nextLine();
