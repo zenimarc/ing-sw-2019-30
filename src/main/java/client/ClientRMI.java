@@ -86,8 +86,21 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             case SHOW_BOARD:
                 view.showBoard();
                 break;
+            case REG_CELL:
+                view.regeneratePlayer();
+                break;
             case YOUR_TURN:
                 view.myTurn();
+                break;
+            case UPDATE_PLAYER:
+                if(cmd.getObject().getClass().equals(Player.class)) {
+                    clientApp.getClientUpdateManager().setPlayer((Player) cmd.getObject());
+                }
+                break;
+            case UPDATE_BOARD:
+                if(cmd.getObject().getClass().equals(Board.class)) {
+                    clientApp.getClientUpdateManager().setBoard((Board) cmd.getObject());
+                }
                 break;
             case NOT_YOUR_TURN:
                 view.notMyTurn((String) cmd.getObject());
