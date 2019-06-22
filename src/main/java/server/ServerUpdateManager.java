@@ -33,7 +33,13 @@ public class ServerUpdateManager implements Observer {
     public void update(Observable observable, Object obj) {
         //In this case the update come from a player, so send to all client the player cloned to get infos
         if (observable.getClass().equals(Player.class)) {
-            gameServer.sendToAll(new CommandObj(EnumCommand.UPDATE_PLAYER, obj));
+            try {
+                gameServer.sendCMD(new CommandObj(EnumCommand.UPDATE_PLAYER, obj), boardController.getListOfPlayers().stream().
+                        filter(x -> x.getName().equals(((Player) obj).getName())).findFirst().orElse(null));
+            }catch (RemoteException r){
+                r.getMessage();
+            }
+         //   gameServer.sendToAll(new CommandObj(EnumCommand.UPDATE_PLAYER, obj));
         }
 
         if(observable.getClass().equals(Board.class)){
