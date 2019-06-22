@@ -11,6 +11,7 @@ import java.util.Observer;
 public class ClientApp {
     private ClientRMI connection;
     private View view;
+    private ClientUpdateManager clientUpdateManager;
 
     public ClientApp(){
         try {
@@ -18,18 +19,25 @@ public class ClientApp {
         }catch (RemoteException re){
             re.fillInStackTrace();
         }
+
+        this.clientUpdateManager = new ClientUpdateManager();
     }
 
-    public void createView(Player player, Board board, Observer client){
+    protected void createView(Player player, Board board, Observer client){
         createCLIView(player, board, client);
+        clientUpdateManager.addObserver(view);
     }
 
-    public void createCLIView(Player player, Board board, Observer client){
+    private void createCLIView(Player player, Board board, Observer client){
         view = new Cli(player, board, client);
     }
 
     public View getView(){
         return this.view;
+    }
+
+    protected ClientUpdateManager getClientUpdateManager() {
+        return clientUpdateManager;
     }
 
     public static void main(String[] args) throws RemoteException {
