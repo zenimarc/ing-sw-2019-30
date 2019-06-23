@@ -55,7 +55,6 @@ class PlayerBoardTest {
         assertEquals(3, p3.getPlayerBoard().getMarks(p2));
         p3.addDamage(p2);
         assertEquals(12, p3.getPlayerBoard().getNumDamages());
-        assertEquals(0, p3.getPlayerBoard().getMarks(p2));
 
         p2.getPlayerBoard().clearDamages();
         p2.addDamage(p1, 5);

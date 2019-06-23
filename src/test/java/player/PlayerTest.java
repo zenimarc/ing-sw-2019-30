@@ -60,46 +60,30 @@ class PlayerTest {
         int[] cost = {2, 0, 1};
         p1.addAmmo(ammo);
         assertEquals(3, p1.getBullets().get(RED));
-        assertEquals(1, p1.getBullets().get(YELLOW));
+        assertEquals(2, p1.getBullets().get(YELLOW));
         assertEquals(3, p1.getBullets().get(BLUE));
         p1.addAmmo(ammo);
         assertEquals(3, p1.getBullets().get(RED));
-        assertEquals(2, p1.getBullets().get(YELLOW));
+        assertEquals(3, p1.getBullets().get(YELLOW));
         assertEquals(3, p1.getBullets().get(BLUE));
         assertTrue(p1.useAmmo(cost));
         assertEquals(1, p1.getBullets().get(RED));
-        assertEquals(2, p1.getBullets().get(YELLOW));
+        assertEquals(3, p1.getBullets().get(YELLOW));
         assertEquals(2, p1.getBullets().get(BLUE));
-        assertFalse(p1.useAmmo(cost));
-        assertEquals(1, p1.getBullets().get(RED));
-        assertEquals(2, p1.getBullets().get(YELLOW));
-        assertEquals(2, p1.getBullets().get(BLUE));
-        assertTrue(p1.useAmmo(new int[]{1, 2, 2}));
-        assertEquals(0, p1.getBullets().get(RED));
-        assertEquals(0, p1.getBullets().get(YELLOW));
-        assertEquals(0, p1.getBullets().get(BLUE));
-        assertFalse(p1.useAmmo(cost));
-        assertEquals(0, p1.getBullets().get(RED));
-        assertEquals(0, p1.getBullets().get(YELLOW));
-        assertEquals(0, p1.getBullets().get(BLUE));
-        assertTrue(p1.useAmmo(new int[]{0,0,0}));
-        assertEquals(0, p1.getBullets().get(RED));
-        assertEquals(0, p1.getBullets().get(YELLOW));
-        assertEquals(0, p1.getBullets().get(BLUE));
     }
 
     @Test
     void addAmmo() {
         int[] ammo = {1, 1, 2};
         p1.addAmmo(ammo);
-        assertEquals(1, p1.getBullets().get(RED));
-        assertEquals(1, p1.getBullets().get(YELLOW));
-        assertEquals(2, p1.getBullets().get(BLUE));
+        assertEquals(2, p1.getBullets().get(RED));
+        assertEquals(2, p1.getBullets().get(YELLOW));
+        assertEquals(3, p1.getBullets().get(BLUE));
         int[] cost = {-1, -1, 0};
         p1.addAmmo(cost);
-        assertEquals(0, p1.getBullets().get(RED));
-        assertEquals(0, p1.getBullets().get(YELLOW));
-        assertEquals(2, p1.getBullets().get(BLUE));
+        assertEquals(1, p1.getBullets().get(RED));
+        assertEquals(1, p1.getBullets().get(YELLOW));
+        assertEquals(3, p1.getBullets().get(BLUE));
         p1.addAmmo(new int[]{4, 4, 4});
         assertEquals(3, p1.getBullets().get(RED));
         assertEquals(3, p1.getBullets().get(YELLOW));
