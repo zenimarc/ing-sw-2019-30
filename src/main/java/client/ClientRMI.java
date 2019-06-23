@@ -1,5 +1,6 @@
 package client;
 
+import attack.Attack;
 import board.Board;
 import controller.CommandObj;
 import controller.PlayerController;
@@ -130,6 +131,11 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     @Override
     public List<String> getTargetsName(List<Player> players, int maxTargets) throws RemoteException {
         return view.getTargetsName(players, maxTargets);
+    }
+
+    @Override
+    public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom) throws RemoteException{
+        return view.chooseIndexes(attacks, canRandom);
     }
 
     /**

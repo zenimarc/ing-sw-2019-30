@@ -1,5 +1,6 @@
 package client;
 
+import attack.Attack;
 import controller.CommandObj;
 import player.Player;
 import server.GameServer;
@@ -28,4 +29,5 @@ public interface Client extends Remote {
      * @throws RemoteException
      */
     List<String> getTargetsName(List<Player> players, int maxTargets) throws  RemoteException;
+    List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom) throws RemoteException;
 }

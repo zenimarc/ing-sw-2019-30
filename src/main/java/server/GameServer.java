@@ -1,5 +1,6 @@
 package server;
 
+import attack.Attack;
 import board.Board;
 import client.Client;
 import controller.CommandObj;
@@ -18,4 +19,5 @@ public interface GameServer extends Remote {
     void receiveCMD(CommandObj cmd, Client remoteClient) throws RemoteException;
     Board getBoard() throws RemoteException;
     List<Player> getTargets(List<Player> potentialTarget, int maxTarget) throws RemoteException;
+    List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom) throws RemoteException;
 }

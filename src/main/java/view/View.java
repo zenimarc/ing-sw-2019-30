@@ -1,5 +1,6 @@
 package view;
 
+import attack.Attack;
 import board.Board;
 import player.Player;
 
@@ -19,5 +20,7 @@ public interface View  {
     void updateBoard(Board board);
     void grab();
     List<String> getTargetsName(List<Player> potentialTarget, int maxTarget);
+    List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom);
+
 
 }

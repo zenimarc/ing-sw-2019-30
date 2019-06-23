@@ -137,7 +137,7 @@ public class PlayerController extends Observable implements Observer{
                 notifyObservers();
                 break;
             case USE_KINETICRAY:
-                playerView.moveKineticray(playerView.chooseTarget(boardController.getListOfPlayers()), boardController.getCellsKineticRay(player.getCell()));
+                playerView.moveKineticray(playerView.chooseTargets(1, boardController.getListOfPlayers()).get(0), boardController.getCellsKineticRay(player.getCell()));
                 break;
             case KINETICRAY:
                 setOtherCell((Player)cmdObj.getObject(), (Cell) cmdObj.getObject2());
@@ -381,11 +381,11 @@ public class PlayerController extends Observable implements Observer{
             if(shootBaseAttack(weaponCard)) isGoodAttack = true;
         }else if (!weaponCard.getAttacks().isEmpty()) {
             //BASE ATTACK + OPTIONAL ATTACK
-            //if(shootOptionalAttack(weaponCard)) isGoodAttack = true;
-            askWhichOptionalAttack(weaponCard);
+            if(shootOptionalAttack(weaponCard)) isGoodAttack = true;
+//            askWhichOptionalAttack(weaponCard);
         }else if(weaponCard.getAlternativeAttack()!=null){
             //ALTERNATIVE ATTACK
-      //      if(shootAlternativeAttack(weaponCard)) isGoodAttack = true;
+            if(shootAlternativeAttack(weaponCard)) isGoodAttack = true;
         }
 
         if(isGoodAttack) {
@@ -403,38 +403,41 @@ public class PlayerController extends Observable implements Observer{
     }
 
     /**
-     * This function asks a shooter which optional attack wants to use and targets he wants to hit.
-     * Then he shoots using base attack and selected optional attack
-     * @param weaponCard weaponCard to use
+     * This ask player which optional attack want to use, if 0 -> use only BaseAttack.
+     * Than verify if can pay optional attack, ask which opponents want shoot and shoot
+     * @param weaponCard Weapon to shot opponents
+     * @return Shoot someone?
      */
-    private void askWhichOptionalAttack(WeaponCard weaponCard) {
-        //List<Integer> indexes = playerView.chooseOptionalAttack(weaponCard, true);
-        cmdForView(new CommandObj(CHOOSE_OPTIONAL_ATTACK, new ArrayList<>(Arrays.asList(weaponCard, true))));
-    }
+    private boolean shootOptionalAttack(WeaponCard weaponCard){
+        List<Integer> indexes;
 
-    private void setOptionalAttacks(WeaponCard weaponCard, List<Integer> indexes){
-        if (indexes.isEmpty()) {
- //           return shootBaseAttack(weaponCard);
+        try {
+            indexes = boardController.getGameServer().chooseIndexes(weaponCard.getAttacks(), true);
+        }catch (RemoteException re){
+            return false;
         }
+        if (indexes.isEmpty()) return shootBaseAttack(weaponCard);
 
         int maxTarget;
         List<Attack> attacks = new ArrayList<>();
-
+        //Add base attack and selected attack in "attacks" (list to shoot)
         attacks.add(weaponCard.getBaseAttack());
         indexes.forEach(x -> attacks.add(weaponCard.getAttack(x)));
-
+        //Calc max target
         maxTarget = attacks.stream().mapToInt(Attack::getTarget).max().orElse(0);
+        //Ask for opponents to shoot
         List<Player> opponents = getTargets(weaponCard.getBaseAttack().getTargetType(), maxTarget);
         //User can't attack or decided to not attack
         if (opponents.isEmpty()){
             viewPrintError("Failed attack");
-            return;
+            return false;
         }
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
 
+        //Attack with base attack
         weaponCard.shoot(0,player, opponents, null);
-
+        //Attack whit optional attack
         for(Integer index : indexes) {
             if (!player.canPay(weaponCard.getAttack(index).getCost())) {
                 viewPrintError("You have not enough bullet to use this attack");
@@ -444,6 +447,7 @@ public class PlayerController extends Observable implements Observer{
                 player.useAmmo(weaponCard.getAttack(index).getCost());
             }
         }
+        return true;
     }
 
     /**
@@ -458,12 +462,11 @@ public class PlayerController extends Observable implements Observer{
     /**
      * This function invokes shootSingleAttack to use AlternativeAttack
      * @param weaponCard WeaponCard  to use to attack
-     * @param pw shooter playerView
      * @return an optional single attack
      */
-    private boolean shootAlternativeAttack(WeaponCard weaponCard, PlayerView pw) {
+    private boolean shootAlternativeAttack(WeaponCard weaponCard) {
         if (!player.canPay(weaponCard.getAlternativeAttack().getCost())) {
-            pw.printError("You have not enough bullet to use this attack");
+            viewPrintError("You have not enough bullet to use this attack");
             return false;
         }
 

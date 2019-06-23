@@ -1,5 +1,6 @@
 package server;
 
+import attack.Attack;
 import board.Board;
 import client.Client;
 import controller.BoardController;
@@ -166,6 +167,15 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                     .stream()
                     .filter(x -> targetsName.contains(x.getName()))
                     .collect(Collectors.toList());
+        }else return Collections.emptyList();
+    }
+
+    @Override
+    public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom) throws RemoteException {
+        Client client = getClient(boardController.getPlayer());
+
+        if(client!=null){
+            return client.chooseIndexes(attacks, canRandom);
         }else return Collections.emptyList();
     }
 
