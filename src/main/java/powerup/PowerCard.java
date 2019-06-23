@@ -58,4 +58,15 @@ public class PowerCard extends Card implements Serializable {
         sb.append(bullet.stringGUI());
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj!=null) {
+            if (obj.getClass().equals(PowerCard.class)) {
+                PowerCard powerCard = (PowerCard) obj;
+                return this.getColor().equals(powerCard.getColor()) && this.cardType.equals(powerCard.cardType);
+            }
+        }
+        return false;
+    }
 }
