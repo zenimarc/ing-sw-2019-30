@@ -189,11 +189,7 @@ public class PlayerView extends Observable{
      * @param possibleTarget possible target list
      * @return player who can hit
      */
-    public Player chooseTarget(List<Player> possibleTarget){
-        if(possibleTarget.isEmpty()){
-            printError("There are no possible targets");
-            return null;
-        }
+    private Player chooseTarget(List<Player> possibleTarget){
         String format = "[0-"+possibleTarget.size()+"]";
         String question = stringForChooseTarget(possibleTarget);
         String read;
@@ -217,17 +213,24 @@ public class PlayerView extends Observable{
      * @return list of opponents to hit
      */
     public List<Player> chooseTargets(int numTarget, List<Player> checkedList){
-        ArrayList<Player> possibleTargets = (ArrayList<Player>) ((ArrayList<Player>)checkedList).clone();
+
+        if(checkedList.isEmpty()){
+            printError("There are no possible targets");
+            return Collections.emptyList();
+        }
+
+        ArrayList<Player> possibleTargets = new ArrayList<>();
+        possibleTargets.addAll(checkedList);
+
         List<Player> targets = new ArrayList<>();
         Player p;
-
-        if(possibleTargets.isEmpty()) return Collections.emptyList();
 
         for(int i=0; i<numTarget;i++){
             p = chooseTarget(possibleTargets);
             if(p!=null){
                 targets.add(p);
                 possibleTargets.remove(p);
+                if(possibleTargets.isEmpty()) return targets;
             }else{
                 break;
             }
@@ -482,31 +485,31 @@ public class PlayerView extends Observable{
 
     /**
      * This ask user what optional attack want use
-     * @param wc selected weapon card
      * @param canRandom user can use optional attack whitout order
      * @return list of index of choosen optional attack
      */
-    public List<Integer> chooseOptionalAttack(WeaponCard wc, boolean canRandom){
+    public List<Integer> chooseOptionalAttack(List<Attack> attacks, boolean canRandom){
         ArrayList<Integer> indexes = new ArrayList<>();
         String format;
         String read;
 
-        List<Attack> attacks = new ArrayList<>(wc.getAttacks());
         if(attacks.isEmpty()) return Collections.emptyList();
+
+        List<Attack> attackList = new ArrayList<>();
+        attackList.addAll(attacks);
 
         if(canRandom) {
             while (true) {
-                format = "[0-"+attacks.size()+"]";
-                print(stringForChooseAttackInList(attacks));
+                format = "[0-"+attackList.size()+"]";
+                print(stringForChooseAttackInList(attackList));
                 read = reader.next();
                 if(read.matches(format)) {
                     if (!read.equals("0")){
-                        indexes.add(wc.getAttacks().indexOf(attacks.get(Integer.valueOf(read)-1)));
-                        attacks.remove(Integer.valueOf(read)-1);
+                        indexes.add(attacks.indexOf(attackList.get(Integer.valueOf(read)-1)));
+                        attackList.remove(Integer.valueOf(read)-1);
                     }
                     else break;
                 }
-
             }
         }
         return indexes;

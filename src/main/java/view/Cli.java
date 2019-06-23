@@ -1,5 +1,6 @@
 package view;
 
+import attack.Attack;
 import board.Board;
 import player.Player;
 
@@ -77,6 +78,14 @@ public class Cli implements View {
 
     @Override
     public List<String> getTargetsName(List<Player> potentialTarget, int maxTarget) {
-        return playerView.chooseTargets(maxTarget, potentialTarget).stream().map(Player::getName).collect(Collectors.toList());
+        return playerView.chooseTargets(maxTarget, potentialTarget)
+                .stream()
+                .map(Player::getName)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom){
+        return playerView.chooseOptionalAttack(attacks, canRandom);
     }
 }
