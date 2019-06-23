@@ -123,8 +123,10 @@ public class DistanceWeapon extends WeaponCard {
                 return false;
         }
 
-        opponents.stream().filter(x->x!=null).forEach(Player::notifyEndAction);
-        shooter.setNotLoadWeapon(this);
+        if(result) {
+            opponents.stream().filter(x -> x != null).forEach(Player::notifyEndAction);
+            shooter.setNotLoadWeapon(this);
+        }
         return result;
     }
 
