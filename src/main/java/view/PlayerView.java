@@ -33,27 +33,33 @@ public class PlayerView extends Observable{
         this.addObserver(clientManager);
     }
 
-    public void myTurn() {
+    protected void myTurn() {
+        boolean toServerAction = false;
         EnumCommand command = choosePlayerAction();
         switch (command) {
             case MOVE:
-                move(EnumCommand.MOVE);
+                toServerAction = move(EnumCommand.MOVE);
                 break;
             case GRAB:
-                move(EnumCommand.GRAB_MOVE);
+                toServerAction = move(EnumCommand.GRAB_MOVE);
                 break;
             case SHOOT:
-                shoot();
+                toServerAction = shoot();
                 break;
             case POWERUP:
                 notifyServer(new CommandObj(CHECKPOWERUP, POWERUP));
+                toServerAction = true;
                 break;
             case END_TURN:
                 notifyServer(new CommandObj(EnumCommand.END_TURN));
+                toServerAction = true;
                 break;
             default:
                 break;
         }
+
+        if(!toServerAction) printError("Action not performed");
+
     }
 
     public void setPlayer(Player player) {
