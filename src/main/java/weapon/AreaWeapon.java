@@ -96,7 +96,7 @@ public class AreaWeapon extends WeaponCard {
                 result = false;
         }
 
-        opponents.forEach(Player::notifyEndAction);
+        opponents.stream().filter(x->x!=null).forEach(Player::notifyEndAction);
         shooter.setNotLoadWeapon(this);
         return result;
     }
