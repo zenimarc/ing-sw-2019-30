@@ -89,7 +89,7 @@ public class WeaponFactory {
                 wp = getCardinalWeapon(weapon);
 
             if(EnumWeapon.PriorityWeaponSet.contains(weapon))
-                wp = getCardinalWeapon(weapon);
+                wp = getPriorityWeapon(weapon);
 
             if(wp !=null) {
                 try {

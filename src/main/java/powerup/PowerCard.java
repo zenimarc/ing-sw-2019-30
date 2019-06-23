@@ -34,10 +34,18 @@ public class PowerCard extends Card implements Serializable {
      */
     public PowerUp getPowerUp(){return this.cardType;}
 
+    /**
+     * This function returns the Color of the PowerCard
+     * @return color of PowerCard
+     */
     public Color getColor(){
         return bullet.getColor();
     }
 
+    /**
+     * This function is used to print Power up and color of PowerCard for CLI
+     * @return a string
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -50,6 +58,10 @@ public class PowerCard extends Card implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * This function is used to create an image of a PowerCard for GUI
+     * @return a string
+     */
     @Override
     public String stringGUI() {
         StringBuilder sb = new StringBuilder();
@@ -59,6 +71,11 @@ public class PowerCard extends Card implements Serializable {
         return sb.toString();
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if(obj!=null) {

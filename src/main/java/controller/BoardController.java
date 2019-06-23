@@ -202,8 +202,6 @@ public class BoardController{
         opponents.remove(playerWhoPlay);
 
         switch (targetType) {
-            case NO_ATTACK:
-                return null;
             case VISIBLE:
                 return opponents.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell())).collect(Collectors.toList());
             case NOT_VISIBLE:

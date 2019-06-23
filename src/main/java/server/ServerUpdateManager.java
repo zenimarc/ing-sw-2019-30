@@ -14,6 +14,9 @@ public class ServerUpdateManager implements Observer {
     private BoardController boardController;
     private GameServerImpl gameServer;
 
+    /**
+     * Default constructor
+     */
     public ServerUpdateManager(GameServerImpl gameServer, BoardController boardController) throws RemoteException {
         this.gameServer = gameServer;
         this.boardController = boardController;
@@ -24,11 +27,21 @@ public class ServerUpdateManager implements Observer {
 
     }
 
+    /**
+     * This function is used to send commands to a player
+     * @param cmd to be received
+     * @param player to receive command
+     */
     public void receiveCmd(CommandObj cmd, Player player){
         PlayerController playerController = boardController.getPlayerController(player);
         playerController.receiveCmd(cmd);
     }
 
+    /**
+     *
+     * @param observable
+     * @param obj
+     */
     @Override
     public void update(Observable observable, Object obj) {
         //In this case the update come from a player, so send to all client the player cloned to get infos

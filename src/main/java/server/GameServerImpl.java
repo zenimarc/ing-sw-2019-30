@@ -38,14 +38,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         this.beginCountdown = new Thread();
     }
 
-    /**
-     * this function checks if the server is full
-     * @return true if it's full, and false if it isn't full.
-     */
-    public synchronized boolean isFull(){
-        System.out.println("ci sono "+clients.size()+" players" +" e il max e: "+ maxPlayer);
-        return (clients.size() >= maxPlayer);
-    }
+
 
     public PlayerController getPlayerController(Client remoteClient) throws RemoteException{
         return boardController.getPlayerController(remoteClient.getNickname());
@@ -57,6 +50,20 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     public List<Player> getPlayers(){
         return boardController.getListOfPlayers();
+    }
+
+    @Override
+    public Board getBoard() {
+        return boardController.getBoard();
+    }
+
+    /**
+     * this function checks if the server is full
+     * @return true if it's full, and false if it isn't full.
+     */
+    public synchronized boolean isFull(){
+        System.out.println("ci sono "+clients.size()+" players" +" e il max e: "+ maxPlayer);
+        return (clients.size() >= maxPlayer);
     }
 
     /**
@@ -96,6 +103,9 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         }
     }
 
+    /**
+     * This function is used to begin the game
+     */
     public void startGame(){
         System.out.println("il gameserver: "+this.getGameToken()+" ha startato il game");
         this.gameStarted = true;
@@ -129,7 +139,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     /**
-     * this function notify to all active clients that the game has started
+     * This function notifies to all active clients that the game has started
      */
     private void notifyAllGameStarted(){
         for (Client client : getActiveClients())
@@ -141,6 +151,12 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             }
     }
 
+    /**
+     * This command is used to send a command to a player
+     * @param cmd to be sent
+     * @param receiverPlayer of the command
+     * @throws RemoteException error
+     */
     void sendCMD(CommandObj cmd, Player receiverPlayer) throws RemoteException{
         Client remoteClient = getClient(receiverPlayer);
         if (remoteClient != null){
@@ -148,13 +164,14 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         }
     }
 
+    /**
+     *
+     * @param cmd
+     * @param remoteClient
+     * @throws RemoteException
+     */
     public void receiveCMD(CommandObj cmd, Client remoteClient) throws RemoteException{
         serverUpdateManager.receiveCmd(cmd, getPlayer(remoteClient));
-    }
-
-    @Override
-    public Board getBoard() throws RemoteException {
-        return boardController.getBoard();
     }
 
     @Override

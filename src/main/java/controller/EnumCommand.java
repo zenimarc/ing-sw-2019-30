@@ -12,7 +12,12 @@ public enum EnumCommand {
     SHOOT("Shoot", "..."),
     POWERUP("PowerUp", "..."),
     END_TURN("End Turn", "End your turn"),
-
+    //Final frenzy
+    MOVE_FRENZY("Move Frenzy", ""),
+    GRAB_MOVE_FRENZYX1("Grab move single action", ""),
+    GRAB_MOVE_FRENZYX2("Grab move double action", ""),
+    SHOOT_MOVE_FRENZYX1("Shoot move single action", ""),
+    SHOOT_MOVE_FRENZYX2("Shoot move double action", ""),
     //
     REG_CELL("Regeneration Cell", "Choose Regeneration cell"),
     GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell"),
@@ -47,7 +52,7 @@ public enum EnumCommand {
     CHOOSE_OPTIONAL_ATTACK("Choose optional attack",""),
     YOUR_TURN("Play!","It's your turn"),
     NOT_YOUR_TURN("Not your turn","Wait a moment..."),
-    SHOW_BOARD("Show bord",""),
+    SHOW_BOARD("Show board",""),
     UPDATE_PLAYER("Update Player","Modify local Player"),
     UPDATE_BOARD("Update Board","Modify local Board"),
 

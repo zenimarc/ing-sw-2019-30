@@ -225,6 +225,38 @@ public class PlayerBoard implements Serializable {
 
     }
 
+    /**
+     * This function clears damage track of player
+     */
+    public void resetDamage(){
+        this.damageTrack.clear();
+    }
+
+    /**
+     * This function is used to undestand if a player is dead
+     * @return true if dead, else false
+     */
+    public boolean isDead(){return isDead;}
+
+    /**
+     * This function resurrects the player
+     */
+    public void resurrect(){
+        isDead = false;
+    }
+
+    /**
+     * This function sets the playerboard into Frenzy mode
+     * @param isFrenzy if Frenzy or not
+     */
+    public void setFrenzy(boolean isFrenzy) {
+        this.isFinalFrenzy = isFrenzy;
+    }
+
+    /**
+     * This funciton is used to print info print in CLI about how many points a player gives after being killed
+     * @return a string
+     */
     public String rewardPointstoString(){
         StringBuilder string = new StringBuilder();
         string.append("Points given: [");
@@ -244,20 +276,4 @@ public class PlayerBoard implements Serializable {
         return string.toString();
     }
 
-    /**
-     * This clear damage track
-     */
-    public void resetDamage(){
-        this.damageTrack.clear();
-    }
-
-    public boolean isDead(){return isDead;}
-
-    public void resurrect(){
-        isDead = false;
-    }
-
-    public void setFrenzy(boolean isFrenzy) {
-        this.isFinalFrenzy = isFrenzy;
-    }
 }

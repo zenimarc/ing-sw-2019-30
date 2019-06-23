@@ -93,8 +93,6 @@ public class Player extends Observable implements Cloneable, Serializable {
         return this.playerBoard;
     }
 
-    public boolean isDead(){return this.playerBoard.isDead();}
-
     /**
      * This function returns the list of weapons the player has
      *
@@ -106,13 +104,16 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     /**
      * This function returns the list of power ups the player has
-     *
      * @return the power up the player has
      */
     public List<PowerCard> getPowerups() {
         return this.powerups;
     }
 
+    /**
+     * This function return a List of not loaded WeaponCards
+     * @return a List
+     */
     public List<WeaponCard> getNotLoaded(){
         return weapons.stream().filter(x -> !x.isReady()).collect(Collectors.toList());
     }
@@ -124,6 +125,12 @@ public class Player extends Observable implements Cloneable, Serializable {
         return this.ammo;
     }
 
+
+    /**
+     * This function is used to understand if a player is dead
+     * @return true if dead, else false
+     */
+    public boolean isDead(){return this.playerBoard.isDead();}
     /**
      * This function modifies the cell of the player and changes the pawn list of initial and destination cell
      * @param cell of destination
@@ -139,7 +146,6 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     /**
      * This function adds the points to a player after a kill
-     *
      * @param points to give
      */
     public void addPoints(int points) {
@@ -149,7 +155,6 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     /**
      * This function checks if the player can pay for the indicated ammo.
-     *
      * @param ammo is an array containing ammo to pay per color
      * @return True if the player has enough ammo, else False.
      */
@@ -163,7 +168,6 @@ public class Player extends Observable implements Cloneable, Serializable {
     /**
      * this function first checks if the player has enough ammo, then use the indicated ammo from the array.
      * if the player cannot pay the indicated ammo, his ammo are not modified.
-     *
      * @param ammo is an array containing bullet cost for each color
      * @return True if the player can pay the requested ammo, else return False.
      */
@@ -179,7 +183,6 @@ public class Player extends Observable implements Cloneable, Serializable {
      * this function adds ammo to the player from an ammo[] array
      * requires ammo.length()>=3
      * player ammo are capped per color by MAX_BULLET_PER_COLOR constants
-     *
      * @param ammo array containing ammo cost for each color
      *             (ammo[0] -> RED cost, ammo[1] -> YELLOW cost, ammo[2] -> BLUE cost)
      */
@@ -197,7 +200,6 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     /**
      * This function adds a weapon to the list of weapons the players has
-     *
      * @param weaponCard to add
      * @return true if it is possible, else false
      */
@@ -209,6 +211,11 @@ public class Player extends Observable implements Cloneable, Serializable {
         return false;
     }
 
+    /**
+     * This function unloads a WeaponCard of the player
+     * @param weaponCard to be unloaded
+     * @return true if unloaded, else false
+     */
     public boolean setNotLoadWeapon (WeaponCard weaponCard){
         WeaponCard wp = weapons.stream()
                 .filter(x -> x.equals(weaponCard))
@@ -385,9 +392,9 @@ public class Player extends Observable implements Cloneable, Serializable {
     }
 
     /**
-     *
-     * @param power
-     * @return
+     * This function is used to understand if a player can pay a Power up
+     * @param power to be paid
+     * @return true if possible, else false
      */
     public boolean canPayPower(PowerCard power){
         return(ammo.get(power.getColor()) >= 1);
@@ -395,10 +402,10 @@ public class Player extends Observable implements Cloneable, Serializable {
     }
 
     /**
-     *
-     * @param power
-     * @param discard
-     * @return
+     * This function is used to deal with power up payment
+     * @param power to be paid
+     * @param discard true if the card will be discarded
+     * @return true if the PowerCard can be paid, else false
      */
     public boolean usePowerUp(PowerCard power, boolean discard){
         if(discard){
@@ -406,13 +413,28 @@ public class Player extends Observable implements Cloneable, Serializable {
             notifyEndAction();
             return true;
         }
-        else return(canPayPowerUp(power));
+        else return canPayPowerUp(power);
     }
 
     /**
-     *
-     * @param power
-     * @return
+     * This function creates an array which is used to verify if a player can pay Gunsight power up
+     * @return an array
+     */
+    public int[] payCubeGunsight(){
+        int[] array = {0, 0, 0};
+        if(ammo.get(Color.RED) > 0)
+            array[0] = 1;
+        if(ammo.get(Color.YELLOW) > 0)
+            array[1] = 1;
+        if(ammo.get(Color.BLUE) > 0)
+            array[2] = 1;
+        return array;
+    }
+
+    /**
+     * This function verifies if a PowerCard can be paid with cubes
+     * @param power to be paid
+     * @return true if possible, else false
      */
     public boolean canPayPowerUp(PowerCard power){
         if(ammo.get(power.getColor()) >= 1){
@@ -422,9 +444,9 @@ public class Player extends Observable implements Cloneable, Serializable {
     }
 
     /**
-     *
-     * @param color
-     * @return
+     * This function verifies if Gunsight Power up can be paid and removes color Bullet from player
+     * @param color to pay
+     * @return true if possible, else false
      */
     public boolean canPayGunsight(Color color){
         if(ammo.get(color) >= 1){
@@ -434,8 +456,8 @@ public class Player extends Observable implements Cloneable, Serializable {
     }
 
     /**
-     *
-     * @return
+     * This function is used to print in the CLI the ammo a player has
+     * @return a string
      */
     public String printPlayerAmmo(){
 
@@ -443,7 +465,7 @@ public class Player extends Observable implements Cloneable, Serializable {
     }
 
     /**
-     *
+     * This function is used to notify actions
      */
     public void notifyEndAction(){
         setChanged();

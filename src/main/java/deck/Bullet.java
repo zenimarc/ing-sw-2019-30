@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * TODO Bullet is used for graphics
+ * Bullet is a class used to represent ammo
  */
 public class Bullet implements Serializable {
 
@@ -64,6 +64,11 @@ public class Bullet implements Serializable {
         else return "[R:"+cubes[0]+",Y:"+cubes[1]+",B:"+cubes[2]+"]";
     }
 
+    /**
+     * This function converts a Map of bullets to an array which then is converted into a string for CLI
+     * @param map to be converted
+     * @return a string
+     */
     public static String mapToString(Map<Color, Integer> map){
 
         int[] bullets = new  int[]{map.get(Color.RED), map.get(Color.YELLOW),map.get(Color.BLUE)};

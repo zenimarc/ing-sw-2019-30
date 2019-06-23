@@ -6,6 +6,7 @@ import attack.DistanceAttack;
 import attack.SimpleAttack;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import deck.Bullet;
 import player.Player;
@@ -17,6 +18,9 @@ import static constants.EnumAttackName.*;
 import static constants.EnumAttackName.SUPPORT_ATTACK;
 import static controller.EnumTargetSet.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+
+//TODO serve davvero Cardinal attack? Si potrebbe trattare come distance attack per cui la massima distanza è la distanza entro cui può colpire altri target
 public class CardinalWeapon extends WeaponCard{
 
     public CardinalWeapon(EnumWeapon weaponType){
@@ -26,18 +30,18 @@ public class CardinalWeapon extends WeaponCard{
 
         switch (weaponType){
             case FLAMETHROWER:
-                baseAttack = new DistanceAttack(CARDINAL, FLAMETHROWER_BASE,1,0,2,1,1);
-                alternativeAttack = new DistanceAttack(CARDINAL, FLAMETHROWER_OP1,2,0,-1,1,1);
+                baseAttack = new CardinalAttack(CARDINAL, FLAMETHROWER_BASE,1,0,2,1,2);
+                alternativeAttack = new CardinalAttack(CARDINAL, FLAMETHROWER_OP1,2,0,-1,1,2);
                 alternativeAttack.setCost(new int[]{0,2,0});
                 break;
             case RAILGUN:
                 baseAttack = new SimpleAttack(CARDINAL_WALL_BYPASS, RAILGUN_BASE, 3,0,1);
-                alternativeAttack = new DistanceAttack(CARDINAL_WALL_BYPASS, RAILGUN_OP1,2,0,2,0, -1);
+                alternativeAttack = new CardinalAttack(CARDINAL_WALL_BYPASS, RAILGUN_OP1,2,0,2,0, -1);
 
                 break;
             case POWERGLOVE:
                 baseAttack = new SimpleAttack(CARDINAL, POWERGLOVE_BASE, 1 , 2,1);
-                alternativeAttack = new DistanceAttack(CARDINAL, POWERGLOVE_OP1, 2, 0 , 1,1,1);
+                alternativeAttack = new CardinalAttack(CARDINAL, POWERGLOVE_OP1, 2, 0 , 1,1,1);
                 alternativeAttack.setCost(new int[]{0,0,1});
                 break;
             default:
@@ -74,7 +78,7 @@ public class CardinalWeapon extends WeaponCard{
 
         switch (typeAttack){
             case 0:
-                baseAttack.attack(shooter,opponents);
+                baseAttack.attack(shooter, opponents);
                 supportAttack.attack(shooter, opponents);
                 break;
             case 1:
@@ -101,7 +105,7 @@ public class CardinalWeapon extends WeaponCard{
     }
 
     private boolean powerGloveShoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
-
+//la cella dello shooter diventa la stessa dell'ultimo attaccato
         switch (typeAttack) {
             case 0:
                 baseAttack.attack(shooter, opponents.get(0));

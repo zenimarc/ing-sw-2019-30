@@ -16,13 +16,7 @@ public class CardinalAttack extends Attack{
     private int maxDistance;
 
     /**
-     *
-     * @param name
-     * @param damage
-     * @param mark
-     * @param target
-     * @param minDistance
-     * @param maxDistance
+     *Default constructor
      */
     @JsonCreator
     public CardinalAttack(@JsonProperty("targetType") EnumTargetSet targetType,

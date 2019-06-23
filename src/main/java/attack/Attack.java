@@ -16,8 +16,7 @@ import java.util.List;
 
 
 /**
- * This class is an idea of genertic attack.
- * Need implements different attack's type.
+ * This class is an idea of generic attack
  */
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,

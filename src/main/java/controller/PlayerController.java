@@ -75,10 +75,13 @@ public class PlayerController extends Observable implements Observer{
 
     public void receiveCmd(CommandObj cmdObj){
         switch (cmdObj.getCmd()) {
+            case MOVE_FRENZY:
+            case GRAB_MOVE_FRENZYX1:
+            case GRAB_MOVE_FRENZYX2:
             case MOVE:
             case GRAB_MOVE:
                 if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
-                    if(cmdObj.getCmd()==MOVE) numAction++;
+                    if(cmdObj.getCmd()==MOVE || cmdObj.getCmd()==MOVE_FRENZY) numAction++;
                     else cmdForView(new CommandObj(GRAB));
                 }else {
                     viewPrintError();
@@ -108,7 +111,7 @@ public class PlayerController extends Observable implements Observer{
                 cmdForView(new CommandObj(CHECKPOWERUP, getPotentialPowerUps(cmdObj)));
                 break;
             case PAYGUNSIGHT:
-                playerView.askPayGunsight(payCubeGunsight(), (PowerCard)cmdObj.getObject());
+                playerView.askPayGunsight(player.payCubeGunsight(), (PowerCard)cmdObj.getObject());
                 break;
             case GUNSIGHTPAID:
                 player.canPayGunsight((Color) cmdObj.getObject2());
@@ -172,7 +175,11 @@ public class PlayerController extends Observable implements Observer{
                 player.notifyEndAction();
                 break;
             case SHOOT:
-                checkedShoot(cmdObj);
+                if(player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum())
+                    if(!move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd()))
+                        viewPrintError();
+                    else checkedShoot(cmdObj);
+                else checkedShoot(cmdObj);
                 break;
             case LOAD_WEAPONCARD:
                 WeaponCard wc = (WeaponCard) cmdObj.getObject();
@@ -220,68 +227,30 @@ public class PlayerController extends Observable implements Observer{
                 return true;
             }
         }
-        return false;
-    }
-
-    /**
-     *
-     * @param cell
-     * @param i
-     * @return
-     * @deprecated
-     */
-    @Deprecated
-    public boolean move(Cell cell, int i) {
-        switch(i) {
-            case 10: //normal move
-                if(cell == player.getCell())
-                    return true;
-                if (!this.boardController.isFinalFrenzy()) {//non final Frenzy
-                    if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
-                        return false; }
-                else if (!billboard.canMove(player.getPawn().getCell(), cell, 4) || !boardController.verifyTwoTurnsFrenzy())
+        else {//TODO i controlli per le due grab e le due shoot sono fatti in anticipo? Serve davvero distinguere se è Final frenzy o meno qui?
+            switch (enumCommand) {
+                case MOVE_FRENZY: //normal mode
+                    actionParam = FRENZY_MOVE;
+                    break;
+                case GRAB_MOVE_FRENZYX1:// move for grab
+                    actionParam = FRENZY_GRAB_MOVEX1;
+                break;
+                case GRAB_MOVE_FRENZYX2:// move for grab
+                    actionParam = FRENZY_GRAB_MOVEX2;
+                break;
+                case SHOOT_MOVE_FRENZYX1: //move from shoot
+                    actionParam = FRENZY_SHOOT_MOVEX1;
+                    break;
+                case SHOOT_MOVE_FRENZYX2: //move from shoot
+                    actionParam = FRENZY_SHOOT_MOVEX2;
+                    break;
+                default:
                     return false;
+            }
+            if(billboard.canMove(player.getCell(), cell, actionParam.getNum())){
                 setCell(cell);
                 return true;
-
-            case 11: //move from grab
-                if(cell == player.getCell())
-                    return true;
-                if (!this.boardController.isFinalFrenzy()) { //not FinalFrenzy
-                    if (player.getPlayerBoard().getNumDamages() > 2) {
-                        if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
-                            return false; }
-                    else if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
-                        return false; }
-                else {//Final Frenzy
-                    if (boardController.verifyTwoTurnsFrenzy()) {
-                        if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
-                            return false; }
-                    else if (!billboard.canMove(player.getPawn().getCell(), cell, 3))
-                        return false;
-                }
-                setCell(cell);
-                return true;
-
-            case 12: //move from shoot
-                if(cell == player.getCell())
-                    return true;
-                if (!boardController.isFinalFrenzy()) { //not FinalFrenzy
-                    if (player.getPlayerBoard().getNumDamages() > 5){
-                        if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
-                            return false;}
-                    else return false;
-                    }
-                else {//Final Frenzy
-                        if (boardController.verifyTwoTurnsFrenzy()) {
-                            if (!billboard.canMove(player.getPawn().getCell(), cell, 1))
-                                return false; }
-                        else if (!billboard.canMove(player.getPawn().getCell(), cell, 2))
-                            return false;
-                    }
-
-                    setCell(cell);
-                    return true;
+            }
 
         }
         return false;
@@ -317,7 +286,7 @@ public class PlayerController extends Observable implements Observer{
         int[] grabCost = toIntArray(grabWeapon.getGrabCost());
         //Can player pay this weaponCard?
         if(player.canPay(grabCost)) {
-            //Can player draw an other WeaponCard?
+            //Can player draw another WeaponCard?
             if (player.getWeapons().size() == Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
                 //He can't
                 cmdForView(new CommandObj(DISCARD_WEAPON, grabWeaponIndex));
@@ -374,7 +343,7 @@ public class PlayerController extends Observable implements Observer{
         }
 
         if (selector == -1) return;
-
+//aggiungere caso delle priority weapons per cui un optional va bene anche prima di un attacco base
         boolean isGoodAttack = false;
         if (selector==0){
             //BASE ATTACK
@@ -722,22 +691,6 @@ public class PlayerController extends Observable implements Observer{
     protected void cmdForView(CommandObj cmd){
         setChanged();
         notifyObservers(cmd);
-    }
-
-    /**
-     * This function creates an array which is used to verify if a player can pay
-     * Gunsight power up
-     * @return an array
-     */
-    private int[] payCubeGunsight(){
-        int[] array = {0, 0, 0};
-        if(player.getBullets().get(Color.RED) > 0)
-            array[0] = 1;
-        if(player.getBullets().get(Color.YELLOW) > 0)
-            array[1] = 1;
-        if(player.getBullets().get(Color.BLUE) > 0)
-            array[2] = 1;
-        return array;
     }
 
     private void setPlayerboardFrenzy(){

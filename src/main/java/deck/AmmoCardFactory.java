@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * AmmoCardFactory is used to create AmmoCards for the game
+ */
 public class AmmoCardFactory {
     private static final String ammoResourcesAddress = "src" + File.separator +
             "resources"+ File.separator +

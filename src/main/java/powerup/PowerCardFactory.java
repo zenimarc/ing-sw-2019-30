@@ -8,12 +8,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * PowerCardFactory is used to create a deck of PowerCards
+ */
 public class PowerCardFactory {
     private static final String POWERCARD_RESOURCES_ADDRESS = "src" + File.separator +
             "resources"+ File.separator +
             "cards" + File.separator +
             "powercards.json";
 
+    /**
+     * This function is used to create a PowerCard deck from a Jackson file
+     * @return PowerCard deck
+     */
     private List<PowerCard> powerCardsJackson(){
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -37,7 +44,10 @@ public class PowerCardFactory {
 
     }
 
-
+    /**
+     * This function is used to get PowerCard deck
+     * @return PowerCard deck
+     */
     public List<PowerCard> getPowerCardsList(){
         return powerCardsJackson();
     }

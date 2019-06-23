@@ -1,13 +1,23 @@
 package server;
 
+/**
+ * TurnHandler is used to handle the maximum time a player can use to choose an action
+ */
+
 public class TurnHandler extends Thread{
     private static final long TURNTIME = 10; //turn timeout in seconds
     private GameServerImpl gameServer;
 
+    /**
+     * Constructor
+     */
     public TurnHandler(GameServerImpl gameServer){
         this.gameServer = gameServer;
     }
 
+    /**
+     * Overrides run method and begin countdown
+     */
     @Override
     public void run(){
         try {

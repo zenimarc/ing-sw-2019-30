@@ -48,7 +48,7 @@ public enum EnumWeapon {
     protected static final Set<EnumWeapon> AreaWeaponSet = EnumSet.of(FURNACE);
     protected static final Set<EnumWeapon> DistanceWeaponSet = EnumSet.of(WHISPER, HELLION, SHOCK_WAVE);
     protected static final Set<EnumWeapon> MovementWeaponSet = EnumSet.of(TRACTOR_BEAM, VORTEX_CANNON, SHOTGUN, SLEDGEHAMMER);
-    protected static final Set<EnumWeapon> SimpleWeaponSet = EnumSet.of(LOCK_RIFLE, MACHINE_GUN, ELECTROSCYTHE, HEATSEEKER, ZX_2);
+    protected static final Set<EnumWeapon> SimpleWeaponSet = EnumSet.of(LOCK_RIFLE, MACHINE_GUN, ELECTROSCYTHE, HEATSEEKER, ZX_2, THOR);
     protected static final Set<EnumWeapon> CardinalWeaponSet = EnumSet.of(FLAMETHROWER, RAILGUN, POWERGLOVE);
     protected static final Set<EnumWeapon> PriorityWeaponSet = EnumSet.of(CYBERBLADE, ROCKET_LAUNCHER, PLASMA_GUN, GRENADE_LAUNCHER);
 

@@ -48,6 +48,10 @@ public class AmmoCard extends Card {
 
     public boolean verifyPowerUp(){return this.hasPowerUp;}
 
+    /**
+     * This function is used to print info for CLI
+     * @return a string
+     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
