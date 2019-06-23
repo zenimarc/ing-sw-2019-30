@@ -17,4 +17,5 @@ public interface GameServer extends Remote {
     void changeTurn(Client remoteClient) throws RemoteException;
     void receiveCMD(CommandObj cmd, Client remoteClient) throws RemoteException;
     Board getBoard() throws RemoteException;
+    List<Player> getTargets(List<Player> potentialTarget, int maxTarget) throws RemoteException;
 }

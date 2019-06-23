@@ -8,6 +8,7 @@ import constants.Color;
 import deck.Deck;
 import player.Player;
 import powerup.PowerCard;
+import server.GameServer;
 import view.BoardViewCLI;
 
 import java.util.*;
@@ -24,6 +25,7 @@ public class BoardController{
     private List<PlayerController> playerControllers;
     private Board board;
     private Player playerWhoPlay;
+    private GameServer gameServer;
 
     /**
      * Default constructor
@@ -60,6 +62,14 @@ public class BoardController{
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
             player.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
         }
+    }
+
+    public void setGameServer(GameServer gameServer) {
+        this.gameServer = gameServer;
+    }
+
+    public GameServer getGameServer() {
+        return gameServer;
     }
 
     /**

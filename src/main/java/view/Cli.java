@@ -3,7 +3,9 @@ package view;
 import board.Board;
 import player.Player;
 
+import java.util.List;
 import java.util.Observer;
+import java.util.stream.Collectors;
 
 public class Cli implements View {
     private PlayerView playerView;
@@ -71,5 +73,10 @@ public class Cli implements View {
     @Override
     public void grab() {
         playerView.grab();
+    }
+
+    @Override
+    public List<String> getTargetsName(List<Player> potentialTarget, int maxTarget) {
+        return playerView.chooseTargets(maxTarget, potentialTarget).stream().map(Player::getName).collect(Collectors.toList());
     }
 }

@@ -20,6 +20,7 @@ import weapon.AreaWeapon;
 import weapon.EnumWeapon;
 import weapon.WeaponCard;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -377,7 +378,7 @@ public class PlayerController extends Observable implements Observer{
         boolean isGoodAttack = false;
         if (selector==0){
             //BASE ATTACK
-        //    if(shootBaseAttack(weaponCard)) isGoodAttack = true;
+            if(shootBaseAttack(weaponCard)) isGoodAttack = true;
         }else if (!weaponCard.getAttacks().isEmpty()) {
             //BASE ATTACK + OPTIONAL ATTACK
             //if(shootOptionalAttack(weaponCard)) isGoodAttack = true;
@@ -388,11 +389,12 @@ public class PlayerController extends Observable implements Observer{
         }
 
         if(isGoodAttack) {
-            receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
+           // receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
             /*chiederà ad altri giocatori che possono se usare la venomgranade
                 for()
             boardController.getPlayerController().receiveCmd((new CommandObj(ASKFORPOWERUP, VENOMGRENADE)));
              */
+
             numAction++;
             player.notifyEndAction();
         }else {
@@ -447,11 +449,10 @@ public class PlayerController extends Observable implements Observer{
     /**
      * This function invokes shootSingleAttack to use BaseAttack
      * @param weaponCard WeaponCard to use to attack
-     * @param pw shooter playerView
      * @return a base single attack
      */
-    private boolean shootBaseAttack(WeaponCard weaponCard, PlayerView pw){
-        return shootSingleAttack(weaponCard,pw, true);
+    private boolean shootBaseAttack(WeaponCard weaponCard){
+        return shootSingleAttack(weaponCard, true);
     }
 
     /**
@@ -466,7 +467,7 @@ public class PlayerController extends Observable implements Observer{
             return false;
         }
 
-        if (shootSingleAttack(weaponCard, pw, false)) {
+        if (shootSingleAttack(weaponCard, false)) {
             player.useAmmo(weaponCard.getAlternativeAttack().getCost());
             return true;
         } else return false;
@@ -475,11 +476,10 @@ public class PlayerController extends Observable implements Observer{
     /**
      * This function asks a player which opponents he wants to hit, then verifies if they can be hit and finally shoots
      * @param weaponCard Waeponcard with the attack
-     * @param pw Shooter PlayerView
      * @param baseAttack if true uses baseAttack, else uses alternativeAttack
      * @return if shooter is shoot
      */
-    private boolean shootSingleAttack(WeaponCard weaponCard, PlayerView pw,  boolean baseAttack){
+    private boolean shootSingleAttack(WeaponCard weaponCard, boolean baseAttack){
         int attackSelector;
         int maxTarget;
         Attack attack;
@@ -501,25 +501,24 @@ public class PlayerController extends Observable implements Observer{
             if(baseAttack){
                 //TODO choose room
                 opponents.addAll(boardController.getPotentialTargets(opponents.get(0).getCell(), EnumTargetSet.SAME_ROOM));
-            }else {
+            }/*else {
                 List<Cell> possibleCells = boardController.getPotentialDestinationCells(player.getCell(), 1);
                 Cell c = pw.chooseCellToAttack(billboard, possibleCells);
                 if(possibleCells.contains(c)){
                     opponents.addAll(c.getPawns().stream().map(Pawn::getPlayer).collect(Collectors.toList()));
                 }else pw.printError("Selected cell cannot be selected");
-            }
+            }*/
         } else {
             opponents.addAll(getTargets(attack.getTargetType(), maxTarget));
         }
-
 
         if (opponents.isEmpty()) return false;
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
         return weaponCard.shoot(attackSelector, player, opponents, null);
-
     }
+
 
     private List<Player> getDistanceAttackTargets(WeaponCard weaponCard, Attack attack, int maxTarget){
         if (weaponCard.getWeaponType() != EnumWeapon.HELLION) {
@@ -561,7 +560,13 @@ public class PlayerController extends Observable implements Observer{
         if(maxTarget==-1){
             return potentialTargets;
         }else {
-            List<Player> opponents = playerView.chooseTargets(maxTarget, potentialTargets);
+            List<Player> opponents;
+            try {
+                opponents = boardController.getGameServer().getTargets(potentialTargets, maxTarget);
+            }catch (RemoteException re){
+                viewPrintError(re.getMessage());
+                opponents = Collections.emptyList();
+            }
 
             if(areGoodTarget(potentialTargets, opponents)){
                 return opponents;
@@ -691,7 +696,7 @@ public class PlayerController extends Observable implements Observer{
     protected void myTurn(){
         modifyCell = new ArrayList<>();
 
-        cmdForView(new CommandObj(SHOW_BOARD, boardController.getBoard().cloneBoard()));
+        cmdForView(new CommandObj(SHOW_BOARD));
 
         if(player.getCell()==null) cmdForView(new CommandObj(REG_CELL));
 
@@ -711,7 +716,7 @@ public class PlayerController extends Observable implements Observer{
         cmdForView(new CommandObj(PRINT_ERROR, mex));
     }
     
-    private void cmdForView(CommandObj cmd){
+    protected void cmdForView(CommandObj cmd){
         setChanged();
         notifyObservers(cmd);
     }

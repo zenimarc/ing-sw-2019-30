@@ -39,7 +39,6 @@ public class ServerUpdateManager implements Observer {
             }catch (RemoteException r){
                 r.getMessage();
             }
-         //   gameServer.sendToAll(new CommandObj(EnumCommand.UPDATE_PLAYER, obj));
         }
 
         if(observable.getClass().equals(Board.class)){

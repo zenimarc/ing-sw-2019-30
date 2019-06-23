@@ -6,6 +6,7 @@ import server.GameServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface Client extends Remote {
     void loggedIn() throws RemoteException;
@@ -18,4 +19,13 @@ public interface Client extends Remote {
     void receiveCMD(CommandObj cmd) throws RemoteException;
  //   void receiveObj(Object obj) throws RemoteException;
     void gameStarted() throws RemoteException;
+
+    /**
+     * Ask player opponents to hit
+     * @param players potential targets
+     * @param maxTargets max targets to hit
+     * @return List of opponents name to shoot
+     * @throws RemoteException
+     */
+    List<String> getTargetsName(List<Player> players, int maxTargets) throws  RemoteException;
 }

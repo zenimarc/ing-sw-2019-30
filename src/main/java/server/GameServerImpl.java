@@ -9,10 +9,7 @@ import player.Player;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
@@ -112,6 +109,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 players.add(onePlayer);
             }
             boardController = new BoardController(players, 8);
+            boardController.setGameServer(this);
             //Create ServerUpdate Manager
             serverUpdateManager = new ServerUpdateManager(this, boardController);
             //Add Observer to Board and Players
@@ -156,6 +154,19 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     @Override
     public Board getBoard() throws RemoteException {
         return boardController.getBoard();
+    }
+
+    @Override
+    public List<Player> getTargets(List<Player> potentialTarget, int maxTarget) throws RemoteException {
+        Client client = getClient(boardController.getPlayer());
+
+        if (client != null) {
+            List<String> targetsName = client.getTargetsName(potentialTarget, maxTarget);
+            return boardController.getListOfPlayers()
+                    .stream()
+                    .filter(x -> targetsName.contains(x.getName()))
+                    .collect(Collectors.toList());
+        }else return Collections.emptyList();
     }
 
     /**

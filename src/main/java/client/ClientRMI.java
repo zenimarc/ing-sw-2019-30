@@ -13,10 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     private String nickname;
@@ -128,6 +125,11 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         this.view = clientApp.getView();
         view.giveMessage("","Ho ricevuto che il game è iniziato");
         view.gameStart();
+    }
+
+    @Override
+    public List<String> getTargetsName(List<Player> players, int maxTargets) throws RemoteException {
+        return view.getTargetsName(players, maxTargets);
     }
 
     /**

@@ -3,6 +3,8 @@ package view;
 import board.Board;
 import player.Player;
 
+import java.util.List;
+
 
 public interface View  {
     void gameStart();
@@ -16,5 +18,6 @@ public interface View  {
     void updatePlayer(Player player);
     void updateBoard(Board board);
     void grab();
+    List<String> getTargetsName(List<Player> potentialTarget, int maxTarget);
 
 }
