@@ -1,13 +1,12 @@
 package weapon;
 
 import attack.Attack;
+import attack.CardinalAttack;
 import attack.DistanceAttack;
 import attack.SimpleAttack;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import controller.EnumTargetSet;
 import deck.Bullet;
 import player.Player;
 
@@ -15,30 +14,31 @@ import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumAttackName.*;
+import static constants.EnumAttackName.SUPPORT_ATTACK;
 import static controller.EnumTargetSet.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+public class CardinalWeapon extends WeaponCard{
 
-public class DistanceWeapon extends WeaponCard {
-
-    public DistanceWeapon(EnumWeapon weaponType){
+    public CardinalWeapon(EnumWeapon weaponType){
         this.weaponType = weaponType;
         this.name = weaponType.getName();
         this.cost = weaponType.getCost();
 
         switch (weaponType){
-            case WHISPER:
-                baseAttack = new DistanceAttack(VISIBLE, WHISPER_BASE,3,1,1,2,-1);
+            case FLAMETHROWER:
+                baseAttack = new DistanceAttack(CARDINAL, FLAMETHROWER_BASE,1,0,2,1,1);
+                alternativeAttack = new DistanceAttack(CARDINAL, FLAMETHROWER_OP1,2,0,-1,1,1);
+                alternativeAttack.setCost(new int[]{0,2,0});
                 break;
-            case HELLION:
-                baseAttack = new DistanceAttack(VISIBLE, HELLION_BASE, 1,0,1,1,-1);
-                alternativeAttack = new DistanceAttack(VISIBLE,HELLION_OPT1,1,0,1,1,-1);
-                alternativeAttack.setCost(new int[]{1,0,0});
+            case RAILGUN:
+                baseAttack = new SimpleAttack(CARDINAL_WALL_BYPASS, RAILGUN_BASE, 3,0,1);
+                alternativeAttack = new DistanceAttack(CARDINAL_WALL_BYPASS, RAILGUN_OP1,2,0,2,0, -1);
+
                 break;
-            case SHOCK_WAVE:
-                baseAttack = new DistanceAttack(VISIBLE, SHOCK_WAVE_BASE, 1, 0 , 3,1,1);
-                alternativeAttack = new DistanceAttack(VISIBLE, SHOCK_WAVE_OPT1, 1, 0 , -1,1,1);
-                alternativeAttack.setCost(new int[]{0,1,0});
+            case POWERGLOVE:
+                baseAttack = new SimpleAttack(CARDINAL, POWERGLOVE_BASE, 1 , 2,1);
+                alternativeAttack = new DistanceAttack(CARDINAL, POWERGLOVE_OP1, 2, 0 , 1,1,1);
+                alternativeAttack.setCost(new int[]{0,0,1});
                 break;
             default:
                 //TODO ERROR
@@ -47,7 +47,7 @@ public class DistanceWeapon extends WeaponCard {
     }
 
     @JsonCreator
-    protected DistanceWeapon(@JsonProperty("name") String name,
+    protected CardinalWeapon(@JsonProperty("name") String name,
                              @JsonProperty("cost") List<Bullet> cost,
                              @JsonProperty("attacks")List<Attack> attacks,
                              @JsonProperty("baseAttack") Attack baseAttack,
@@ -69,18 +69,16 @@ public class DistanceWeapon extends WeaponCard {
      * @param opponents
      * @return
      */
-    private boolean hellionShoot(int typeAttack, Player shooter, List<Player> opponents){
-
-        Attack supportAttack = new SimpleAttack(SAME_CELL, SUPPORT_ATTACK, 0, typeAttack+1, -1);
+    private boolean flamethrowerShoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
+        Attack supportAttack = new SimpleAttack(CARDINAL, SUPPORT_ATTACK, 1, 0, -1);
 
         switch (typeAttack){
             case 0:
-                baseAttack.attack(shooter,opponents.get(0));
-                supportAttack.attack(shooter, opponents.subList(1,opponents.size()));
+                baseAttack.attack(shooter,opponents);
+                supportAttack.attack(shooter, opponents);
                 break;
             case 1:
-                alternativeAttack.attack(shooter,opponents.get(0));
-                supportAttack.attack(shooter, opponents.subList(1,opponents.size()));
+                alternativeAttack.attack(shooter, opponents);
                 break;
             default:
                 return false;
@@ -88,16 +86,28 @@ public class DistanceWeapon extends WeaponCard {
         return true;
     }
 
-    private boolean shockWaveShoot(int typeAttack, Player shooter, List<Player> opponents){
+    private boolean railGunShoot(int typeAttack, Player shooter, List<Player> opponents){
         switch (typeAttack) {
             case 0:
-                if(opponents.stream().filter(x-> x!=null).map(Player::getCell).distinct().count()<opponents.stream().filter(x->x!=null).count()){
-                    return false;
-                }
-                baseAttack.attack(shooter, opponents);
+                baseAttack.attack(shooter, opponents.get(0));
                 break;
             case 1:
                 alternativeAttack.attack(shooter, opponents);
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    private boolean powerGloveShoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
+
+        switch (typeAttack) {
+            case 0:
+                baseAttack.attack(shooter, opponents.get(0));
+                break;
+            case 1:
+                alternativeAttack.attack(shooter, opponents.get(0));
                 break;
             default:
                 return false;
@@ -110,14 +120,14 @@ public class DistanceWeapon extends WeaponCard {
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
         boolean result;
         switch (this.weaponType) {
-            case WHISPER:
-                result = baseAttack.attack(shooter,opponents.get(0));
+            case FLAMETHROWER:
+                result = flamethrowerShoot(typeAttack, shooter, opponents, cell);
                 break;
-            case HELLION:
-                result = hellionShoot(typeAttack, shooter, opponents);
+            case RAILGUN:
+                result = railGunShoot(typeAttack, shooter, opponents);
                 break;
-            case SHOCK_WAVE:
-                result = shockWaveShoot(typeAttack, shooter, opponents);
+            case POWERGLOVE:
+                result = powerGloveShoot(typeAttack, shooter, opponents, cell);
                 break;
             default:
                 return false;
@@ -133,8 +143,8 @@ public class DistanceWeapon extends WeaponCard {
     @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
-        if(obj.getClass()!=DistanceWeapon.class) return false;
-        DistanceWeapon wc = (DistanceWeapon) obj;
+        if(obj.getClass()!=CardinalWeapon.class) return false;
+        CardinalWeapon wc = (CardinalWeapon) obj;
         return this.getWeaponType().equals(wc.getWeaponType()) && this.isLoaded==((WeaponCard) obj).isLoaded;
     }
 }

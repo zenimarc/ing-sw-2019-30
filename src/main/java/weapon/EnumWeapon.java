@@ -12,7 +12,7 @@ public enum EnumWeapon {
     ELECTROSCYTHE("Electroscythe", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE)))),
     HEATSEEKER("Heatseeker", new ArrayList<>(Arrays.asList(new Bullet(Color.RED),new Bullet(Color.RED),new Bullet(Color.YELLOW)))),
     ZX_2("ZX-2",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.RED))) ),
-    //AreaWEapon
+    //AreaWeapon
     FURNACE("Furnace", new ArrayList<>(Arrays.asList(new Bullet(Color.RED), new Bullet(Color.BLUE)))),
     //DistanceWeapon
     WHISPER("Whisper", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE),new Bullet(Color.YELLOW)))),
@@ -25,15 +25,21 @@ public enum EnumWeapon {
     SLEDGEHAMMER("Sledgehammer",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW)))),
 
     //TODO aggiungere queste weapon
-    THOR("T.H.O.R.",new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE))) ),
-    CYBERBLADE("Cyberblade",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.RED)))),
-    SHOCKWAVE("ShockWave", new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW))) ),
+    //CardinalWeapon
+    FLAMETHROWER("Flamethrowerr",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
+    POWERGLOVE("Cyber glove",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.BLUE)))),
     RAILGUN("Railgun",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.YELLOW), new Bullet(Color.BLUE)))),
+
+    //THOR può essere un simple attack particolare
+    THOR("T.H.O.R.",new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE))) ),
+
+    //PriorityWeapons
+    CYBERBLADE("Cyberblade",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.RED)))),
     ROCKET_LAUNCHER("Rocket Launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED), new Bullet(Color.RED)))),
     GRENADE_LAUNCHER("Grenade Launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
     PLASMA_GUN("Plasma gun", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.YELLOW))) ),
-    FLAMETHROWER("Flamethrowerr",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
-    POWERGLOVE("Cyber glove",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.BLUE)))),
+
+
     ;
 
     private String name;
@@ -43,6 +49,8 @@ public enum EnumWeapon {
     protected static final Set<EnumWeapon> DistanceWeaponSet = EnumSet.of(WHISPER, HELLION, SHOCK_WAVE);
     protected static final Set<EnumWeapon> MovementWeaponSet = EnumSet.of(TRACTOR_BEAM, VORTEX_CANNON, SHOTGUN, SLEDGEHAMMER);
     protected static final Set<EnumWeapon> SimpleWeaponSet = EnumSet.of(LOCK_RIFLE, MACHINE_GUN, ELECTROSCYTHE, HEATSEEKER, ZX_2);
+    protected static final Set<EnumWeapon> CardinalWeaponSet = EnumSet.of(FLAMETHROWER, RAILGUN, POWERGLOVE);
+    protected static final Set<EnumWeapon> PriorityWeaponSet = EnumSet.of(CYBERBLADE, ROCKET_LAUNCHER, PLASMA_GUN, GRENADE_LAUNCHER);
 
 
     EnumWeapon(String name, ArrayList<Bullet> bullets){

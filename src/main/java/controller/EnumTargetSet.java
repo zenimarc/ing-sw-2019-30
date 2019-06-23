@@ -2,6 +2,7 @@ package controller;
 
 /**
  * This enumeration is needed to define the field of action of an attack against enemies:
+ * NO_ATTACK: it is used for priority attacks which don't deal damage
  * VISIBLE: it's the set of cells you can see (see rules to know what "visible" means)
  * SAME_ROOM: it's the set of cells of your room (nb. your cell is included)
  * VISIBLE_ROOM: it's the set of cells of another room you can see, the cells in your room are not included.
@@ -15,6 +16,7 @@ package controller;
  */
 public enum EnumTargetSet {
 
+    NO_ATTACK,
     VISIBLE,
     NOT_VISIBLE,
     SAME_ROOM,
@@ -22,6 +24,4 @@ public enum EnumTargetSet {
     SAME_CELL,
     CARDINAL,
     CARDINAL_WALL_BYPASS;
-
-
 }

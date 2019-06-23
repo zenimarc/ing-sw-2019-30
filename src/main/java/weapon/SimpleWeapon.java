@@ -34,7 +34,7 @@ public class SimpleWeapon extends WeaponCard{
             case MACHINE_GUN:
                 baseAttack = new SimpleAttack(VISIBLE, MACHINE_GUN_BASE, 1,0,2);
                 attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP1, 1,0,2));
-                baseAttack.setCost(new int[]{0,1,0});
+                attacks.get(0).setCost(new int[]{0,1,0});
                 attacks.add(new SimpleAttack(VISIBLE, MACHINE_GUN_OP2, 1,0,3));
                 attacks.get(1).setCost(new int[]{0,0,1});
                 break;
@@ -50,6 +50,11 @@ public class SimpleWeapon extends WeaponCard{
                 baseAttack = new SimpleAttack(VISIBLE, ZX_2_BASE, 1,2,1);
                 alternativeAttack = new SimpleAttack(VISIBLE, ZX_2_OP1, 0,1,3);
                 break;
+            case THOR:
+                baseAttack = new SimpleAttack(VISIBLE, THOR_BASE, 2,0,1);
+                attacks.add(new SimpleAttack(VISIBLE, THOR_OPT1, 1,0,1));
+                attacks.add(new SimpleAttack(VISIBLE, THOR_OPT2, 2,0,1));
+                attacks.get(1).setCost(new int[]{0,0,1});
             default:
                 //TODO ERROR
                 break;
@@ -108,6 +113,25 @@ public class SimpleWeapon extends WeaponCard{
         return true;
     }
 
+    private boolean thorShoot(int typeAttack, Player shooter, List<Player> opponents){
+
+        switch (typeAttack){
+            case 0:
+                baseAttack.attack(shooter,opponents.get(0));
+                break;
+            case 1:
+                attacks.get(0).attack(shooter, opponents.get(1));
+                break;
+            case 2:
+                attacks.get(1).attack(shooter,opponents.get(2));
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+
     @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
@@ -135,6 +159,9 @@ public class SimpleWeapon extends WeaponCard{
             case HEATSEEKER:
                 baseAttack.attack(shooter,opponents.get(0));
                 result = true;
+                break;
+            case THOR:
+                result = thorShoot(typeAttack, shooter, opponents);
                 break;
             default:
                 result = false;

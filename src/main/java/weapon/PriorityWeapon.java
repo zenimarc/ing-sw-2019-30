@@ -1,9 +1,6 @@
 package weapon;
 
-import attack.Attack;
-import attack.DistanceAttack;
-import attack.MoveAttack;
-import attack.SimpleAttack;
+import attack.*;
 import board.Cell;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,46 +12,51 @@ import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumAttackName.*;
-import static controller.EnumTargetSet.*;
-
+import static controller.EnumTargetSet.SAME_CELL;
+import static controller.EnumTargetSet.VISIBLE;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
-public class MovementWeapon extends WeaponCard {
+public class PriorityWeapon extends WeaponCard {
 
-    public MovementWeapon(EnumWeapon type){
+    public PriorityWeapon(EnumWeapon type){
         this.weaponType = type;
         this.name = weaponType.getName();
         this.cost = weaponType.getCost();
 
         switch (weaponType){
-            case TRACTOR_BEAM:
-                baseAttack = new MoveAttack(VISIBLE, BASE_ATTACK_NAME,2,1,1);
-                alternativeAttack = new MoveAttack(SAME_CELL,TRACTOR_BEAN_OPT1,2,3,1);
-                alternativeAttack.setCost(new int[]{1,1,0});
+            case CYBERBLADE:
+                baseAttack = new SimpleAttack(SAME_CELL, CYBERBLADE_BASE, 2, 0, 1);
+                attacks.add(new PriorityAttack(VISIBLE, CYBERBLADE_OPT1, 0, 0,1, 2));
+                attacks.add(new SimpleAttack(SAME_CELL, CYBERBLADE_OPT2, 2, 1,1));
+                attacks.get(0).setCost(new int[]{0,1,0});
                 break;
-            case VORTEX_CANNON:
-                baseAttack = new MoveAttack(VISIBLE, BASE_ATTACK_NAME, 1,2,1);
-                attacks.add(new MoveAttack(VISIBLE,VORTEX_CANNON_OPT1, 1, 1,2));
+            case ROCKET_LAUNCHER:
+                baseAttack = new MoveAttack(VISIBLE, ROCKET_LAUNCHER_BASE, 1,2,1);
+                attacks.add(new PriorityAttack(VISIBLE, ROCKET_LAUNCHER_OPT1, 0, 0,2, 1));
+                attacks.get(0).setCost(new int[]{0,0,1});
+                attacks.add(new MoveAttack(VISIBLE, ROCKET_LAUNCHER_OPT2, 1, 1,2));
+                attacks.get(1).setCost(new int[]{0,1,0});
+                break;
+            case PLASMA_GUN:
+                baseAttack = new SimpleAttack(VISIBLE, PLASMA_GUN_BASE, 2,0,1);
+                attacks.add(new PriorityAttack(VISIBLE, PLASMA_GUN_OPT1, 0, 0,2, 1));
+                attacks.get(0).setCost(new int[]{1,0,0});
+                attacks.add(new SimpleAttack(VISIBLE, PLASMA_GUN_OPT2, 1, 0,1));
+                attacks.get(1).setCost(new int[]{1,0,0});break;
+            case GRENADE_LAUNCHER:
+                baseAttack = new MoveAttack(VISIBLE, GRENADE_LAUNCHER_BASE,1,1,1);
+                attacks.add(new PriorityAttack(VISIBLE, GRENADE_LAUNCHER_OPT1, 1, -1,0, 1));
                 attacks.get(0).setCost(new int[]{1,0,0});
                 break;
-            case SHOTGUN:
-                baseAttack = new MoveAttack(SAME_CELL,BASE_ATTACK_NAME, 1,3,1);
-                alternativeAttack = new DistanceAttack(VISIBLE,SHOTGUN_OP1, 2,0,1,1,1);
+            default:
+                //TODO ERROR
                 break;
-            case SLEDGEHAMMER:
-                baseAttack = new SimpleAttack(SAME_CELL, BASE_ATTACK_NAME,2,0,1);
-                alternativeAttack = new MoveAttack(SAME_CELL,SLEDGE_HAMMER,2,3,1);
-                alternativeAttack.setCost(new int[]{1,0,0});
-                break;
-                default:
-                    //TODO ERROR
-                    break;
         }
     }
 
     @JsonCreator
-    protected MovementWeapon(@JsonProperty("name") String name,
+    protected PriorityWeapon(@JsonProperty("name") String name,
                              @JsonProperty("cost") List<Bullet> cost,
                              @JsonProperty("attacks")List<Attack> attacks,
                              @JsonProperty("baseAttack") Attack baseAttack,
@@ -80,13 +82,13 @@ public class MovementWeapon extends WeaponCard {
     private boolean tractorBeamShoot(int typeAttack, Player shooter, Player opponent, Cell cell){
         switch (typeAttack){
             case 0:
-               baseAttack.attack(shooter,opponent,cell);
+                baseAttack.attack(shooter,opponent,cell);
                 break;
             case 1:
                 alternativeAttack.attack(shooter,opponent,cell);
                 break;
-                default:
-                    return false;
+            default:
+                return false;
         }
         return true;
     }
@@ -100,7 +102,7 @@ public class MovementWeapon extends WeaponCard {
      * @return if hit true
      */
     private boolean vortexCannonShoot(int typeAttack, Player shooter, List<Player> opponents, Cell cell){
-      baseAttack.attack(shooter,opponents.get(0),cell);
+        baseAttack.attack(shooter,opponents.get(0),cell);
         if(typeAttack==1){
             baseAttack.attack(shooter,opponents.subList(1,2),cell);
         }
@@ -124,8 +126,8 @@ public class MovementWeapon extends WeaponCard {
             case 1:
                 alternativeAttack.attack(shooter,opponents);
                 break;
-                default:
-                    return false;
+            default:
+                return false;
         }
         return true;
     }
@@ -159,22 +161,22 @@ public class MovementWeapon extends WeaponCard {
         boolean result;
 
         switch (weaponType){
-            case TRACTOR_BEAM:
+            case CYBERBLADE:
                 if(!cell.isPresent()) return false;
                 result = tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
                 break;
-            case VORTEX_CANNON:
+            case ROCKET_LAUNCHER:
                 if(!cell.isPresent()) return false;
                 result = vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
                 break;
-            case SHOTGUN:
+            case GRENADE_LAUNCHER:
                 result = shotgunShoot(typeAttack,shooter,opponents,cell);
                 break;
-            case SLEDGEHAMMER:
+            case PLASMA_GUN:
                 result = sledgehammerShot(typeAttack,shooter,opponents,cell);
                 break;
-                default:
-                    result = false;
+            default:
+                result = false;
         }
 
         if(result) {
@@ -188,8 +190,8 @@ public class MovementWeapon extends WeaponCard {
     @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
-        if(obj.getClass()!=MovementWeapon.class) return false;
-        MovementWeapon wc = (MovementWeapon) obj;
+        if(obj.getClass()!=PriorityWeapon.class) return false;
+        PriorityWeapon wc = (PriorityWeapon) obj;
         return this.getWeaponType().equals(wc.getWeaponType()) && this.isLoaded==((WeaponCard) obj).isLoaded;
     }
 }

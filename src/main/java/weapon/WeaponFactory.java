@@ -85,6 +85,12 @@ public class WeaponFactory {
             if(EnumWeapon.SimpleWeaponSet.contains(weapon))
                 wp = getSimpleWeapon(weapon);
 
+            if(EnumWeapon.CardinalWeaponSet.contains(weapon))
+                wp = getCardinalWeapon(weapon);
+
+            if(EnumWeapon.PriorityWeaponSet.contains(weapon))
+                wp = getCardinalWeapon(weapon);
+
             if(wp !=null) {
                 try {
                     storeWeapon(objectMapper.writeValueAsString(wp), weapon.getName());
@@ -109,6 +115,14 @@ public class WeaponFactory {
         return new MovementWeapon(type);
     }
 
+    private WeaponCard getCardinalWeapon(EnumWeapon type) {
+        return new CardinalWeapon(type);
+    }
+
+    private WeaponCard getPriorityWeapon(EnumWeapon type) {
+        return new PriorityWeapon(type);
+    }
+
     public List<WeaponCard> getWeaponCardList(){
 
         return loadWeaponCardsJackson();
@@ -116,7 +130,6 @@ public class WeaponFactory {
 
     public static void main(String[] arg) {
         WeaponFactory factory = new WeaponFactory();
-
 
         factory.getWeaponCardList()
                 .stream()
