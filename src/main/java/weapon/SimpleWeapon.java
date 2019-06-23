@@ -108,6 +108,13 @@ public class SimpleWeapon extends WeaponCard{
         return true;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null) return false;
+        if(obj.getClass()!=SimpleWeapon.class) return false;
+        SimpleWeapon wc = (SimpleWeapon) obj;
+        return this.getWeaponType().equals(wc.getWeaponType()) && this.isLoaded==((WeaponCard) obj).isLoaded;
+    }
 
     @Override
     public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
@@ -133,7 +140,8 @@ public class SimpleWeapon extends WeaponCard{
                 result = false;
         }
 
-        this.setNotLoaded();
+        opponents.forEach(Player::notifyEndAction);
+        shooter.setNotLoadWeapon(this);
         return result;
     }
 }

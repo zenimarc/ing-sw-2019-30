@@ -176,7 +176,18 @@ public class MovementWeapon extends WeaponCard {
                 default:
                     result = false;
         }
-        this.setNotLoaded();
+
+        opponents.forEach(Player::notifyEndAction);
+        shooter.setNotLoadWeapon(this);
         return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null) return false;
+        if(obj.getClass()!=MovementWeapon.class) return false;
+        MovementWeapon wc = (MovementWeapon) obj;
+        return this.getWeaponType().equals(wc.getWeaponType()) && this.isLoaded==((WeaponCard) obj).isLoaded;
     }
 }

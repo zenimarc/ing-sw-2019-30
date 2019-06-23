@@ -7,6 +7,8 @@ import constants.Color;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
+import weapon.EnumWeapon;
+import weapon.SimpleWeapon;
 import weapon.WeaponCard;
 
 import java.io.Serializable;
@@ -43,6 +45,9 @@ public class Player extends Observable implements Cloneable, Serializable {
         ammo.put(RED,1);
         ammo.put(YELLOW, 1);
         ammo.put(BLUE, 1);
+
+        weapons.add(new SimpleWeapon(EnumWeapon.ZX_2));
+        weapons.get(0).setLoaded();
     }
 
     /**
@@ -202,6 +207,17 @@ public class Player extends Observable implements Cloneable, Serializable {
             return true;
         }
         return false;
+    }
+
+    public boolean setNotLoadWeapon (WeaponCard weaponCard){
+        WeaponCard wp = weapons.stream()
+                .filter(x -> x.equals(weaponCard))
+                .findFirst()
+                .orElse(null);
+        if(wp!=null){
+            wp.setNotLoaded();
+            return true;
+        }else return false;
     }
 
     /**
@@ -386,7 +402,8 @@ public class Player extends Observable implements Cloneable, Serializable {
      */
     public boolean usePowerUp(PowerCard power, boolean discard){
         if(discard){
-            powerups.remove(power);
+            powerups.remove(powerups.stream().filter(x -> x.equals(power)).findFirst().orElse(null));
+            notifyEndAction();
             return true;
         }
         else return(canPayPowerUp(power));

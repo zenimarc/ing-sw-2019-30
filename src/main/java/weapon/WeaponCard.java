@@ -184,6 +184,7 @@ public abstract class WeaponCard extends Card implements Serializable {
 
     public void  setNotLoaded(){isLoaded = false;}
 
+
     @Override
     public String stringGUI(){
         return this.name;

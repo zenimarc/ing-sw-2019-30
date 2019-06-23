@@ -122,7 +122,17 @@ public class DistanceWeapon extends WeaponCard {
             default:
                 return false;
         }
-        this.setNotLoaded();
+
+        opponents.forEach(Player::notifyEndAction);
+        shooter.setNotLoadWeapon(this);
         return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null) return false;
+        if(obj.getClass()!=DistanceWeapon.class) return false;
+        DistanceWeapon wc = (DistanceWeapon) obj;
+        return this.getWeaponType().equals(wc.getWeaponType()) && this.isLoaded==((WeaponCard) obj).isLoaded;
     }
 }
