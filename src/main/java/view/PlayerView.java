@@ -105,7 +105,7 @@ public class PlayerView extends Observable{
      * @return
      */
     private boolean grabAmmo(){
-        notifyServer(new CommandObj(EnumCommand.GRAB_AMMO, player.getCell(),0));
+        notifyServer(new CommandObj(EnumCommand.GRAB_AMMO));
         return false;
     }
 

@@ -84,7 +84,7 @@ public class PlayerController extends Observable implements Observer{
                 }
                 break;
             case GRAB_AMMO:
-                 if(grabAmmo((NormalCell) cmdObj.getCell())){
+                 if(grabAmmo()){
                     numAction++;
                 }else {
                     viewPrintError();
@@ -292,16 +292,15 @@ public class PlayerController extends Observable implements Observer{
 
     /**
      * This function controls GRAB action in a NormalCells (Grab Ammocard)
-     * @param cell Destination cell
      * @return success of operation
      */
-    private boolean grabAmmo(NormalCell cell){
-        AmmoCard ammoCard = (AmmoCard) boardController.getBoard().giveCardFromCell(cell, player, 0);
+    private boolean grabAmmo(){
+        AmmoCard ammoCard = (AmmoCard) boardController.getBoard().giveCardFromCell(player.getCell(), player, 0);
         if(ammoCard!=null) {
             if (ammoCard.verifyPowerUp())
                 boardController.getBoard().giveCardFromPowerUpDeck(player);
             boardController.getBoard().addAmmoDiscardDeck(ammoCard);
-            modifyCell.add(cell);
+            modifyCell.add(player.getCell());
             return true;
         }
         return false;
