@@ -227,7 +227,9 @@ public class PlayerController extends Observable implements Observer{
                 return true;
             }
         }
-        else {//TODO i controlli per le due grab e le due shoot sono fatti in anticipo? Serve davvero distinguere se è Final frenzy o meno qui?
+        else {
+            //TODO i controlli per le due grab e le due shoot sono fatti in anticipo?
+            // Serve davvero distinguere se è Final frenzy o meno qui?
             switch (enumCommand) {
                 case MOVE_FRENZY: //normal mode
                     actionParam = FRENZY_MOVE;
@@ -447,7 +449,7 @@ public class PlayerController extends Observable implements Observer{
 
     /**
      * This function asks a player which opponents he wants to hit, then verifies if they can be hit and finally shoots
-     * @param weaponCard Waeponcard with the attack
+     * @param weaponCard WaeponCard with the attack
      * @param baseAttack if true uses baseAttack, else uses alternativeAttack
      * @return if shooter is shoot
      */
@@ -470,16 +472,7 @@ public class PlayerController extends Observable implements Observer{
         if(attack.getClass() == DistanceAttack.class && weaponCard.getClass()!=AreaWeapon.class) {
             opponents.addAll(getDistanceAttackTargets(weaponCard, attack, maxTarget));
         }else if(weaponCard.getWeaponType()==EnumWeapon.FURNACE){
-            if(baseAttack){
-                //TODO choose room
-                opponents.addAll(boardController.getPotentialTargets(opponents.get(0).getCell(), EnumTargetSet.SAME_ROOM));
-            }/*else {
-                List<Cell> possibleCells = boardController.getPotentialDestinationCells(player.getCell(), 1);
-                Cell c = pw.chooseCellToAttack(billboard, possibleCells);
-                if(possibleCells.contains(c)){
-                    opponents.addAll(c.getPawns().stream().map(Pawn::getPlayer).collect(Collectors.toList()));
-                }else pw.printError("Selected cell cannot be selected");
-            }*/
+            opponents = furnaceImplementation(baseAttack);
         } else {
             opponents.addAll(getTargets(attack.getTargetType(), maxTarget));
         }
@@ -489,6 +482,31 @@ public class PlayerController extends Observable implements Observer{
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
         return weaponCard.shoot(attackSelector, player, opponents, null);
+    }
+
+    /**
+     * Implements controller to use FURNACE attacks
+     * @param baseAttack if use base attack
+     * @return List of players to shoot
+     */
+    private List<Player> furnaceImplementation(boolean baseAttack){
+        List<Player> opponents = new ArrayList<>();
+        if(baseAttack){
+            //TODO choose room
+            opponents.addAll(boardController.getPotentialTargets(opponents.get(0).getCell(), EnumTargetSet.SAME_ROOM));
+        }else {
+                List<Cell> possibleCells = boardController.getPotentialDestinationCells(player.getCell(), 1);
+                try {
+                    Position position = boardController.getGameServer().choosePositionToAttack(possibleCells);
+                    Cell c = boardController.getBoard().getBillboard().getCellFromPosition(position);
+                    if(possibleCells.contains(c)){
+                        opponents.addAll(c.getPawns().stream().map(Pawn::getPlayer).collect(Collectors.toList()));
+                    }else viewPrintError("Selected cell cannot be selected");
+                }catch (RemoteException re){
+                    viewPrintError(re.getMessage());
+                }
+            }
+        return opponents;
     }
 
 
@@ -504,12 +522,12 @@ public class PlayerController extends Observable implements Observer{
 
     private List<Player> getTargets(EnumTargetSet targetType, int maxTarget, int minDistance, int maxDistance, boolean hitOpponentSameCell) {
         List<Player> potentialTarget = boardController.getPotentialTargets(player.getCell(), targetType, minDistance, maxDistance);
-        List<Player> choosenTargets = chooseTargets(potentialTarget, maxTarget);
+        List<Player> chosenTargets = chooseTargets(potentialTarget, maxTarget);
         if (!hitOpponentSameCell) {
-            return choosenTargets;
+            return chosenTargets;
         }else {
-            choosenTargets.addAll(boardController.getPotentialTargets(choosenTargets.get(0).getCell(), EnumTargetSet.SAME_CELL));
-            return choosenTargets;
+            chosenTargets.addAll(boardController.getPotentialTargets(chosenTargets.get(0).getCell(), EnumTargetSet.SAME_CELL));
+            return chosenTargets;
         }
     }
 

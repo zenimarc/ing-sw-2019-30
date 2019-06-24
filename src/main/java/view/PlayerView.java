@@ -572,31 +572,31 @@ public class PlayerView extends Observable{
         return Integer.valueOf(read)-1 ;
     }
 
-    private String stringForChooseCell(String mex, String query, Billboard billboard, List<Cell> cells){
+    private String stringForChooseCell(String mex, String query, List<Position> positions){
         StringBuilder sb = new StringBuilder();
 
         sb.append(mex);
         sb.append("\nPossible position:\n");
-        for(Cell cell : cells){
+        for(Position position : positions){
             sb.append('\t');
-            sb.append(cells.indexOf(cell)+1);
+            sb.append(positions.indexOf(position)+1);
             sb.append(")");
-            sb.append(billboard.getCellPosition(cell));
+            sb.append(position);
             sb.append('\n');
         }
         sb.append(query);
         return  sb.toString();
     }
 
-    public Cell chooseCellToAttack(Billboard billboard, List<Cell> cells){
-        String mex = stringForChooseCell("This is an AreaAttack.", "Where do you want shoot? ", billboard, cells);
-        String format = "[1-"+cells.size()+"]";
+    public Position chooseCellToAttack(List<Position> positions){
+        String mex = stringForChooseCell("This is an AreaAttack.", "Where do you want shoot? ", positions);
+        String format = "[1-"+positions.size()+"]";
         String read;
         while (true) {
             print(mex);
             read = reader.next();
             if (read.matches(format)) {
-                return cells.get(Integer.valueOf(read)-1);
+                return positions.get(Integer.valueOf(read)-1);
             }
         }
     }

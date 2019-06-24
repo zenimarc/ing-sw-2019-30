@@ -2,6 +2,8 @@ package server;
 
 import attack.Attack;
 import board.Board;
+import board.Cell;
+import board.Position;
 import client.Client;
 import controller.BoardController;
 import controller.CommandObj;
@@ -194,6 +196,19 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         if(client!=null){
             return client.chooseIndexes(attacks, canRandom);
         }else return Collections.emptyList();
+    }
+
+    @Override
+    public Position choosePositionToAttack(List<Cell> potentialCell) throws RemoteException {
+        Client client = getClient(boardController.getPlayer());
+
+        if(client!=null){
+            List<Position> positions = new ArrayList<>();
+            potentialCell
+                    .forEach(x -> positions.add(boardController.getBoard().getBillboard().getCellPosition(x)));
+            return client.choosePositionToAttack(positions);
+        }
+        return null;
     }
 
     /**

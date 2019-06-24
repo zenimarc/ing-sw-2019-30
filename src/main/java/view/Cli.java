@@ -2,6 +2,7 @@ package view;
 
 import attack.Attack;
 import board.Board;
+import board.Position;
 import player.Player;
 
 import java.util.List;
@@ -87,5 +88,10 @@ public class Cli implements View {
     @Override
     public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom){
         return playerView.chooseOptionalAttack(attacks, canRandom);
+    }
+
+    @Override
+    public Position choosePositionToAttack(List<Position> potentialposition) {
+        return playerView.chooseCellToAttack(potentialposition);
     }
 }

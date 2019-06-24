@@ -28,7 +28,7 @@ public class AreaWeapon extends WeaponCard {
         switch (weaponType) {
             case FURNACE:
                 baseAttack = new SimpleAttack(VISIBLE_ROOM, BASE_ATTACK_NAME,0,0,1);
-                alternativeAttack = new DistanceAttack(VISIBLE,FURNACE_OPT1,1,0,1,1,1);
+                alternativeAttack = new DistanceAttack(VISIBLE,FURNACE_OPT1,1,1,1,1,1);
                 break;
             default:
                 //TODO ERROR
@@ -53,27 +53,6 @@ public class AreaWeapon extends WeaponCard {
         this.isLoaded = false;
     }
 
-    private boolean furnaceShoot(int typeAttack, Player shooter, List<Player> opponents){
-
-        Attack supportAttack = new SimpleAttack(SAME_CELL, SUPPORT_ATTACK, 1, 1, -1);
-        Attack supportBaseAttack = new SimpleAttack(SAME_ROOM, SUPPORT_ATTACK, 1,0,-1);
-
-        switch (typeAttack) {
-            case 0:
-                //baseAttack.attack(shooter,opponents);
-                supportBaseAttack.attack(shooter, opponents);
-                break;
-            case 1:
-                alternativeAttack.attack(shooter, opponents);
-                supportAttack.attack(shooter, opponents.subList(1, opponents.size()));
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
-
-
     @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
@@ -89,8 +68,7 @@ public class AreaWeapon extends WeaponCard {
 
         switch (weaponType) {
             case FURNACE:
-                //TODO NON VA
-                result = furnaceShoot(typeAttack,shooter,opponents);
+                result = alternativeSimpleShoot(typeAttack,shooter,opponents);
                 break;
             default:
                 result = false;

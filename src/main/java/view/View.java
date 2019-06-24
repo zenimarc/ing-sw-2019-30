@@ -2,6 +2,7 @@ package view;
 
 import attack.Attack;
 import board.Board;
+import board.Position;
 import player.Player;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public interface View  {
     void grab();
     List<String> getTargetsName(List<Player> potentialTarget, int maxTarget);
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom);
+    Position choosePositionToAttack(List<Position> potentialposition);
 
 
 }

@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
-    private static final int MINPLAYERS = 2;
-    private static final int MAXPLAYERS = 3;
+    private static final int MIN_PLAYERS = 3;
+    private static final int MAX_PLAYERS = 4;
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
     private int port;
     private int minPlayers;
@@ -61,7 +61,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      */
     private GameServerImpl createGame(ClientInfo clientInfo) throws RemoteException{
         System.out.println("provo a generare un nuovo gameserver");
-        GameServerImpl game = new GameServerImpl(MINPLAYERS, MAXPLAYERS);
+        GameServerImpl game = new GameServerImpl(MIN_PLAYERS, MAX_PLAYERS);
         gamesList.put(game.getGameToken(), game);
         clientInfo.setGameToken(game.getGameToken());
         game.addClient(clientInfo);
