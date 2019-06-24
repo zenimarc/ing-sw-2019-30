@@ -20,6 +20,7 @@ public interface Client extends Remote {
     void receiveCMD(CommandObj cmd) throws RemoteException;
  //   void receiveObj(Object obj) throws RemoteException;
     void gameStarted() throws RemoteException;
+    boolean hasStarted();
 
     /**
      * Ask player opponents to hit
@@ -30,4 +31,6 @@ public interface Client extends Remote {
      */
     List<String> getTargetsName(List<Player> players, int maxTargets) throws  RemoteException;
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom) throws RemoteException;
+
+
 }

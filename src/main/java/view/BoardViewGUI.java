@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
+import java.util.Timer;
 import java.util.TimerTask;
 
 //TODO far partire il gioco da CLI, gestire la reconnect
@@ -142,9 +143,7 @@ public class BoardViewGUI extends Application{
                                 Name.getChildren().get(1).setVisible(false);
                                 progress.setVisible(true);
                                 wait.setVisible(true);
-                                //gameStart(clientRMI);
-                               // setOnAction(thread, clientRMI);
-                               // thread.fire();
+                                //startCountDown(clientRMI);
                             }
                             else Name.getChildren().get(1).setVisible(true);
 
@@ -252,5 +251,30 @@ public class BoardViewGUI extends Application{
         thread.start();
         Platform.exit();
     }*/
+
+    private void startCountDown(Client client) {
+        Thread thread = new Thread(){
+            public void run() {
+
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
+
+                    boolean verify;
+
+                    public void run() {
+                        if (verify = false) {
+                            Platform.runLater(() -> verify = client.hasStarted());
+
+                        } else {
+                            timer.cancel();
+                            Platform.exit();
+                        }
+                    }
+                }, 1000, 1000); //Every 1 second
+            }
+    };
+        thread.setDaemon(true);
+        thread.start();
+    }
 
 }

@@ -184,6 +184,16 @@ public class MovementWeapon extends WeaponCard {
         return result;
     }
 
+    @Override
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cellMove, Optional<Cell> cell) {
+        return false;
+    }
+
+    @Override
+    public boolean shoot(Cell cell) {
+        return false;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

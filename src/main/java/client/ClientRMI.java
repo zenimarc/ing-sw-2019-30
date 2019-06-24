@@ -283,5 +283,9 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             System.exit(-1);
         }
     }
+
+    public boolean hasStarted(){
+        return (gameServer == null);
+    }
 }
 

@@ -133,6 +133,10 @@ public abstract class WeaponCard extends Card implements Serializable {
      */
     public abstract boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell);
 
+    public abstract boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cellMove, Optional<Cell> cell);
+
+    public abstract boolean shoot(Cell cell);
+
     public boolean shoot(int typeAttack, Player shooter, Player opponent, Optional<Cell> cell){
         return shoot(typeAttack, shooter, new ArrayList<>(Arrays.asList(opponent)), cell);
     }
@@ -182,7 +186,7 @@ public abstract class WeaponCard extends Card implements Serializable {
         isLoaded = true;
     }
 
-    public void  setNotLoaded(){isLoaded = false;}
+    public void setNotLoaded(){isLoaded = false;}
 
 
     @Override

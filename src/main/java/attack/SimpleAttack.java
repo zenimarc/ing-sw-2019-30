@@ -67,4 +67,9 @@ public class SimpleAttack extends Attack {
         return true;
     }
 
+    @Override
+    public boolean attack(Cell cell) {
+        return false;
+    }
+
 }

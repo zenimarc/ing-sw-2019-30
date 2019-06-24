@@ -58,6 +58,11 @@ public class DistanceAttack extends Attack {
         return true;
     }
 
+    @Override
+    public boolean attack(Cell cell) {
+        return false;
+    }
+
     public int getMaxDistance() {
         return maxDistance;
     }

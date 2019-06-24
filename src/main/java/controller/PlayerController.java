@@ -351,7 +351,12 @@ public class PlayerController extends Observable implements Observer{
         }else if (!weaponCard.getAttacks().isEmpty()) {
             //BASE ATTACK + OPTIONAL ATTACK
             if(shootOptionalAttack(weaponCard)) isGoodAttack = true;
-//            askWhichOptionalAttack(weaponCard);
+            //askWhichOptionalAttack(weaponCard);
+
+            // PRIORITY ATTACK + BASE ATTACK + OPTIONAL
+
+            // CYBERBLADE CASE
+
         }else if(weaponCard.getAlternativeAttack()!=null){
             //ALTERNATIVE ATTACK
             if(shootAlternativeAttack(weaponCard)) isGoodAttack = true;
@@ -447,7 +452,7 @@ public class PlayerController extends Observable implements Observer{
 
     /**
      * This function asks a player which opponents he wants to hit, then verifies if they can be hit and finally shoots
-     * @param weaponCard Waeponcard with the attack
+     * @param weaponCard Weaponcard with the attack
      * @param baseAttack if true uses baseAttack, else uses alternativeAttack
      * @return if shooter is shoot
      */
@@ -460,7 +465,8 @@ public class PlayerController extends Observable implements Observer{
             attackSelector = 0;
             maxTarget = weaponCard.getBaseAttack().getTarget();
             attack = weaponCard.getBaseAttack();
-        }else {
+        }else //TODO aggiungere caso priority weapons
+            {
             attackSelector = 1;
             maxTarget = weaponCard.getAlternativeAttack().getTarget();
             attack = weaponCard.getAlternativeAttack();
