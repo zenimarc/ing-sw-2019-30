@@ -32,7 +32,7 @@ public class BoardViewGUI extends Application{
     @Override
     public void start(Stage primaryStage) { //can't change name
         primaryStage.setResizable(false);
-        Pane root = mainMenu(primaryStage);
+        Pane root = mainMenu();
         root.setBackground(new Background(menuBackground()));
 
         Scene scene = new Scene(root, mainMenuWidth, mainMenuHeight);//changes window dimension prima lunghezza, poi altezza
@@ -53,7 +53,7 @@ public class BoardViewGUI extends Application{
      * Socket or RMI, then insert name
      * @return a Pane
      */
-    private Pane mainMenu(Stage gameStage) {
+    private Pane mainMenu() {
         final boolean[] isRMI = new boolean[1];
         Pane root = new Pane();
 
@@ -263,7 +263,7 @@ public class BoardViewGUI extends Application{
 
                     public void run() {
                         if (verify = false) {
-                            Platform.runLater(() -> verify = client.hasStarted());
+                            //Platform.runLater(() -> verify = client.hasStarted());
 
                         } else {
                             timer.cancel();
