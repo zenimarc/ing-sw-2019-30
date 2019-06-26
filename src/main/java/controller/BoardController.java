@@ -327,7 +327,6 @@ public class BoardController{
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
             playerControllers.stream().filter(x-> x.getPlayer()!=player).forEach(x -> x.notMyTurn(player.getName()));
-
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){

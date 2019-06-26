@@ -4,9 +4,11 @@ import attack.Attack;
 import board.Board;
 import board.Position;
 import player.Player;
+import weapon.WeaponCard;
 
 import java.util.List;
 import java.util.Observer;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 public class Cli implements View {
@@ -34,8 +36,8 @@ public class Cli implements View {
     }
 
     @Override
-    public boolean loadWeapon() {
-        return playerView.loadWeapon();
+    public boolean loadWeapon(List<String> notLoaded) {
+        return playerView.loadWeapon(notLoaded);
     }
 
     @Override

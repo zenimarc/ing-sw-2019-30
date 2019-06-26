@@ -182,15 +182,21 @@ public class PlayerController extends Observable implements Observer{
                 else checkedShoot(cmdObj);
                 break;
             case LOAD_WEAPONCARD:
-                WeaponCard wc = (WeaponCard) cmdObj.getObject();
-
-                if(!player.getNotLoaded().contains(wc)) viewPrintError("This weapon is already loaded");
-                if(player.canPay(toIntArray(wc.getCost()))){
-                    wc.setLoaded();
-                    player.useAmmo(toIntArray(wc.getCost()));
-                }else{
-                    viewPrintError("You have not enough ammo to load this weapon");
+                try {
+                    int index = (Integer) cmdObj.getObject();
+                    WeaponCard wpToLoad = player.getNotLoaded().get(index);
+                    if(index >= player.getNotLoaded().size()) viewPrintError("Bad index");
+                    if(player.canPay(toIntArray(wpToLoad.getCost()))){
+                        wpToLoad.setLoaded();
+                        player.useAmmo(toIntArray(wpToLoad.getCost()));
+                    }else{
+                        viewPrintError("You have not enough ammo to load this weapon");
+                    }
+                }catch (ClassCastException cce){
+                    viewPrintError("Bav object arrived in PlayerController." + cce.getMessage());
+                    break;
                 }
+
                 player.notifyEndAction();
                 break;
             default: 
@@ -693,7 +699,9 @@ public class PlayerController extends Observable implements Observer{
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
             cmdForView(new CommandObj(YOUR_TURN));
         }
-        cmdForView(new CommandObj(LOAD_WEAPONCARD));
+        if(!player.getNotLoaded().isEmpty()) {
+            cmdForView(new CommandObj(LOAD_WEAPONCARD, player.getNotLoadedName()));
+        }
         numAction = 0;
     }
 

@@ -4,7 +4,10 @@ import board.Board;
 import controller.CommandObj;
 import player.Player;
 import view.View;
+import weapon.WeaponCard;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -54,6 +57,16 @@ public class ClientUpdateManager extends Observable {
                 break;
             case YOUR_TURN:
                 view.myTurn();
+                break;
+            case LOAD_WEAPONCARD:
+                if(cmd.getObject().getClass().equals(ArrayList.class) ) {
+                   try {
+                       view.loadWeapon((ArrayList<String>) cmd.getObject());
+                   }catch (ClassCastException cce){
+                       view.giveError("In LOAD_WEAPONCARD arrived bad ArrayList, required ArrayList<String> arrived "+
+                               ((ArrayList) cmd.getObject()).get(0));
+                   }
+                }
                 break;
             case UPDATE_PLAYER:
                 updatePlayer(cmd.getObject());

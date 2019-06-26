@@ -8,7 +8,11 @@ public enum Constants {
     KILL_SHOOT(11),
     MAX_DAMAGE(12), //max number of damage
     MAX_BULLET_PER_COLOR(3),
-    ACTION_PER_TURN_NORMAL_MODE(2);
+    ACTION_PER_TURN_NORMAL_MODE(2),
+    MAX_PLAYER(3),
+    MIN_PLAYER(1)
+
+    ;
 
     private int value;
 

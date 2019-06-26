@@ -4,15 +4,17 @@ import attack.Attack;
 import board.Board;
 import board.Position;
 import player.Player;
+import weapon.WeaponCard;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 
 public interface View  {
     void gameStart();
     void giveMessage(String title, String mex);
     void giveError(String error);
-    boolean loadWeapon();
+    boolean loadWeapon(List<String> notLoaded);
     void myTurn();
     void notMyTurn(String nameOfWhoPlay);
     void showBoard();

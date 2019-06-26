@@ -14,6 +14,7 @@ import powerup.PowerUp;
 import weapon.WeaponCard;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static constants.Color.convertToColor;
 import static controller.EnumCommand.*;
@@ -138,18 +139,17 @@ public class PlayerView extends Observable{
      * Ask player if he want load some weapon and notify that
      * @return
      */
-    public boolean loadWeapon(){
-
-        List<WeaponCard> notLoaded = player.getNotLoaded();
-        if(notLoaded.isEmpty()) return true;
-
+    public boolean loadWeapon(List<String> notLoaded){
         if(wantLoad()) {
-            int index = chooseWeaponToLoad();
-            if(index==-1) return true;
+            int index = chooseWeaponToLoad(notLoaded);
+            if(index==-1) return false;
 
-           notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, player.getNotLoaded().get(index)));
+           notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, index));
 
-            loadWeapon();
+           if(notLoaded.size()>0) {
+               notLoaded.remove(index - 1);
+               loadWeapon(notLoaded);
+           }
         }
         return  true;
     }
@@ -165,22 +165,21 @@ public class PlayerView extends Observable{
             print("Do you want to load your weapon? [1: Yes, 0: No] ");
             read = reader.next();
         }
-        return read.equals("0");
+        return read.equals("1");
     }
 
     /**
      * Ask player which weapon want to load and return index
      * @return
      */
-    private int chooseWeaponToLoad(){
-        String format = "[0-" + player.getNotLoaded().size() + "]";
+    private int chooseWeaponToLoad(List<String> notLoaded){
+        String format = "[0-" + notLoaded.size() + "]";
         String read = "";
         while (!read.matches(format)) {
             print("Which weapon do you want to load?\n");
-            print(stringWeaponFromList(player.getNotLoaded(), true));
+            print(stringWeaponFromList(notLoaded, true));
             read = reader.next();
         }
-
         return Integer.valueOf(read)-1;
     }
 
@@ -339,7 +338,8 @@ public class PlayerView extends Observable{
         StringBuilder sb = new StringBuilder();
         sb.append(mex);
 
-        sb.append(stringWeaponFromList(player.getWeapons(), true));
+        sb.append(stringWeaponFromList(player.getWeapons().stream().map(WeaponCard::getName).collect(Collectors.toList()),
+                true));
         sb.append(query);
         return sb.toString();
     }
@@ -396,12 +396,13 @@ public class PlayerView extends Observable{
         RegenerationCell cell = (RegenerationCell) player.getCell();
         StringBuilder sb = new StringBuilder();
         sb.append("Weapon card in this cell are:");
-        sb.append(stringWeaponFromList(cell.getCards(), false));
+        sb.append(stringWeaponFromList(cell.getCards().stream().map(WeaponCard::getName).collect(Collectors.toList()),
+                false));
         sb.append("\nWhich do you want? ");
         return sb.toString();
     }
 
-    private String stringWeaponFromList(List<WeaponCard> weaponCards, boolean nullAnswer){
+    private String stringWeaponFromList(List<String> weaponCardsName, boolean nullAnswer){
         StringBuilder sb = new StringBuilder();
         int i = 0;
         if(nullAnswer){
@@ -410,7 +411,7 @@ public class PlayerView extends Observable{
             i++;
         }
 
-        for(WeaponCard wp : weaponCards){
+        for(String wp : weaponCardsName){
             sb.append(i);
             sb.append(") ");
             sb.append(wp);

@@ -45,6 +45,8 @@ public class Player extends Observable implements Cloneable, Serializable {
         ammo.put(RED,1);
         ammo.put(YELLOW, 1);
         ammo.put(BLUE, 1);
+
+        this.weapons.add(new SimpleWeapon(EnumWeapon.ZX_2));
     }
 
     /**
@@ -115,6 +117,9 @@ public class Player extends Observable implements Cloneable, Serializable {
         return weapons.stream().filter(x -> !x.isReady()).collect(Collectors.toList());
     }
 
+    public List<String> getNotLoadedName(){
+        return  getNotLoaded().stream().map(WeaponCard::getName).collect(Collectors.toList());
+    }
     /**
      * @return an HashMap containing player's ammo by color.
      */

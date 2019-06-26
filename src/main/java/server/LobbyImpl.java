@@ -2,6 +2,7 @@ package server;
 
 
 import client.Client;
+import constants.Constants;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,8 +14,8 @@ import java.util.regex.Pattern;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
-    private static final int MIN_PLAYERS = 3;
-    private static final int MAX_PLAYERS = 4;
+    private static final int MIN_PLAYERS = Constants.MIN_PLAYER.getValue();
+    private static final int MAX_PLAYERS = Constants.MAX_PLAYER.getValue();
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
     private int port;
     private int minPlayers;
@@ -157,6 +158,8 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     }
 
     public static void main(String[] args) {
+        //System.setProperty("java.rmi.server.hostname", "192.168.43.164");
+
         try {
             LobbyImpl lobby = new LobbyImpl();
             lobby.start();
