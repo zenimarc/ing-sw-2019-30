@@ -11,8 +11,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import deck.Bullet;
 import player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static constants.EnumAttackName.*;
 import static constants.EnumAttackName.SUPPORT_ATTACK;
@@ -78,11 +80,14 @@ public class CardinalWeapon extends WeaponCard{
 
         switch (typeAttack){
             case 0:
-                baseAttack.attack(shooter, opponents);
-                supportAttack.attack(shooter, opponents);
+                baseAttack.attack(shooter, opponents.get(0));
+                supportAttack.attack(shooter, opponents.get(1));
                 break;
             case 1:
-                alternativeAttack.attack(shooter, opponents);
+                alternativeAttack.attack(shooter, flamethrowerSublist(opponents, opponents.get(0)));
+                if(opponents.size() != 1)
+                    if(flamethrowerSublist(opponents, opponents.get(opponents.size()-1)) != null)
+                        supportAttack.attack(shooter, opponents.get(1));
                 break;
             default:
                 return false;
@@ -142,6 +147,22 @@ public class CardinalWeapon extends WeaponCard{
             shooter.setNotLoadWeapon(this);
         }
         return result;
+    }
+
+    @Override
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cellMove, Optional<Cell> cell) {
+        return false;
+    }
+
+    @Override
+    public boolean shoot(Cell cell) {
+        return false;
+    }
+
+    private List<Player> flamethrowerSublist(List<Player> opponents, Player player){
+        if(opponents.get(opponents.size()-1) == player && opponents.get(0).getCell() == player.getCell())
+            return null;
+        return opponents.stream().filter(x-> x.getCell() == player.getCell()).collect(Collectors.toList());
     }
 
     @Override

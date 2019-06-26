@@ -42,6 +42,8 @@ public abstract class Attack implements Serializable {
 
     public abstract boolean attack(Player player, List<Player> opponents);
 
+    public abstract boolean attack(Cell cell);
+
     public boolean attack(Player player, Player opponent, Cell newCell){
         return attack(player,new ArrayList<>(Arrays.asList(opponent)),newCell);
     }

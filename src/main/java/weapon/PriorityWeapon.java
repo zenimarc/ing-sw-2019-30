@@ -8,12 +8,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import deck.Bullet;
 import player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static constants.EnumAttackName.*;
-import static controller.EnumTargetSet.SAME_CELL;
-import static controller.EnumTargetSet.VISIBLE;
+import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
@@ -27,20 +27,20 @@ public class PriorityWeapon extends WeaponCard {
         switch (weaponType){
             case CYBERBLADE:
                 baseAttack = new SimpleAttack(SAME_CELL, CYBERBLADE_BASE, 2, 0, 1);
-                attacks.add(new PriorityAttack(VISIBLE, CYBERBLADE_OPT1, 0, 0,1, 2));
+                attacks.add(new PriorityAttack(NO_ATTACK, CYBERBLADE_OPT1, 0, 0,1, 2));
                 attacks.add(new SimpleAttack(SAME_CELL, CYBERBLADE_OPT2, 2, 1,1));
                 attacks.get(0).setCost(new int[]{0,1,0});
                 break;
             case ROCKET_LAUNCHER:
-                baseAttack = new MoveAttack(VISIBLE, ROCKET_LAUNCHER_BASE, 1,2,1);
-                attacks.add(new PriorityAttack(VISIBLE, ROCKET_LAUNCHER_OPT1, 0, 0,2, 1));
+                baseAttack = new MoveAttack(VISIBLE_NOT_SAME, ROCKET_LAUNCHER_BASE, 1,2,1);
+                attacks.add(new PriorityAttack(NO_ATTACK, ROCKET_LAUNCHER_OPT1, 0, 0,2, 1));
                 attacks.get(0).setCost(new int[]{0,0,1});
-                attacks.add(new MoveAttack(VISIBLE, ROCKET_LAUNCHER_OPT2, 1, 1,2));
+                attacks.add(new SimpleAttack(VISIBLE, ROCKET_LAUNCHER_OPT2, 1, 0,2));
                 attacks.get(1).setCost(new int[]{0,1,0});
                 break;
             case PLASMA_GUN:
                 baseAttack = new SimpleAttack(VISIBLE, PLASMA_GUN_BASE, 2,0,1);
-                attacks.add(new PriorityAttack(VISIBLE, PLASMA_GUN_OPT1, 0, 0,2, 1));
+                attacks.add(new PriorityAttack(NO_ATTACK, PLASMA_GUN_OPT1, 0, 0,2, 1));
                 attacks.get(0).setCost(new int[]{1,0,0});
                 attacks.add(new SimpleAttack(VISIBLE, PLASMA_GUN_OPT2, 1, 0,1));
                 attacks.get(1).setCost(new int[]{1,0,0});break;
@@ -79,14 +79,18 @@ public class PriorityWeapon extends WeaponCard {
      * @param cell final opponent cell
      * @return if hit true
      */
-    private boolean tractorBeamShoot(int typeAttack, Player shooter, Player opponent, Cell cell){
+    private boolean cyberBladeShoot(int typeAttack, Player shooter, List<Player> opponent, Optional<Cell> cell){
         switch (typeAttack){
             case 0:
-                baseAttack.attack(shooter,opponent,cell);
+                baseAttack.attack(shooter,opponent.get(0));
                 break;
             case 1:
-                alternativeAttack.attack(shooter,opponent,cell);
+                if(!cell.isPresent())
+                    return false;
+                else attacks.get(0).attack(cell.get());
                 break;
+            case 2:
+                attacks.get(1).attack(shooter, opponent.get(1));
             default:
                 return false;
         }
@@ -101,14 +105,21 @@ public class PriorityWeapon extends WeaponCard {
      * @param cell final opponent cell
      * @return if hit true
      */
-    private boolean vortexCannonShoot(int typeAttack, Player shooter, List<Player> opponents, Cell cell){
-        baseAttack.attack(shooter,opponents.get(0),cell);
-        if(typeAttack==1){
-            baseAttack.attack(shooter,opponents.subList(1,2),cell);
+    private boolean grenadeLauncherShoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
+        switch (typeAttack){
+            case 0:
+                if(cell.isPresent())
+                    baseAttack.attack(shooter,opponents.get(0), cell.get());
+                else baseAttack.attack(shooter,opponents.get(0));
+                break;
+            case 1:
+                attacks.get(0).attack(shooter, opponents.subList(1, opponents.size()-1));
+                break;
         }
         return true;
     }
 
+    //TODO gestire le celle per attacchi 0 e 1
     /**
      *
      * @param typeAttack type attack
@@ -117,14 +128,19 @@ public class PriorityWeapon extends WeaponCard {
      * @param cell final opponent cell
      * @return if hit true
      */
-    private  boolean shotgunShoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
+    private boolean rocketLauncherShoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cellMove, Optional<Cell> cell){
         switch (typeAttack){
             case 0:
-                if(!cell.isPresent()) return false;
-                baseAttack.attack(shooter, opponents,cell.get());
+                if(!cell.isPresent() && !cellMove.isPresent())
+                    baseAttack.attack(shooter, opponents.get(0));
                 break;
             case 1:
-                alternativeAttack.attack(shooter,opponents);
+                if(!cellMove.isPresent())
+                    return false;
+                attacks.get(0).attack(cellMove.get());
+                break;
+            case 2:
+                attacks.get(1).attack(shooter,opponents);
                 break;
             default:
                 return false;
@@ -132,14 +148,18 @@ public class PriorityWeapon extends WeaponCard {
         return true;
     }
 
-    private boolean sledgehammerShot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
-        switch (typeAttack) {
+    private boolean plasmaGunShot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell){
+        switch (typeAttack){
             case 0:
-                baseAttack.attack(shooter,opponents);
+                baseAttack.attack(shooter, opponents.get(0));
                 break;
             case 1:
-                if(!cell.isPresent()) return false;
-                alternativeAttack.attack(shooter,opponents,cell.get());
+                if(!cell.isPresent())
+                    return false;
+                attacks.get(0).attack(cell.get());
+                break;
+            case 2:
+                attacks.get(1).attack(shooter, opponents.get(0));
                 break;
             default:
                 return false;
@@ -156,24 +176,24 @@ public class PriorityWeapon extends WeaponCard {
      * @return if hit return true
      */
     @Override
-    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cellMove, Optional<Cell> cell) {
 
         boolean result;
 
         switch (weaponType){
             case CYBERBLADE:
                 if(!cell.isPresent()) return false;
-                result = tractorBeamShoot(typeAttack, shooter,opponents.get(0), cell.get());
+                result = cyberBladeShoot(typeAttack, shooter, opponents, cellMove);
                 break;
             case ROCKET_LAUNCHER:
                 if(!cell.isPresent()) return false;
-                result = vortexCannonShoot(typeAttack,shooter,opponents,cell.get());
+                result = rocketLauncherShoot(typeAttack,shooter,opponents,cellMove, cell);
                 break;
             case GRENADE_LAUNCHER:
-                result = shotgunShoot(typeAttack,shooter,opponents,cell);
+                result = grenadeLauncherShoot(typeAttack,shooter,opponents, cellMove);
                 break;
             case PLASMA_GUN:
-                result = sledgehammerShot(typeAttack,shooter,opponents,cell);
+                result = plasmaGunShot(typeAttack,shooter,opponents,cellMove);
                 break;
             default:
                 result = false;
@@ -184,6 +204,16 @@ public class PriorityWeapon extends WeaponCard {
             shooter.setNotLoadWeapon(this);
         }
         return result;
+    }
+
+    @Override
+    public boolean shoot(Cell cell) {
+        return false;
+    }
+
+    @Override
+    public boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell) {
+        return false;
     }
 
 

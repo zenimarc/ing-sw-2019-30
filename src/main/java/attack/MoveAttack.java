@@ -54,6 +54,11 @@ public class MoveAttack extends Attack {
     }
 
     @Override
+    public boolean attack(Cell cell) {
+        return false;
+    }
+
+    @Override
     public boolean attack(Player player, List<Player> opponents, Cell newCell) {
         for(Player opponent : opponents) {
             if (opponent != null) {

@@ -208,6 +208,8 @@ public class BoardController{
                 return opponents.stream().filter(x -> !(board.getBillboard().visibleCells(shooterCell).contains(x.getCell()))).collect(Collectors.toList());
             case VISIBLE_ROOM:
                 return opponents.stream().filter(x -> board.getBillboard().canSeeThroughDoor(shooterCell, x.getCell())).collect(Collectors.toList());
+            case VISIBLE_NOT_SAME:
+                return opponents.stream().filter(x -> board.getBillboard().visibleCells(shooterCell).contains(x.getCell()) && x.getCell() != shooterCell).collect(Collectors.toList());
             case SAME_ROOM:
                 return opponents.stream().filter(x -> board.getBillboard().hasSameColor(shooterCell, x.getCell())).collect(Collectors.toList());
             case SAME_CELL:

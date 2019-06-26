@@ -21,6 +21,7 @@ public enum EnumTargetSet {
     NOT_VISIBLE,
     SAME_ROOM,
     VISIBLE_ROOM,
+    VISIBLE_NOT_SAME,
     SAME_CELL,
     CARDINAL,
     CARDINAL_WALL_BYPASS;

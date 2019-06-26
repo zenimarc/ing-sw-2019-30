@@ -14,6 +14,7 @@ import player.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static constants.Color.*;
 import static controller.EnumTargetSet.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,17 +30,17 @@ class BoardControllerTest {
     private  Player p4;
 
     private static Cell c00 = new NormalCell(Color.GREEN);
-    private static Cell c10 = new RegenerationCell(Color.BLUE);
-    private static Cell c20 = new NormalCell(Color.BLUE);
-    private static Cell c30 = new NormalCell(Color.BLUE);
+    private static Cell c10 = new RegenerationCell(BLUE);
+    private static Cell c20 = new NormalCell(BLUE);
+    private static Cell c30 = new NormalCell(BLUE);
 
-    private static Cell c01 = new NormalCell(Color.YELLOW);
-    private static Cell c11 = new NormalCell(Color.YELLOW);
-    private static Cell c21 = new NormalCell(Color.RED);
-    private static Cell c31 = new RegenerationCell(Color.RED);
+    private static Cell c01 = new NormalCell(YELLOW);
+    private static Cell c11 = new NormalCell(YELLOW);
+    private static Cell c21 = new NormalCell(RED);
+    private static Cell c31 = new RegenerationCell(RED);
 
-    private static Cell c02 = new RegenerationCell(Color.YELLOW);
-    private static Cell c12 = new NormalCell(Color.YELLOW);
+    private static Cell c02 = new RegenerationCell(YELLOW);
+    private static Cell c12 = new NormalCell(YELLOW);
     private static Cell c22 = new NormalCell(Color.WHITE);
     private static Cell c32 = new NormalCell();
 
@@ -137,8 +138,6 @@ class BoardControllerTest {
         assertTrue(controller.getPotentialTargets(c00, VISIBLE_ROOM).containsAll(potentialTargets));
         potentialTargets.clear();
         assertTrue(controller.getPotentialTargets(c02, VISIBLE_ROOM).containsAll(potentialTargets));
-
-
     }
 
     @Test
@@ -160,6 +159,36 @@ class BoardControllerTest {
         potentialTargets.add(c32);
         assertTrue(potentialTargets.containsAll(controller.getPotentialDestinationCells(p1.getCell(), 4)));
 
+    }
+
+    @Test
+    void getKineticCells(){
+        p1.setPawnCell(c11);
+        ArrayList<Position> potentialCells = new ArrayList<>();
+        potentialCells.add(board.getBillboard().getCellPosition(c20));
+        potentialCells.add(board.getBillboard().getCellPosition(c22));
+        potentialCells.add(board.getBillboard().getCellPosition(c10));
+        potentialCells.add(board.getBillboard().getCellPosition(c31));
+        potentialCells.add(board.getBillboard().getCellPosition(c12));
+        potentialCells.add(board.getBillboard().getCellPosition(c00));
+        potentialCells.add(board.getBillboard().getCellPosition(c02));
+        potentialCells.add(board.getBillboard().getCellPosition(c11));
+        potentialCells.add(board.getBillboard().getCellPosition(c01));
+        potentialCells.add(board.getBillboard().getCellPosition(c21));
+        assertTrue(potentialCells.containsAll(controller.getCellsKineticRay(p1.getCell())));
+    }
+
+    @Test
+    void setRegenerationCell(){
+        controller.setRegenerationCell(p1, RED);
+        assertEquals(p1.getCell(), c31);
+        assertEquals(p1.getCell().getColor(), RED);
+        controller.setRegenerationCell(p1, YELLOW);
+        assertEquals(p1.getCell(), c02);
+        assertEquals(p1.getCell().getColor(), YELLOW);
+        controller.setRegenerationCell(p1, BLUE);
+        assertEquals(p1.getCell(), c10);
+        assertEquals(p1.getCell().getColor(), BLUE);
     }
 
     @Test

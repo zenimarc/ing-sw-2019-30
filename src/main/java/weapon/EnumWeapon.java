@@ -26,8 +26,8 @@ public enum EnumWeapon {
 
     //TODO aggiungere queste weapon
     //CardinalWeapon
-    FLAMETHROWER("Flamethrowerr",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
-    POWERGLOVE("Cyber glove",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.BLUE)))),
+    FLAMETHROWER("Flamethrower",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
+    POWERGLOVE("Power glove",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW),new Bullet(Color.BLUE)))),
     RAILGUN("Railgun",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.YELLOW), new Bullet(Color.BLUE)))),
 
     //THOR può essere un simple attack particolare
@@ -35,8 +35,8 @@ public enum EnumWeapon {
 
     //PriorityWeapons
     CYBERBLADE("Cyberblade",new ArrayList<>(Arrays.asList(new Bullet(Color.YELLOW), new Bullet(Color.RED)))),
-    ROCKET_LAUNCHER("Rocket Launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED), new Bullet(Color.RED)))),
-    GRENADE_LAUNCHER("Grenade Launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
+    ROCKET_LAUNCHER("Rocket launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED), new Bullet(Color.RED)))),
+    GRENADE_LAUNCHER("Grenade launcher",new ArrayList<>(Arrays.asList(new Bullet(Color.RED)))),
     PLASMA_GUN("Plasma gun", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.YELLOW))) ),
 
 

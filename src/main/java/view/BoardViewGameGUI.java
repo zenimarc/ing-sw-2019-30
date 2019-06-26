@@ -10,6 +10,7 @@ import controller.BoardController;
 import controller.EnumCommand;
 import controller.PlayerController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -28,11 +29,14 @@ import player.Player;
 import powerup.PowerUp;
 import weapon.WeaponCard;
 
+import javax.xml.soap.Text;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static controller.EnumCommand.*;
 import static deck.Bullet.toIntArray;
@@ -56,6 +60,15 @@ public class BoardViewGameGUI extends Application {
 
     public BoardViewGameGUI() throws RemoteException {
     }
+
+    /*
+    public BoardViewGameGUI(Board board, ArrayList<Client> clients, Player player, EnumCommand command) throws RemoteException {
+        this.board = board;
+        this.clients = clients;
+        this.player = player;
+        this command = command;
+    }
+     */
 
     private Player getPlayer(){return this.player;}
 
@@ -99,7 +112,6 @@ public class BoardViewGameGUI extends Application {
         primaryStage.setHeight(stageHeight);
         primaryStage.setWidth(stageWidth);
         primaryStage.show();
-
     }
 
     private String getString(int x, int y, int i){
@@ -153,7 +165,12 @@ public class BoardViewGameGUI extends Application {
         anchor.getChildren().get(players.size()+1).setLayoutY(110);
         anchor.getChildren().get(players.size()+1).toBack();
 
+        anchor.getChildren().add(timer());
+        startCountDown((Pane)anchor.getChildren().get(players.size()+2), 15);
+        anchor.getChildren().get(players.size()+2).setLayoutX(800);
         anchor.setCenterShape(true);
+
+
         return anchor;
     }
 
@@ -423,7 +440,7 @@ public class BoardViewGameGUI extends Application {
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50, -120 + i * 35, 0, 180));
                 playerBoard.getChildren().get(2 * i + 1).setVisible(false);
             }
-            else  playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(3).getPowerups().get(i).stringGUI()), 75, 50, -120 + i * 35, 0, 180));
+            else  playerBoard.getChildren().add(generateCard(weaponPath(getPlayerboardPlayer(3).getWeapons().get(i).stringGUI()), 75, 50, -120 + i * 35, 0, 180));
             if(i < getPlayerboardPlayer(3).getPowerups().size())
                 playerBoard.getChildren().add(generateCard(powerPath(getPlayerboardPlayer(3).getPowerups().get(i).stringGUI()), 75, 50, 350+i*35, 0, 180));
             else{
@@ -1172,6 +1189,89 @@ public class BoardViewGameGUI extends Application {
             }
 
         });
+    }
+
+    /*private void notifyChangesPlayerboard(Pane game, EnumCommand command, Player player, int number,  Object obj) {
+        switch (command) {
+            case DISCARD_WEAPON: //add Skull
+                game.getChildren().get(10 + player.getPlayerBoard().getNumDeaths()).setVisible(true);
+                break;
+            case MOVE: //add mark
+                game.getChildren().get(15 + getPlayerboardPlayer(number).getMarks(player) * 3 + player.getMarks(player)).setVisible(true);
+                break;
+            case POWERUP://add damage
+                game.getChildren().get(15 + getPlayerboardPlayer(number).getMarks(player) * 3 + player.getMarks(player)).setVisible(true);
+                break;
+            case GRAB_MOVE://add ammo
+                break;
+            case SHOOT_MOVE: //add WeaponCard
+                break;
+            case GRAB_MOVE_FRENZYX1: //add Power up
+                break;
+            case END_TURN://change turn
+                this.command = command;
+            default:
+                break;
+        }
+    }
+
+        private void notifyChangesMap(Pane map, EnumCommand command, Player player, int number,  Object obj){
+            switch(command){
+                case DISCARD_WEAPON: //removeCard
+                    map.getChildren().get(10 + player.getPlayerBoard().getNumDeaths()).setVisible(true);
+                    break;
+                case MOVE: //removeAmmo
+                    map.getChildren().get(15+ getPlayerboardPlayer(number).getMarks(player)*3+player.getMarks(player)).setVisible(true);
+                    break;
+                case POWERUP://remove skull
+                    map.getChildren().get(15+ getPlayerboardPlayer(number).getMarks(player)*3+player.getMarks(player)).setVisible(true);
+                    break;
+                case GRAB_MOVE://move pawn
+                    break;
+                default:
+                    break;
+            }
+
+        pedine cambiano posizione
+        teschi cambiano
+        cambiano le playerboard
+        weapon e ammo su mappa cambiano
+
+    }*/
+
+    public GridPane timer(){
+        GridPane pane = new GridPane();
+        pane.add(new Label("Time left:"), 0, 0);
+        pane.add(new Label("Time left:"), 0, 1);
+        pane.getChildren().get(0).setStyle("-fx-text-fill: white;");
+        pane.getChildren().get(1).setStyle("-fx-text-fill: white;");
+        return pane;
+    }
+
+    private void startCountDown(Pane timerText, int counter) {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            int count = counter;
+            public void run() {
+                if(count > 0) {
+                    Platform.runLater(() -> ((Label) timerText.getChildren().get(1)).setText(printTime(count)));
+                    count--;
+
+                }
+                else {
+                    timerText.setVisible(false);
+                    timer.cancel();
+                }
+            }
+        }, 1000, 1000); //Every 1 second
+    }
+
+
+    private String printTime(int count){
+        if(count%60>= 0 && count%60 <=9)
+            return count/60 + ":0" + count%60;
+        else return count/60 + ":" + count%60;
     }
 }
 
