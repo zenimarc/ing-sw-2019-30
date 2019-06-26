@@ -27,6 +27,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     private ClientApp clientApp;
 
 
+    //receive command from observable view and send it to the server.
     @Override
     public void update(Observable o, Object arg) {
         if(arg.getClass().equals(CommandObj.class)) {
@@ -56,15 +57,18 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
      * @return true if it is successfully connected, else false
      * @throws RemoteException
      */
-    public boolean connect(String host, int port) throws RemoteException {
-        this.registry = LocateRegistry.getRegistry(host, port);
+    public boolean connect(String host, int port) {
         try {
+            this.registry = LocateRegistry.getRegistry(host, port);
             this.lobby = (Lobby) registry.lookup("lobby");
             clientLog("lobby trovata");
             return true;
         } catch (NotBoundException nbe) {
             clientLog(nbe.toString());
             nbe.fillInStackTrace();
+            return false;
+        } catch (RemoteException re){
+            re.fillInStackTrace();
             return false;
         }
     }
@@ -96,15 +100,20 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
      */
     public boolean register(String nickname) {
         try {
+            clientLog("prima");
             UUID myToken = this.lobby.register(nickname, this);
+            clientLog("dopo");
             if (myToken != null) {
                 this.setNickname(nickname);
                 this.userToken = myToken;
                 clientLog("ricevuto il mio userToken: "+this.userToken);
                 return true;
             }
-            else
+            else{
+                clientLog("token nullo");
                 return false;
+            }
+
         } catch (RemoteException re) {
             clientLog(re.toString());
             re.fillInStackTrace();
@@ -220,8 +229,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
 
     public void init() {
         try {
-            connect("127.0.0.1", 1099);
             Scanner scanner = new Scanner(System.in);
+            clientLog("Enter server ip");
+            while(!connect(scanner.nextLine(), 1099))
+                clientLog("server not found, try a new ip");
             clientLog("Enter username (min 3 chars max 15 chars)");
             String userName = scanner.nextLine();
             setNickname(userName);
