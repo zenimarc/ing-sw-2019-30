@@ -200,6 +200,11 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
      * @throws RemoteException if it's impossible to reconnect
      */
     public boolean reconnect(String username, UUID userToken) throws RemoteException{
+        Scanner scanner = new Scanner(System.in);
+        if (this.userToken == null) {
+            clientLog("user token non trovato, inseriscilo manualmente per riconnetterti");
+            this.userToken = UUID.fromString(scanner.nextLine());
+        }
         this.gameServer = lobby.reconnect(username, userToken, this);
         if (gameServer!=null) {
             clientLog("mi sono ricollegato a: " + gameServer.getGameToken());
