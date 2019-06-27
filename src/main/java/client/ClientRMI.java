@@ -168,6 +168,12 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     public Player getPlayer(){
         return this.player;
     }
+
+    @Override
+    public List<Player> getListOfPlayers() throws RemoteException {
+        return gameServer.getPlayers();
+    }
+
     /**
      * this function returns the client's nickname
      * @return the client's nickname

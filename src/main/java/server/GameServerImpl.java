@@ -50,6 +50,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         return boardController.getPlayer(remoteClient.getNickname()).clonePlayer();
     }
 
+    @Override
     public List<Player> getPlayers(){
         return boardController.getListOfPlayers();
     }

@@ -8,10 +8,11 @@ import weapon.WeaponCard;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Observable;
 import java.util.WeakHashMap;
 
 
-public interface View  {
+public interface View {
     void gameStart();
     void giveMessage(String title, String mex);
     void giveError(String error);
