@@ -316,7 +316,7 @@ public class Player extends Observable implements Cloneable, Serializable {
         try{
             return (Player) this.clone();
         }catch (CloneNotSupportedException err){
-            err.printStackTrace();
+            err.fillInStackTrace();
             return null;
         }
     }

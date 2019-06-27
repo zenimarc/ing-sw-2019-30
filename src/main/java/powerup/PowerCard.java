@@ -7,6 +7,7 @@ import deck.Bullet;
 import deck.Card;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * PowerCard is the card which represent which ammo you can receive and if you can pick a power up
@@ -85,5 +86,10 @@ public class PowerCard extends Card implements Serializable {
             }
         }
         return false;
+    }
+
+    @Override //TODO vedere se va bene questo override di hashcode
+    public int hashCode(){
+        return Objects.hashCode(this);
     }
 }

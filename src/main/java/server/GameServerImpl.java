@@ -135,7 +135,6 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             turnHandler.start();
         }catch (RemoteException re){
             re.fillInStackTrace();
-            re.printStackTrace();
             //TODO cancel this game and notify players
         }
     }
@@ -149,7 +148,6 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 client.gameStarted();
             }catch (RemoteException re){
                 re.fillInStackTrace();
-                re.printStackTrace();
             }
     }
 

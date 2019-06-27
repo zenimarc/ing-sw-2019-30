@@ -147,7 +147,7 @@ public class PlayerView extends Observable{
            notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, index));
 
            if(notLoaded.size()>0) {
-               notLoaded.remove(index - 1);
+               notLoaded.remove(index);
                loadWeapon(notLoaded);
            }
         }

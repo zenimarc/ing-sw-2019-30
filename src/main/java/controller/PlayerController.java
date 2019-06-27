@@ -672,7 +672,7 @@ public class PlayerController extends Observable implements Observer{
                 powers.add(power);
             else {
                 if(obj.getCmd() == SHOOT && power.getPowerUp() == GUNSIGHT) {
-                    if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 1, 0})))
+                    if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 0, 1})))
                         powers.add(power);
                 }
                 else if(power.getPowerUp() == PowerUp.TELEPORTER || power.getPowerUp() == PowerUp.KINETICRAY)
