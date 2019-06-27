@@ -17,7 +17,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MIN_PLAYERS = Constants.MIN_PLAYER.getValue();
     private static final int MAX_PLAYERS = Constants.MAX_PLAYER.getValue();
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
-    private static final String SERVER_IP = "192.168.43.108";
+    private static final String SERVER_IP = "localhost";
     private int port;
     private int minPlayers;
     private int maxPlayers;
@@ -155,8 +155,12 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      * @return true if it is fine, else false
      */
     private boolean validateNickname(String nick){
-        Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
-        return (pattern.matcher(nick).matches());
+        if (nick==null)
+            return false;
+        else {
+            Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
+            return (pattern.matcher(nick).matches());
+        }
     }
 
     public static void main(String[] args) {

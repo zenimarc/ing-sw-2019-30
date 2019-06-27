@@ -111,7 +111,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
                 return true;
             }
             else{
-                clientLog("token nullo");
+                clientLog("impossibile registrarsi");
                 return false;
             }
 
