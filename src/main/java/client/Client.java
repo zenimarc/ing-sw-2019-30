@@ -18,6 +18,7 @@ public interface Client extends Remote {
     String getNickname() throws RemoteException;
     void setPlayer(Player player) throws RemoteException;
     Player getPlayer() throws RemoteException;
+    void sendCMD(CommandObj cmd) throws RemoteException;
     void receiveCMD(CommandObj cmd) throws RemoteException;
  //   void receiveObj(Object obj) throws RemoteException;
     void gameStarted() throws RemoteException;
