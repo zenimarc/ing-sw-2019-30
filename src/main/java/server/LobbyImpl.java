@@ -113,23 +113,19 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      * @return last gameserver the client was playing in, or null if reconnecting isn't available
      */
     public synchronized GameServer reconnect(String nickname, UUID userToken, Client newRemoteClient) {
-        try {
-            if (registeredClients.containsKey(nickname))
-                if (registeredClients.get(nickname).getUserToken().equals(userToken)) {
-                    System.out.println("inizio processo di riconnessione");
-                    registeredClients.get(nickname).setClient(newRemoteClient);
-                    if (gamesList.get(registeredClients.get(nickname).getGameToken()).updateClient(newRemoteClient, userToken)) {
-                        newRemoteClient.gameStarted();
-                        return gamesList.get(registeredClients.get(nickname).getGameToken());
-                    } else
-                        return null;
+
+        if (registeredClients.containsKey(nickname))
+            if (registeredClients.get(nickname).getUserToken().equals(userToken)) {
+                System.out.println("inizio processo di riconnessione");
+                registeredClients.get(nickname).setClient(newRemoteClient);
+                if (gamesList.get(registeredClients.get(nickname).getGameToken()).updateClient(newRemoteClient, userToken)) {
+                    return gamesList.get(registeredClients.get(nickname).getGameToken());
                 } else
                     return null;
-            return null;
-        }catch (RemoteException re){
-            re.fillInStackTrace();
-            return null;
-        }
+            } else
+                return null;
+        return null;
+
     }
 
     /**

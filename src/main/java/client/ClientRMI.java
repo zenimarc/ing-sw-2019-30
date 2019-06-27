@@ -207,6 +207,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         }
         this.gameServer = lobby.reconnect(username, userToken, this);
         if (gameServer!=null) {
+            gameStarted();
             clientLog("mi sono ricollegato a: " + gameServer.getGameToken());
             return true;
         }
