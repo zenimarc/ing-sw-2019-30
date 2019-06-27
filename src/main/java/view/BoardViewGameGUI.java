@@ -6,14 +6,11 @@ import board.Position;
 import board.RegenerationCell;
 import board.billboard.BillboardGenerator;
 import client.Client;
-import controller.BoardController;
 
+import controller.CommandObj;
 import controller.EnumCommand;
-import controller.PlayerController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,18 +24,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import player.Player;
-import powerup.PowerUp;
 import weapon.WeaponCard;
 
-import javax.xml.soap.Text;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.*;
 
-import static constants.Color.RED;
 import static controller.EnumCommand.*;
-import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.KINETICRAY;
 import static powerup.PowerUp.TELEPORTER;
 import static powerup.PowerUp.VENOMGRENADE;
@@ -48,13 +41,10 @@ public class BoardViewGameGUI extends Application implements View {
     private int stageHeight = 700;
     private int stageWidth = 930;
     private Board board;
-    private ArrayList<Client> clients;
-    private ArrayList<Player> players = new ArrayList<>();
+    private Client client;
+    private List<Player> players = new ArrayList<>();
     private Player player = new Player("Marco");
     private EnumCommand command = CHOOSE_ACTION;
-    private PlayerController controller;
-    private BoardController boardController;
-    private int random;
     private int test = 3;
     private Pane root;
 
@@ -78,8 +68,7 @@ public class BoardViewGameGUI extends Application implements View {
         return (WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos);
     }
 
-    private void initialize(/*, ArrayList<Client> client*/) throws RemoteException, InterruptedException {
-        this.random = new Random().nextInt(3) + 1;
+    private void initialize(/*, ArrayList<Client> client*/) {
         this.board = new Board(8, BillboardGenerator.createBillboard(test));
         player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(1, 1)));
         players.add(player);
@@ -87,10 +76,6 @@ public class BoardViewGameGUI extends Application implements View {
         players.add(new Player("prova"));
         players.add(new Player("Marco"));
         //players.add(new Player("tizio"));
-        boardController = new BoardController(players, 8);
-        boardController.setBoard(board);
-        controller = new PlayerController(player, boardController);
-
     }
 
     public static void main(String[] args) {
@@ -1102,8 +1087,9 @@ public class BoardViewGameGUI extends Application implements View {
                         image.setVisible(false);
                         command = CHOOSE_ACTION;
                         break;
-                    case GRAB_WEAPON://scegliere la carta da prendere, non serve il riferimento alle altre carte perchè lo prendo dal player
-                        if (!getPlayer().canPay(toIntArray(getWeapon(x, y, pos).getGrabCost())))
+                    case GRAB_WEAPON:
+                        notifyServer(new CommandObj(GRAB_WEAPON, pos));
+                        /*if (!getPlayer().canPay(toIntArray(getWeapon(x, y, pos).getGrabCost())))
                             buttonCard.disabledProperty();
                         else if (getPlayer().getWeapons().size() <= 3) {
                             getPlayer().addWeapon((WeaponCard) board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(pos));
@@ -1112,7 +1098,7 @@ public class BoardViewGameGUI extends Application implements View {
                             for (int i = 5; i > -1; i--)
                                 map.getChildren().get(map.getChildren().size() - board.getSkulls()).setVisible(true);
                             command = CHOOSE_ACTION;
-                        } else command = DISCARD_WEAPON;
+                        } else command = DISCARD_WEAPON;*/
                         break;
                     default:
                         buttonCard.disableProperty();
@@ -1137,29 +1123,13 @@ public class BoardViewGameGUI extends Application implements View {
         action.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                int steps = 0;
-                int i = 0;
-                steps = setSteps(steps, order);
                 for (Button button : buttons)
                     button.setVisible(false);
                 //verifica se è il proprio turno
                 if (command == CHOOSE_ACTION) {
-                    boardController.getPotentialDestinationCells(getPlayer().getCell(), steps);
-                    //If per la frenzy
                     command = order;
-                    for (int y = 0; y < 4; y++)
-                        for (int x = 0; x < 3; x++) {
-                            if (x == 0 && y == 3 && (test == 4 || test == 2)) {
-                                x++;
-                                i++;
-                            }
-                            illuminateCells(map, order, x, y, i, ammoSize, steps);
-                            if (x == 1 && y == 0 && (test == 2 || test == 1)) {
-                                x++;
-                                i++;
-                            }
-                        }
+                    for(int i = ammoSize; i < ammoSize + board.getBillboard().getCellMap().size(); i++)
+                        illuminateCell((Button)map.getChildren().get(i), true);
                 }
 
             }
@@ -1178,17 +1148,9 @@ public class BoardViewGameGUI extends Application implements View {
      */
     //Azioni che può fare cella
     private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map, int ammoSize, ArrayList<Button> buttons) {
-        cell.onActionProperty().addListener(new ChangeListener<EventHandler<ActionEvent>>() {
-            @Override
-            public void changed(ObservableValue<? extends EventHandler<ActionEvent>> test, EventHandler<ActionEvent> arg1, EventHandler<ActionEvent> arg2) {
-                if (command != CHOOSE_ACTION)
-                    cell.disableProperty();
-            }
-        });
         cell.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                controller.move(board.getBillboard().getCellFromPosition(new Position(x, y)), command);
 
                 switch (command) {
                     case MOVE:
@@ -1196,66 +1158,47 @@ public class BoardViewGameGUI extends Application implements View {
                             illuminateCell((Button) map.getChildren().get(i), false);
                         }
                         movePawn((Button) map.getChildren().get(map.getChildren().size() - 7 - players.size() + 1));
+                        notifyServer(new CommandObj(MOVE, new Position(x, y)));
                         command = CHOOSE_ACTION;
                         for (Button button : buttons)
                             button.setVisible(true);
 
-
-                    /*case FRENZY_MOVE:
-                        if(board.getBillboard().canMove(player.getCell(), board.getBillboard().getCellFromPosition(new Position(x, y)), 4)) {
-                            cell.setVisible(true);
-                            player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(x, y)));
-                            //cambio posizione pedina
-                            //CHOOSE ACTION o END TURN
-
-                        }*/
-
                         break;
-                    case GRAB_MOVE://scegliere la carta da prendere
-                        if (ammo != null) {
+                    case GRAB_MOVE:
+                        notifyServer(new CommandObj(MOVE, new Position(x, y)));
+                        if (ammo != null)
                             ammo.setVisible(false);
-                        } else {
-                            if (board.getBillboard().getCellFromPosition(new Position(x, y)).getColor() == RED)
-                                for (int i = 0; i < 3; i++) {
-                                    if (board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i) == null /*|| !getPlayer().canPay(((WeaponCard)board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i)).getGrabCost()*/)
-                                        map.getChildren().get(i + 1).disableProperty();
-                                }
-                            if (board.getBillboard().getCellFromPosition(new Position(x, y)).getColor() == constants.Color.YELLOW)
-                                for (int i = 0; i < 3; i++) {
-                                    if (board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i) == null /*|| !getPlayer().canPay(((WeaponCard)board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i)).getGrabCost()*/)
-                                        map.getChildren().get(i + 4).disableProperty();
-                                }
-                            if (board.getBillboard().getCellFromPosition(new Position(x, y)).getColor() == constants.Color.BLUE)
-                                for (int i = 0; i < 3; i++) {
-                                    if (board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i) == null /*|| !getPlayer().canPay(((WeaponCard)board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i)).getGrabCost()*/)
-                                        map.getChildren().get(i + 7).disableProperty();
-                                }
-                            movePawn((Button) map.getChildren().get(map.getChildren().size() - 7 - players.size() + 1));
-                            command = GRAB_WEAPON;
-                        }
-                        //prende ammo o arma
 
                         for (int i = ammoSize; i < map.getChildren().size() - 5 - 7 - players.size() + 1; i++) {
                             illuminateCell((Button) map.getChildren().get(i), false);
                         }
                         movePawn((Button) map.getChildren().get(map.getChildren().size() - 7 - players.size() + 1));
+                        notifyServer(new CommandObj(GRAB_MOVE, new Position(x, y)));
+                        command = CHOOSE_ACTION;
                         for (Button button : buttons)
                             button.setVisible(true);
 
                         break;
-
-                    //da ammo e power up
-                    //CHOOSE ACTION o END TURN
 
                     case SHOOT_MOVE:
                         for (int i = ammoSize; i < map.getChildren().size() - 5 - 7 - players.size() + 1; i++) {
                             illuminateCell((Button) map.getChildren().get(i), false);
                         }
                         movePawn((Button) map.getChildren().get(map.getChildren().size() - 7 - players.size() + 1));
-                        command = SHOOT;
+                        notifyServer(new CommandObj(SHOOT_MOVE, new Position(x, y)));
+                        command = CHOOSE_ACTION;
+                        for (Button button : buttons)
+                            button.setVisible(true);
                         break;
                     case REG_CELL:
-                        boardController.setRegenerationCell(player, RED);
+                        for (int i = ammoSize; i < map.getChildren().size() - 5 - 7 - players.size() + 1; i++) {
+                            illuminateCell((Button) map.getChildren().get(i), false);
+                        }
+                        movePawn((Button) map.getChildren().get(map.getChildren().size() - 7 - players.size() + 1));
+                        notifyServer(new CommandObj(REG_CELL, new Position(x, y)));
+                        command = CHOOSE_ACTION;
+                        for (Button button : buttons)
+                            button.setVisible(true);
                         command = END_TURN;
                         break;
                     default:
@@ -1352,31 +1295,6 @@ public class BoardViewGameGUI extends Application implements View {
             }
 
         });
-    }
-
-    /**
-     *
-     * @param steps
-     * @param order
-     * @return
-     */
-    private int setSteps(int steps, EnumCommand order) {
-        switch (order) {
-            case MOVE:
-                steps = 3;
-                return steps;
-            case GRAB_MOVE:
-                if (getPlayer().getNumDamages() > 2)
-                    steps = 2;
-                else steps = 1;
-                return steps;
-            case SHOOT_MOVE:
-                if (getPlayer().getNumDamages() > 2)
-                    steps = 1;
-                return steps;
-
-        }
-        return steps;
     }
 
     /**
@@ -1682,18 +1600,22 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     * 
+     *
      * @param board
-     * @param clients
-     * @param player
+     * @param client
      * @param command
      * @throws RemoteException
      */
-    public void gameStart(Board board, ArrayList<Client> clients, Player player, EnumCommand command) throws RemoteException {
+    public void gameStart(Board board, Client client, EnumCommand command) throws RemoteException {
         this.board = board;
-        this.clients = clients;
-        this.player = player;
+        this.client = client;
+        this.player = client.getPlayer();
+        this.players = client.getListOfPlayers();
         this.command = command;
+    }
+
+    private void changeMessage(String string, Pane ask){
+       // ask.getChildren()
     }
 
     @Override
@@ -1702,13 +1624,19 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void giveMessage(String title, String mex){}
+    public void giveMessage(String title, String mex){
+        changeMessage(mex, (Pane) root.getChildren().get(players.size()));
+    }
 
     @Override
-    public void giveError(String error){}
+    public void giveError(String error){
+        changeMessage(error, (Pane) root.getChildren().get(players.size()));
+    }
 
     @Override
-    public boolean loadWeapon(List<String> notLoaded){return true;}
+    public boolean loadWeapon(List<String> notLoaded){
+        return true;
+    }
 
     @Override
     public void myTurn(){
@@ -1726,12 +1654,17 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void regeneratePlayer(){
         command = REG_CELL;
+        for(int i = root.getChildren().size() - board.getSkulls()-players.size()-board.getBillboard().getCellMap().size(); i < root.getChildren().size() - board.getSkulls()-players.size(); i++)
+            illuminateCell((Button)root.getChildren().get(i), true);
     }
 
     @Override
     public void updatePlayer(Player player){
         try {
             notifyChangesPlayerboard(player);
+            if(this.player.getName().equals(player.getName()))
+                this.player = player;
+            players.set(players.indexOf(player), player);
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
         }
@@ -1741,6 +1674,7 @@ public class BoardViewGameGUI extends Application implements View {
     public void updateBoard(Board board){
         try {
             notifyChangesMap((Pane)root.getChildren().get(players.size()), board);
+            this.board = board;
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
         }
@@ -1748,7 +1682,9 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void grab(){
-
+        if(player.getCell().getClass() == RegenerationCell.class)
+            command = GRAB_WEAPON;
+        //TODO illumina cell
     }
 
     @Override
@@ -1760,6 +1696,14 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public Position choosePositionToAttack(List<Position> potentialposition) {
         return null;
+    }
+
+    private void notifyServer(CommandObj obj) {
+        try {
+            client.sendCMD(obj);
+        } catch (RemoteException e) {
+            e.fillInStackTrace();
+        }
     }
 }
 

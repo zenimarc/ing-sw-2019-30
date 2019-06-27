@@ -136,7 +136,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask player if he want load some weapon and notify that
+     * Asks player if he wants to load some weapons, then notifies server of his choice
      * @return
      */
     public boolean loadWeapon(List<String> notLoaded){
