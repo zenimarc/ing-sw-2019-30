@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
+import static constants.Color.*;
+
 /**
  * Bullet is a class used to represent ammo
  */
@@ -28,6 +30,7 @@ public class Bullet implements Serializable {
     public Color getColor() {
         return color;
     }
+
 
     /**
      * This function converts an ArrayList of Bullet int an int array[num of R,num of Y, num of B]
@@ -54,6 +57,24 @@ public class Bullet implements Serializable {
     }
 
     /**
+     * This function converts an ArrayList of Bullet int an int array[num of R,num of Y, num of B]
+     * @param bullets to be converted
+     * @return an array
+     */
+    @Contract(pure = true)
+    public static int[] enumToIntArray(@NotNull Map<Color, Integer> bullets){
+        int[] colorArray = new int[]{0,0,0};
+
+        if(bullets.containsKey(RED))
+            colorArray[0] = bullets.get(RED);
+        if(bullets.containsKey(YELLOW))
+            colorArray[1] = bullets.get(YELLOW);
+        if(bullets.containsKey(BLUE))
+            colorArray[2] = bullets.get(BLUE);
+        return colorArray;
+    }
+
+    /**
      * This function converts an array of cubes into a String
      * @param cubes with info
      * @return a string
@@ -71,7 +92,7 @@ public class Bullet implements Serializable {
      */
     public static String mapToString(Map<Color, Integer> map){
 
-        int[] bullets = new  int[]{map.get(Color.RED), map.get(Color.YELLOW),map.get(Color.BLUE)};
+        int[] bullets = new  int[]{map.get(RED), map.get(Color.YELLOW),map.get(Color.BLUE)};
 
         return intArrayToString(bullets);
     }

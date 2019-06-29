@@ -39,16 +39,16 @@ public class PlayerView extends Observable{
         EnumCommand command = choosePlayerAction();
         switch (command) {
             case MOVE:
-                toServerAction = move(EnumCommand.MOVE);
+                toServerAction = move(MOVE);
                 break;
             case GRAB:
-                toServerAction = move(EnumCommand.GRAB_MOVE);
+                toServerAction = move(GRAB_MOVE);
                 break;
             case SHOOT:
                 toServerAction = shoot();
                 break;
             case POWERUP:
-                notifyServer(new CommandObj(CHECKPOWERUP, POWERUP));
+                notifyServer(new CommandObj(CHECKPOWERUP, POWERUP, true));
                 toServerAction = true;
                 break;
             case END_TURN:
@@ -151,7 +151,7 @@ public class PlayerView extends Observable{
                loadWeapon(notLoaded);
            }
         }
-        return  true;
+        return true;
     }
 
     /**
@@ -455,11 +455,11 @@ public class PlayerView extends Observable{
     private String stringOptionalAttack(WeaponCard wc){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\t1)If you want use only base attack:\n");
+        sb.append("\t1)If you want to use only base attack:\n");
         sb.append("\t\t");
         sb.append(wc.getBaseAttack());
         sb.append("\n");
-        sb.append("\t2)If you want use one (or more) optional attack(s):");
+        sb.append("\t2)If you want to use one (or more) optional attack(s):");
         for(Attack attack : wc.getAttacks()){
             sb.append("\n\t\t");
             sb.append(attack);
@@ -472,7 +472,7 @@ public class PlayerView extends Observable{
     private String stringForChooseAttackInList(List<Attack> attacks){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("What optional attack do you want to use?\n");
+        sb.append("Which optional attack do you want to use?\n");
         sb.append("\t0)No one\n");
         for(Attack attack : attacks){
             sb.append('\t');
@@ -557,18 +557,15 @@ public class PlayerView extends Observable{
      * @return index of attack to use
      */
     private int chooseTypeAttack(WeaponCard wc){
-        String read;
+        String read = "";
         int max = (wc.getAlternativeAttack()==null && wc.getAttacks().isEmpty()) ? 1 : 2;
 
         String format = "[0-"+max+"]";
         String question = stringForChooseAttack(wc);
 
-        while(true){
+        while(!read.matches(format)){
             print(question);
             read = reader.next();
-            if(read.matches(format)){
-                break;
-            }
         }
         return Integer.valueOf(read)-1 ;
     }
@@ -682,7 +679,19 @@ public class PlayerView extends Observable{
         notifyObservers(cmd);
     }
 
-    public boolean askForPowerUp(ArrayList<PowerCard> powerCards){
+    private String printTargets(ArrayList<Player> players){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Possible targets are:\n");
+        for(Player p : players){
+            sb.append(players.indexOf(p) + 1);
+            sb.append(") ");
+            sb.append(p.getName());
+            sb.append("\t");
+        }
+        return sb.toString();
+    }
+
+    public void askForPowerUp(ArrayList<PowerCard> powerCards, PowerUp power){
         String format = "[0-1]";
         String read = "";
         while (!read.matches(format)) {
@@ -690,7 +699,7 @@ public class PlayerView extends Observable{
             print(choosePowerUp(powerCards));
             read = reader.next();
         }
-        return Boolean.valueOf(read);
+        notifyServer(new CommandObj(CHECKPOWERUP, power, (Boolean.valueOf(read))));
     }
 
     public boolean usePowerUp(ArrayList<PowerCard> powerCards) {
@@ -702,13 +711,13 @@ public class PlayerView extends Observable{
         String format = "[0-" + player.getPowerups().size() + "]";
         String read = "";
         while (!read.matches(format)) {
-            print("Which power up do you want to use?\n");
             print(choosePowerUp(powerCards));
             read = reader.next();
         }
-        if(powerCards.get(0).getPowerUp() == PowerUp.GUNSIGHT)
-            notifyServer(new CommandObj(PAYGUNSIGHT, player.getPowerups().get(Integer.valueOf(read)-1)));
-        else notifyServer(new CommandObj(PAYPOWERUP, player.getPowerups().get(Integer.valueOf(read)-1)));
+        if(Integer.valueOf(read) != 0)
+            if(powerCards.get(Integer.valueOf(read)-1).getPowerUp() == PowerUp.GUNSIGHT)
+                notifyServer(new CommandObj(PAYGUNSIGHT, Integer.valueOf(read)-1));
+        else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read)-1));
         return true;
     }
 
@@ -728,17 +737,28 @@ public class PlayerView extends Observable{
         String read = "";
 
         while (!read.matches(format)) {
-            print("Do you want to pay or to discard your power up? [1: Discard, 0: Pay]");
+            print("Do you want to pay or to discard your power up? [0: Discard, 1: Pay]");
             read = reader.next();
         }
+        System.out.print(Boolean.valueOf(read));
         notifyServer(new CommandObj(PAIDPOWERUP, power, Boolean.valueOf(read)));
     }
 
-    public boolean moveTeleporter() {
-        return move(TELEPORTER);
+    protected void moveTeleporter() {
+        move(TELEPORTER);
     }
 
-    public boolean moveKineticray(Player player, List<Position> cells) {
+    protected void chooseTargets(ArrayList<Player> players){
+        String target = "";
+        printTargets(players);
+        while (!target.matches("[0-"+ players.size()+"]")) {
+            print("Which player do you want to move?");
+            target = reader.next();
+        }
+        moveKineticray(players.get(Integer.valueOf(target)));
+    }
+
+    private void moveKineticray(Player player) {
         String positionString = "";
         while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");
@@ -746,12 +766,9 @@ public class PlayerView extends Observable{
             Position newPosition = new Position(
                     Integer.valueOf(positionString.split(",")[0]),
                     Integer.valueOf(positionString.split(",")[1]));
-            if (cells.contains(newPosition)) {
-                notifyServer(new CommandObj(KINETICRAY, player, newPosition));
-                return true;
-            }
+            notifyServer(new CommandObj(KINETICRAY, player, newPosition));
         }
-        return false;
+
     }
 
 }

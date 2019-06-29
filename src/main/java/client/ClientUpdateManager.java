@@ -3,6 +3,8 @@ package client;
 import board.Board;
 import controller.CommandObj;
 import player.Player;
+import powerup.PowerCard;
+import powerup.PowerUp;
 import view.View;
 import weapon.WeaponCard;
 
@@ -67,6 +69,28 @@ public class ClientUpdateManager extends Observable {
                                ((ArrayList) cmd.getObject()).get(0));
                    }
                 }
+                break;
+            case ASKFORPOWERUP:
+                view.askPowerUp((ArrayList<PowerCard>) (ArrayList) cmd.getList(), (PowerUp) cmd.getObject2());
+                break;
+            case CHECKPOWERUP:
+                view.usePowerUp((ArrayList<PowerCard>) cmd.getObject());
+                break;
+            case PAYGUNSIGHT:
+                view.payGunsight((int[])cmd.getObject(), (PowerCard) cmd.getObject());
+                break;
+            case PAYPOWERUP:
+                view.payPowerUp((PowerCard) cmd.getObject());
+                break;
+            case USE_TELEPORTER:
+                view.useTeleport();
+                break;
+            case USE_KINETICRAY:
+                view.useKineticray((ArrayList<Player>)cmd.getObject());
+                break;
+            case USE_GUNSIGHT:
+                break;
+            case USE_VENOMGRENADE:
                 break;
             case UPDATE_PLAYER:
                 updatePlayer(cmd.getObject());

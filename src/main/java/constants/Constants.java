@@ -10,7 +10,7 @@ public enum Constants {
     MAX_BULLET_PER_COLOR(3),
     ACTION_PER_TURN_NORMAL_MODE(2),
     MAX_PLAYER(3),
-    MIN_PLAYER(2)
+    MIN_PLAYER(1)
 
     ;
 

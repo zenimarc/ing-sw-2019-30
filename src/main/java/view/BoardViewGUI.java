@@ -37,7 +37,7 @@ public class BoardViewGUI extends Application{
     @Override
     public void start(Stage primaryStage) { //can't change name
         primaryStage.setResizable(false);
-        root = mainMenu();
+        root = mainMenu(primaryStage);
         root.setBackground(new Background(menuBackground()));
 
         Scene scene = new Scene(root, mainMenuWidth, mainMenuHeight);//changes window dimension prima lunghezza, poi altezza
@@ -49,6 +49,14 @@ public class BoardViewGUI extends Application{
 
     }
 
+    public float getHeight(){
+        return this.mainMenuHeight;
+    }
+
+    public float getWidth(){
+        return this.mainMenuWidth;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -58,10 +66,9 @@ public class BoardViewGUI extends Application{
      * Socket or RMI, then insert name
      * @return a Pane
      */
-    private Pane mainMenu() {
+    private Pane mainMenu(Stage stage) {
         final boolean[] isRMI = new boolean[1];
         Pane root = new Pane();
-
         Button CLI = setButtons("CLI", mainMenuWidth/2-30,mainMenuHeight/2+100, true);
         Button GUI = setButtons("GUI", mainMenuWidth/2+30, mainMenuHeight/2+100, true);
         Button RMI = setButtons("RMI", mainMenuWidth/2-30, mainMenuHeight/2+100, false);
@@ -124,12 +131,16 @@ public class BoardViewGUI extends Application{
         Socket.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                RMI.setVisible(false);
-                Socket.setVisible(false);
-                Name.setVisible(true);
-                confirm.setVisible(true);
-                back.setVisible(true);
-                Name.getChildren().get(1).setVisible(false);
+                BoardViewGameGUI view = null;
+                try {
+                    view = new BoardViewGameGUI();
+                    stage.setScene(view.createScene(client));
+                    stage.setWidth(view.getWidth());
+                    stage.setHeight(view.getHeight());
+                } catch (RemoteException | FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -141,22 +152,26 @@ public class BoardViewGUI extends Application{
                         try {
                             app = new ClientApp();
                             client = new ClientRMI(app);
-                            System.out.print(client);
-                            ((ClientRMI) client).connect(inputName.getText());
-                            setName(Name);
-                            inputName.setText("");
-                            back.setLayoutX(mainMenuWidth / 2 + 65);
-                            confirm.setOnAction(new EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent event) {
-                                    connect.setVisible(true);
-                                    reconnect.setVisible(true);
-                                    Name.setVisible(false);
-                                    back.setVisible(false);
-                                }
-                            });
+
+                            if (((ClientRMI) client).connect(inputName.getText(), 1099)) {
+                                setName(Name);
+                                inputName.setText("");
+                                back.setLayoutX(mainMenuWidth / 2 + 65);
+                                confirm.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        info = inputName.getText();
+                                        connect.setVisible(true);
+                                        reconnect.setVisible(true);
+                                        Name.setVisible(false);
+                                        back.setVisible(false);
+                                    }
+                                });
+                            }
+                            else Name.getChildren().get(1).setVisible(true);
                         }
                         catch (RemoteException e) {
+                            Name.getChildren().get(1).setVisible(true);
                             e.fillInStackTrace();
                         }
                     }
@@ -189,6 +204,7 @@ public class BoardViewGUI extends Application{
                 }
                 else{
                      Name.setVisible(true);
+                     Name.getChildren().get(1).setVisible(true);
                 }
 
             }
@@ -311,7 +327,7 @@ public class BoardViewGUI extends Application{
         Platform.exit();
     }*/
 
-    private void startCountDown(Client client) {
+    private void startCountDown(Client client, Stage stage) {
         Thread thread = new Thread(){
             public void run() {
 
@@ -321,12 +337,19 @@ public class BoardViewGUI extends Application{
                     boolean verify;
 
                     public void run() {
-                        if (verify = false) {
+                        if (verify = true) {
                             //Platform.runLater(() -> verify = client.hasStarted());
 
                         } else {
                             timer.cancel();
-                            Platform.exit();
+                            try {
+                                BoardViewGameGUI view = new BoardViewGameGUI();
+                                stage.setScene(view.createScene(client));
+                                stage.setWidth(view.getWidth());
+                                stage.setHeight(view.getHeight());
+                            } catch (RemoteException | FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, 1000, 1000); //Every 1 second
