@@ -135,7 +135,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         clientApp.createView(player, board, this);
         this.view = clientApp.getView();
         view.giveMessage("","Ho ricevuto che il game è iniziato");
-        view.gameStart();
+        view.gameStart(board);
     }
 
     @Override

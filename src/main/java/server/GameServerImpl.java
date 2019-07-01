@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
-    private static final long SECONDS_BEFORE_START_GAME = 2;
+    private static final long SECONDS_BEFORE_START_GAME = 10;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
     private transient ArrayList<ClientInfo> clients;
     private transient ArrayList<Client> offlineClients;

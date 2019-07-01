@@ -131,15 +131,13 @@ public class BoardViewGUI extends Application{
         Socket.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                BoardViewGameGUI view = null;
-                try {
-                    view = new BoardViewGameGUI();
-                    stage.setScene(view.createScene(client));
-                    stage.setWidth(view.getWidth());
-                    stage.setHeight(view.getHeight());
-                } catch (RemoteException | FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                RMI.setVisible(false);
+                Socket.setVisible(false);
+                Name.setVisible(true);
+                confirm.setVisible(true);
+                back.setVisible(true);
+                Name.getChildren().get(1).setVisible(false);
+                isRMI[0] = false;
 
             }
         });
@@ -347,7 +345,7 @@ public class BoardViewGUI extends Application{
                                 stage.setScene(view.createScene(client));
                                 stage.setWidth(view.getWidth());
                                 stage.setHeight(view.getHeight());
-                            } catch (RemoteException | FileNotFoundException e) {
+                            } catch (FileNotFoundException e) {
                                 e.printStackTrace();
                             }
                         }

@@ -16,7 +16,7 @@ import java.util.WeakHashMap;
 
 
 public interface View {
-    void gameStart();
+    void gameStart(Board board);
     void giveMessage(String title, String mex);
     void giveError(String error);
     boolean loadWeapon(List<String> notLoaded);
@@ -31,9 +31,9 @@ public interface View {
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom);
     Position choosePositionToAttack(List<Position> potentialposition);
     void askPowerUp(ArrayList<PowerCard> cards, PowerUp power);
-    void usePowerUp(ArrayList<PowerCard> cards);
+    void usePowerUp();
     void payGunsight(int[] bullets,PowerCard card);
     void payPowerUp(PowerCard card);
     void useTeleport();
-    void useKineticray(ArrayList<Player> player);
+    void useKineticray(List<Player> player);
 }

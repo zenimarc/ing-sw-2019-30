@@ -26,7 +26,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void gameStart() {}
+    public void gameStart(Board board) {}
 
     @Override
     public void giveMessage(String title, String mex) {
@@ -106,8 +106,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void usePowerUp(ArrayList<PowerCard> cards) {
-        playerView.usePowerUp(cards);
+    public void usePowerUp() {
+        playerView.usePowerUp();
     }
 
     @Override
@@ -126,7 +126,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void useKineticray(ArrayList<Player> players) {
+    public void useKineticray(List<Player> players) {
         playerView.chooseTargets(players);
     }
 }

@@ -31,7 +31,7 @@ import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.*;
 import static powerup.PowerUp.VENOMGRENADE;
 
-//TODO gestire meglio i power up nel caso si spari e si voglia usare un power up, ancora da sistemare i Power up usati da Turn Action in playerView
+//TODO gestire Gunsight e Venomgranade (cioè uso di power up quando si spara) e sistemare notify et similia
 /**
  * PlayerController is used to control if a player can do certain actions
  */
@@ -130,8 +130,9 @@ public class PlayerController extends Observable implements Observer{
                     if (player.canPayPower(player.getPowerups().get((int)cmdObj.getObject())))
                         cmdForView(new CommandObj(PAYPOWERUP, player.getPowerups().get((int)cmdObj.getObject())));
                     else {
-                        player.usePowerUp(player.getPowerups().get((int)cmdObj.getObject()), true);
-                        receiveCmd(new CommandObj(POWERUP, player.getPowerups().get((int)cmdObj.getObject())));
+                        PowerCard power = player.getPowerups().get((int)cmdObj.getObject());
+                        player.usePowerUp(power, true);
+                        receiveCmd(verifyPowerUp(power));
                     }
                 }
                 else player.notifyEndAction();
@@ -144,20 +145,22 @@ public class PlayerController extends Observable implements Observer{
                 cmdForView(new CommandObj(USE_TELEPORTER));
                 break;
             case TELEPORTER:
-                player.setPawnCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
-                notifyObservers();
+                setCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
+                player.notifyEndAction();
                 break;
             case USE_KINETICRAY:
-                cmdForView(new CommandObj(USE_KINETICRAY, boardController.getListOfPlayers()));
+                cmdForView(new CommandObj(USE_KINETICRAY, boardController.notNullCellPlayers()));
                 break;
             case KINETICRAY:
-                if(boardController.getCellsKineticRay(((Player)cmdObj.getObject()).getCell()).contains(cmdObj.getObject2())) {
-                    setOtherCell((Player) cmdObj.getObject(), (Cell) cmdObj.getObject2());
+                Position pos = (Position) cmdObj.getObject2();
+                if(boardController.getCellsKineticRay(boardController.notNullCellPlayers().get((int)cmdObj.getObject()).getCell()).contains(pos)) {
+                    setOtherCell(boardController.notNullCellPlayers().get((int)cmdObj.getObject()), boardController.getBoard().getBillboard().getCellFromPosition(pos));
                     player.notifyEndAction();
+                    notifyObservers();
                 }
                 else {
                     viewPrintError("Cell not valid");
-                    cmdForView(new CommandObj(USE_KINETICRAY));
+                    cmdForView(new CommandObj(USE_KINETICRAY, boardController.notNullCellPlayers()));
                 }
                 break;
             case USE_VENOMGRENADE:
@@ -682,14 +685,14 @@ public class PlayerController extends Observable implements Observer{
     private ArrayList<PowerCard> getPotentialPowerUps(CommandObj obj){
         ArrayList<PowerCard> powers = new ArrayList<>();
         for(PowerCard power: player.getPowerups()){
-            if(obj.getCmd() == USE_VENOMGRENADE && power.getPowerUp() == VENOMGRENADE)
+            if(obj.getCmd() == USE_VENOMGRENADE && power.getPowerUp() == VENOMGRENADE && boardController.getBoard().getBillboard().isVisible(player.getCell(), boardController.getPlayerWhoPay().getCell()))
                 powers.add(power);
             else {
                 if(obj.getCmd() == SHOOT && power.getPowerUp() == GUNSIGHT) {
                     if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 0, 1})))
                         powers.add(power);
                 }
-                else if(power.getPowerUp() == PowerUp.TELEPORTER || (power.getPowerUp() == PowerUp.KINETICRAY && boardController.getListOfPlayers().size()-1 > 0))
+                else if(power.getPowerUp() == PowerUp.TELEPORTER || (power.getPowerUp() == PowerUp.KINETICRAY && boardController.notNullCellPlayers().size() > 0))
                     powers.add(power);
 
             }

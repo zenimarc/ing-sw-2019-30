@@ -72,6 +72,10 @@ public class BoardController{
         return gameServer;
     }
 
+
+    protected Player getPlayerWhoPay() {
+        return playerWhoPlay;
+    }
     /**
      * This function returns the player who has to do a move
      * @return the player
@@ -338,8 +342,12 @@ public class BoardController{
         playerPlay(listOfPlayers.get(changeTurn()));
     }
 
+    public List<Player> notNullCellPlayers(){
+        return listOfPlayers.stream().filter(x-> board.getBillboard().getCellMap().containsKey(x.getCell()) && x != playerWhoPlay).collect(Collectors.toList());
+    }
+
     /**
-     * Restore NormalCell and/or RegenerationCell that player modify in his turn
+     * Restores NormalCells and/or RegenerationCells that player modified in his turn
      * @param cells modify cells
      */
     private void restoreCell(List<Cell> cells){

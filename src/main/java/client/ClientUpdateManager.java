@@ -74,7 +74,7 @@ public class ClientUpdateManager extends Observable {
                 view.askPowerUp((ArrayList<PowerCard>) (ArrayList) cmd.getList(), (PowerUp) cmd.getObject2());
                 break;
             case CHECKPOWERUP:
-                view.usePowerUp((ArrayList<PowerCard>) cmd.getObject());
+                view.usePowerUp();
                 break;
             case PAYGUNSIGHT:
                 view.payGunsight((int[])cmd.getObject(), (PowerCard) cmd.getObject());
@@ -86,7 +86,7 @@ public class ClientUpdateManager extends Observable {
                 view.useTeleport();
                 break;
             case USE_KINETICRAY:
-                view.useKineticray((ArrayList<Player>)cmd.getObject());
+                view.useKineticray((List<Player>)cmd.getObject());
                 break;
             case USE_GUNSIGHT:
                 break;

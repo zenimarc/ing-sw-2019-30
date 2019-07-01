@@ -190,7 +190,11 @@ public class PlayerView extends Observable{
      */
     private Player chooseTarget(List<Player> possibleTarget){
         String format = "[0-"+possibleTarget.size()+"]";
+        print("Possible target are:\n");
+        print("0) No one\t");
+
         String question = stringForChooseTarget(possibleTarget);
+        print("\nWhich opponent do you want to shoot?");
         String read;
         int index;
 
@@ -254,15 +258,14 @@ public class PlayerView extends Observable{
     private String stringForChooseTarget(List<Player> possibleTarget){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Possible target are:\n");
-        sb.append("0) No one\t");
+
         for(Player p : possibleTarget){
             sb.append(possibleTarget.indexOf(p)+1);
             sb.append(") ");
             sb.append(p.getName());
             sb.append("\t");
         }
-        sb.append("\nWhich opponent do you want to shoot?");
+
         return sb.toString();
     }
 
@@ -679,18 +682,6 @@ public class PlayerView extends Observable{
         notifyObservers(cmd);
     }
 
-    private String printTargets(ArrayList<Player> players){
-        StringBuilder sb = new StringBuilder();
-        sb.append("Possible targets are:\n");
-        for(Player p : players){
-            sb.append(players.indexOf(p) + 1);
-            sb.append(") ");
-            sb.append(p.getName());
-            sb.append("\t");
-        }
-        return sb.toString();
-    }
-
     public void askForPowerUp(ArrayList<PowerCard> powerCards, PowerUp power){
         String format = "[0-1]";
         String read = "";
@@ -702,22 +693,24 @@ public class PlayerView extends Observable{
         notifyServer(new CommandObj(CHECKPOWERUP, power, (Boolean.valueOf(read))));
     }
 
-    public boolean usePowerUp(ArrayList<PowerCard> powerCards) {
-        if (powerCards.isEmpty()) {
+    public boolean usePowerUp() {
+        if (player.getPowerups().isEmpty()) {
             printError("You have no power ups, so you can't use one");
             return false;
         }
-        choosePowerUp(powerCards);
+        choosePowerUp(player.getPowerups());
         String format = "[0-" + player.getPowerups().size() + "]";
         String read = "";
         while (!read.matches(format)) {
-            print(choosePowerUp(powerCards));
+            print(choosePowerUp(player.getPowerups()));
             read = reader.next();
         }
-        if(Integer.valueOf(read) != 0)
-            if(powerCards.get(Integer.valueOf(read)-1).getPowerUp() == PowerUp.GUNSIGHT)
-                notifyServer(new CommandObj(PAYGUNSIGHT, Integer.valueOf(read)-1));
-        else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read)-1));
+        if(Integer.valueOf(read) != 0) {
+            if (player.getPowerups().get(Integer.valueOf(read) - 1).getPowerUp() == PowerUp.GUNSIGHT)
+                notifyServer(new CommandObj(PAYGUNSIGHT, Integer.valueOf(read) - 1));
+            else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read) - 1));
+        }
+        else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read) - 1));
         return true;
     }
 
@@ -735,30 +728,33 @@ public class PlayerView extends Observable{
     public void askToPay(PowerCard power) {
         String format = "[0-1]";
         String read = "";
+        boolean bool = false;
 
         while (!read.matches(format)) {
-            print("Do you want to pay or to discard your power up? [0: Discard, 1: Pay]");
+            print("Do you want to pay or to discard your power up? [0: Pay, 1: Discard]");
             read = reader.next();
         }
-        System.out.print(Boolean.valueOf(read));
-        notifyServer(new CommandObj(PAIDPOWERUP, power, Boolean.valueOf(read)));
+        if(Integer.valueOf(read) == 1)
+            bool = true;
+        notifyServer(new CommandObj(PAIDPOWERUP, power, bool));
     }
 
     protected void moveTeleporter() {
         move(TELEPORTER);
     }
 
-    protected void chooseTargets(ArrayList<Player> players){
+    protected void chooseTargets(List<Player> players){
         String target = "";
-        printTargets(players);
-        while (!target.matches("[0-"+ players.size()+"]")) {
+        while (!target.matches("[0-"+ players.size() +"]") || Integer.valueOf(target) == 0) {
             print("Which player do you want to move?");
+            print("Possible target are:\n");
+            print(stringForChooseTarget(players));
             target = reader.next();
         }
-        moveKineticray(players.get(Integer.valueOf(target)));
+        moveKineticray(Integer.valueOf(target)-1);
     }
 
-    private void moveKineticray(Player player) {
+    private void moveKineticray(int player) {
         String positionString = "";
         while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");

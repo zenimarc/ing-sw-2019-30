@@ -25,6 +25,7 @@ public class ClientApp {
     protected void createView(Player player, Board board, Observer client){
         createCLIView(player, board, client);
         clientUpdateManager.setView(view);
+        view.gameStart(board);
     }
 
     private void createCLIView(Player player, Board board, Observer client){

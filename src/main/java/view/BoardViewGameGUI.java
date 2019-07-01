@@ -15,7 +15,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.*;
 
+import static constants.Color.convertToColor;
 import static controller.EnumCommand.*;
 import static deck.Bullet.*;
 import static powerup.PowerUp.KINETICRAY;
@@ -50,9 +50,17 @@ public class BoardViewGameGUI extends Application implements View {
     private EnumCommand command = CHOOSE_ACTION;
     private int test = 3;
     private int index = 0;
+    private Object object;
     private Pane root;
 
-    public BoardViewGameGUI() throws RemoteException {
+    public BoardViewGameGUI(){
+
+    }
+
+    public BoardViewGameGUI(Client client) throws RemoteException {
+        this.client = client;
+        this.player = client.getPlayer();
+        this.players = client.getListOfPlayers();
     }
 
     /*
@@ -87,7 +95,6 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException, RemoteException, InterruptedException {
         initialize();
-        //gameStart()
         root = createGame(test);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setCenterShape(true);
@@ -140,7 +147,7 @@ public class BoardViewGameGUI extends Application implements View {
             anchor.getChildren().get(i).setLayoutY(165*(i-1));
         }
 
-        anchor.getChildren().add(askPane(board1));
+        anchor.getChildren().add(askPane());
         anchor.getChildren().get(players.size()).setLayoutX(220);
         anchor.getChildren().get(players.size()).setLayoutY(230);
         anchor.getChildren().get(players.size()).toFront();
@@ -160,10 +167,9 @@ public class BoardViewGameGUI extends Application implements View {
 
     /**
      *
-     * @param playerboard
      * @return
      */
-    private Pane askPane(Pane playerboard) {
+    private Pane askPane() {
         Pane pane = new Pane();
         pane.getChildren().add(new Label("Do you want to use a Power up?"));
         pane.getChildren().add(new Button("Yes"));
@@ -172,12 +178,16 @@ public class BoardViewGameGUI extends Application implements View {
         ((Button) pane.getChildren().get(1)).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                for (int i = 0; i < 3; i++)
-                    playerboard.getChildren().get(2 + 2 * i).setVisible(true);
-                command = POWERUP;
-                pane.setVisible(false);
+                switch(command){
+                    case ASKFORPOWERUP:
+                        notifyServer(new CommandObj(CHECKPOWERUP, object, true));
+                        pane.setVisible(false);
+                        break;
+                }
+
             }
         });
+        //TODO sistemare questa parte dei power
         pane.getChildren().get(1).setTranslateX(30);
         pane.getChildren().get(1).setTranslateY(40);
         pane.getChildren().get(2).setTranslateX(100);
@@ -186,8 +196,14 @@ public class BoardViewGameGUI extends Application implements View {
         ((Button) pane.getChildren().get(2)).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                pane.setVisible(false);
-                command = CHOOSE_ACTION;
+                switch(command){
+                    case ASKFORPOWERUP:
+                        notifyServer(new CommandObj(CHECKPOWERUP, object, false));
+                        pane.setVisible(false);
+                        break;
+                }
+
+
             }
         });
         return pane;
@@ -247,12 +263,8 @@ public class BoardViewGameGUI extends Application implements View {
         ArrayList<Button> actionButton = actionButtons();
         generateBoard(map, number, actionButton);
         for (int i = 0; i < players.size(); i++) {
-            map.getChildren().add(createButton(pawnPath(giveColor(getPlayerboardPlayer(i))), 20, 20, -40, -10));
-
-            map.getChildren().get(map.getChildren().size() - 1).setOpacity(1);
-            map.getChildren().get(map.getChildren().size() - 1).setStyle("-fx-background-color: rgba(0, 100, 100, 1); -fx-background-radius: 50; -fx-padding: 5;\n" +
-                    " -fx-border-width: 0;");
-            ((Button) map.getChildren().get(map.getChildren().size() - 1)).borderProperty().unbind();
+            map.getChildren().add(generateCard(pawnPath(giveColor(getPlayerboardPlayer(i))), 20, 20, -100, -150, 0));
+            pawnAction((Button)map.getChildren().get(map.getChildren().size()-board.getSkulls()), getPlayerboardPlayer(i));
         }
 
 
@@ -264,8 +276,11 @@ public class BoardViewGameGUI extends Application implements View {
             playerboard.getChildren().add(buttons);
         for (int i = 0; i < 3; i = i + 2)
             setPowerUp((Button) playerboard.getChildren().get(2 + 2 * i), map, i);
-        for(Button  buttons : cardViewButtonSet((ImageView) map.getChildren().get(0)))
-            playerboard.getChildren().add(buttons);
+        ArrayList<Button> shootButtons = cardViewButtonSet((ImageView) map.getChildren().get(0));
+        for(Button buttons : shootButtons) {
+            buttons.toFront();
+            map.getChildren().add(buttons);
+        }
         return map;
     }
 
@@ -315,8 +330,8 @@ public class BoardViewGameGUI extends Application implements View {
         int[] array = enumToIntArray(player.getBullets());
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++){
-                playerBoard.getChildren().add(addAmmo(i, 35, 470 + j * 35, 5 + i * 30));//base x 120, distanza 33
-                ammoAction((Button) playerBoard.getChildren().get(27+j+i*3));
+                playerBoard.getChildren().add(addAmmo(i, 30, 470 + j * 35, 5 + i * 35));//base x 120, distanza 33
+                ammoAction((Button) playerBoard.getChildren().get(27+j+i*3), convertToColor(i));
                 if(array[i] <= j)
                     playerBoard.getChildren().get(27+j+i*3).setVisible(false);
             }
@@ -324,14 +339,10 @@ public class BoardViewGameGUI extends Application implements View {
         //Marks
         for (Player player : players)
             for (int i = 0; i < 3; i++) {
-                if (i < player.getMarks(player))
-                    playerBoard.getChildren().add(addDamage(player, 25, 280 + 10 * i + 30 * players.indexOf(player), 0, 0));//base x 280, distanza 15 se identici, 20 altrimenti
-                else{
-                    playerBoard.getChildren().add(addDamage(player, 25, 280 + 10 * i + 30 * players.indexOf(player), 0, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(player, 25, 280 + 10 * i + 30 * players.indexOf(player), 0, 0));//base x 50, distanza 35
+                if (i >= this.player.getMarks(player))
                     playerBoard.getChildren().get(3*players.indexOf(player)+36+i).setVisible(false);
-                }
             }
-
 
         return playerBoard;
 
@@ -382,10 +393,10 @@ public class BoardViewGameGUI extends Application implements View {
         }
 
         //Ammo
-        int[] array = enumToIntArray(getPlayerboardPlayer(1).getBullets());
+        int[] array = enumToIntArray(getPlayerboardPlayer(player).getBullets());
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++){
-                playerBoard.getChildren().add(addAmmo(i, 25, 280 + j * 20, 10 + i * 25));
+                playerBoard.getChildren().add(addAmmo(i, 20, 270 + j * 25, 5 + i * 30));
                 if(array[i] <= j)
                     playerBoard.getChildren().get(27+j+i*3).setVisible(false);
             }
@@ -393,13 +404,10 @@ public class BoardViewGameGUI extends Application implements View {
         //Marks
         for (Player p : players)
             for (int i = 0; i < 3; i++) {
-                if (i < p.getMarks(p))
-                    playerBoard.getChildren().add(addDamage(p, 15, 165 + 5 * i + 20 * players.indexOf(p), 2, 0));//base x 280, distanza 15 se identici, 20 altrimenti
-                else{
-                    playerBoard.getChildren().add(addDamage(p, 15, 165 + 5 * i + 20 * players.indexOf(p), 2, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(p, 15, 165 + 5 * i + 20 * players.indexOf(p), 2, 0));
+                if (i >= getPlayerboardPlayer(player).getMarks(p))
                     playerBoard.getChildren().get(3*players.indexOf(p)+36+i).setVisible(false);
                 }
-            }
 
         return playerBoard;
     }
@@ -589,7 +597,7 @@ public class BoardViewGameGUI extends Application implements View {
      * @return the path
      */
     private String pawnPath(String string) {
-        return "src/resources/images/gametable/pawns/" + string + ".png";
+        return "src/resources/images/gametable/pawns/" + string + "Pawn.png";
     }
 
     /**
@@ -657,10 +665,8 @@ public class BoardViewGameGUI extends Application implements View {
      * @param width  new width
      */
     private void changeSizeButton(Button obj, int height, int width) {
-        obj.minHeight(0);
-        obj.minWidth(0);
-        obj.setMaxHeight(height);
-        obj.setMaxWidth(width);
+        obj.setPrefHeight(height);
+        obj.setPrefWidth(width);
     }
 
     /**
@@ -691,9 +697,9 @@ public class BoardViewGameGUI extends Application implements View {
      */
     private ArrayList<Button> actionButtons() {
         ArrayList<Button> actionButtons = new ArrayList<>();
-        actionButtons.add(activateButton( 5, 12));//Move
-        actionButtons.add(activateButton(5, 29));//Grab
-        actionButtons.add(activateButton( 5, 47));//Shoot
+        actionButtons.add(activateButton( 6, 12));//Move
+        actionButtons.add(activateButton(6, 29));//Grab
+        actionButtons.add(activateButton( 6, 47));//Shoot
         return actionButtons;
     }
 
@@ -705,18 +711,18 @@ public class BoardViewGameGUI extends Application implements View {
     private ArrayList<Button> cardViewButtonSet(ImageView image) {
         ArrayList<Button> buttons = new ArrayList<>();
         //one attack
-        buttons.add(createButton("monoattack", 130, 150, 0, 150));
+        buttons.add(createButton("monoattack", 120, 150, 0, 155));
         shootAction(buttons.get(0), image, 0, 1);
         //> 1 attack
-        buttons.add(createButton("multiattack", 55, 150, 0, 130));
+        buttons.add(createButton("multiattack", 60, 150, 0, 125));
         shootAction(buttons.get(1), image, 0, 2);
         //2 attacks
-        buttons.add(createButton("biAttack", 55, 150, 0, 185));
+        buttons.add(createButton("biAttack", 60, 150, 0, 185));
         shootAction(buttons.get(2), image, 1, 2);
         //3 attacks
-        buttons.add(createButton("triAttack1", 55, 75, -40, 185));
+        buttons.add(createButton("triAttack1", 65, 75, -37, 185));
         shootAction(buttons.get(3), image, 1, 3);
-        buttons.add(createButton("triAttack2", 55, 75, 40, 185));
+        buttons.add(createButton("triAttack2", 65, 75, 37, 185));
         shootAction(buttons.get(4), image, 2, 3);
 
         return buttons;
@@ -730,7 +736,7 @@ public class BoardViewGameGUI extends Application implements View {
      */
     private Button activateButton(int transX, int transY) {
         Button button = createButton(" ", 40, 10, transX, transY);
-        button.rotateProperty().setValue(90);
+        button.setRotate(90);
         return button;
     }
 
@@ -851,7 +857,7 @@ public class BoardViewGameGUI extends Application implements View {
 
         Button button = new Button();
         changeSizeButton(button, height, width);
-        button.rotateProperty().setValue(grades);
+        button.setRotate(grades);
 
         button.setOpacity(1);
         ImageView image = new ImageView(new Image(new FileInputStream(name)));
@@ -1008,6 +1014,12 @@ public class BoardViewGameGUI extends Application implements View {
                        notifyServer(new CommandObj(REG_CELL, new Position(x, y)));
                         command = NOT_YOUR_TURN;
                         break;
+                    case TELEPORTER:
+                        notifyServer(new CommandObj(EnumCommand.TELEPORTER, new Position(x, y)));
+                        break;
+                    case KINETICRAY:
+                        notifyServer(new CommandObj(EnumCommand.KINETICRAY, (Player) object, new Position(x, y)));
+                        break;
                     default:
                         cell.disableProperty();
                 }
@@ -1091,16 +1103,18 @@ public class BoardViewGameGUI extends Application implements View {
      * @param numAttacks
      */
     private void shootAction(Button attack, ImageView weapon, int nattack, int numAttacks) {
-        attack.setOnAction(new EventHandler<ActionEvent>() {
+       attack.setOpacity(1);
+       attack.setVisible(false);
+       attack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                if (command == SHOOT && (player.getWeapons().get(index).getAttacks().size() == numAttacks || (player.getWeapons().get(0).getAttacks().size() == 2 && nattack == 0))) {
+                System.out.print("clickato\n");
+                /*if (command == SHOOT && (player.getWeapons().get(index).getAttacks().size() == numAttacks || (player.getWeapons().get(0).getAttacks().size() == 2 && nattack == 0))) {
                     attack.setVisible(false);
                     weapon.setVisible(false);
                     //se posso usare l'attacco numero nattack allora l'attacco s'illumina
                     //poi cambia stato in base al tipo d'attacco
-                } else attack.disableProperty();
+                } else attack.disableProperty();*/
             }
 
         });
@@ -1121,7 +1135,7 @@ public class BoardViewGameGUI extends Application implements View {
         changeSizeImage(image, dimension, dimension);
         image.setTranslateX(transX);
         image.setTranslateY(transY);
-        image.rotateProperty().setValue(grades);
+        image.setRotate(grades);
         return image;
     }
 
@@ -1167,7 +1181,7 @@ public class BoardViewGameGUI extends Application implements View {
         changeSizeImage(image, dimension, dimension);
         image.setTranslateX(transX);
         image.setTranslateY(transY);
-        image.rotateProperty().setValue(grades);
+        image.setRotate(grades);
         return image;
     }
 
@@ -1201,7 +1215,7 @@ public class BoardViewGameGUI extends Application implements View {
         if(color == 2)
             ammoString = "BLUE";
         Button ammo = generateCard(ammoPath(ammoString), dimension, dimension, transX, transY, 0);
-        ammo.setVisible(true);
+        ammo.setPadding(Insets.EMPTY);
         return ammo;
     }
 
@@ -1209,21 +1223,40 @@ public class BoardViewGameGUI extends Application implements View {
      *
      * @param ammo
      */
-    private void ammoAction(Button ammo) {
+    private void ammoAction(Button ammo, constants.Color color) {
         ammo.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 switch (command) {
                     case PAYGUNSIGHT:
                         ammo.setVisible(false);
-                        command = DISCARD_POWER;
+                        notifyServer(new CommandObj(GUNSIGHTPAID, object, color));
                         break;
-                    case DISCARD_POWER:
-                        ammo.setVisible(false);
-                        command = POWERUP;
+                    case PAYPOWERUP:
+                        notifyServer(new CommandObj(PAIDPOWERUP, object, false));
                         break;
                     default:
                         ammo.disableProperty();
+                }
+            }
+
+        });
+    }
+
+    private void pawnAction(Button pawn, Player name) {
+        pawn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch (command) {
+                    case USE_KINETICRAY:
+                        pawn.setVisible(false);
+                        object = name;
+                        command = EnumCommand.KINETICRAY;
+                        break;
+                    case CHOOSE_OPPONENTS:
+                        break;
+                    default:
+                        pawn.disableProperty();
                 }
             }
 
@@ -1333,14 +1366,15 @@ public class BoardViewGameGUI extends Application implements View {
                     ((ImageView) map.getChildren().get(12+j)).setImage(new Image(new FileInputStream(ammoPath(board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(0).stringGUI()))));
                     j++;
                 }
+        //Cells
         //Pawns
         for(int i = 0; i < players.size(); i++)
-            movePawn((Button) map.getChildren().get(map.getChildren().size()-board.getSkulls()-players.size()+i));
+            movePawn((Button) map.getChildren().get(map.getChildren().size()-board.getSkulls()-players.size()+i-5));
 
         //Skulls
         for(int i = 0; i < board.getSkulls(); i++)
             if(i > board.getSkulls())
-                map.getChildren().remove(map.getChildren().size()-1-board.getSkulls()+i);
+                map.getChildren().remove(map.getChildren().size()-1-board.getSkulls()+i-5);
     }
 
     /**
@@ -1392,7 +1426,6 @@ public class BoardViewGameGUI extends Application implements View {
         return 5;
     }
 
-
     /**
      *
      * @param count
@@ -1404,19 +1437,6 @@ public class BoardViewGameGUI extends Application implements View {
         else return count/60 + ":" + count%60;
     }
 
-    /**
-     *
-     * @param board
-     * @param client
-     * @throws RemoteException
-     */
-    public void gameStart(Board board, Client client) throws RemoteException {
-        this.board = board;
-        this.client = client;
-        this.player = client.getPlayer();
-        this.players = client.getListOfPlayers();
-    }
-
     private void changeMessage(String string, Pane ask){
        ask.getChildren().get(0).setVisible(true);
         ((Label) ask.getChildren().get(0)).setText(string);
@@ -1424,8 +1444,8 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void gameStart() {
-
+    public void gameStart(Board board) {
+        this.board = board;
     }
 
     @Override
@@ -1464,7 +1484,7 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void regeneratePlayer(){
         command = REG_CELL;
-        for(int i = root.getChildren().size() - board.getSkulls()-players.size()-board.getBillboard().getCellMap().size(); i < root.getChildren().size() - board.getSkulls()-players.size(); i++)
+        for(int i = root.getChildren().size() - board.getSkulls()-players.size()-board.getBillboard().getCellMap().size(); i < root.getChildren().size() - board.getSkulls()-players.size() - 5; i++)
             illuminateCell((Button)root.getChildren().get(i), true);
     }
 
@@ -1512,33 +1532,48 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void askPowerUp(ArrayList<PowerCard> cards, PowerUp power) {
-
+        root.getChildren().get(players.size()).setVisible(true);
+        ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Do you want to use a power up?");
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(true);
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(true);
+        object = power;
+        command = ASKFORPOWERUP;
     }
 
-
     @Override
-    public void usePowerUp(ArrayList<PowerCard> object) {
-
+    public void usePowerUp() {
+        command = POWERUP;
     }
 
     @Override
     public void payGunsight(int[] bullets, PowerCard card) {
-
+        root.getChildren().get(players.size()).setVisible(true);
+        ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Choose which cube do you want to use");
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(false);
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(false);
+        command = PAYGUNSIGHT;
     }
 
     @Override
     public void payPowerUp(PowerCard card) {
-
+        root.getChildren().get(players.size()).setVisible(true);
+        ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Click on th power up if you want to discard it, else the cubes if you want to pay it");
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(false);
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(false);
+        object = card;
+        command = PAYPOWERUP;
     }
 
     @Override
     public void useTeleport() {
-
+        command = EnumCommand.TELEPORTER;
+        for(int i = board.getBillboard().getCellMap().size()-1; i > -1; i++)
+            illuminateCell(((Button)(returnPaneMap()).getChildren().get(returnPaneMap().getChildren().size()-board.getSkulls()-players.size()-i-5)), true);
     }
 
     @Override
-    public void useKineticray(ArrayList<Player> player) {
-
+    public void useKineticray(List<Player> player) {
+        command = CHOOSE_OPPONENTS;
     }
 
 
@@ -1549,5 +1584,9 @@ public class BoardViewGameGUI extends Application implements View {
             e.fillInStackTrace();
         }
     }
+
+private Pane returnPaneMap(){
+        return (Pane) root.getChildren().get(players.size()+1);
+}
 
 }
