@@ -391,6 +391,7 @@ public class PlayerController extends Observable implements Observer{
 
             numAction++;
             player.notifyEndAction();
+
         }else {
             viewPrintError("Failed attack");
         }
@@ -471,7 +472,7 @@ public class PlayerController extends Observable implements Observer{
     }
 
     /**
-     * This function asks a player which opponents he wants to hit, then verifies if they can be hit and finally shoots
+     * This function asks a player which opponents wants to hit, then verifies if they can be hit and finally shoots
      * @param weaponCard WaeponCard with the attack
      * @param baseAttack if true uses baseAttack, else uses alternativeAttack
      * @return if shooter is shoot

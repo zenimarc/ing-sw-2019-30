@@ -48,7 +48,7 @@ public class BoardViewGameGUI extends Application implements View {
     private List<Player> players = new ArrayList<>();
     private Player player = new Player("Marco");
     private EnumCommand command = CHOOSE_ACTION;
-    private int test = 3;
+    private int numBoard = 2;
     private int index = 0;
     private Object object;
     private Pane root;
@@ -57,26 +57,18 @@ public class BoardViewGameGUI extends Application implements View {
 
     }
 
+    //TODO manca board
     public BoardViewGameGUI(Client client) throws RemoteException {
         this.client = client;
         this.player = client.getPlayer();
         this.players = client.getListOfPlayers();
     }
 
-    /*
-    public BoardViewGameGUI(Board board, ArrayList<Client> clients, Player player, EnumCommand command) throws RemoteException {
-        this.board = board;
-        this.clients = clients;
-        this.player = player;
-        this command = command;
-    }
-     */
-
     private void initialize(/*, ArrayList<Client> client*/) {
-        this.board = new Board(8, BillboardGenerator.createBillboard(test));
+        this.board = new Board(8, BillboardGenerator.createBillboard(numBoard));
         player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(1, 1)));
         players.add(player);
-        players.add(new Player("test"));
+        players.add(new Player("numBoard"));
         players.add(new Player("prova"));
         players.add(new Player("Marco"));
         players.add(new Player("tizio"));
@@ -95,7 +87,7 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException, RemoteException, InterruptedException {
         initialize();
-        root = createGame(test);
+        root = createGame(numBoard);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setCenterShape(true);
         Scene scene = new Scene(root);
@@ -108,20 +100,35 @@ public class BoardViewGameGUI extends Application implements View {
 
     public Scene createScene(Client client) throws FileNotFoundException {
         initialize();
-        root = createGame(test);
+        root = createGame(numBoard);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setCenterShape(true);
         return new Scene(root);
     }
 
+    /**
+     * This function returns the height of the scene
+     * @return scene's height
+     */
     public int getHeight(){
         return this.stageHeight;
     }
 
+    /**
+     * This function returns the width of the scene
+     * @return scene's width
+     */
     public int getWidth(){
         return this.stageWidth;
     }
 
+    /**
+     * This function returns the path of a weapon in a Regeneration cell
+     * @param x coordinate
+     * @param y coordinate
+     * @param i number of weapon
+     * @return string
+     */
     private String getString(int x, int y, int i) {
         return board.getBillboard().getCellFromPosition(new Position(x, y)).getCard(i).stringGUI();
     }
@@ -162,57 +169,43 @@ public class BoardViewGameGUI extends Application implements View {
         anchor.getChildren().get(players.size() + 2).setLayoutY(380);
         anchor.setCenterShape(true);
 
+        anchor.getChildren().add(points());
+        anchor.getChildren().get(players.size() + 3).setLayoutY(630);
+        anchor.getChildren().get(players.size() + 3).setVisible(true);
+        anchor.setCenterShape(true);
+
         return anchor;
     }
 
     /**
-     *
-     * @return
+     * This function creates a pane for showing points
+     * @return a pane
      */
-    private Pane askPane() {
-        Pane pane = new Pane();
-        pane.getChildren().add(new Label("Do you want to use a Power up?"));
-        pane.getChildren().add(new Button("Yes"));
-        pane.getChildren().add(new Button("No"));
-        pane.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-        ((Button) pane.getChildren().get(1)).setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                switch(command){
-                    case ASKFORPOWERUP:
-                        notifyServer(new CommandObj(CHECKPOWERUP, object, true));
-                        pane.setVisible(false);
-                        break;
-                }
+    private Pane points() {
 
-            }
-        });
-        //TODO sistemare questa parte dei power
-        pane.getChildren().get(1).setTranslateX(30);
-        pane.getChildren().get(1).setTranslateY(40);
-        pane.getChildren().get(2).setTranslateX(100);
-        pane.getChildren().get(2).setTranslateY(40);
-
-        ((Button) pane.getChildren().get(2)).setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                switch(command){
-                    case ASKFORPOWERUP:
-                        notifyServer(new CommandObj(CHECKPOWERUP, object, false));
-                        pane.setVisible(false);
-                        break;
-                }
-
-
-            }
-        });
-        return pane;
+        GridPane points = new GridPane();
+        points.add(new Label("Points:"), 0, 0);
+        ((Label)(points.getChildren().get(0))).setTextFill(Color.WHITE);
+        for(int i = 0; i < players.size(); i++){
+            points.add(new Label(getPlayerboardPlayer(i).getName() + ": " + getPlayerboardPlayer(i).getPoints() + "  "), i, 1);
+            if(i == 0)
+                ((Label)(points.getChildren().get(1+i))).setTextFill(Color.YELLOW);
+            if(i == 1)
+                ((Label)(points.getChildren().get(1+i))).setTextFill(Color.GRAY);
+            if(i == 2)
+                ((Label)(points.getChildren().get(1+i))).setTextFill(Color.PURPLE);
+            if(i == 3)
+                ((Label)(points.getChildren().get(1+i))).setTextFill(Color.LIGHTBLUE);
+            if(i == 4)
+                ((Label)(points.getChildren().get(1+i))).setTextFill(Color.GREEN);
+        }
+        return points;
     }
 
     /**
      * This function creates the map design
      *
-     * @param number of the map to be shown
+     * @param number of the map to be shown //TODO rimuoverlo
      * @return map
      * @throws FileNotFoundException if files are not found
      */
@@ -269,13 +262,13 @@ public class BoardViewGameGUI extends Application implements View {
 
 
         for (int i = 0; i < board.getSkulls(); i++)
-            map.getChildren().add(addSkull(40, -245 + i * 25, -180, 0));
+            map.getChildren().add(addSkull(40, -245 + i * 25, -180));
 
         //Commands for player
         for(Button buttons : actionButton)
             playerboard.getChildren().add(buttons);
         for (int i = 0; i < 3; i = i + 2)
-            setPowerUp((Button) playerboard.getChildren().get(2 + 2 * i), map, i);
+            setPowerUp((Button) playerboard.getChildren().get(2 + 2 * i), i);
         ArrayList<Button> shootButtons = cardViewButtonSet((ImageView) map.getChildren().get(0));
         for(Button buttons : shootButtons) {
             buttons.toFront();
@@ -312,16 +305,16 @@ public class BoardViewGameGUI extends Application implements View {
         //Damages
         for (int i = 0; i < 12; i++) {
             if(i < player.getPlayerBoard().getDamageTrack().size())
-                playerBoard.getChildren().add(addDamage(player.getPlayerBoard().getDamageTrack().get(i), 30, 50 + i * 35, 40, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(player.getPlayerBoard().getDamageTrack().get(i), 30, 50 + i * 35, 40));//base x 50, distanza 35
             else{
-                playerBoard.getChildren().add(addDamage(player, 30, 50 + i * 35, 40, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(player, 30, 50 + i * 35, 40));//base x 50, distanza 35
                 playerBoard.getChildren().get(i+7).setVisible(false);
             }
         }
 
         //Skulls
         for (int i = 0; i < 8; i++) {
-            playerBoard.getChildren().add(addSkull(40, 120 + i * 32, 70, 0));//base x 120, distanza 33
+            playerBoard.getChildren().add(addSkull(40, 120 + i * 32, 70));//base x 120, distanza 33
             if (i >= player.getPlayerBoard().getNumDeaths())
                 playerBoard.getChildren().get(i+19).setVisible(false);
         }
@@ -339,7 +332,7 @@ public class BoardViewGameGUI extends Application implements View {
         //Marks
         for (Player player : players)
             for (int i = 0; i < 3; i++) {
-                playerBoard.getChildren().add(addDamage(player, 25, 280 + 10 * i + 30 * players.indexOf(player), 0, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(player, 25, 280 + 10 * i + 30 * players.indexOf(player), 0));//base x 50, distanza 35
                 if (i >= this.player.getMarks(player))
                     playerBoard.getChildren().get(3*players.indexOf(player)+36+i).setVisible(false);
             }
@@ -378,16 +371,16 @@ public class BoardViewGameGUI extends Application implements View {
         //Damages
         for (int i = 0; i < 12; i++) {
             if(i < getPlayerboardPlayer(player).getPlayerBoard().getDamageTrack().size())
-                playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(player).getPlayerBoard().getDamageTrack().get(i), 25, 25 + i*20, 35, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(player).getPlayerBoard().getDamageTrack().get(i), 25, 25 + i*20, 35));//base x 50, distanza 35
             else{
-                playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(player), 25, 25 + i*20, 35, 0));//base x 50, distanza 35
+                playerBoard.getChildren().add(addDamage(getPlayerboardPlayer(player), 25, 25 + i*20, 35));//base x 50, distanza 35
                 playerBoard.getChildren().get(i+7).setVisible(false);
             }
         }
 
         //Skulls
         for (int i = 0; i < 8; i++) {
-            playerBoard.getChildren().add(addSkull(25, 70+ i*18, 65, 0));
+            playerBoard.getChildren().add(addSkull(25, 70+ i*18, 65));
             if (i >= getPlayerboardPlayer(player).getPlayerBoard().getNumDeaths())
                playerBoard.getChildren().get(i+19).setVisible(false);
         }
@@ -404,7 +397,7 @@ public class BoardViewGameGUI extends Application implements View {
         //Marks
         for (Player p : players)
             for (int i = 0; i < 3; i++) {
-                playerBoard.getChildren().add(addDamage(p, 15, 165 + 5 * i + 20 * players.indexOf(p), 2, 0));
+                playerBoard.getChildren().add(addDamage(p, 15, 165 + 5 * i + 20 * players.indexOf(p), 2));
                 if (i >= getPlayerboardPlayer(player).getMarks(p))
                     playerBoard.getChildren().get(3*players.indexOf(p)+36+i).setVisible(false);
                 }
@@ -412,13 +405,56 @@ public class BoardViewGameGUI extends Application implements View {
         return playerBoard;
     }
 
+    /**
+     * This function creates a Pane for responding questions
+     * @return pane
+     */
+    private Pane askPane() {
+        Pane pane = new Pane();
+        pane.getChildren().add(new Label("Do you want to use a Power up?"));
+        pane.getChildren().add(new Button("Yes"));
+        pane.getChildren().add(new Button("No"));
+        pane.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        ((Button) pane.getChildren().get(1)).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch(command){
+                    case ASKFORPOWERUP:
+                        notifyServer(new CommandObj(CHECKPOWERUP, object, true));
+                        pane.setVisible(false);
+                        break;
+                }
+
+            }
+        });
+        //TODO sistemare questa parte dei power
+        pane.getChildren().get(1).setTranslateX(30);
+        pane.getChildren().get(1).setTranslateY(40);
+        pane.getChildren().get(2).setTranslateX(100);
+        pane.getChildren().get(2).setTranslateY(40);
+
+        ((Button) pane.getChildren().get(2)).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch(command){
+                    case ASKFORPOWERUP:
+                        notifyServer(new CommandObj(CHECKPOWERUP, object, false));
+                        pane.setVisible(false);
+                        break;
+                }
+
+
+            }
+        });
+        return pane;
+    }
 
     /**
-     *
-     * @param map
-     * @param number
-     * @param buttons
-     * @throws FileNotFoundException
+     * This function generates the map based on the board
+     * @param map to add children
+     * @param number of board
+     * @param buttons for player actions
+     * @throws FileNotFoundException file not found
      */
     private void generateBoard(Pane map, int number, ArrayList<Button> buttons) throws FileNotFoundException {
         int i = 0;
@@ -499,9 +535,9 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param map
-     * @throws FileNotFoundException
+     * The following functions creates ammo ImageView depending on the board
+     * @param map where to add Imageviews
+     * @throws FileNotFoundException file not found
      */
     private void generateBoardLeft1(Pane map) throws FileNotFoundException {
         //first line 13-16
@@ -546,8 +582,8 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param map
+     * The following functions create Cell buttons
+     * @param map where to add children
      */
     private void generateBoardButtonsLeft1(Pane map) {
 
@@ -692,14 +728,14 @@ public class BoardViewGameGUI extends Application implements View {
 
 
     /**
-     *
-     * @return
+     * This function creates buttons for player actions
+     * @return an ArrayList of Buttons
      */
     private ArrayList<Button> actionButtons() {
         ArrayList<Button> actionButtons = new ArrayList<>();
-        actionButtons.add(activateButton( 6, 12));//Move
-        actionButtons.add(activateButton(6, 29));//Grab
-        actionButtons.add(activateButton( 6, 47));//Shoot
+        actionButtons.add(activateButton(  12));//Move
+        actionButtons.add(activateButton( 29));//Grab
+        actionButtons.add(activateButton( 47));//Shoot
         return actionButtons;
     }
 
@@ -729,27 +765,26 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param transX
-     * @param transY
-     * @return
+     * This function creates button for player actions
+     * @param transY y coordinate
+     * @return button
      */
-    private Button activateButton(int transX, int transY) {
-        Button button = createButton(" ", 40, 10, transX, transY);
+    private Button activateButton(int transY) {
+        Button button = createButton(" ", 40, 10, 6, transY);
         button.setRotate(90);
         return button;
     }
 
     /**
-     *
-     * @param map
-     * @param x
-     * @param y
-     * @param i
-     * @param test
-     * @param ammo
-     * @param buttons
-     * @return
+     * This function sets all Cell buttons in action
+     * @param map with children
+     * @param x coordinate
+     * @param y coordinate
+     * @param i number of ammo till that moment
+     * @param test number of blank cells
+     * @param ammo image of ammo
+     * @param buttons for player action
+     * @return number of Children till ammo
      */
     private int setCellOnAction(Pane map, int x, int y, int i, int test, int ammo, ArrayList<Button> buttons) {
         if (!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))) {
@@ -761,20 +796,20 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param cell
-     * @param canReach
+     * This function shows invisible buttons
+     * @param cell to show
+     * @param isVisible or not
      */
-    private void illuminateCell(Button cell, boolean canReach) {
-        cell.setVisible(canReach);
-        if (canReach)
+    private void illuminateCell(Button cell, boolean isVisible) {
+        cell.setVisible(isVisible);
+        if (isVisible)
             cell.setOpacity(1);
     }
 
     /**
-     *
-     * @param button
-     * @param image
+     * This function change graphics of an ImageView picking image from a Button
+     * @param button with image
+     * @param image to change pic
      */
     private void changeGraphics(Button button, ImageView image) {
         Node node = button.getGraphic();
@@ -783,23 +818,9 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param button
-     * @param image
-     */
-    private void changeGraphicButtons(Button button, Button image) {
-        Node node = image.getGraphic();
-        ImageView imageView = (ImageView) node;
-        changeSizeImage(imageView, 110, 80);
-        button.setGraphic(imageView);
-        button.setVisible(true);
-
-    }
-
-    /**
-     *
-     * @param button
-     * @param image
+     * This function changes Button image with the one an ImageView
+     * @param button to change image
+     * @param image where to pick image
      */
     private void changeImage(Button button, ImageView image) {
         button.setGraphic(image);
@@ -843,15 +864,15 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param name
-     * @param height
-     * @param width
-     * @param transX
-     * @param transY
-     * @param grades
-     * @return
-     * @throws FileNotFoundException
+     * This function creates cards and Playerboard
+     * @param name path from which image is picked
+     * @param height of button
+     * @param width of button
+     * @param transX x coordinate
+     * @param transY y coordinate
+     * @param grades rotation
+     * @return a button
+     * @throws FileNotFoundException if file not found
      */
     private Button generateCard(String name, int height, int width, int transX, int transY, int grades) throws FileNotFoundException {
 
@@ -872,14 +893,14 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param buttonCard
-     * @param image
-     * @param x
-     * @param y
-     * @param pos
-     * @param playerboard
-     * @param map
+     * This function sets action for card Button in the map
+     * @param buttonCard to activate
+     * @param image to change
+     * @param x coordinate
+     * @param y coordinate
+     * @param pos position of the card
+     * @param playerboard of player of this GUI
+     * @param map map pane
      */
     //Carte relative alla mappa
     private void setMapCardActions(Button buttonCard, ImageView image, int x, int y, int pos, Pane playerboard, Pane map) {//carte della mappa posso guardarle o pescarle
@@ -925,12 +946,12 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param action
-     * @param order
-     * @param map
-     * @param ammoSize
-     * @param buttons
+     * This function activates actions for player
+     * @param action button to activate
+     * @param order state to set
+     * @param map board pane
+     * @param ammoSize Size of map children till ammo cards
+     * @param buttons list of action buttons
      */
     //azioni che giocatore può fare
     private void setActionPlayer(Button action, EnumCommand order, Pane map, int ammoSize, ArrayList<Button> buttons) {
@@ -953,14 +974,14 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param cell
-     * @param x
-     * @param y
-     * @param ammo
-     * @param map
-     * @param ammoSize
-     * @param buttons
+     * This function sets action for Cell buttons
+     * @param cell to activate
+     * @param x coordinate
+     * @param y coordinate
+     * @param ammo image of Ammo card in cell if present
+     * @param map board pane
+     * @param ammoSize  Size of map children till ammo cards
+     * @param buttons player action buttons
      */
     //Azioni che può fare cella
     private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map, int ammoSize, ArrayList<Button> buttons) {
@@ -1027,14 +1048,14 @@ public class BoardViewGameGUI extends Application implements View {
         });
     }
 
+    //TODO sistemare questa funzione con notify
     /**
-     *
-     * @param powerUp
-     * @param map
-     * @param i
+     * This function sets action for Power ups
+     * @param powerUp to activate
+     * @param i position of AmmoCard
      */
     //azioni power up
-    private void setPowerUp(Button powerUp, Pane map, int i) {
+    private void setPowerUp(Button powerUp, int i) {
         powerUp.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -1066,11 +1087,11 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
+     * This function sets action for Weapon cards
      * @param playerBoard
-     * @param attack
-     * @param weapon
-     * @param i
+     * @param attack button to activate
+     * @param weapon image of WeaponCard
+     * @param i position of WeaponCard
      */
     private void weaponAction(Pane playerBoard, Button attack, ImageView weapon, int i) {
         attack.setOnAction(new EventHandler<ActionEvent>() {
@@ -1096,52 +1117,50 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param attack
-     * @param weapon
-     * @param nattack
-     * @param numAttacks
+     * This function activates button for shooting actions
+     * @param attack button to activate
+     * @param weapon image of weapon
+     * @param nattack number of attack
+     * @param sizeAttacks size of attacks
      */
-    private void shootAction(Button attack, ImageView weapon, int nattack, int numAttacks) {
+    private void shootAction(Button attack, ImageView weapon, int nattack, int sizeAttacks) {
        attack.setOpacity(1);
        attack.setVisible(false);
        attack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.print("clickato\n");
-                /*if (command == SHOOT && (player.getWeapons().get(index).getAttacks().size() == numAttacks || (player.getWeapons().get(0).getAttacks().size() == 2 && nattack == 0))) {
+                if (command == SHOOT && (player.getWeapons().get(index).getAttacks().size() == sizeAttacks || (player.getWeapons().get(0).getAttacks().size() == 2 && nattack == 0))) {
                     attack.setVisible(false);
                     weapon.setVisible(false);
                     //se posso usare l'attacco numero nattack allora l'attacco s'illumina
                     //poi cambia stato in base al tipo d'attacco
-                } else attack.disableProperty();*/
+                } else attack.disableProperty();
             }
 
         });
     }
 
     /**
-     *
-     * @param shooter
-     * @param dimension
-     * @param transX
-     * @param transY
-     * @param grades
-     * @return
-     * @throws FileNotFoundException
+     * This function is used to create ImageViews for damages and marks
+     * @param shooter player from which color of image is picked
+     * @param dimension of the image
+     * @param transX x coordinate
+     * @param transY y coordinate
+     * @return Image
+     * @throws FileNotFoundException file not found
      */
-    private ImageView addDamage(Player shooter, int dimension, int transX, int transY, int grades) throws FileNotFoundException {
+    private ImageView addDamage(Player shooter, int dimension, int transX, int transY) throws FileNotFoundException {
         ImageView image = new ImageView(new Image(new FileInputStream(damagePath(giveColor(shooter)))));
         changeSizeImage(image, dimension, dimension);
         image.setTranslateX(transX);
         image.setTranslateY(transY);
-        image.setRotate(grades);
         return image;
     }
 
     /**
-     *
-     * @param player
+     * This function gives a string with the color of player
+     * @param player whose color is needed
      * @return
      */
     private String giveColor(Player player) {
@@ -1157,9 +1176,9 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param i
-     * @return
+     * This function return a player from list of players
+     * @param i from of player from the player of this GUI
+     * @return player wanted
      */
     private Player getPlayerboardPlayer(int i) {
         if (players.indexOf(player) + i > players.size())
@@ -1168,26 +1187,24 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param dimension
-     * @param transX
-     * @param transY
-     * @param grades
-     * @return
-     * @throws FileNotFoundException
+     * This function creates Imageviews for skulls
+     * @param dimension of skulls
+     * @param transX x coordinate
+     * @param transY y coordinate
+     * @return ImageView of skull
+     * @throws FileNotFoundException file not found
      */
-    private ImageView addSkull(int dimension, int transX, int transY, int grades) throws FileNotFoundException {
+    private ImageView addSkull(int dimension, int transX, int transY) throws FileNotFoundException {
         ImageView image = new ImageView(new Image(new FileInputStream("src/resources/images/gametable/damages/skull.png")));
         changeSizeImage(image, dimension, dimension);
         image.setTranslateX(transX);
         image.setTranslateY(transY);
-        image.setRotate(grades);
         return image;
     }
 
     /**
-     *
-     * @param pawn
+     * This function moves a pawn when needed
+     * @param pawn to be moved
      */
     private void movePawn(Button pawn) {
         int distance = 100;
@@ -1198,13 +1215,13 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param color
-     * @param dimension
-     * @param transX
-     * @param transY
-     * @return
-     * @throws FileNotFoundException
+     * This function creates an ammo Button
+     * @param color of ammo
+     * @param dimension of button
+     * @param transX c voordinate
+     * @param transY y coordinate
+     * @return a button of ammo
+     * @throws FileNotFoundException file not found
      */
     private Button addAmmo(int color, int dimension, int transX, int transY) throws FileNotFoundException {
         String ammoString = "";
@@ -1220,8 +1237,8 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param ammo
+     * This function sets action for ammo buttons
+     * @param ammo to activate
      */
     private void ammoAction(Button ammo, constants.Color color) {
         ammo.setOnAction(new EventHandler<ActionEvent>() {
@@ -1243,6 +1260,11 @@ public class BoardViewGameGUI extends Application implements View {
         });
     }
 
+    /**
+     * This function sets action for pawn buttons
+     * @param pawn to activate
+     * @param name player name associated with pawn
+     */
     private void pawnAction(Button pawn, Player name) {
         pawn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -1264,9 +1286,9 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param p
-     * @throws FileNotFoundException
+     * This function modifies playerboards if events happen
+     * @param p to modify playerboard
+     * @throws FileNotFoundException file not found
      */
     private void notifyChangesPlayerboard(Player p) throws FileNotFoundException {
         Pane playerBoard = (Pane) root.getChildren().get(returnPanePlayer(p));
@@ -1328,10 +1350,10 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param map
-     * @param board
-     * @throws FileNotFoundException
+     * This function modifies map pane if board was modified
+     * @param map to modify
+     * @param board new Board
+     * @throws FileNotFoundException file not found
      */
     private void notifyChangesMap(Pane map, Board board) throws FileNotFoundException {
         for (int i = 0; i < 3; i++) {
@@ -1378,7 +1400,7 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
+     * This function creates a timer label for player
      * @return
      */
     private GridPane timer(){
@@ -1390,6 +1412,12 @@ public class BoardViewGameGUI extends Application implements View {
         return pane;
     }
 
+    /**
+     * This function activates timer for player actions
+     * @param timerText to be set
+     * @param counter seconds during which player can play
+     * @param changeText text with info
+     */
     private void startCountDown(Pane timerText, int counter, boolean changeText) {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -1410,9 +1438,9 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param player
-     * @return
+     * This function returns index of player
+     * @param player to know position in players List
+     * @return index of player wanted
      */
     private int returnPanePlayer(Player player){
         if (players.indexOf(player) == 0)
@@ -1427,9 +1455,9 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     /**
-     *
-     * @param count
-     * @return
+     * This function prints time
+     * @param count number to be printed
+     * @return a string
      */
     private String printTime(int count){
         if(count%60>= 0 && count%60 <=9)
@@ -1437,10 +1465,30 @@ public class BoardViewGameGUI extends Application implements View {
         else return count/60 + ":" + count%60;
     }
 
+    /**
+     * This function changes message for Ask pane
+     * @param string with text
+     * @param ask pane
+     */
     private void changeMessage(String string, Pane ask){
        ask.getChildren().get(0).setVisible(true);
         ((Label) ask.getChildren().get(0)).setText(string);
         startCountDown(ask, 5, false);
+    }
+
+    //TODO usarla quando si crea board
+    /**
+     * This function sets a number used for creating map
+     */
+    private void setNumBoard(){
+        if (board.getBillboard().getCellMap().size() == 12)
+            numBoard = 3;
+        if (board.getBillboard().getCellMap().size() == 10)
+            numBoard = 2;
+        if (board.getBillboard().getCellMap().size() == 11 && board.getBillboard().getCellFromPosition(new Position(2, 0)) == null)
+            numBoard = 1;
+        if (board.getBillboard().getCellMap().size() == 11 && board.getBillboard().getCellFromPosition(new Position(0, 3)) == null)
+            numBoard = 4;
     }
 
     @Override
@@ -1497,6 +1545,7 @@ public class BoardViewGameGUI extends Application implements View {
             for(Player p : players)
                 if(p.getName().equals(player.getName()))
                     players.set(players.indexOf(p), player);
+            root.getChildren().set(players.size()+3, points());
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
         }
