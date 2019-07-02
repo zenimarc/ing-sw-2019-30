@@ -39,16 +39,16 @@ public class PlayerView extends Observable{
         EnumCommand command = choosePlayerAction();
         switch (command) {
             case MOVE:
-                toServerAction = move(EnumCommand.MOVE);
+                toServerAction = move(MOVE);
                 break;
             case GRAB:
-                toServerAction = move(EnumCommand.GRAB_MOVE);
+                toServerAction = move(GRAB_MOVE);
                 break;
             case SHOOT:
                 toServerAction = shoot();
                 break;
             case POWERUP:
-                notifyServer(new CommandObj(CHECKPOWERUP, POWERUP));
+                notifyServer(new CommandObj(CHECKPOWERUP, POWERUP, true));
                 toServerAction = true;
                 break;
             case END_TURN:
@@ -136,7 +136,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask player if he want load some weapon and notify that
+     * Asks player if he wants to load some weapons, then notifies server of his choice
      * @return
      */
     public boolean loadWeapon(List<String> notLoaded){
@@ -153,7 +153,7 @@ public class PlayerView extends Observable{
             loadWeapon(notLoaded);
 
         }
-        return  true;
+        return true;
     }
 
     /**
@@ -192,7 +192,11 @@ public class PlayerView extends Observable{
      */
     private Player chooseTarget(List<Player> possibleTarget){
         String format = "[0-"+possibleTarget.size()+"]";
+        print("Possible target are:\n");
+        print("0) No one\t");
+
         String question = stringForChooseTarget(possibleTarget);
+        print("\nWhich opponent do you want to shoot?");
         String read;
         int index;
 
@@ -256,15 +260,14 @@ public class PlayerView extends Observable{
     private String stringForChooseTarget(List<Player> possibleTarget){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Possible target are:\n");
-        sb.append("0) No one\t");
+
         for(Player p : possibleTarget){
             sb.append(possibleTarget.indexOf(p)+1);
             sb.append(") ");
             sb.append(p.getName());
             sb.append("\t");
         }
-        sb.append("\nWhich opponent do you want to shoot?");
+
         return sb.toString();
     }
 
@@ -457,11 +460,11 @@ public class PlayerView extends Observable{
     private String stringOptionalAttack(WeaponCard wc){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\t1)If you want use only base attack:\n");
+        sb.append("\t1)If you want to use only base attack:\n");
         sb.append("\t\t");
         sb.append(wc.getBaseAttack());
         sb.append("\n");
-        sb.append("\t2)If you want use one (or more) optional attack(s):");
+        sb.append("\t2)If you want to use one (or more) optional attack(s):");
         for(Attack attack : wc.getAttacks()){
             sb.append("\n\t\t");
             sb.append(attack);
@@ -474,7 +477,7 @@ public class PlayerView extends Observable{
     private String stringForChooseAttackInList(List<Attack> attacks){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("What optional attack do you want to use?\n");
+        sb.append("Which optional attack do you want to use?\n");
         sb.append("\t0)No one\n");
         for(Attack attack : attacks){
             sb.append('\t');
@@ -559,18 +562,15 @@ public class PlayerView extends Observable{
      * @return index of attack to use
      */
     private int chooseTypeAttack(WeaponCard wc){
-        String read;
+        String read = "";
         int max = (wc.getAlternativeAttack()==null && wc.getAttacks().isEmpty()) ? 1 : 2;
 
         String format = "[0-"+max+"]";
         String question = stringForChooseAttack(wc);
 
-        while(true){
+        while(!read.matches(format)){
             print(question);
             read = reader.next();
-            if(read.matches(format)){
-                break;
-            }
         }
         return Integer.valueOf(read)-1 ;
     }
@@ -684,7 +684,7 @@ public class PlayerView extends Observable{
         notifyObservers(cmd);
     }
 
-    public boolean askForPowerUp(ArrayList<PowerCard> powerCards){
+    public void askForPowerUp(ArrayList<PowerCard> powerCards, PowerUp power){
         String format = "[0-1]";
         String read = "";
         while (!read.matches(format)) {
@@ -692,25 +692,27 @@ public class PlayerView extends Observable{
             print(choosePowerUp(powerCards));
             read = reader.next();
         }
-        return Boolean.valueOf(read);
+        notifyServer(new CommandObj(CHECKPOWERUP, power, (Boolean.valueOf(read))));
     }
 
-    public boolean usePowerUp(ArrayList<PowerCard> powerCards) {
-        if (powerCards.isEmpty()) {
+    public boolean usePowerUp() {
+        if (player.getPowerups().isEmpty()) {
             printError("You have no power ups, so you can't use one");
             return false;
         }
-        choosePowerUp(powerCards);
+        choosePowerUp(player.getPowerups());
         String format = "[0-" + player.getPowerups().size() + "]";
         String read = "";
         while (!read.matches(format)) {
-            print("Which power up do you want to use?\n");
-            print(choosePowerUp(powerCards));
+            print(choosePowerUp(player.getPowerups()));
             read = reader.next();
         }
-        if(powerCards.get(0).getPowerUp() == PowerUp.GUNSIGHT)
-            notifyServer(new CommandObj(PAYGUNSIGHT, player.getPowerups().get(Integer.valueOf(read)-1)));
-        else notifyServer(new CommandObj(PAYPOWERUP, player.getPowerups().get(Integer.valueOf(read)-1)));
+        if(Integer.valueOf(read) != 0) {
+            if (player.getPowerups().get(Integer.valueOf(read) - 1).getPowerUp() == PowerUp.GUNSIGHT)
+                notifyServer(new CommandObj(PAYGUNSIGHT, Integer.valueOf(read) - 1));
+            else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read) - 1));
+        }
+        else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read) - 1));
         return true;
     }
 
@@ -728,19 +730,33 @@ public class PlayerView extends Observable{
     public void askToPay(PowerCard power) {
         String format = "[0-1]";
         String read = "";
+        boolean bool = false;
 
         while (!read.matches(format)) {
-            print("Do you want to pay or to discard your power up? [1: Discard, 0: Pay]");
+            print("Do you want to pay or to discard your power up? [0: Pay, 1: Discard]");
             read = reader.next();
         }
-        notifyServer(new CommandObj(PAIDPOWERUP, power, Boolean.valueOf(read)));
+        if(Integer.valueOf(read) == 1)
+            bool = true;
+        notifyServer(new CommandObj(PAIDPOWERUP, power, bool));
     }
 
-    public boolean moveTeleporter() {
-        return move(TELEPORTER);
+    protected void moveTeleporter() {
+        move(TELEPORTER);
     }
 
-    public boolean moveKineticray(Player player, List<Position> cells) {
+    protected void chooseTargets(List<Player> players){
+        String target = "";
+        while (!target.matches("[0-"+ players.size() +"]") || Integer.valueOf(target) == 0) {
+            print("Which player do you want to move?");
+            print("Possible target are:\n");
+            print(stringForChooseTarget(players));
+            target = reader.next();
+        }
+        moveKineticray(Integer.valueOf(target)-1);
+    }
+
+    private void moveKineticray(int player) {
         String positionString = "";
         while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");
@@ -748,12 +764,9 @@ public class PlayerView extends Observable{
             Position newPosition = new Position(
                     Integer.valueOf(positionString.split(",")[0]),
                     Integer.valueOf(positionString.split(",")[1]));
-            if (cells.contains(newPosition)) {
-                notifyServer(new CommandObj(KINETICRAY, player, newPosition));
-                return true;
-            }
+            notifyServer(new CommandObj(KINETICRAY, player, newPosition));
         }
-        return false;
+
     }
 
 }

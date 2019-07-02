@@ -31,7 +31,7 @@ public class AmmoCardFactory {
         try {
             return objectMapper.readValue(ammoFile, new TypeReference<ArrayList<AmmoCard>>(){});
         } catch (IOException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
             return Collections.emptyList();
         }
     }

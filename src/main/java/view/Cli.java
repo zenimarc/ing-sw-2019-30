@@ -4,8 +4,11 @@ import attack.Attack;
 import board.Board;
 import board.Position;
 import player.Player;
+import powerup.PowerCard;
+import powerup.PowerUp;
 import weapon.WeaponCard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.WeakHashMap;
@@ -23,7 +26,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void gameStart() {}
+    public void gameStart(Board board) {}
 
     @Override
     public void giveMessage(String title, String mex) {
@@ -95,5 +98,35 @@ public class Cli implements View {
     @Override
     public Position choosePositionToAttack(List<Position> potentialposition) {
         return playerView.chooseCellToAttack(potentialposition);
+    }
+
+    @Override
+    public void askPowerUp(ArrayList<PowerCard> cards, PowerUp power) {
+        playerView.askForPowerUp(cards, power);
+    }
+
+    @Override
+    public void usePowerUp() {
+        playerView.usePowerUp();
+    }
+
+    @Override
+    public void payGunsight(int[] bullets, PowerCard card) {
+        playerView.askPayGunsight(bullets, card);
+    }
+
+    @Override
+    public void payPowerUp(PowerCard card) {
+        playerView.askToPay(card);
+    }
+
+    @Override
+    public void useTeleport() {
+        playerView.moveTeleporter();
+    }
+
+    @Override
+    public void useKineticray(List<Player> players) {
+        playerView.chooseTargets(players);
     }
 }

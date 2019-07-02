@@ -31,7 +31,7 @@ public class WeaponFactory {
                 weaponCards.add(
                         objectMapper.readValue(file, WeaponCard.class));
             } catch (IOException e) {
-                e.printStackTrace();
+                e.fillInStackTrace();
             }
         }
         return weaponCards;
@@ -95,7 +95,7 @@ public class WeaponFactory {
                 try {
                     storeWeapon(objectMapper.writeValueAsString(wp), weapon.getName());
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    e.fillInStackTrace();
                 }
             }
         }

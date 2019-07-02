@@ -37,7 +37,7 @@ public class PowerCardFactory {
                 return powerCardsList;
 
             } catch (IOException e) {
-                e.printStackTrace();
+                e.fillInStackTrace();
             }
         }
         return Collections.emptyList();

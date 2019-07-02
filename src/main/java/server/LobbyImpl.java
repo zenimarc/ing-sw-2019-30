@@ -17,6 +17,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MIN_PLAYERS = Constants.MIN_PLAYER.getValue();
     private static final int MAX_PLAYERS = Constants.MAX_PLAYER.getValue();
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
+    private static final String SERVER_IP = "localhost";
     private int port;
     private int minPlayers;
     private int maxPlayers;
@@ -111,19 +112,20 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      * @param newRemoteClient remote client new reference
      * @return last gameserver the client was playing in, or null if reconnecting isn't available
      */
-    public synchronized GameServer reconnect(String nickname, UUID userToken, Client newRemoteClient){
-        if(registeredClients.containsKey(nickname))
-            if(registeredClients.get(nickname).getUserToken().equals(userToken)) {
+    public synchronized GameServer reconnect(String nickname, UUID userToken, Client newRemoteClient) {
+
+        if (registeredClients.containsKey(nickname))
+            if (registeredClients.get(nickname).getUserToken().equals(userToken)) {
                 System.out.println("inizio processo di riconnessione");
                 registeredClients.get(nickname).setClient(newRemoteClient);
-                if(gamesList.get(registeredClients.get(nickname).getGameToken()).updateClient(newRemoteClient, userToken))
+                if (gamesList.get(registeredClients.get(nickname).getGameToken()).updateClient(newRemoteClient, userToken)) {
                     return gamesList.get(registeredClients.get(nickname).getGameToken());
-                else
+                } else
                     return null;
-            }
-            else
+            } else
                 return null;
         return null;
+
     }
 
     /**
@@ -153,12 +155,16 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      * @return true if it is fine, else false
      */
     private boolean validateNickname(String nick){
-        Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
-        return (pattern.matcher(nick).matches());
+        if (nick==null)
+            return false;
+        else {
+            Pattern pattern = Pattern.compile(USERNAME_PATTERN, CASE_INSENSITIVE);
+            return (pattern.matcher(nick).matches());
+        }
     }
 
     public static void main(String[] args) {
-        //System.setProperty("java.rmi.server.hostname", "192.168.43.164");
+        System.setProperty("java.rmi.server.hostname", SERVER_IP);
 
         try {
             LobbyImpl lobby = new LobbyImpl();

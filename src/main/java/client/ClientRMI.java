@@ -111,7 +111,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
                 return true;
             }
             else{
-                clientLog("token nullo");
+                clientLog("impossibile registrarsi");
                 return false;
             }
 
@@ -135,7 +135,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         clientApp.createView(player, board, this);
         this.view = clientApp.getView();
         view.giveMessage("","Ho ricevuto che il game è iniziato");
-        view.gameStart();
+        view.gameStart(board);
     }
 
     @Override
@@ -168,6 +168,12 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     public Player getPlayer(){
         return this.player;
     }
+
+    @Override
+    public List<Player> getListOfPlayers() throws RemoteException {
+        return gameServer.getPlayers();
+    }
+
     /**
      * this function returns the client's nickname
      * @return the client's nickname
@@ -200,8 +206,14 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
      * @throws RemoteException if it's impossible to reconnect
      */
     public boolean reconnect(String username, UUID userToken) throws RemoteException{
+        Scanner scanner = new Scanner(System.in);
+        if (this.userToken == null) {
+            clientLog("user token non trovato, inseriscilo manualmente per riconnetterti");
+            this.userToken = UUID.fromString(scanner.nextLine());
+        }
         this.gameServer = lobby.reconnect(username, userToken, this);
         if (gameServer!=null) {
+            gameStarted();
             clientLog("mi sono ricollegato a: " + gameServer.getGameToken());
             return true;
         }

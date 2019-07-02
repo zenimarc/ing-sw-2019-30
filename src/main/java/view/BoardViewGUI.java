@@ -23,16 +23,21 @@ import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 //TODO far partire il gioco da CLI, gestire la reconnect
 public class BoardViewGUI extends Application{
     private float mainMenuWidth = 870;
     private float mainMenuHeight = 650;
+    private ClientApp app;
+    private Client client;
+    private String info;
+    private Pane root;
 
     @Override
     public void start(Stage primaryStage) { //can't change name
         primaryStage.setResizable(false);
-        Pane root = mainMenu(primaryStage);
+        root = mainMenu(primaryStage);
         root.setBackground(new Background(menuBackground()));
 
         Scene scene = new Scene(root, mainMenuWidth, mainMenuHeight);//changes window dimension prima lunghezza, poi altezza
@@ -44,6 +49,14 @@ public class BoardViewGUI extends Application{
 
     }
 
+    public float getHeight(){
+        return this.mainMenuHeight;
+    }
+
+    public float getWidth(){
+        return this.mainMenuWidth;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -53,16 +66,19 @@ public class BoardViewGUI extends Application{
      * Socket or RMI, then insert name
      * @return a Pane
      */
-    private Pane mainMenu(Stage gameStage) {
+    private Pane mainMenu(Stage stage) {
         final boolean[] isRMI = new boolean[1];
         Pane root = new Pane();
-
         Button CLI = setButtons("CLI", mainMenuWidth/2-30,mainMenuHeight/2+100, true);
         Button GUI = setButtons("GUI", mainMenuWidth/2+30, mainMenuHeight/2+100, true);
         Button RMI = setButtons("RMI", mainMenuWidth/2-30, mainMenuHeight/2+100, false);
         Button Socket = setButtons("Socket", mainMenuWidth/2+30, mainMenuHeight/2+100, false);
         Button confirm = setButtons("Confirm", 0, 0, false);
-        Button back = setButtons("Return", mainMenuWidth / 2 + 65, mainMenuHeight / 2 + 138, false);
+        Button back = setButtons("Return", mainMenuWidth / 2 + 40, mainMenuHeight / 2 + 138, false);
+
+        Button connect = setButtons("Connect", mainMenuWidth/2-50, mainMenuHeight/2+100, false);
+        Button reconnect = setButtons("Reconnect", mainMenuWidth/2+50, mainMenuHeight/2+100, false);
+
 
         GridPane Name = askName();
         TextField inputName = new TextField();
@@ -78,7 +94,7 @@ public class BoardViewGUI extends Application{
         Name.add(confirm, 1, 2);
         Name.add(back, 2, 2);
         Name.add(inputName, 1, 1);
-        root.getChildren().addAll(RMI, Socket, CLI, GUI, Name, back, progress, wait);
+        root.getChildren().addAll(RMI, Socket, CLI, GUI, Name, back, progress, wait, connect, reconnect);
 
         CLI.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -121,38 +137,42 @@ public class BoardViewGUI extends Application{
                 confirm.setVisible(true);
                 back.setVisible(true);
                 Name.getChildren().get(1).setVisible(false);
+                isRMI[0] = false;
+
             }
         });
 
         confirm.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String name = inputName.getText();
-
 
                     if(isRMI[0] = true){
                         try {
-                            ClientApp client = new ClientApp();
-                            ClientRMI clientRMI = new ClientRMI(client);
-                            clientRMI.connect("127.0.0.1");
+                            app = new ClientApp();
+                            client = new ClientRMI(app);
 
-                            if(clientRMI.register(name) /*|| clientRMI.reconnect(name, )*/){
-                                Name.setVisible(false);
-                                confirm.setVisible(false);
-                                back.setVisible(false);
-                                Name.getChildren().get(1).setVisible(false);
-                                progress.setVisible(true);
-                                wait.setVisible(true);
-                                //startCountDown(clientRMI);
+                            if (((ClientRMI) client).connect(inputName.getText(), 1099)) {
+                                setName(Name);
+                                inputName.setText("");
+                                back.setLayoutX(mainMenuWidth / 2 + 65);
+                                confirm.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        info = inputName.getText();
+                                        connect.setVisible(true);
+                                        reconnect.setVisible(true);
+                                        Name.setVisible(false);
+                                        back.setVisible(false);
+                                    }
+                                });
                             }
                             else Name.getChildren().get(1).setVisible(true);
-
                         }
                         catch (RemoteException e) {
+                            Name.getChildren().get(1).setVisible(true);
                             e.fillInStackTrace();
                         }
                     }
-                    //else parte socket
                 }
         });
 
@@ -167,9 +187,56 @@ public class BoardViewGUI extends Application{
                 confirm.setVisible(false);
                 back.setVisible(false);
             }
+
+
+        });
+
+        connect.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                connect.setVisible(false);
+                reconnect.setVisible(false);
+                if(((ClientRMI) client).register(info)) {
+                    progress.setVisible(true);
+                    wait.setVisible(true);
+                }
+                else{
+                     Name.setVisible(true);
+                     Name.getChildren().get(1).setVisible(true);
+                }
+
+            }
+        });
+
+        reconnect.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    if(((ClientRMI) client).reconnect(info, new UUID(2, 2))){
+                        connect.setVisible(false);
+                        reconnect.setVisible(false);
+                        progress.setVisible(true);
+                        wait.setVisible(true);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
         });
 
         return root;
+    }
+
+    private EventHandler<ActionEvent> setNameAction(TextField text, Pane askName, Client clientRMI, Button connect, Button reconnect) {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                info = text.getText();
+                connect.setVisible(true);
+                reconnect.setVisible(true);
+                askName.setVisible(false);
+            }
+        };
     }
 
    /* private void setOnAction(Button thread, ClientRMI clientRMI) {
@@ -184,6 +251,8 @@ public class BoardViewGUI extends Application{
                 }
         });
     }*/
+
+
 
     private BackgroundImage menuBackground() {
         try {
@@ -217,8 +286,8 @@ public class BoardViewGUI extends Application{
         name.setPadding(new Insets(0, 0, 0, 0));
         name.setVisible(false);
 
-        name.add(new Label("Name:"), 0, 1);//altezza e poi lunghezza//permette d'inserire il testo
-        Label fail = new Label("Error: name not valid");
+        name.add(new Label("IP:"), 0, 1);//altezza e poi lunghezza//permette d'inserire il testo
+        Label fail = new Label("Error: Ip not valid");
         fail.setVisible(false);
         name.add(fail, 1, 0);
         name.setLayoutX(mainMenuWidth/2-80);
@@ -226,6 +295,10 @@ public class BoardViewGUI extends Application{
         return name;
     }
 
+    private void setName(Pane pane){
+        ((Label)pane.getChildren().get(0)).setText("Name:");
+        ((Label)pane.getChildren().get(1)).setText("Error: Name not valid");
+    }
     private ProgressBar createBar(){
         ProgressBar progress = new ProgressBar(0);
         progress.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
@@ -252,7 +325,7 @@ public class BoardViewGUI extends Application{
         Platform.exit();
     }*/
 
-    private void startCountDown(Client client) {
+    private void startCountDown(Client client, Stage stage) {
         Thread thread = new Thread(){
             public void run() {
 
@@ -262,12 +335,19 @@ public class BoardViewGUI extends Application{
                     boolean verify;
 
                     public void run() {
-                        if (verify = false) {
-                            Platform.runLater(() -> verify = client.hasStarted());
+                        if (verify = true) {
+                            //Platform.runLater(() -> verify = client.hasStarted());
 
                         } else {
                             timer.cancel();
-                            Platform.exit();
+                            try {
+                                BoardViewGameGUI view = new BoardViewGameGUI();
+                                stage.setScene(view.createScene(client));
+                                stage.setWidth(view.getWidth());
+                                stage.setHeight(view.getHeight());
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, 1000, 1000); //Every 1 second

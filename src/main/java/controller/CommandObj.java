@@ -72,4 +72,8 @@ public class CommandObj implements Serializable {
     public Object getObject2() {
         return object2;
     }
+
+    public List<Object> getList() {
+        return objects;
+    }
 }
