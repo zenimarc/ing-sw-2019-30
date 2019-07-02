@@ -26,6 +26,7 @@ public class BoardController{
     private Board board;
     private Player playerWhoPlay;
     private GameServer gameServer;
+    private TurnHandler turnHandler;
 
     /**
      * Default constructor
@@ -114,6 +115,10 @@ public class BoardController{
         if(playerTurn >= listOfPlayers.size()-1)
             playerTurn = 0;
         else playerTurn++;
+
+        turnHandler.interrupt();
+        turnHandler = new TurnHandler(this);
+        turnHandler.start();
 
         playerPlay(listOfPlayers.get(playerTurn));
 
@@ -323,6 +328,8 @@ public class BoardController{
     }
 
     public void firstPlay(){
+        this.turnHandler = new TurnHandler(this);
+        turnHandler.start();
         playerPlay(listOfPlayers.get(0));
     }
 
@@ -395,6 +402,12 @@ public class BoardController{
             });
             return sb.toString();
 
+    }
+
+    private void notifyScore(String deadPlayer, Map<String, Integer> points ){
+        for(PlayerController pc : playerControllers){
+            pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));
+        }
     }
 
 }
