@@ -11,7 +11,8 @@ public enum Constants {
     ACTION_PER_TURN_NORMAL_MODE(2),
     MAX_PLAYER(4),
     MIN_PLAYER(3),
-    STAR_PER_LINE(120)
+    STAR_PER_LINE(120),
+    TURN_TIME(1000)
 
     ;
 

@@ -117,13 +117,6 @@ public class PlayerBoard implements Serializable {
     }
 
     /**
-     * This function clears the damageTrack (useful when changing to frenzy mode)
-     */
-    public void clearDamages(){
-        damageTrack.clear();
-    }
-
-    /**
      * This function is a cycle for adding marks
      * @param player the player who will give marks
      * @param marks number of marks given
@@ -233,7 +226,7 @@ public class PlayerBoard implements Serializable {
     }
 
     /**
-     * This function is used to undestand if a player is dead
+     * This function is used to understand if a player is dead
      * @return true if dead, else false
      */
     public boolean isDead(){return isDead;}

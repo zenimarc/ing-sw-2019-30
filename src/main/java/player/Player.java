@@ -1,14 +1,11 @@
 package player;
 
-import board.Board;
 import board.Cell;
 import constants.Constants;
 import constants.Color;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
-import weapon.EnumWeapon;
-import weapon.SimpleWeapon;
 import weapon.WeaponCard;
 
 import java.io.Serializable;
@@ -138,9 +135,12 @@ public class Player extends Observable implements Cloneable, Serializable {
     public void setPawnCell(Cell cell) {
         if(pawn.getCell()!=null) {
             this.pawn.getCell().removePawn(this.pawn);
+            this.pawn.setCell(null);
         }
-        this.pawn.setCell(cell);
-        cell.addPawn(this.pawn);
+        if(cell!=null) {
+            this.pawn.setCell(cell);
+            cell.addPawn(this.pawn);
+        }
         notifyEndAction();
     }
 
@@ -323,7 +323,7 @@ public class Player extends Observable implements Cloneable, Serializable {
      * This function resets damages given to player
      */
     public void resetDamage(){
-        this.getPlayerBoard().clearDamages();
+        this.getPlayerBoard().resetDamage();
         notifyEndAction();
     }
 
@@ -339,7 +339,6 @@ public class Player extends Observable implements Cloneable, Serializable {
         sb.append(nickname);
         sb.append(" -.-.-.-.-.-\n");
 
-//        sb.append("Position: " + pawn.getCell() + '\n');
         sb.append("Ammo: ");
         sb.append(mapToString(ammo));
         sb.append('\t');

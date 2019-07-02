@@ -9,7 +9,6 @@ import deck.Deck;
 import player.Player;
 import powerup.PowerCard;
 import server.GameServer;
-import view.BoardViewCLI;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -345,11 +344,41 @@ public class BoardController{
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){
-                scoring(listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList()));
+                List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
+                for(Player dead : deadPlayers) {
+
+                    dead.setPawnCell(null);
+
+                    HashMap<String, Integer> points = givePoints(dead);
+                    notifyScore(dead.getName(), points);
+
+                    if (board.getSkulls() > 0) {
+                        board.decrementSkull();
+                        dead.getPlayerBoard().addSkull();
+                        dead.resetDamage();
+                        dead.getPlayerBoard().resurrect();
+
+                        PlayerController deadPC = playerControllers.stream().filter(x -> x.getPlayer().equals(dead)).findFirst().orElse(null);
+                        if(deadPC!= null){
+                            dead.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
+                            deadPC.regCell();
+                        }
+                    }
+
+                    if(board.getSkulls()==0){
+                        HashMap<String, Integer> finalPoints = new HashMap<>();
+                        playerControllers
+                                .stream()
+                                .map(PlayerController::getPlayer)
+                                .forEach(x -> {
+                                    finalPoints.put(x.getName(), x.getPoints());
+                                });
+                        notifyScore("Partita finita", finalPoints);
+                    }
+                }
             }
         }
         changeTurn();
-    //    playerPlay(listOfPlayers.get(changeTurn()));
     }
 
     public List<Player> notNullCellPlayers(){
@@ -373,37 +402,29 @@ public class BoardController{
                 RegenerationCell rc = (RegenerationCell) cell;
                 rc.setCard(board.getWeaponCardDeck().draw());
             }
-
         }
     }
 
-    private void scoring(List<Player> deadPlayers){
-       for(Player player : deadPlayers){
-           String points = givePoints(player);
-           playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.viewPrintError(points));
-           board.decrementSkull();
-           if(board.getSkulls()>0) {
-               player.getPlayerBoard().addSkull();
-               player.resetDamage();
-               player.getPlayerBoard().resurrect();
-           }
-       }
-    }
-
-    private String givePoints(Player deadPlayer){
-        StringBuilder sb = new StringBuilder();
+    /**
+     * This give points to players who hit deadPlayer
+     * @param deadPlayer Player who died
+     * @return Map to Player name -> Points 4 this dead
+     */
+    private HashMap<String, Integer> givePoints(Player deadPlayer){
             Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(isFinalFrenzy());
+            HashMap<String, Integer> points4View = new HashMap<>();
             points.keySet().forEach(x-> {
                 x.addPoints(points.get(x));
-                sb.append(x);
-                sb.append(": ");
-                sb.append(points.get(x));
-                sb.append('\n');
+                points4View.put(x.getName(), points.get(x));
             });
-            return sb.toString();
-
+            return points4View;
     }
 
+    /**
+     * Notify view to print new points
+     * @param deadPlayer Player dead name
+     * @param points points for each players
+     */
     private void notifyScore(String deadPlayer, Map<String, Integer> points ){
         for(PlayerController pc : playerControllers){
             pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));
