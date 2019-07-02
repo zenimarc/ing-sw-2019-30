@@ -4,6 +4,7 @@ import attack.Attack;
 import board.Board;
 import board.Cell;
 import board.Position;
+import constants.Constants;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -42,8 +43,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void myTurn() {
-        playerView.myTurn();
+    public void myTurn(Constants modAction) {
+        playerView.myTurn(modAction);
     }
 
     @Override

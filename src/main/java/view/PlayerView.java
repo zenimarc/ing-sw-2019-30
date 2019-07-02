@@ -34,7 +34,7 @@ public class PlayerView extends Observable{
         this.addObserver(clientManager);
     }
 
-    protected void myTurn() {
+    private void normalModeMyTurn(){
         boolean toServerAction = false;
         EnumCommand command = choosePlayerAction();
         switch (command) {
@@ -58,8 +58,23 @@ public class PlayerView extends Observable{
             default:
                 break;
         }
-
         if(!toServerAction) printError("Action not performed");
+    }
+
+    protected void myTurn(Constants modAction) {
+
+        switch (modAction) {
+            case ACTION_PER_TURN_NORMAL_MODE:
+                normalModeMyTurn();
+                break;
+            case ACTION_PER_TURN_FF_BEFORE_FIRST:
+                break;
+            case ACTION_PER_TURN_FF_AFTER_FIRST:
+                break;
+            default:
+                return;
+        }
+
 
     }
 

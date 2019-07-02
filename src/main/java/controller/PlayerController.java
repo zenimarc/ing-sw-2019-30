@@ -242,18 +242,6 @@ public class PlayerController extends Observable implements Observer{
                 case SHOOT_MOVE: //move from shoot
                     actionParam = player.getNumDamages()<ADRENALINIC_SECOND_STEP.getNum() ? NORMAL_SHOOT_MOVE : ADRENALINIC_SHOOT_MOVE;
                     break;
-                default:
-                    return false;
-            }
-            if(billboard.canMove(player.getCell(), cell, actionParam.getNum())){
-                setCell(cell);
-                return true;
-            }
-        }
-        else {
-            //TODO i controlli per le due grab e le due shoot sono fatti in anticipo?
-            // Serve davvero distinguere se è Final frenzy o meno qui?
-            switch (enumCommand) {
                 case MOVE_FRENZY: //normal mode
                     actionParam = FRENZY_MOVE;
                     break;
@@ -706,21 +694,19 @@ public class PlayerController extends Observable implements Observer{
         return powers;
     }
 
-
-
     public List<Cell> getModifyCell() {
         return modifyCell;
     }
 
-    protected void myTurn(){
+    protected void myTurn(Constants maxAction){
         modifyCell = new ArrayList<>();
 
         cmdForView(new CommandObj(SHOW_BOARD));
 
         if(player.getCell()==null) regCell();
 
-        while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
-            cmdForView(new CommandObj(YOUR_TURN));
+        while(numAction < maxAction.getValue()) {
+            cmdForView(new CommandObj(YOUR_TURN, maxAction));
         }
         if(!player.getNotLoaded().isEmpty()) {
             cmdForView(new CommandObj(LOAD_WEAPONCARD, player.getNotLoadedName()));

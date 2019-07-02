@@ -5,6 +5,7 @@ import board.Board;
 import board.Cell;
 import board.Position;
 import client.Client;
+import constants.Constants;
 import controller.BoardController;
 import controller.CommandObj;
 import controller.PlayerController;
@@ -16,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
-    private static final long SECONDS_BEFORE_START_GAME = 60;
+    private static final long SECONDS_BEFORE_START_GAME = Constants.SECONDS_BEFORE_START_GAME.getValue();
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
     private transient ArrayList<ClientInfo> clients;
     private transient ArrayList<Client> offlineClients;
