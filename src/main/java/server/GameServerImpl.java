@@ -366,6 +366,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         }
         removeClient(client);
         System.out.println("\n"+client + " removed for inactivity");
+        if(this.clients.size()<this.minPlayer)
+            System.out.println("termino partita per pochi client");
     }
 
     public synchronized int changeTurn() {
