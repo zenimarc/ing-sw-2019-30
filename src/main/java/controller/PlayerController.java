@@ -717,7 +717,7 @@ public class PlayerController extends Observable implements Observer{
 
         cmdForView(new CommandObj(SHOW_BOARD));
 
-        if(player.getCell()==null) cmdForView(new CommandObj(REG_CELL));
+        if(player.getCell()==null) regCell();
 
         while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
             cmdForView(new CommandObj(YOUR_TURN));
@@ -749,5 +749,9 @@ public class PlayerController extends Observable implements Observer{
 
     public void notMyTurn(String name){
         cmdForView(new CommandObj(NOT_YOUR_TURN, name));
+    }
+
+    public void regCell(){
+        cmdForView(new CommandObj(REG_CELL));
     }
 }

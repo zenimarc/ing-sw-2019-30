@@ -135,9 +135,12 @@ public class Player extends Observable implements Cloneable, Serializable {
     public void setPawnCell(Cell cell) {
         if(pawn.getCell()!=null) {
             this.pawn.getCell().removePawn(this.pawn);
+            this.pawn.setCell(null);
         }
-        this.pawn.setCell(cell);
-        cell.addPawn(this.pawn);
+        if(cell!=null) {
+            this.pawn.setCell(cell);
+            cell.addPawn(this.pawn);
+        }
         notifyEndAction();
     }
 

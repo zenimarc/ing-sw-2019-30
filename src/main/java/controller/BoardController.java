@@ -347,6 +347,8 @@ public class BoardController{
                 List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
                 for(Player dead : deadPlayers) {
 
+                    dead.setPawnCell(null);
+
                     HashMap<String, Integer> points = givePoints(dead);
                     notifyScore(dead.getName(), points);
 
@@ -355,6 +357,23 @@ public class BoardController{
                         dead.getPlayerBoard().addSkull();
                         dead.resetDamage();
                         dead.getPlayerBoard().resurrect();
+
+                        PlayerController deadPC = playerControllers.stream().filter(x -> x.getPlayer().equals(dead)).findFirst().orElse(null);
+                        if(deadPC!= null){
+                            dead.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
+                            deadPC.regCell();
+                        }
+                    }
+
+                    if(board.getSkulls()==0){
+                        HashMap<String, Integer> finalPoints = new HashMap<>();
+                        playerControllers
+                                .stream()
+                                .map(PlayerController::getPlayer)
+                                .forEach(x -> {
+                                    finalPoints.put(x.getName(), x.getPoints());
+                                });
+                        notifyScore("Partita finita", finalPoints);
                     }
                 }
             }
