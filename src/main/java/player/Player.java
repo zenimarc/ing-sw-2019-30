@@ -324,6 +324,7 @@ public class Player extends Observable implements Cloneable, Serializable {
      */
     public void resetDamage(){
         this.getPlayerBoard().clearDamages();
+        notifyEndAction();
     }
 
     /**

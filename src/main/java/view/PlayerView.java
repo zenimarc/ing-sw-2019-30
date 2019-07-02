@@ -663,6 +663,7 @@ public class PlayerView extends Observable{
 
         sbStar.append('\n');
         sbStar.append(starLine);
+        sbStar.append('\n');
         sbStar.append(wordInStar("Turn of: "+ name.toUpperCase()));
         sbStar.append('\n');
         sbStar.append(starLine);
@@ -703,8 +704,10 @@ public class PlayerView extends Observable{
 
         sb.append("\n\n");
         sb.append(starLine);
+        sb.append("\n");
         sb.append(wordInStar(nameDead.toUpperCase()+" is dead"));
         sb.append(starLine);
+        sb.append("\n");
         sb.append(wordInStar("Points are:"));
         for(String playerName : points.keySet()){
             sb.append(wordInStar(playerName+'\t'+points.get(playerName)));
