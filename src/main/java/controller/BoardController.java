@@ -115,6 +115,8 @@ public class BoardController{
             playerTurn = 0;
         else playerTurn++;
 
+        playerPlay(listOfPlayers.get(playerTurn));
+
         return playerTurn;
     }
 
@@ -339,7 +341,8 @@ public class BoardController{
                 scoring(listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList()));
             }
         }
-        playerPlay(listOfPlayers.get(changeTurn()));
+        changeTurn();
+    //    playerPlay(listOfPlayers.get(changeTurn()));
     }
 
     public List<Player> notNullCellPlayers(){
