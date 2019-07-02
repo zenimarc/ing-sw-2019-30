@@ -26,6 +26,7 @@ public class BoardController{
     private Board board;
     private Player playerWhoPlay;
     private GameServer gameServer;
+    private TurnHandler turnHandler;
 
     /**
      * Default constructor
@@ -114,6 +115,10 @@ public class BoardController{
         if(playerTurn >= listOfPlayers.size()-1)
             playerTurn = 0;
         else playerTurn++;
+
+        turnHandler.interrupt();
+        turnHandler = new TurnHandler(this);
+        turnHandler.start();
 
         playerPlay(listOfPlayers.get(playerTurn));
 
@@ -268,12 +273,12 @@ public class BoardController{
         }
     }
 
-        /**
-         * This function returns a subset of Cell from billboard where the player can move in tot steps
-         * @param shooterCell is the player's cell
-         * @param steps are the maximum steps available
-         * @return a list of Cell reachable from shooterCell in tot steps
-         */
+    /**
+     * This function returns a subset of Cell from billboard where the player can move in tot steps
+     * @param shooterCell is the player's cell
+     * @param steps are the maximum steps available
+     * @return a list of Cell reachable from shooterCell in tot steps
+     */
     public List<Cell> getPotentialDestinationCells(Cell shooterCell, int steps){
         return board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().canMove(shooterCell, x, steps)).collect(Collectors.toList());
     }
@@ -300,7 +305,7 @@ public class BoardController{
         for(Cell cell: cells)
             positions.add(board.getBillboard().getCellPosition(cell));
         return positions;
-        }
+    }
 
     /**
      * Set RegenerationCell of a player which pawn was removed from billboard
@@ -323,6 +328,8 @@ public class BoardController{
     }
 
     public void firstPlay(){
+        this.turnHandler = new TurnHandler(this);
+        turnHandler.start();
         playerPlay(listOfPlayers.get(0));
     }
 
@@ -342,7 +349,7 @@ public class BoardController{
             }
         }
         changeTurn();
-    //    playerPlay(listOfPlayers.get(changeTurn()));
+        //    playerPlay(listOfPlayers.get(changeTurn()));
     }
 
     public List<Player> notNullCellPlayers(){
@@ -371,29 +378,29 @@ public class BoardController{
     }
 
     private void scoring(List<Player> deadPlayers){
-       for(Player player : deadPlayers){
-           String points = givePoints(player);
-           playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.viewPrintError(points));
-           board.decrementSkull();
-           if(board.getSkulls()>0) {
-               player.getPlayerBoard().addSkull();
-               player.resetDamage();
-               player.getPlayerBoard().resurrect();
-           }
-       }
+        for(Player player : deadPlayers){
+            String points = givePoints(player);
+            playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.viewPrintError(points));
+            board.decrementSkull();
+            if(board.getSkulls()>0) {
+                player.getPlayerBoard().addSkull();
+                player.resetDamage();
+                player.getPlayerBoard().resurrect();
+            }
+        }
     }
 
     private String givePoints(Player deadPlayer){
         StringBuilder sb = new StringBuilder();
-            Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(isFinalFrenzy());
-            points.keySet().forEach(x-> {
-                x.addPoints(points.get(x));
-                sb.append(x);
-                sb.append(": ");
-                sb.append(points.get(x));
-                sb.append('\n');
-            });
-            return sb.toString();
+        Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(isFinalFrenzy());
+        points.keySet().forEach(x-> {
+            x.addPoints(points.get(x));
+            sb.append(x);
+            sb.append(": ");
+            sb.append(points.get(x));
+            sb.append('\n');
+        });
+        return sb.toString();
 
     }
 

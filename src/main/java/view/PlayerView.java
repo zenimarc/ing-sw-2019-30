@@ -278,6 +278,7 @@ public class PlayerView extends Observable{
     private int choosePowerUp4Regeneration(){
         int slt;
         List<PowerCard> powerUps = player.getPowerups();
+        Scanner scanner = new Scanner((System.in));
 
         while (true) {
             StringBuilder sb = new StringBuilder();
@@ -292,7 +293,7 @@ public class PlayerView extends Observable{
 
             print(sb.toString());
 
-            slt = reader.nextInt();
+            slt = scanner.nextInt();
             if (slt < powerUps.size()) return slt;
         }
     }
@@ -321,11 +322,11 @@ public class PlayerView extends Observable{
         int slt;
         String read;
         String formatString = "[0-"+ EnumCommand.PlayerAction.size()+"]";
-
+        Scanner scanner = new Scanner(System.in);
         while(true) {
             print(stringForPlayerAction());
             print("What do you want to do?");
-            read =reader.next();
+            read =scanner.next();
             slt = read.matches(formatString) ? Integer.valueOf(read) : EnumCommand.PlayerAction.size();
             if(slt< EnumCommand.PlayerAction.size()){
                 return EnumCommand.values()[slt];
