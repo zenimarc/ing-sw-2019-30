@@ -33,6 +33,7 @@ import java.util.*;
 import static constants.Color.convertToColor;
 import static controller.EnumCommand.*;
 import static deck.Bullet.*;
+import static powerup.PowerUp.*;
 import static powerup.PowerUp.KINETICRAY;
 import static powerup.PowerUp.TELEPORTER;
 import static powerup.PowerUp.VENOMGRENADE;
@@ -1059,13 +1060,13 @@ public class BoardViewGameGUI extends Application implements View {
                     case KINETICRAY:
                         notifyServer(new CommandObj(EnumCommand.KINETICRAY, (Player) object, new Position(x, y)));
                         break;
-                    /*case CHOOSE_CELL:
-                        if(((List<Position>)maxTargets).contains(new Position(x, y))) {
+                    case CHOOSE_CELL:
+                        if(((List<Position>)targets).contains(new Position(x, y))) {
                             chosenTargets = new Position(x, y);
                             object = true;
                         }
                             else cell.disableProperty();
-                            break;*/
+                            break;
                     default:
                         cell.disableProperty();
                 }
@@ -1086,22 +1087,29 @@ public class BoardViewGameGUI extends Application implements View {
             public void handle(ActionEvent event) {
                 switch (command) {
                     case CHOOSE_ACTION:
-                        if (player.getPowerups().get(i).getPowerUp() == TELEPORTER || player.getPowerups().get(i).getPowerUp() == KINETICRAY)
-                            command = DISCARD_POWER;
+                        if (player.getPowerups().get(i).getPowerUp() == TELEPORTER || player.getPowerups().get(i).getPowerUp() == KINETICRAY){
+                            if(player.getPowerups().get(i).getPowerUp() == TELEPORTER)
+                                notifyServer(new CommandObj(PAYPOWERUP, i));;
+                            if (player.getPowerups().get(i).getPowerUp() == KINETICRAY)
+                                notifyServer(new CommandObj(PAYPOWERUP, i));
+                        }
                         else powerUp.disableProperty();
                         break;
                     case SHOOT://after shooting
-                        if (player.getPowerups().get(i).getPowerUp() != VENOMGRENADE)
-                            command = DISCARD_POWER;
+                        if (player.getPowerups().get(i).getPowerUp() != VENOMGRENADE) {
+                            if (player.getPowerups().get(i).getPowerUp() == GUNSIGHT)
+                                notifyServer(new CommandObj(PAYGUNSIGHT, i));
+                            else notifyServer(new CommandObj(PAYPOWERUP, i));
+                        }
                         else powerUp.disableProperty();
                         break;
                     case VENOMGRENADE:// after getting hit
                         if (player.getPowerups().get(i).getPowerUp() == VENOMGRENADE)
-                            command = DISCARD_POWER;
+                            notifyServer(new CommandObj(PAYPOWERUP, i));
                         else powerUp.disableProperty();
                         break;
                     case DISCARD_POWER: // Discard power up
-                        //Chiede la carta al server e verifica se è quella
+                        notifyServer(new CommandObj(PAIDPOWERUP, player.getPowerups().get(0), true));
                         powerUp.setVisible(false);
                         break;
                     default:
@@ -1151,6 +1159,7 @@ public class BoardViewGameGUI extends Application implements View {
         });
     }
 
+    //TODO settare meglio gli attacchi
     /**
      * This function activates button for shooting actions
      * @param attack button to activate
@@ -1164,10 +1173,17 @@ public class BoardViewGameGUI extends Application implements View {
        attack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.print("clickato\n");
+                if(((List<Integer>) chosenTargets).isEmpty() && nattack != 0 || nattack != 2)
+                    attack.disableProperty();
                 if (command == SHOOT && (player.getWeapons().get(index).getAttacks().size() == sizeAttacks || (player.getWeapons().get(0).getAttacks().size() == 2 && nattack == 0))) {
-                    attack.setVisible(false);
-                    weapon.setVisible(false);
+                    ((List<Integer>) chosenTargets).add(nattack);
+                    if((Boolean) targets || ((List<Integer>) chosenTargets).size() == player.getWeapons().get(index).getAttacks().size()){
+                        object = true;
+                        weapon.setVisible(false);
+                    }
+                    else {
+                        attack.setVisible(false);
+                    }
                     //se posso usare l'attacco numero nattack allora l'attacco s'illumina
                     //poi cambia stato in base al tipo d'attacco
                 } else attack.disableProperty();
@@ -1638,14 +1654,19 @@ public class BoardViewGameGUI extends Application implements View {
     //usata per gli optional
     @Override
     public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom){
-        return null;
+        command = CHOOSE_CELL;
+        targets = canRandom; //Boolean per optional
+        while(true) {
+            if (object.getClass() == Boolean.class)
+                return((List<Integer>)chosenTargets);
+        }
     }
 
     //usata per colpire i bersagli
     @Override
     public Position choosePositionToAttack(List<Position> potentialposition) {
         command = CHOOSE_CELL;
-       //(List<Position>) targets = potentialposition;
+        targets = potentialposition;
         while(true) {
             if (object.getClass() == Boolean.class)
                 return((Position) chosenTargets);

@@ -71,7 +71,11 @@ public class Board extends Observable implements Cloneable, Serializable {
     private void setStartAmmoCard(){
         for(Cell c : billboard.getCellMap().keySet()){
             if(c.getClass() == NormalCell.class){
-                c.setCard(ammoDeck.draw());
+                Card card = ammoDeck.draw();
+                addAmmoDiscardDeck((AmmoCard)card);
+                c.setCard(card);
+                    if (ammoDeck.getCards().get(0) == null)
+                        ammoDeck.addAll(ammoDiscardDeck.getCards());
             }
         }
     }
@@ -181,6 +185,9 @@ public class Board extends Observable implements Cloneable, Serializable {
     public Card giveCardFromPowerUpDeck(Player player){
         PowerCard pc = (PowerCard) powerUpDeck.draw();
         player.addPowerCard(pc);
+        addPowerUpDiscardDeck(pc);
+        if(powerUpDeck.getCards().isEmpty())
+            powerUpDeck.addAll(powerUpDiscardDeck.getCards());
         return pc;
     }
 }
