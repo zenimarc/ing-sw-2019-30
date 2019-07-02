@@ -5,6 +5,7 @@ import board.*;
 import board.billboard.BillboardGenerator;
 import client.Client;
 
+import constants.Constants;
 import controller.CommandObj;
 import controller.EnumCommand;
 import javafx.application.Application;
@@ -1584,8 +1585,9 @@ public class BoardViewGameGUI extends Application implements View {
         }
     }
 
+
     @Override
-    public void myTurn(){
+    public void myTurn(Constants modAction){
         this.command = CHOOSE_ACTION;
         startCountDown((Pane) root.getChildren().get(players.size() + 2), 120, true);
     }

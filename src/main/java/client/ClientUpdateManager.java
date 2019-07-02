@@ -2,6 +2,7 @@ package client;
 
 import board.Board;
 import board.Cell;
+import constants.Constants;
 import controller.CommandObj;
 import player.Player;
 import powerup.PowerCard;
@@ -56,7 +57,7 @@ public class ClientUpdateManager extends Observable {
                 view.regeneratePlayer();
                 break;
             case YOUR_TURN:
-                view.myTurn();
+                view.myTurn((Constants) cmd.getObject());
                 break;
             case LOAD_WEAPONCARD:
                 if(cmd.getObject().getClass().equals(ArrayList.class) ) {

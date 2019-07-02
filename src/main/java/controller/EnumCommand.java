@@ -51,6 +51,7 @@ public enum EnumCommand {
     CHOOSE_OPPONENTS("Choose opponents","Choose opponents to shoot."),
     CHOOSE_OPTIONAL_ATTACK("Choose optional attack",""),
     YOUR_TURN("Play!","It's your turn"),
+    YOUR_FRENY_TURN("Play!","It's your frenzy turn"),
     NOT_YOUR_TURN("Not your turn","Wait a moment..."),
     SHOW_BOARD("Show board",""),
     UPDATE_PLAYER("Update Player","Modify local Player"),
@@ -65,6 +66,9 @@ public enum EnumCommand {
     ;
 
     public static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+    public static final Set<EnumCommand> PlayerActionFF_1 = EnumSet.of(SHOOT_MOVE_FRENZYX1, MOVE_FRENZY, GRAB_MOVE_FRENZYX1);
+    public static final Set<EnumCommand> PlayerActionFF_2 = EnumSet.of(SHOOT_MOVE_FRENZYX2, GRAB_MOVE_FRENZYX2);
+
 
 
     private String name;
