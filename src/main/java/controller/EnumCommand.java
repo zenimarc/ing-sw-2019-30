@@ -39,10 +39,10 @@ public enum EnumCommand {
     PAIDPOWERUP("", ""),
     DISCARD_POWER ("Discard Power up", ""),
     USE_GUNSIGHT("Use Gunsight power Up", "..."),
+    GUNSIGHT("Use Gunsight power Up", "..."),
     USE_TELEPORTER("Use Teleporter power Up", "..."),
     TELEPORTER("", ""),
     USE_VENOMGRENADE("Use Venom Grenade power Up", "..."),
-    VENOMGRENADE("Use Venom Grenade power Up", "..."),
     USE_KINETICRAY("Use Kinetic Ray power Up", "..."),
     KINETICRAY("Use Kinetic Ray power Up", "..."),
 

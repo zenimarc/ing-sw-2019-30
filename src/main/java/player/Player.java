@@ -472,4 +472,7 @@ public class Player extends Observable implements Cloneable, Serializable {
         notifyObservers(this.clonePlayer());
     }
 
+    public void addGunsightDamage(Player player) {
+        playerBoard.addGunsightDamage(player);
+    }
 }

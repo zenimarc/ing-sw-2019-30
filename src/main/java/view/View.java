@@ -26,11 +26,12 @@ public interface View {
     List<String> getTargetsName(List<Player> potentialTarget, int maxTarget);
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom);
     Position choosePositionToAttack(List<Position> potentialposition);
-    void askPowerUp(ArrayList<PowerCard> cards, PowerUp power);
+    void askPowerUp(PowerUp power);
     void usePowerUp();
-    void payGunsight(int[] bullets,PowerCard card);
+    void payGunsight(int[] bullets, int card);
     void payPowerUp(PowerCard card);
     void useTeleport();
     void useKineticray(List<Player> player);
     void giveRoundScore(String playerDead, Map<String, Integer> points);
+    void chooseGunsightTarget(List<Player> targets);
 }

@@ -75,7 +75,7 @@ public class BoardController{
     }
 
 
-    protected Player getPlayerWhoPay() {
+    protected Player getPlayerWhoPlay() {
         return playerWhoPlay;
     }
     /**

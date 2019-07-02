@@ -87,7 +87,7 @@ public class BoardViewGameGUI extends Application implements View {
      * @throws FileNotFoundException if files are not found
      */
     @Override
-    public void start(Stage primaryStage) throws FileNotFoundException, RemoteException, InterruptedException {
+    public void start(Stage primaryStage) throws FileNotFoundException{
         initialize();
         root = createGame(numBoard);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -1090,7 +1090,7 @@ public class BoardViewGameGUI extends Application implements View {
                     case CHOOSE_ACTION:
                         if (player.getPowerups().get(i).getPowerUp() == TELEPORTER || player.getPowerups().get(i).getPowerUp() == KINETICRAY){
                             if(player.getPowerups().get(i).getPowerUp() == TELEPORTER)
-                                notifyServer(new CommandObj(PAYPOWERUP, i));;
+                                notifyServer(new CommandObj(PAYPOWERUP, i));
                             if (player.getPowerups().get(i).getPowerUp() == KINETICRAY)
                                 notifyServer(new CommandObj(PAYPOWERUP, i));
                         }
@@ -1098,13 +1098,13 @@ public class BoardViewGameGUI extends Application implements View {
                         break;
                     case SHOOT://after shooting
                         if (player.getPowerups().get(i).getPowerUp() != VENOMGRENADE) {
-                            if (player.getPowerups().get(i).getPowerUp() == GUNSIGHT)
+                            if (player.getPowerups().get(i).getPowerUp() == PowerUp.GUNSIGHT)
                                 notifyServer(new CommandObj(PAYGUNSIGHT, i));
                             else notifyServer(new CommandObj(PAYPOWERUP, i));
                         }
                         else powerUp.disableProperty();
                         break;
-                    case VENOMGRENADE:// after getting hit
+                    case USE_VENOMGRENADE:// after getting hit
                         if (player.getPowerups().get(i).getPowerUp() == VENOMGRENADE)
                             notifyServer(new CommandObj(PAYPOWERUP, i));
                         else powerUp.disableProperty();
@@ -1213,7 +1213,7 @@ public class BoardViewGameGUI extends Application implements View {
     /**
      * This function gives a string with the color of player
      * @param player whose color is needed
-     * @return
+     * @return a string
      */
     private String giveColor(Player player) {
         if (players.indexOf(player) == 0)
@@ -1466,7 +1466,7 @@ public class BoardViewGameGUI extends Application implements View {
 
     /**
      * This function creates a timer label for player
-     * @return
+     * @return a pane
      */
     private GridPane timer(){
         GridPane pane = new GridPane();
@@ -1676,7 +1676,7 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void askPowerUp(ArrayList<PowerCard> cards, PowerUp power) {
+    public void askPowerUp(PowerUp power) {
         root.getChildren().get(players.size()).setVisible(true);
         ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Do you want to use a power up?");
         ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(true);
@@ -1691,7 +1691,7 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void payGunsight(int[] bullets, PowerCard card) {
+    public void payGunsight(int[] bullets, int card) {
         root.getChildren().get(players.size()).setVisible(true);
         ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Choose which cube do you want to use");
         ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(false);
@@ -1724,6 +1724,11 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void giveRoundScore(String playerDead, Map<String, Integer> points) {
         changeMessage(playerDead, (Pane) root.getChildren().get(players.size()+3));
+    }
+
+    @Override
+    public void chooseGunsightTarget(List<Player> targets) {
+
     }
 
 

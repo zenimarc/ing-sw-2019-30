@@ -269,4 +269,7 @@ public class PlayerBoard implements Serializable {
         return string.toString();
     }
 
+    void addGunsightDamage(Player player) {
+        damageTrack.add(player);
+    }
 }

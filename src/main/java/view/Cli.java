@@ -100,8 +100,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void askPowerUp(ArrayList<PowerCard> cards, PowerUp power) {
-        playerView.askForPowerUp(cards, power);
+    public void askPowerUp(PowerUp power) {
+        playerView.askForPowerUp(power);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void payGunsight(int[] bullets, PowerCard card) {
+    public void payGunsight(int[] bullets, int card) {
         playerView.askPayGunsight(bullets, card);
     }
 
@@ -132,5 +132,10 @@ public class Cli implements View {
     @Override
     public void giveRoundScore(String playerDead, Map<String, Integer> points) {
         playerView.giveRoundScore(playerDead, points);
+    }
+
+    @Override
+    public void chooseGunsightTarget(List<Player> targets) {
+        playerView.chooseGunsightTarget(targets);
     }
 }

@@ -735,15 +735,16 @@ public class PlayerView extends Observable{
         notifyObservers(cmd);
     }
 
-    public void askForPowerUp(ArrayList<PowerCard> powerCards, PowerUp power){
+    public void askForPowerUp(PowerUp power){
         String format = "[0-1]";
         String read = "";
         while (!read.matches(format)) {
             print("Do you want to use a Power up? [1: Yes, 0: No] ");
-            print(choosePowerUp(powerCards));
             read = reader.next();
         }
-        notifyServer(new CommandObj(CHECKPOWERUP, power, (Boolean.valueOf(read))));
+        if(Integer.valueOf(read) == 1)
+            notifyServer(new CommandObj(CHECKPOWERUP, power,true));
+        else  notifyServer(new CommandObj(CHECKPOWERUP, power,false));
     }
 
     public boolean usePowerUp() {
@@ -767,7 +768,7 @@ public class PlayerView extends Observable{
         return true;
     }
 
-    public void askPayGunsight(int[] payCubeGunsight, PowerCard power) {
+    public void askPayGunsight(int[] payCubeGunsight, int power) {
         String format = "[0-"+ payCubeGunsight.length+"]";
         String read = "";
 
@@ -805,6 +806,17 @@ public class PlayerView extends Observable{
             target = reader.next();
         }
         moveKineticray(Integer.valueOf(target)-1);
+    }
+
+    protected void chooseGunsightTarget(List<Player> players){
+        String target = "";
+        while (!target.matches("[0-"+ players.size() +"]") || Integer.valueOf(target) == 0) {
+            print("Which player do you want to hit?");
+            print("Possible target are:\n");
+            print(stringForChooseTarget(players));
+            target = reader.next();
+        }
+        notifyServer(new CommandObj(GUNSIGHT, Integer.valueOf(target)-1));
     }
 
     private void moveKineticray(int player) {
