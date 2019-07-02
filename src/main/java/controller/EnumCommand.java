@@ -65,6 +65,9 @@ public enum EnumCommand {
     ;
 
     public static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+    public static final Set<EnumCommand> PlayerActionFF_1 = EnumSet.of(SHOOT_MOVE_FRENZYX1, MOVE_FRENZY, GRAB_MOVE_FRENZYX1);
+    public static final Set<EnumCommand> PlayerActionFF_2 = EnumSet.of(SHOOT_MOVE_FRENZYX2, GRAB_MOVE_FRENZYX2);
+
 
 
     private String name;
