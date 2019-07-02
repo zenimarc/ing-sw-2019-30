@@ -91,9 +91,9 @@ public class PlayerView extends Observable{
      * This invoke grabAmmo or grabWeapon
      * @return
      */
-    public boolean grab() {
-        if(player.getCell().getClass() == NormalCell.class) return grabAmmo();
-        else if (player.getCell().getClass()== RegenerationCell.class) return grabWeapon();
+    public boolean grab(Cell cell) {
+        if(cell.getClass() == NormalCell.class) return grabAmmo();
+        else if (cell.getClass()== RegenerationCell.class) return grabWeapon((RegenerationCell) cell);
         return false;
     }
 
@@ -101,8 +101,8 @@ public class PlayerView extends Observable{
      * This ask which weapon want and notify that action
      * @return
      */
-    private boolean grabWeapon(){
-        int drawIndex = chooseWeaponCard();
+    private boolean grabWeapon(RegenerationCell cell){
+        int drawIndex = chooseWeaponCard(cell);
         notifyServer(new CommandObj(EnumCommand.GRAB_WEAPON, drawIndex));
         return true;
     }
@@ -397,12 +397,15 @@ public class PlayerView extends Observable{
         return  chooseWeaponFromHand(stringForChooseWeaponToPlace());
     }
 
-    private String stringForChooseWeaponCard(){
-        RegenerationCell cell = (RegenerationCell) player.getCell();
+    private String stringForChooseWeaponCard(List<WeaponCard> weaponCards){
         StringBuilder sb = new StringBuilder();
         sb.append("Weapon card in this cell are:");
-        sb.append(stringWeaponFromList(cell.getCards().stream().map(WeaponCard::getName).collect(Collectors.toList()),
-                false));
+        sb.append(stringWeaponFromList(weaponCards.stream()
+                .map(x -> {
+                    if(x!=null) return x.getName();
+                    else return "No weapon";
+                })
+                .collect(Collectors.toList()), false));
         sb.append("\nWhich do you want? ");
         return sb.toString();
     }
@@ -415,7 +418,6 @@ public class PlayerView extends Observable{
             sb.append(") No weapon\t");
             i++;
         }
-
         for(String wp : weaponCardsName){
             sb.append(i);
             sb.append(") ");
@@ -423,7 +425,6 @@ public class PlayerView extends Observable{
             sb.append("\t");
             i++;
         }
-
         sb.append("\n");
         return sb.toString();
 
@@ -433,12 +434,12 @@ public class PlayerView extends Observable{
      * This ask player which WeaponCard want to draw in a RegenerationCell
      * @return index of chosen WeaponCard
      */
-    private int chooseWeaponCard(){
+    private int chooseWeaponCard(RegenerationCell cell){
         String read;
-        String formatString = "[0-"+((((RegenerationCell) player.getCell()).getCards().size())-1) +"]";
+        String formatString = "[0-"+((cell.getCards().size())-1) +"]";
 
         while (true) {
-            print(stringForChooseWeaponCard());
+            print(stringForChooseWeaponCard(cell.getCards()));
             read = reader.next();
             if (read.matches(formatString)) {
                 break;
@@ -656,27 +657,61 @@ public class PlayerView extends Observable{
     }
 
     public String stringForTurnOf(String name){
-        StringBuilder sb = new StringBuilder();
-        String nameOf = "Turn of: ";
-
-        int totStar = 120;
-        int i;
+        String starLine = starLine();
 
         StringBuilder sbStar = new StringBuilder();
 
         sbStar.append('\n');
-        for(i=0;i<totStar;i++){sbStar.append('*');}
+        sbStar.append(starLine);
+        sbStar.append(wordInStar("Turn of: "+ name.toUpperCase()));
         sbStar.append('\n');
-        int numOfStar = (totStar - name.length() - nameOf.length() -4)/2;
-        for(i=0;i<numOfStar;i++){sbStar.append('*');}
-        sbStar.append("  ");
+        sbStar.append(starLine);
+        sbStar.append('\n');
 
-        sb.append(sbStar.toString());
-        sb.append(nameOf);
-        sb.append(name.toUpperCase());
-        sb.append(sbStar.reverse().toString());
+        return sbStar.toString();
+    }
+
+    private String starLine(){
+        return starLine(Constants.STAR_PER_LINE.getValue());
+    }
+
+    private String starLine(int lenght){
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<lenght; i++){sb.append('*');}
+        return sb.toString();
+    }
+
+    private String wordInStar(String string){
+        int numOfStar = (Constants.STAR_PER_LINE.getValue() - string.length() - 4)/2;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(starLine(numOfStar));
+        sb.append("  ");
+        sb.append(string);
+        sb.append("  ");
+        sb.append(starLine(numOfStar));
+        sb.append('\n');
 
         return sb.toString();
+    }
+
+
+    public void giveRoundScore(String nameDead, Map<String, Integer> points) {
+        StringBuilder sb = new StringBuilder();
+        String starLine = starLine();
+
+        sb.append("\n\n");
+        sb.append(starLine);
+        sb.append(wordInStar(nameDead.toUpperCase()+" is dead"));
+        sb.append(starLine);
+        sb.append(wordInStar("Points are:"));
+        for(String playerName : points.keySet()){
+            sb.append(wordInStar(playerName+'\t'+points.get(playerName)));
+        }
+        sb.append(starLine);
+        sb.append("\n\n");
+        print(sb.toString());
     }
 
     private void notifyServer(CommandObj cmd){

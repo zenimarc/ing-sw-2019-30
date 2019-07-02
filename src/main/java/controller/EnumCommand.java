@@ -55,6 +55,7 @@ public enum EnumCommand {
     SHOW_BOARD("Show board",""),
     UPDATE_PLAYER("Update Player","Modify local Player"),
     UPDATE_BOARD("Update Board","Modify local Board"),
+    PRINT_POINTS("Print points","Print points of a round"),
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),

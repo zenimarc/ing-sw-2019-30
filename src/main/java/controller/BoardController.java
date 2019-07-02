@@ -342,7 +342,6 @@ public class BoardController{
             }
         }
         changeTurn();
-    //    playerPlay(listOfPlayers.get(changeTurn()));
     }
 
     public List<Player> notNullCellPlayers(){
@@ -372,8 +371,9 @@ public class BoardController{
 
     private void scoring(List<Player> deadPlayers){
        for(Player player : deadPlayers){
-           String points = givePoints(player);
-           playerControllers.stream().filter(x->x.getPlayer().equals(playerWhoPlay)).findFirst().ifPresent(x -> x.viewPrintError(points));
+           HashMap<String, Integer> points = givePoints(player);
+           notifyScore(player.getName(), points);
+
            board.decrementSkull();
            if(board.getSkulls()>0) {
                player.getPlayerBoard().addSkull();
@@ -383,18 +383,22 @@ public class BoardController{
        }
     }
 
-    private String givePoints(Player deadPlayer){
-        StringBuilder sb = new StringBuilder();
+    private HashMap<String, Integer> givePoints(Player deadPlayer){
             Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(isFinalFrenzy());
+            HashMap<String, Integer> points4View = new HashMap<>();
             points.keySet().forEach(x-> {
                 x.addPoints(points.get(x));
-                sb.append(x);
-                sb.append(": ");
-                sb.append(points.get(x));
-                sb.append('\n');
+                points4View.put(x.getName(), points.get(x));
             });
-            return sb.toString();
 
+            return points4View;
+
+    }
+
+    private void notifyScore(String deadPlayer, Map<String, Integer> points ){
+        for(PlayerController pc : playerControllers){
+            pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));
+        }
     }
 
 }

@@ -2,16 +2,14 @@ package view;
 
 import attack.Attack;
 import board.Board;
+import board.Cell;
 import board.Position;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
 import weapon.WeaponCard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observer;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Cli implements View {
@@ -78,8 +76,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void grab() {
-        playerView.grab();
+    public void grab(Cell cell) {
+        playerView.grab(cell);
     }
 
     @Override
@@ -128,5 +126,10 @@ public class Cli implements View {
     @Override
     public void useKineticray(List<Player> players) {
         playerView.chooseTargets(players);
+    }
+
+    @Override
+    public void giveRoundScore(String playerDead, Map<String, Integer> points) {
+        playerView.giveRoundScore(playerDead, points);
     }
 }

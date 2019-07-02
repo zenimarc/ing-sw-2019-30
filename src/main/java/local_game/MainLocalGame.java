@@ -49,7 +49,7 @@ public class MainLocalGame {
 
             boardController.playerPlay(playerWhoPlay);
 
-            boardController.changeTurn();
+    //        boardController.changeTurn();
 
             i++;
         }
