@@ -23,7 +23,7 @@ public class TurnHandler extends Thread{
     @Override
     public void run(){
         try {
-            System.out.println("Thread turHandler partito");
+            //System.out.println("Thread turHandler partito");
             while (!Thread.currentThread().isInterrupted()) {
                 Thread.sleep(TURNTIME * 1000);
                 boardController.changeTurn();
