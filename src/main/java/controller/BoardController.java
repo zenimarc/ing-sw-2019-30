@@ -9,6 +9,7 @@ import deck.Deck;
 import player.Player;
 import powerup.PowerCard;
 import server.GameServer;
+import server.TurnHandler;
 import view.BoardViewCLI;
 
 import java.util.*;
@@ -26,6 +27,7 @@ public class BoardController{
     private Board board;
     private Player playerWhoPlay;
     private GameServer gameServer;
+    private TurnHandler turnHandler;
 
     /**
      * Default constructor
@@ -114,6 +116,10 @@ public class BoardController{
         if(playerTurn >= listOfPlayers.size()-1)
             playerTurn = 0;
         else playerTurn++;
+
+        turnHandler.interrupt();
+        turnHandler = new TurnHandler(this);
+        turnHandler.start();
 
         playerPlay(listOfPlayers.get(playerTurn));
 
@@ -323,6 +329,8 @@ public class BoardController{
     }
 
     public void firstPlay(){
+        this.turnHandler = new TurnHandler(this);
+        turnHandler.start();
         playerPlay(listOfPlayers.get(0));
     }
 
