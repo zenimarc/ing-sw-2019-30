@@ -140,16 +140,18 @@ public class PlayerView extends Observable{
      * @return
      */
     public boolean loadWeapon(List<String> notLoaded){
+
+        if(notLoaded.isEmpty()) return false;
+
         if(wantLoad()) {
             int index = chooseWeaponToLoad(notLoaded);
-            if(index==-1) return false;
+            if (index == -1) return false;
 
-           notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, index));
+            notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, index));
 
-           if(notLoaded.size()>0) {
-               notLoaded.remove(index - 1);
-               loadWeapon(notLoaded);
-           }
+            notLoaded.remove(index);
+            loadWeapon(notLoaded);
+
         }
         return  true;
     }
