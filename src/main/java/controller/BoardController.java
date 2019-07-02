@@ -338,7 +338,19 @@ public class BoardController{
             pc.myTurn();
             restoreCell(pc.getModifyCell());
             if(listOfPlayers.stream().anyMatch(Player::isDead)){
-                scoring(listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList()));
+                List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
+                for(Player dead : deadPlayers) {
+
+                    HashMap<String, Integer> points = givePoints(dead);
+                    notifyScore(dead.getName(), points);
+
+                    if (board.getSkulls() > 0) {
+                        board.decrementSkull();
+                        dead.getPlayerBoard().addSkull();
+                        dead.resetDamage();
+                        dead.getPlayerBoard().resurrect();
+                    }
+                }
             }
         }
         changeTurn();
@@ -365,24 +377,14 @@ public class BoardController{
                 RegenerationCell rc = (RegenerationCell) cell;
                 rc.setCard(board.getWeaponCardDeck().draw());
             }
-
         }
     }
 
-    private void scoring(List<Player> deadPlayers){
-       for(Player player : deadPlayers){
-           HashMap<String, Integer> points = givePoints(player);
-           notifyScore(player.getName(), points);
-
-           board.decrementSkull();
-           if(board.getSkulls()>0) {
-               player.getPlayerBoard().addSkull();
-               player.resetDamage();
-               player.getPlayerBoard().resurrect();
-           }
-       }
-    }
-
+    /**
+     * This give points to players who hit deadPlayer
+     * @param deadPlayer Player who died
+     * @return Map to Player name -> Points 4 this dead
+     */
     private HashMap<String, Integer> givePoints(Player deadPlayer){
             Map<Player, Integer> points = deadPlayer.getPlayerBoard().getPoints(isFinalFrenzy());
             HashMap<String, Integer> points4View = new HashMap<>();
@@ -390,11 +392,14 @@ public class BoardController{
                 x.addPoints(points.get(x));
                 points4View.put(x.getName(), points.get(x));
             });
-
             return points4View;
-
     }
 
+    /**
+     * Notify view to print new points
+     * @param deadPlayer Player dead name
+     * @param points points for each players
+     */
     private void notifyScore(String deadPlayer, Map<String, Integer> points ){
         for(PlayerController pc : playerControllers){
             pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));

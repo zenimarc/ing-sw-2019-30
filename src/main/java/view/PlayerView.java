@@ -665,7 +665,6 @@ public class PlayerView extends Observable{
         sbStar.append(starLine);
         sbStar.append('\n');
         sbStar.append(wordInStar("Turn of: "+ name.toUpperCase()));
-        sbStar.append('\n');
         sbStar.append(starLine);
         sbStar.append('\n');
 
