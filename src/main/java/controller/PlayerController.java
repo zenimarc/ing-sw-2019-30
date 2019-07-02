@@ -82,7 +82,7 @@ public class PlayerController extends Observable implements Observer{
             case GRAB_MOVE:
                 if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
                     if(cmdObj.getCmd()==MOVE || cmdObj.getCmd()==MOVE_FRENZY) numAction++;
-                    else cmdForView(new CommandObj(GRAB));
+                    else cmdForView(new CommandObj(GRAB, player.getCell()));
                 }else {
                     viewPrintError();
                 }
@@ -308,6 +308,11 @@ public class PlayerController extends Observable implements Observer{
     private void checkCanGrabWeapon(int grabWeaponIndex){
         WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(grabWeaponIndex));
 
+        if(grabWeapon == null){
+            viewPrintError("No weapon selected");
+            return;
+        }
+
         int[] grabCost = toIntArray(grabWeapon.getGrabCost());
         //Can player pay this weaponCard?
         if(player.canPay(grabCost)) {
@@ -516,7 +521,7 @@ public class PlayerController extends Observable implements Observer{
     private List<Player> furnaceImplementation(boolean baseAttack){
         List<Player> opponents = new ArrayList<>();
         if(baseAttack){
-            //TODO choose room
+            //TODO choose room - Error
             opponents.addAll(boardController.getPotentialTargets(opponents.get(0).getCell(), EnumTargetSet.SAME_ROOM));
         }else {
                 List<Cell> possibleCells = boardController.getPotentialDestinationCells(player.getCell(), 1);
