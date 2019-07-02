@@ -59,11 +59,13 @@ public enum EnumCommand {
 
     //Commands for GUI
     CHOOSE_ACTION("Action", "..."),
-    UNSELECT("prova", "...")
-
+    UNSELECT("prova", "..."),
+    ASKTARGETS("", ""),
+    CHOOSE_CELL("", "")
     ;
 
     public static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+
 
     private String name;
     private String description;

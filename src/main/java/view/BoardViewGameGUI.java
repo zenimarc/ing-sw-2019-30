@@ -45,10 +45,13 @@ public class BoardViewGameGUI extends Application implements View {
     private List<Player> players = new ArrayList<>();
     private Player player = new Player("Marco");
     private EnumCommand command = CHOOSE_ACTION;
-    private int numBoard = 2;
+    private int numBoard = 2; //TODO settarlo a -1 fino a quando board non viene settata
     private int index = 0;
     private Object object;
     private Pane root;
+    private int maxTargets;
+    private Object targets;
+    private Object chosenTargets;
 
     public BoardViewGameGUI(){
 
@@ -95,7 +98,10 @@ public class BoardViewGameGUI extends Application implements View {
         primaryStage.show();
     }
 
-    public Scene createScene(Client client) throws FileNotFoundException {
+    public Scene createScene(Client client) throws FileNotFoundException, InterruptedException {
+        while(numBoard == -1) {
+            wait();
+        }
         initialize();
         root = createGame(numBoard);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -419,6 +425,13 @@ public class BoardViewGameGUI extends Application implements View {
                     case ASKFORPOWERUP:
                         notifyServer(new CommandObj(CHECKPOWERUP, object, true));
                         pane.setVisible(false);
+                    case PLACE_WEAPONCARD:
+                        command = LOAD_WEAPONCARD;
+                        pane.setVisible(false);
+                        break;
+                    case ASKTARGETS:
+                        command = CHOOSE_OPPONENTS;
+                        pane.setVisible(false);
                         break;
                 }
 
@@ -436,6 +449,14 @@ public class BoardViewGameGUI extends Application implements View {
                 switch(command){
                     case ASKFORPOWERUP:
                         notifyServer(new CommandObj(CHECKPOWERUP, object, false));
+                        pane.setVisible(false);
+                    case PLACE_WEAPONCARD:
+                        notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, -1));
+                        object =  false;
+                        pane.setVisible(false);
+                        break;
+                    case ASKTARGETS:
+                        object = true;
                         pane.setVisible(false);
                         break;
                 }
@@ -1038,6 +1059,13 @@ public class BoardViewGameGUI extends Application implements View {
                     case KINETICRAY:
                         notifyServer(new CommandObj(EnumCommand.KINETICRAY, (Player) object, new Position(x, y)));
                         break;
+                    /*case CHOOSE_CELL:
+                        if(((List<Position>)maxTargets).contains(new Position(x, y))) {
+                            chosenTargets = new Position(x, y);
+                            object = true;
+                        }
+                            else cell.disableProperty();
+                            break;*/
                     default:
                         cell.disableProperty();
                 }
@@ -1099,13 +1127,23 @@ public class BoardViewGameGUI extends Application implements View {
                         if (player.getWeapons().get(i).isReady()) {
                             index = 1;
                             changeImage(attack, weapon);
-                            command = CHOOSE_ACTION;
                         } else attack.disableProperty();
                         break;
                     case DISCARD_WEAPON:// after getting hit
                         attack.setVisible(false);
-                        command = CHOOSE_ACTION;
                         break;
+                    case LOAD_WEAPONCARD:
+                        if(!player.getNotLoaded().contains(player.getWeapons().get(i)))
+                            attack.disableProperty();
+                        else{
+                            notifyServer(new CommandObj(EnumCommand.LOAD_WEAPONCARD, player.getNotLoaded().indexOf(player.getWeapons().get(i))));
+                            if(player.getNotLoaded().isEmpty())
+                                object = true;
+                            else {
+                                root.getChildren().get(players.size()+2).setVisible(true);
+                                command = PLACE_WEAPONCARD;
+                            }
+                        }
                     default:
                         attack.disableProperty();
                 }
@@ -1268,11 +1306,24 @@ public class BoardViewGameGUI extends Application implements View {
             public void handle(ActionEvent event) {
                 switch (command) {
                     case USE_KINETICRAY:
-                        pawn.setVisible(false);
                         object = name;
                         command = EnumCommand.KINETICRAY;
                         break;
                     case CHOOSE_OPPONENTS:
+                        if(((List<Player>)targets).contains(name)){
+                            ((List<Player>)chosenTargets).add(name);
+                            maxTargets--;
+                            if(maxTargets == 0)
+                                object = true;
+                            else{
+                                root.getChildren().get(players.size()).setVisible(true);
+                                changeMessage("Do you want to hit another taget?", (Pane) root.getChildren().get(players.size()));
+                                ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(true);
+                                ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(true);
+                                command = ASKTARGETS;
+                            }
+                        }
+                        else pawn.disableProperty();
                         break;
                     default:
                         pawn.disableProperty();
@@ -1491,6 +1542,7 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void gameStart(Board board) {
         this.board = board;
+        setNumBoard();
     }
 
     @Override
@@ -1505,7 +1557,15 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public boolean loadWeapon(List<String> notLoaded){
-        return true;
+        root.getChildren().get(players.size()).setVisible(true);
+        ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Do you want to load a WeaponCard?");
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(true);
+        ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(true);
+        command = PLACE_WEAPONCARD;
+        while(true) {
+            if (object.getClass() == Boolean.class)
+                return((Boolean) object);
+        }
     }
 
     @Override
@@ -1542,7 +1602,6 @@ public class BoardViewGameGUI extends Application implements View {
             for(Player p : players)
                 if(p.getName().equals(player.getName()))
                     players.set(players.indexOf(p), player);
-            root.getChildren().set(players.size()+3, points());
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
         }
@@ -1564,16 +1623,33 @@ public class BoardViewGameGUI extends Application implements View {
             command = GRAB_WEAPON;
     }
 
+    //usata per ottenere i target
     @Override
-    public List<String> getTargetsName(List<Player> potentialTarget, int maxTarget){return null;}
+    public List<String> getTargetsName(List<Player> potentialTarget, int maxTarget){
+        command = CHOOSE_OPPONENTS;
+        maxTargets = maxTarget;
+        targets = potentialTarget;
+        while(true) {
+            if (object.getClass() == Boolean.class)
+                return((List<String>) chosenTargets);
+        }
+    }
 
+    //usata per gli optional
     @Override
-    public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom){return null;}
+    public List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom){
+        return null;
+    }
 
+    //usata per colpire i bersagli
     @Override
     public Position choosePositionToAttack(List<Position> potentialposition) {
-        command = SHOOT;
-        return null;
+        command = CHOOSE_CELL;
+       //(List<Position>) targets = potentialposition;
+        while(true) {
+            if (object.getClass() == Boolean.class)
+                return((Position) chosenTargets);
+        }
     }
 
     @Override
@@ -1624,7 +1700,7 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void giveRoundScore(String playerDead, Map<String, Integer> points) {
-        //TODO implementare
+        changeMessage(playerDead, (Pane) root.getChildren().get(players.size()+3));
     }
 
 
@@ -1636,8 +1712,8 @@ public class BoardViewGameGUI extends Application implements View {
         }
     }
 
-private Pane returnPaneMap(){
+    private Pane returnPaneMap(){
         return (Pane) root.getChildren().get(players.size()+1);
-}
+    }
 
 }

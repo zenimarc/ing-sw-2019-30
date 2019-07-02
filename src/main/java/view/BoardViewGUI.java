@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,6 +34,7 @@ public class BoardViewGUI extends Application{
     private Client client;
     private String info;
     private Pane root;
+    private boolean hasStarted;
 
     @Override
     public void start(Stage primaryStage) { //can't change name
@@ -99,8 +101,10 @@ public class BoardViewGUI extends Application{
         CLI.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //farà andare il sistema
-                Platform.exit();
+                stage.close();
+                app = new ClientApp();
+                app.beginApp();
+
             }
         });
 
@@ -199,6 +203,7 @@ public class BoardViewGUI extends Application{
                 if(((ClientRMI) client).register(info)) {
                     progress.setVisible(true);
                     wait.setVisible(true);
+                    hasStarted = true;
                 }
                 else{
                      Name.setVisible(true);
@@ -217,6 +222,7 @@ public class BoardViewGUI extends Application{
                         reconnect.setVisible(false);
                         progress.setVisible(true);
                         wait.setVisible(true);
+                        hasStarted = true;
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -310,22 +316,7 @@ public class BoardViewGUI extends Application{
 
     }
 
-    /*private void gameStart(Client client) {
-        Task task = new Task<Void>() {
-            @Override
-            protected Void call() {
-                while(true)
-                    if (client.hasStarted(client))
-                        return null;
-            }
-        };
-        Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
-        Platform.exit();
-    }*/
-
-    private void startCountDown(Client client, Stage stage) {
+    private void startCountDown(Stage stage) {
         Thread thread = new Thread(){
             public void run() {
 
@@ -335,19 +326,17 @@ public class BoardViewGUI extends Application{
                     boolean verify;
 
                     public void run() {
-                        if (verify = true) {
-                            //Platform.runLater(() -> verify = client.hasStarted());
+                        while(hasStarted = false){
 
-                        } else {
+                        }
                             timer.cancel();
                             try {
                                 BoardViewGameGUI view = new BoardViewGameGUI();
                                 stage.setScene(view.createScene(client));
                                 stage.setWidth(view.getWidth());
                                 stage.setHeight(view.getHeight());
-                            } catch (FileNotFoundException e) {
+                            } catch (FileNotFoundException | InterruptedException e) {
                                 e.printStackTrace();
-                            }
                         }
                     }
                 }, 1000, 1000); //Every 1 second

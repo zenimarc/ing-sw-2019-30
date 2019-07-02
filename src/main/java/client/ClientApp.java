@@ -40,9 +40,13 @@ public class ClientApp {
         return clientUpdateManager;
     }
 
-    public static void main(String[] args) throws RemoteException {
+    public static void main(String[] args) {
         ClientApp clientApp = new ClientApp();
         clientApp.connection.init();
 
+    }
+
+    public void beginApp(){
+        connection.init();
     }
 }

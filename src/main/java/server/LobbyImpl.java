@@ -4,6 +4,9 @@ package server;
 import client.Client;
 import constants.Constants;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -17,7 +20,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MIN_PLAYERS = Constants.MIN_PLAYER.getValue();
     private static final int MAX_PLAYERS = Constants.MAX_PLAYER.getValue();
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
-    private static final String SERVER_IP = "localhost";
+    private  String SERVER_IP;
     private int port;
     private int minPlayers;
     private int maxPlayers;
@@ -163,8 +166,16 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
         }
     }
 
-    public static void main(String[] args) {
-        System.setProperty("java.rmi.server.hostname", SERVER_IP);
+    private static String askIp() throws IOException {
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("Set your IP address");
+        return bufferRead.readLine();
+    }
+
+    public static void main(String[] args) throws IOException {
+        String IP = askIp();
+        System.setProperty("java.rmi.server.hostname", IP);
 
         try {
             LobbyImpl lobby = new LobbyImpl();

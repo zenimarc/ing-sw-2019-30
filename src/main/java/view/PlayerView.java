@@ -278,7 +278,6 @@ public class PlayerView extends Observable{
     private int choosePowerUp4Regeneration(){
         int slt;
         List<PowerCard> powerUps = player.getPowerups();
-        Scanner scanner = new Scanner((System.in));
 
         while (true) {
             StringBuilder sb = new StringBuilder();
@@ -293,7 +292,7 @@ public class PlayerView extends Observable{
 
             print(sb.toString());
 
-            slt = scanner.nextInt();
+            slt = reader.nextInt();
             if (slt < powerUps.size()) return slt;
         }
     }
@@ -322,11 +321,10 @@ public class PlayerView extends Observable{
         int slt;
         String read;
         String formatString = "[0-"+ EnumCommand.PlayerAction.size()+"]";
-        Scanner scanner = new Scanner(System.in);
         while(true) {
             print(stringForPlayerAction());
             print("What do you want to do?");
-            read =scanner.next();
+            read = reader.next();
             slt = read.matches(formatString) ? Integer.valueOf(read) : EnumCommand.PlayerAction.size();
             if(slt< EnumCommand.PlayerAction.size()){
                 return EnumCommand.values()[slt];
@@ -493,7 +491,7 @@ public class PlayerView extends Observable{
 
     /**
      * This ask user what optional attack want use
-     * @param canRandom user can use optional attack whitout order
+     * @param canRandom user can use optional attack without order
      * @return list of index of choosen optional attack
      */
     public List<Integer> chooseOptionalAttack(List<Attack> attacks, boolean canRandom){
