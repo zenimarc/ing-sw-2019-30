@@ -2,6 +2,7 @@ package view;
 
 import attack.Attack;
 import board.Board;
+import board.Cell;
 import board.Position;
 import player.Player;
 import powerup.PowerCard;
@@ -9,10 +10,7 @@ import powerup.PowerUp;
 import weapon.WeaponCard;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.WeakHashMap;
+import java.util.*;
 
 
 public interface View {
@@ -26,7 +24,7 @@ public interface View {
     void regeneratePlayer();
     void updatePlayer(Player player);
     void updateBoard(Board board);
-    void grab();
+    void grab(Cell cell);
     List<String> getTargetsName(List<Player> potentialTarget, int maxTarget);
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom);
     Position choosePositionToAttack(List<Position> potentialposition);
@@ -36,4 +34,5 @@ public interface View {
     void payPowerUp(PowerCard card);
     void useTeleport();
     void useKineticray(List<Player> player);
+    void giveRoundScore(String playerDead, Map<String, Integer> points);
 }

@@ -1,6 +1,7 @@
 package client;
 
 import board.Board;
+import board.Cell;
 import controller.CommandObj;
 import player.Player;
 import powerup.PowerCard;
@@ -8,10 +9,7 @@ import powerup.PowerUp;
 import view.View;
 import weapon.WeaponCard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 import static controller.EnumCommand.UPDATE_PLAYER;
 
@@ -49,7 +47,7 @@ public class ClientUpdateManager extends Observable {
     public void executeCommand(CommandObj cmd){
         switch (cmd.getCmd()) {
             case GRAB:
-                view.grab();
+                view.grab((Cell) cmd.getObject());
                 break;
             case SHOW_BOARD:
                 view.showBoard();
@@ -100,6 +98,11 @@ public class ClientUpdateManager extends Observable {
                 break;
             case NOT_YOUR_TURN:
                 view.notMyTurn((String) cmd.getObject());
+                break;
+            case PRINT_POINTS:
+                if(cmd.getObject().getClass().equals(String.class) && cmd.getObject2().getClass().equals(HashMap.class)) {
+                    view.giveRoundScore((String) cmd.getObject(), (Map<String, Integer>) cmd.getObject2());
+                }
                 break;
             default:
                 break;

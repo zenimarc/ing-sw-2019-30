@@ -45,8 +45,6 @@ public class Player extends Observable implements Cloneable, Serializable {
         ammo.put(RED,1);
         ammo.put(YELLOW, 1);
         ammo.put(BLUE, 1);
-
-        this.weapons.add(new SimpleWeapon(EnumWeapon.ZX_2));
     }
 
     /**
@@ -326,6 +324,7 @@ public class Player extends Observable implements Cloneable, Serializable {
      */
     public void resetDamage(){
         this.getPlayerBoard().clearDamages();
+        notifyEndAction();
     }
 
     /**

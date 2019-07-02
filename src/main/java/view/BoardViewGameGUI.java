@@ -1,10 +1,7 @@
 package view;
 
 import attack.Attack;
-import board.Board;
-import board.NormalCell;
-import board.Position;
-import board.RegenerationCell;
+import board.*;
 import board.billboard.BillboardGenerator;
 import client.Client;
 
@@ -1562,8 +1559,8 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void grab(){
-        if(player.getCell().getClass() == RegenerationCell.class)
+    public void grab(Cell cell){
+        if(cell.getClass() == RegenerationCell.class)
             command = GRAB_WEAPON;
     }
 
@@ -1623,6 +1620,11 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void useKineticray(List<Player> player) {
         command = CHOOSE_OPPONENTS;
+    }
+
+    @Override
+    public void giveRoundScore(String playerDead, Map<String, Integer> points) {
+        //TODO implementare
     }
 
 
