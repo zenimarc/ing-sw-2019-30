@@ -1,5 +1,6 @@
 package controller;
 
+import constants.Constants;
 import controller.BoardController;
 
 /**
@@ -7,7 +8,7 @@ import controller.BoardController;
  */
 
 public class TurnHandler extends Thread{
-    private static final long TURNTIME = 10; //turn timeout in seconds
+    private static final long TURN_TIME = Constants.TURN_TIME.getValue(); //turn timeout in seconds
     private BoardController boardController;
 
     /**
@@ -25,7 +26,7 @@ public class TurnHandler extends Thread{
         try {
             System.out.println("Thread turHandler partito");
             while (!Thread.currentThread().isInterrupted()) {
-                Thread.sleep(TURNTIME * 1000);
+                Thread.sleep(TURN_TIME * 1000);
                 boardController.changeTurn();
             }
             Thread.currentThread().interrupt();
