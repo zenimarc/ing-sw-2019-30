@@ -4,6 +4,7 @@ import attack.Attack;
 import board.Board;
 import board.Position;
 import controller.CommandObj;
+import controller.EnumCommand;
 import controller.PlayerController;
 import player.Player;
 import server.GameServer;
@@ -162,7 +163,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         Board board = gameServer.getBoard();
         clientApp.createView(player, board, this);
         this.view = clientApp.getView();
-        view.notMyTurn("wait your turn");
+        gameServer.askStatus(this);
 
     }
 

@@ -227,6 +227,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     public synchronized void endGame(){
         this.gameStarted = false;
+        Thread.currentThread().interrupt();
     }
 
     /**
@@ -268,6 +269,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
     public void removeClient(Player player){
         try{
+            swapOnOff(getClient(player));
             this.getClient(player).timeExpired();
         }catch (RemoteException | NullPointerException ex){
             ex.fillInStackTrace();
@@ -325,12 +327,19 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         return false;
     }
 
+    @Override
+    public void askStatus(Client remoteClient) throws RemoteException {
+        Player p = getPlayer(remoteClient);
+        if (p != null)
+            boardController.updatePlayerMenuStatus(p);
+    }
+
     /**
      * This functions ping every clients of the game and if one client is offline, starts a timer to delete him.
      */
     private void checkOfflineClients(){
         List<Client> clientsToBeSuspended = new ArrayList<>();
-        while(true) {
+        while(isStarted()) {
             clientsToBeSuspended.clear();
             try {
                 Thread.sleep(5000);
@@ -381,7 +390,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         System.out.println("\n"+client + " removed for inactivity");
         if(this.clients.size()<this.minPlayer) {
             System.out.println("termino partita per pochi client");
-            Thread.currentThread().interrupt();
+            endGame();
         }
     }
 
