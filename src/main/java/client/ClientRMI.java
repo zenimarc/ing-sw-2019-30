@@ -163,6 +163,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         Board board = gameServer.getBoard();
         clientApp.createView(player, board, this);
         this.view = clientApp.getView();
+        this.view.showBoard();
         gameServer.askStatus(this);
 
     }
