@@ -204,6 +204,14 @@ public class BoardViewGUI extends Application{
                     progress.setVisible(true);
                     wait.setVisible(true);
                     hasStarted = true;
+                    BoardViewGameGUI view = new BoardViewGameGUI();
+                    try {
+                        stage.setScene(view.createScene(client));
+                    } catch (FileNotFoundException | InterruptedException | RemoteException e) {
+                        e.fillInStackTrace();
+                    }
+                    stage.setWidth(view.getWidth());
+                    stage.setHeight(view.getHeight());
                 }
                 else{
                      Name.setVisible(true);
@@ -222,9 +230,12 @@ public class BoardViewGUI extends Application{
                         reconnect.setVisible(false);
                         progress.setVisible(true);
                         wait.setVisible(true);
-                        hasStarted = true;
+                        BoardViewGameGUI view = new BoardViewGameGUI();
+                        stage.setScene(view.createScene(client));
+                        stage.setWidth(view.getWidth());
+                        stage.setHeight(view.getHeight());
                     }
-                } catch (RemoteException e) {
+                } catch (RemoteException | FileNotFoundException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -244,21 +255,6 @@ public class BoardViewGUI extends Application{
             }
         };
     }
-
-   /* private void setOnAction(Button thread, ClientRMI clientRMI) {
-        thread.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                while(true) {
-                        if(clientRMI.hasStarted())
-                            Platform.exit();
-
-                    }
-                }
-        });
-    }*/
-
-
 
     private BackgroundImage menuBackground() {
         try {
@@ -335,7 +331,7 @@ public class BoardViewGUI extends Application{
                                 stage.setScene(view.createScene(client));
                                 stage.setWidth(view.getWidth());
                                 stage.setHeight(view.getHeight());
-                            } catch (FileNotFoundException | InterruptedException e) {
+                            } catch (FileNotFoundException | InterruptedException | RemoteException e) {
                                 e.printStackTrace();
                         }
                     }

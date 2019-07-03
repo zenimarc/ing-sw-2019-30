@@ -5,6 +5,7 @@ import board.Board;
 import board.Cell;
 import board.Position;
 import constants.Constants;
+import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -34,4 +35,5 @@ public interface View {
     void useKineticray(List<Player> player);
     void giveRoundScore(String playerDead, Map<String, Integer> points);
     void chooseGunsightTarget(List<Player> targets);
+    void discardPowerUp(Card object2);
 }

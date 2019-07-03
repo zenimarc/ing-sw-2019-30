@@ -8,6 +8,7 @@ import board.billboard.Billboard;
 import constants.Constants;
 import controller.CommandObj;
 import controller.EnumCommand;
+import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -832,4 +833,30 @@ public class PlayerView extends Observable{
 
     }
 
+    public void discardPowerUp(Card power) {
+        String target = "";
+        while (!target.matches("[0-3]")) {
+            print("Which Power Up do you want to discard?");
+            print("Possible Power ups are:\n");
+            print(stringForDiscardPowerUp(power));
+            target = reader.next();
+        }
+        if(Integer.valueOf(target) == 3)
+            notifyServer(new CommandObj(DISCARD_POWER, power));
+        else notifyServer(new CommandObj(DISCARD_POWER, player.getPowerups().get(Integer.valueOf(target))));
+    }
+
+    private String stringForDiscardPowerUp(Card power) {
+        StringBuilder sb = new StringBuilder();
+
+        for(Card card : player.getPowerups()){
+            sb.append(player.getPowerups().indexOf(card));
+            sb.append(") ");
+            sb.append(power.toString());
+            sb.append("\t");
+        }
+        sb.append("3) ");
+        sb.append(power +"\n");
+        return sb.toString();
+    }
 }

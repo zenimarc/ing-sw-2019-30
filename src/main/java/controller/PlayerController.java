@@ -137,6 +137,7 @@ public class PlayerController extends Observable implements Observer{
                     else {
                         PowerCard power = player.getPowerups().get((int)cmdObj.getObject());
                         player.usePowerUp(power, true);
+                        boardController.getBoard().getDiscardAmmoCardDeck().addCard(power);
                         receiveCmd(verifyPowerUp(power));
                     }
                 }
@@ -179,6 +180,11 @@ public class PlayerController extends Observable implements Observer{
             case GUNSIGHT:
                 enemies.get((int)cmdObj.getObject()).addGunsightDamage(player);
                 break;
+            case DISCARD_POWER:
+                PowerCard power = (PowerCard) cmdObj.getObject();
+                if(player.getPowerups().contains(power))
+                    player.getPowerups().remove(power);
+                askForPowerUp = false;
             case END_TURN:
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
@@ -282,9 +288,21 @@ public class PlayerController extends Observable implements Observer{
     private boolean grabAmmo(){
         AmmoCard ammoCard = (AmmoCard) boardController.getBoard().giveCardFromCell(player.getCell(), player, 0);
         if(ammoCard!=null) {
-            if (ammoCard.verifyPowerUp())
-                boardController.getBoard().giveCardFromPowerUpDeck(player);
-            boardController.getBoard().addAmmoDiscardDeck(ammoCard);
+            Card power = boardController.getBoard().getPowerUpDeck().draw();
+            if (ammoCard.verifyPowerUp()){
+                if(player.getPowerups().size() == 3) {
+                    cmdForView(new CommandObj(DISCARD_POWER, power));
+                    while(true){
+                        if(!askForPowerUp)
+                            break;
+                    }
+                        askForPowerUp = true;
+                    if(player.getPowerups().size() < 3)
+                        player.getPowerups().add((PowerCard) power);
+                }
+            else player.addPowerCard((PowerCard)power);
+
+            }
             modifyCell.add(player.getCell());
             return true;
         }

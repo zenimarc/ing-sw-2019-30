@@ -8,6 +8,7 @@ import client.Client;
 import constants.Constants;
 import controller.CommandObj;
 import controller.EnumCommand;
+import deck.Card;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -26,13 +27,17 @@ import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
 
+import javax.jws.soap.SOAPBinding;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.*;
 
 import static constants.Color.convertToColor;
+import static constants.Constants.ACTION_PER_TURN_FF_AFTER_FIRST;
+import static constants.Constants.ACTION_PER_TURN_FF_BEFORE_FIRST;
 import static controller.EnumCommand.*;
+import static controller.EnumCommand.GUNSIGHT;
 import static deck.Bullet.*;
 import static powerup.PowerUp.*;
 import static powerup.PowerUp.KINETICRAY;
@@ -47,7 +52,8 @@ public class BoardViewGameGUI extends Application implements View {
     private List<Player> players = new ArrayList<>();
     private Player player = new Player("Marco");
     private EnumCommand command = CHOOSE_ACTION;
-    private int numBoard = 2; //TODO settarlo a -1 fino a quando board non viene settata
+    private int ammoSize;
+    private int numBoard = 3; //TODO settarlo a -1 fino a quando board non viene settata
     private int index = 0;
     private Object object;
     private Pane root;
@@ -61,12 +67,12 @@ public class BoardViewGameGUI extends Application implements View {
 
     //TODO manca board
     public BoardViewGameGUI(Client client) throws RemoteException {
-        this.client = client;
-        this.player = client.getPlayer();
-        this.players = client.getListOfPlayers();
+
     }
 
-    private void initialize(/*, ArrayList<Client> client*/) {
+    private void initialize() {
+        if(numBoard == -1)
+            numBoard = 2;
         this.board = new Board(8, BillboardGenerator.createBillboard(numBoard));
         player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(1, 1)));
         players.add(player);
@@ -100,11 +106,12 @@ public class BoardViewGameGUI extends Application implements View {
         primaryStage.show();
     }
 
-    public Scene createScene(Client client) throws FileNotFoundException, InterruptedException {
+    public Scene createScene(Client client) throws FileNotFoundException, InterruptedException, RemoteException {
+        this.client = client;
+        this.player = client.getPlayer();
         while(numBoard == -1) {
-            wait();
+            Thread.sleep(5000);
         }
-        initialize();
         root = createGame(numBoard);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setCenterShape(true);
@@ -290,7 +297,7 @@ public class BoardViewGameGUI extends Application implements View {
      */
     private Pane createMainPlayerboard() throws FileNotFoundException {
         Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(player)), 110, 600, 0, 0, 0));
+        playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(player), false), 110, 600, 0, 0, 0));
         //Weapons and power ups
         for (int i = 0; i < 3; i++) {
             if (i + 1 > player.getWeapons().size()) {
@@ -355,7 +362,7 @@ public class BoardViewGameGUI extends Application implements View {
      */
     private Pane createOtherBoards(int player) throws FileNotFoundException {
         Pane playerBoard = new Pane();
-        playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(player))), 90, 350, 0, 0, 0));
+        playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(player)), false), 90, 350, 0, 0, 0));
 
         //Weapons and power ups
         for (int i = 0; i < 3; i++) {
@@ -490,11 +497,11 @@ public class BoardViewGameGUI extends Application implements View {
                 generateBoardRight1(map);//8
                 generateBoardButtonsLeft1(map);
                 generateBoardButtonsRight1(map);//11
-                ammo = 21;
+                ammoSize = 21;
 
                 for (int y = 0; y < 4; y++)
                     for (int x = 0; x < 3; x++) {
-                        i = setCellOnAction(map, x, y, i, test, ammo, buttons);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                         if (x == 1 && y == 0) {
                             x++;
                             test++;
@@ -506,14 +513,14 @@ public class BoardViewGameGUI extends Application implements View {
                 generateBoardRight2(map);
                 generateBoardButtonsLeft1(map);
                 generateBoardButtonsRight2(map);
-                ammo = 20;
+                ammoSize = 20;
                 for (int y = 0; y < 4; y++)
                     for (int x = 0; x < 3; x++) {
                         if (x == 0 && y == 3) {
                             x = 1;
                             test++;
                         }
-                        i = setCellOnAction(map, x, y, i, test, ammo, buttons);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                         if (x == 1 && y == 0) {
                             x = 3;
                             test++;
@@ -525,10 +532,10 @@ public class BoardViewGameGUI extends Application implements View {
                 generateBoardRight1(map);
                 generateBoardButtonsLeft2(map);
                 generateBoardButtonsRight1(map);
-                ammo = 22;
+                ammoSize = 22;
                 for (int y = 0; y < 4; y++)
                     for (int x = 0; x < 3; x++) {
-                        i = setCellOnAction(map, x, y, i, test, ammo, buttons);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                     }
                 break;
             case 4:
@@ -543,14 +550,14 @@ public class BoardViewGameGUI extends Application implements View {
                             x = 1;
                             test++;
                         }
-                        i = setCellOnAction(map, x, y, i, test, ammo, buttons);
+                        i = setCellOnAction(map, x, y, i, test, buttons);
                     }
                 break;
         }
 
-        setActionPlayer(buttons.get(0), MOVE, map, ammo, buttons);
-        setActionPlayer(buttons.get(1), GRAB_MOVE, map, ammo, buttons);
-        setActionPlayer(buttons.get(2), SHOOT_MOVE, map, ammo, buttons);
+        setActionPlayer(buttons.get(0), MOVE, map, buttons);
+        setActionPlayer(buttons.get(1), GRAB_MOVE, map, buttons);
+        setActionPlayer(buttons.get(2), SHOOT_MOVE, map, buttons);
 
     }
 
@@ -699,8 +706,10 @@ public class BoardViewGameGUI extends Application implements View {
      * This function returns the path of a playerboard image
      * @return the path
      */
-    private String playerBoardPath(String path) {
-        return "src/resources/images/gametable/playerboard/" + path + "PlayerBoard.png";
+    private String playerBoardPath(String path, boolean isFrenzy) {
+        if(!isFrenzy)
+            return "src/resources/images/gametable/playerboard/" + path + "PlayerBoard.png";
+        else return "src/resources/images/gametable/playerboard/" + path + "PlayerBoardFrenzy.png";
     }
 
     /**
@@ -806,12 +815,12 @@ public class BoardViewGameGUI extends Application implements View {
      * @param buttons for player action
      * @return number of Children till ammo
      */
-    private int setCellOnAction(Pane map, int x, int y, int i, int test, int ammo, ArrayList<Button> buttons) {
+    private int setCellOnAction(Pane map, int x, int y, int i, int test, ArrayList<Button> buttons) {
         if (!((x == 1 && y == 0) || (x == 0 && y == 2) || (x == 2 && y == 3))) {
-            setCellAction((Button) map.getChildren().get(ammo + x + y * 3 - test), x, y, (ImageView) map.getChildren().get(13 + i), map, ammo, buttons);
+            setCellAction((Button) map.getChildren().get(ammoSize + x + y * 3 - test), x, y, (ImageView) map.getChildren().get(13 + i), map, buttons);
             i++;
         } else
-            setCellAction((Button) map.getChildren().get(ammo + x + y * 3 - test), x, y, null, map, ammo, buttons);
+            setCellAction((Button) map.getChildren().get(ammoSize + x + y * 3 - test), x, y, null, map, buttons);
         return i;
     }
 
@@ -970,11 +979,10 @@ public class BoardViewGameGUI extends Application implements View {
      * @param action button to activate
      * @param order state to set
      * @param map board pane
-     * @param ammoSize Size of map children till ammo cards
      * @param buttons list of action buttons
      */
     //azioni che giocatore può fare
-    private void setActionPlayer(Button action, EnumCommand order, Pane map, int ammoSize, ArrayList<Button> buttons) {
+    private void setActionPlayer(Button action, EnumCommand order, Pane map, ArrayList<Button> buttons) {
         action.setOpacity(1);
 
         action.setOnAction(new EventHandler<ActionEvent>() {
@@ -1000,11 +1008,10 @@ public class BoardViewGameGUI extends Application implements View {
      * @param y coordinate
      * @param ammo image of Ammo card in cell if present
      * @param map board pane
-     * @param ammoSize  Size of map children till ammo cards
      * @param buttons player action buttons
      */
     //Azioni che può fare cella
-    private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map, int ammoSize, ArrayList<Button> buttons) {
+    private void setCellAction(Button cell, int x, int y, ImageView ammo, Pane map, ArrayList<Button> buttons) {
         cell.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -1110,8 +1117,15 @@ public class BoardViewGameGUI extends Application implements View {
                         else powerUp.disableProperty();
                         break;
                     case DISCARD_POWER: // Discard power up
-                        notifyServer(new CommandObj(PAIDPOWERUP, player.getPowerups().get(0), true));
                         powerUp.setVisible(false);
+                        if(object.getClass() != Card.class)
+                            notifyServer(new CommandObj(PAIDPOWERUP, player.getPowerups().get(i), true));
+                        else{
+                            notifyServer(new CommandObj(DISCARD_POWER, player.getPowerups().get(i)));
+                            ((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5).setVisible(false);
+                            returnPaneMap().getChildren().get(0).setVisible(false);
+                        }
+
                         break;
                     default:
                         powerUp.disableProperty();
@@ -1153,6 +1167,11 @@ public class BoardViewGameGUI extends Application implements View {
                                 command = PLACE_WEAPONCARD;
                             }
                         }
+                    case DISCARD_POWER:
+                        playerBoard.setVisible(false);
+                        returnPaneMap().getChildren().get(0).setVisible(false);
+                        notifyServer(new CommandObj(DISCARD_POWER, object));
+                        break;
                     default:
                         attack.disableProperty();
                 }
@@ -1341,6 +1360,11 @@ public class BoardViewGameGUI extends Application implements View {
                             }
                         }
                         else pawn.disableProperty();
+                        break;
+                    case USE_GUNSIGHT:
+                        if(!((ArrayList<Player>)targets).contains(name))
+                            pawn.disableProperty();
+                        else notifyServer(new CommandObj(GUNSIGHT, ((ArrayList<Player>)targets).indexOf(name)));
                         break;
                     default:
                         pawn.disableProperty();
@@ -1558,6 +1582,11 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void gameStart(Board board) {
+        try {
+            this.players = client.getListOfPlayers();
+        } catch (RemoteException e) {
+            e.fillInStackTrace();
+        }
         this.board = board;
         setNumBoard();
     }
@@ -1588,8 +1617,46 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void myTurn(Constants modAction){
+        if(modAction == ACTION_PER_TURN_FF_BEFORE_FIRST || modAction == ACTION_PER_TURN_FF_AFTER_FIRST) {
+            try {
+                prepareFinalFrenzy(modAction);
+            } catch (FileNotFoundException e) {
+                e.fillInStackTrace();
+            }
+        }
+        if(modAction.getValue() == 2) {
+            ArrayList<Button> buttons = new ArrayList<>();
+            for (int i = 0; i <3; i++){
+                buttons.add(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3+i)));
+            }
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3)), SHOOT_MOVE_FRENZYX2, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-2)), GRAB_MOVE_FRENZYX2, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-1)), MOVE_FRENZY, returnPaneMap(), buttons);
+
+        }
+        else {
+            ArrayList<Button> buttons = new ArrayList<>();
+            for (int i = 0; i <3; i++){
+                buttons.add(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3+i)));
+            }
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3)), SHOOT_MOVE_FRENZYX1, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-2)), GRAB_MOVE_FRENZYX1, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-1)), MOVE_FRENZY, returnPaneMap(), buttons);
+
+        }
+
         this.command = CHOOSE_ACTION;
         startCountDown((Pane) root.getChildren().get(players.size() + 2), 120, true);
+        for(int i = 0; i < 3; i++)
+            ((Pane) root.getChildren().get(players.size()+1)).getChildren().get(3*players.size()+36+3+i).setVisible(true);
+    }
+
+    private void prepareFinalFrenzy(Constants modAction) throws FileNotFoundException {
+        for(int i = 0; i < players.size(); i++){
+            if(i == 0)
+                ((Pane)root.getChildren().get(i)).getChildren().set(0, generateCard(playerBoardPath(giveColor(player), true), 110, 600, 0, 0, 0));
+            else ((Pane)root.getChildren().get(i)).getChildren().set(0, generateCard(playerBoardPath(giveColor(getPlayerboardPlayer(i)), true), 90, 350, 0, 0, 0));
+        }
     }
 
     @Override
@@ -1728,7 +1795,20 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void chooseGunsightTarget(List<Player> targets) {
+        this.targets = targets;
+        command = USE_GUNSIGHT;
+    }
 
+    @Override
+    public void discardPowerUp(Card card) {
+        command = DISCARD_POWER;
+        try {
+            ((ImageView)returnPaneMap().getChildren().get(0)).setImage(new Image(new FileInputStream(powerPath(card.stringGUI()))));
+            returnPaneMap().getChildren().get(0).setVisible(true);
+            ((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5).setVisible(true);
+        } catch (FileNotFoundException e) {
+            e.fillInStackTrace();
+        }
     }
 
 

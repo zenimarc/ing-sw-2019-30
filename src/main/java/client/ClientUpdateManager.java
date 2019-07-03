@@ -4,6 +4,7 @@ import board.Board;
 import board.Cell;
 import constants.Constants;
 import controller.CommandObj;
+import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -90,6 +91,8 @@ public class ClientUpdateManager extends Observable {
             case USE_GUNSIGHT:
                 view.chooseGunsightTarget((List<Player>)cmd.getObject());
                 break;
+            case DISCARD_POWER:
+                view.discardPowerUp((Card) cmd.getObject());
             case UPDATE_PLAYER:
                 updatePlayer(cmd.getObject());
                 break;

@@ -54,8 +54,8 @@ public class BoardController{
         this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
 
-        //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
-        this.board = new Board(numskulls, BillboardGenerator.generateBillboard());
+        Random random = new Random();
+        this.board = new Board(numskulls, BillboardGenerator.createBillboard(random.nextInt(3)+1));
 
         for (Player player : this.listOfPlayers){
             //Create player controller

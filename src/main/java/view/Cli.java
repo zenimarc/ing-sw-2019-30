@@ -5,6 +5,7 @@ import board.Board;
 import board.Cell;
 import board.Position;
 import constants.Constants;
+import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -137,5 +138,10 @@ public class Cli implements View {
     @Override
     public void chooseGunsightTarget(List<Player> targets) {
         playerView.chooseGunsightTarget(targets);
+    }
+
+    @Override
+    public void discardPowerUp(Card power) {
+        playerView.discardPowerUp(power);
     }
 }
