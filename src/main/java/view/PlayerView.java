@@ -13,6 +13,10 @@ import powerup.PowerCard;
 import powerup.PowerUp;
 import weapon.WeaponCard;
 
+import java.io.BufferedReader;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -318,14 +322,20 @@ public class PlayerView extends Observable{
      * @return Player command
      */
     private EnumCommand choosePlayerAction(){
-        int slt;
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        int slt = PlayerAction.size();
         String read;
         String formatString = "[0-"+ EnumCommand.PlayerAction.size()+"]";
         while(true) {
             print(stringForPlayerAction());
             print("What do you want to do?");
-            read = reader.next();
-            slt = read.matches(formatString) ? Integer.valueOf(read) : EnumCommand.PlayerAction.size();
+            try {
+                read = in.readLine();
+                slt = read.matches(formatString) ? Integer.valueOf(read) : EnumCommand.PlayerAction.size();
+            }catch (IOException ioe){
+                ioe.fillInStackTrace();
+            }
+
             if(slt< EnumCommand.PlayerAction.size()){
                 return EnumCommand.values()[slt];
             }

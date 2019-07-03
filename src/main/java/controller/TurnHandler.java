@@ -24,10 +24,10 @@ public class TurnHandler extends Thread{
     @Override
     public void run(){
         try {
-            //System.out.println("Thread turHandler partito");
+            System.out.println("Thread turHandler partito");
             while (!Thread.currentThread().isInterrupted()) {
                 Thread.sleep(TURN_TIME * 1000);
-                boardController.changeTurn();
+                boardController.kickPlayerWhoPlay();
             }
             Thread.currentThread().interrupt();
 

@@ -10,6 +10,7 @@ import server.GameServer;
 import server.Lobby;
 import view.View;
 
+import java.io.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -101,12 +102,11 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
      */
     public boolean register(String nickname) {
         try {
-            clientLog("prima");
             UUID myToken = this.lobby.register(nickname, this);
-            clientLog("dopo");
             if (myToken != null) {
                 this.setNickname(nickname);
                 this.userToken = myToken;
+                this.storeToken(myToken);
                 clientLog("ricevuto il mio userToken: "+this.userToken);
                 return true;
             }
@@ -120,6 +120,26 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             re.fillInStackTrace();
         }
         return false;
+    }
+
+    private void storeToken(UUID token){
+        File file = new File("token.txt");
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.write(token.toString());
+        } catch (IOException | NullPointerException ex) {
+            ex.fillInStackTrace();
+        }
+    }
+
+    private boolean loadTokenFromFile(){
+        try (BufferedReader buff = new BufferedReader(new FileReader("token.txt"))){
+            userToken = UUID.fromString(buff.readLine());
+        }catch (IOException ioe){
+            ioe.fillInStackTrace();
+            return false;
+        }
+        clientLog("partita precedente trovata");
+        return true;
     }
 
     /**
@@ -136,6 +156,14 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         this.view = clientApp.getView();
         view.giveMessage("","Ho ricevuto che il game è iniziato");
         view.gameStart(board);
+    }
+    public void gameReconnected() throws RemoteException {
+        this.player = gameServer.getPlayer(this);
+        Board board = gameServer.getBoard();
+        clientApp.createView(player, board, this);
+        this.view = clientApp.getView();
+        view.notMyTurn("wait your turn");
+
     }
 
     @Override
@@ -202,19 +230,19 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     /**
      * this function tries to reconnect to the last match interrupted
      * @param username of the client
-     * @param userToken of the client previously assigned by the remote Lobby.
      * @throws RemoteException if it's impossible to reconnect
      */
-    public boolean reconnect(String username, UUID userToken) throws RemoteException{
+    public boolean reconnect(String username) throws RemoteException{
+        this.loadTokenFromFile();
         Scanner scanner = new Scanner(System.in);
         if (this.userToken == null) {
             clientLog("user token non trovato, inseriscilo manualmente per riconnetterti");
             this.userToken = UUID.fromString(scanner.nextLine());
         }
-        this.gameServer = lobby.reconnect(username, userToken, this);
+        this.gameServer = lobby.reconnect(username, this.userToken, this);
         if (gameServer!=null) {
-            gameStarted();
             clientLog("mi sono ricollegato a: " + gameServer.getGameToken());
+            gameReconnected();
             return true;
         }
         else {
@@ -242,7 +270,8 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
 
     @Override
     public void timeExpired() throws RemoteException {
-
+        clientLog("time expired");
+        System.exit(333);
     }
 
     public void init() {
@@ -256,8 +285,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             setNickname(userName);
             clientLog("Enter connect or reconnect");
             if (scanner.nextLine().equals("reconnect")) {
-                clientLog("Enter your userToken");
-                reconnect(userName, UUID.fromString(scanner.nextLine()));
+                reconnect(userName);
             } else
                 while (!register(getNickname())) {
                     clientLog("Enter another username");
@@ -285,7 +313,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
             clientRMI.clientLog("Enter connect or reconnect");
             if(scanner.nextLine().equals("reconnect")) {
                 clientRMI.clientLog("Enter your userToken");
-                clientRMI.reconnect(userName, UUID.fromString(scanner.nextLine()));
+                clientRMI.reconnect(userName);
             }
             else
                 while (!clientRMI.register(clientRMI.getNickname())) {

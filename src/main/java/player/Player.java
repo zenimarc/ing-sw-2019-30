@@ -27,6 +27,7 @@ public class Player extends Observable implements Cloneable, Serializable {
     private ArrayList<WeaponCard> weapons;
     private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
+    private boolean isActive;
 
     /**
      * Default constructors
@@ -39,6 +40,7 @@ public class Player extends Observable implements Cloneable, Serializable {
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
         this.ammo = new EnumMap<>(Color.class);
+        this.isActive = true;
         ammo.put(RED,1);
         ammo.put(YELLOW, 1);
         ammo.put(BLUE, 1);
@@ -472,4 +474,18 @@ public class Player extends Observable implements Cloneable, Serializable {
         notifyObservers(this.clonePlayer());
     }
 
+    /**
+     * this function is used to suspend this player, so it will be ignored by controller.
+     */
+    public void suspend() {
+        this.isActive = false;
+    }
+
+    public void reactivate(){
+        this.isActive = true;
+    }
+
+    public boolean isActive(){
+        return this.isActive;
+    }
 }

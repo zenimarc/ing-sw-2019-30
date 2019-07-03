@@ -9,6 +9,7 @@ import deck.Deck;
 import player.Player;
 import powerup.PowerCard;
 import server.GameServer;
+import server.GameServerImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class BoardController{
     private List<PlayerController> playerControllers;
     private Board board;
     private Player playerWhoPlay;
-    private GameServer gameServer;
+    private GameServerImpl gameServer;
     private TurnHandler turnHandler;
 
     /**
@@ -64,7 +65,7 @@ public class BoardController{
         }
     }
 
-    public void setGameServer(GameServer gameServer) {
+    public void setGameServer(GameServerImpl gameServer) {
         this.gameServer = gameServer;
     }
 
@@ -108,12 +109,25 @@ public class BoardController{
     public int getNumTurns() { return this.playerTurn; }
 
     /**
+     * this function returns the current player's name who's playing
+     * @return the current player's name who's playing
+     */
+    public String getPlayerNameWhoPlay(){
+        return listOfPlayers.get(playerTurn).getName();
+    }
+
+    /**
      * This function changes the number to decide which turn is
      */
     public int changeTurn() {
-        if(playerTurn >= listOfPlayers.size()-1)
+        playerTurn++;
+        if(playerTurn >= listOfPlayers.size())
             playerTurn = 0;
-        else playerTurn++;
+        while(!listOfPlayers.get(playerTurn).isActive()) {
+            playerTurn++;
+            if(playerTurn >= listOfPlayers.size())
+                playerTurn = 0;
+        }
 
         turnHandler.interrupt();
         turnHandler = new TurnHandler(this);
@@ -429,6 +443,24 @@ public class BoardController{
         for(PlayerController pc : playerControllers){
             pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));
         }
+    }
+
+    public void kick(Player player){
+        this.gameServer.removeClient(player);
+    }
+
+    public void kickPlayerWhoPlay(){
+        System.out.println("voglio ckickare"+listOfPlayers.get(playerTurn));
+        this.kick(listOfPlayers.get(playerTurn));
+        changeTurn();
+    }
+    public void suspend(Player playerToSuspend){
+        Optional<Player> p = listOfPlayers.stream().filter(x -> x.equals(playerToSuspend)).findFirst();
+        if (p.isPresent())
+            p.get().suspend();
+    }
+    public void reactivate(Player playerToReactivate){
+        playerToReactivate.reactivate();
     }
 
 }

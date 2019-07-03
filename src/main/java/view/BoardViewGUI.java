@@ -217,7 +217,7 @@ public class BoardViewGUI extends Application{
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    if(((ClientRMI) client).reconnect(info, new UUID(2, 2))){
+                    if(((ClientRMI) client).reconnect(info)){
                         connect.setVisible(false);
                         reconnect.setVisible(false);
                         progress.setVisible(true);

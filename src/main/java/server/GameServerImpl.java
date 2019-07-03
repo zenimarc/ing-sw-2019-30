@@ -5,8 +5,10 @@ import board.Board;
 import board.Cell;
 import board.Position;
 import client.Client;
+import constants.Constants;
 import controller.BoardController;
 import controller.CommandObj;
+import controller.EnumCommand;
 import controller.PlayerController;
 import player.Player;
 
@@ -16,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
-    private static final long SECONDS_BEFORE_START_GAME = 60;
+    private static final long SECONDS_BEFORE_START_GAME = Constants.SECONDS_BEFORE_START_GAME.getValue();;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
     private transient ArrayList<ClientInfo> clients;
     private transient ArrayList<Client> offlineClients;
@@ -73,7 +75,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * @param player associated to client
      * @return the client associated to Player or Null if not found
      */
-    private Client getClient(Player player){
+    private synchronized Client getClient(Player player){
         Optional<ClientInfo> clientInfo = clients.stream().filter(x->x.getPlayer().equals(player)).findFirst();
         if(clientInfo.isPresent())
             return clientInfo.get().getClient();
@@ -94,6 +96,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
     private void beginCountdown(){
+        System.out.println(SECONDS_BEFORE_START_GAME + "seconds remaining before game starts");
         try {
             Thread.sleep(SECONDS_BEFORE_START_GAME * 1000);
             if(canBeginGame())
@@ -263,6 +266,13 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         if (clientInfo.isPresent())
             clients.remove(clientInfo.get());
     }
+    public void removeClient(Player player){
+        try{
+            this.getClient(player).timeExpired();
+        }catch (RemoteException | NullPointerException ex){
+            ex.fillInStackTrace();
+        }
+    }
 
     public synchronized List<Client> getClients(){
         return this.clients.stream().map(ClientInfo::getClient).collect(Collectors.toList());
@@ -289,8 +299,10 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     public synchronized void swapOnOff(Client client){
         System.out.print("swapOnOff "+ client);
         Optional<ClientInfo> clientInfo = clients.stream().filter(x -> x.getClient().equals(client)).findFirst();
-        if (clientInfo.isPresent())
+        if (clientInfo.isPresent()) {
             clientInfo.get().setOff();
+            boardController.suspend(clientInfo.get().getPlayer());
+        }
     }
 
     /**
@@ -307,6 +319,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             System.out.println("setto nuovo remoteclient: " + newRemoteClient+" e metto on");
             clients.get(clients.indexOf(clientInfo.get())).setClient(newRemoteClient);
             clients.get(clients.indexOf(clientInfo.get())).setOn();
+            boardController.reactivate(clientInfo.get().getPlayer());
             return true;
         }
         return false;
@@ -346,7 +359,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * @param client to be monitored
      */
     private void kick(Client client){
-        final long INTERVAL = 3; //Ping interval seconds
+        final long INTERVAL = 15; //Ping interval seconds
         final int TIMES = 10; //times to ping
         int i=0;
         while(i<TIMES){
@@ -366,8 +379,10 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         }
         removeClient(client);
         System.out.println("\n"+client + " removed for inactivity");
-        if(this.clients.size()<this.minPlayer)
+        if(this.clients.size()<this.minPlayer) {
             System.out.println("termino partita per pochi client");
+            Thread.currentThread().interrupt();
+        }
     }
 
     public synchronized int changeTurn() {

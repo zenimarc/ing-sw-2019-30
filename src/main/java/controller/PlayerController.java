@@ -510,7 +510,7 @@ public class PlayerController extends Observable implements Observer{
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
-        return weaponCard.shoot(attackSelector, player, opponents, null);
+        return weaponCard.shoot(attackSelector, player, opponents, Optional.empty());
     }
 
     /**
