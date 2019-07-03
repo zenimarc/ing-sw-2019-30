@@ -8,6 +8,7 @@ import board.billboard.Billboard;
 import constants.Constants;
 import controller.CommandObj;
 import controller.EnumCommand;
+import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -38,7 +39,7 @@ public class PlayerView extends Observable{
         this.addObserver(clientManager);
     }
 
-    protected void myTurn() {
+    private void normalModeMyTurn(){
         boolean toServerAction = false;
         EnumCommand command = choosePlayerAction();
         switch (command) {
@@ -62,8 +63,23 @@ public class PlayerView extends Observable{
             default:
                 break;
         }
-
         if(!toServerAction) printError("Action not performed");
+    }
+
+    protected void myTurn(Constants modAction) {
+
+        switch (modAction) {
+            case ACTION_PER_TURN_NORMAL_MODE:
+                normalModeMyTurn();
+                break;
+            case ACTION_PER_TURN_FF_BEFORE_FIRST:
+                break;
+            case ACTION_PER_TURN_FF_AFTER_FIRST:
+                break;
+            default:
+                return;
+        }
+
 
     }
 
@@ -730,15 +746,16 @@ public class PlayerView extends Observable{
         notifyObservers(cmd);
     }
 
-    public void askForPowerUp(ArrayList<PowerCard> powerCards, PowerUp power){
+    public void askForPowerUp(PowerUp power){
         String format = "[0-1]";
         String read = "";
         while (!read.matches(format)) {
             print("Do you want to use a Power up? [1: Yes, 0: No] ");
-            print(choosePowerUp(powerCards));
             read = reader.next();
         }
-        notifyServer(new CommandObj(CHECKPOWERUP, power, (Boolean.valueOf(read))));
+        if(Integer.valueOf(read) == 1)
+            notifyServer(new CommandObj(CHECKPOWERUP, power,true));
+        else  notifyServer(new CommandObj(CHECKPOWERUP, power,false));
     }
 
     public boolean usePowerUp() {
@@ -762,7 +779,7 @@ public class PlayerView extends Observable{
         return true;
     }
 
-    public void askPayGunsight(int[] payCubeGunsight, PowerCard power) {
+    public void askPayGunsight(int[] payCubeGunsight, int power) {
         String format = "[0-"+ payCubeGunsight.length+"]";
         String read = "";
 
@@ -802,6 +819,17 @@ public class PlayerView extends Observable{
         moveKineticray(Integer.valueOf(target)-1);
     }
 
+    protected void chooseGunsightTarget(List<Player> players){
+        String target = "";
+        while (!target.matches("[0-"+ players.size() +"]") || Integer.valueOf(target) == 0) {
+            print("Which player do you want to hit?");
+            print("Possible target are:\n");
+            print(stringForChooseTarget(players));
+            target = reader.next();
+        }
+        notifyServer(new CommandObj(GUNSIGHT, Integer.valueOf(target)-1));
+    }
+
     private void moveKineticray(int player) {
         String positionString = "";
         while (!positionString.matches("[0-2],[0-3]")) {
@@ -815,4 +843,30 @@ public class PlayerView extends Observable{
 
     }
 
+    public void discardPowerUp(Card power) {
+        String target = "";
+        while (!target.matches("[0-3]")) {
+            print("Which Power Up do you want to discard?");
+            print("Possible Power ups are:\n");
+            print(stringForDiscardPowerUp(power));
+            target = reader.next();
+        }
+        if(Integer.valueOf(target) == 3)
+            notifyServer(new CommandObj(DISCARD_POWER, power));
+        else notifyServer(new CommandObj(DISCARD_POWER, player.getPowerups().get(Integer.valueOf(target))));
+    }
+
+    private String stringForDiscardPowerUp(Card power) {
+        StringBuilder sb = new StringBuilder();
+
+        for(Card card : player.getPowerups()){
+            sb.append(player.getPowerups().indexOf(card));
+            sb.append(") ");
+            sb.append(power.toString());
+            sb.append("\t");
+        }
+        sb.append("3) ");
+        sb.append(power +"\n");
+        return sb.toString();
+    }
 }

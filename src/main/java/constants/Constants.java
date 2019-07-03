@@ -9,10 +9,13 @@ public enum Constants {
     MAX_DAMAGE(12), //max number of damage
     MAX_BULLET_PER_COLOR(3),
     ACTION_PER_TURN_NORMAL_MODE(2),
-    MAX_PLAYER(4),
-    MIN_PLAYER(3),
+    ACTION_PER_TURN_FF_BEFORE_FIRST(2),
+    ACTION_PER_TURN_FF_AFTER_FIRST(1),
+    MAX_PLAYER(5),
+    MIN_PLAYER(1),
     STAR_PER_LINE(120),
-    TURN_TIME(1000)
+    TURN_TIME(1000),
+    SECONDS_BEFORE_START_GAME (1)
 
     ;
 

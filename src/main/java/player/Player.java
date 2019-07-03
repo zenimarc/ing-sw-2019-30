@@ -488,4 +488,7 @@ public class Player extends Observable implements Cloneable, Serializable {
     public boolean isActive(){
         return this.isActive;
     }
+    public void addGunsightDamage(Player player) {
+        playerBoard.addGunsightDamage(player);
+    }
 }

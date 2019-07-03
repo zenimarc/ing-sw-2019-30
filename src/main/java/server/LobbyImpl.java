@@ -21,9 +21,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MIN_PLAYERS = Constants.MIN_PLAYER.getValue();
     private static final int MAX_PLAYERS = Constants.MAX_PLAYER.getValue();
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,15}$";
-    private  String SERVER_IP;
     private int port;
-    private int minPlayers;
     private int maxPlayers;
     private Map<String, ClientInfo> registeredClients;
     private Map<UUID, GameServerImpl> gamesList;

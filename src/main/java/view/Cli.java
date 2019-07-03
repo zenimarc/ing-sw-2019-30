@@ -4,6 +4,8 @@ import attack.Attack;
 import board.Board;
 import board.Cell;
 import board.Position;
+import constants.Constants;
+import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
@@ -42,8 +44,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void myTurn() {
-        playerView.myTurn();
+    public void myTurn(Constants modAction) {
+        playerView.myTurn(modAction);
     }
 
     @Override
@@ -99,8 +101,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void askPowerUp(ArrayList<PowerCard> cards, PowerUp power) {
-        playerView.askForPowerUp(cards, power);
+    public void askPowerUp(PowerUp power) {
+        playerView.askForPowerUp(power);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class Cli implements View {
     }
 
     @Override
-    public void payGunsight(int[] bullets, PowerCard card) {
+    public void payGunsight(int[] bullets, int card) {
         playerView.askPayGunsight(bullets, card);
     }
 
@@ -131,5 +133,15 @@ public class Cli implements View {
     @Override
     public void giveRoundScore(String playerDead, Map<String, Integer> points) {
         playerView.giveRoundScore(playerDead, points);
+    }
+
+    @Override
+    public void chooseGunsightTarget(List<Player> targets) {
+        playerView.chooseGunsightTarget(targets);
+    }
+
+    @Override
+    public void discardPowerUp(Card power) {
+        playerView.discardPowerUp(power);
     }
 }

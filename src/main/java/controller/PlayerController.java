@@ -28,21 +28,21 @@ import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
 import static controller.EnumCommand.*;
 import static deck.Bullet.toIntArray;
-import static powerup.PowerUp.*;
+import static powerup.PowerUp.GUNSIGHT;
 import static powerup.PowerUp.VENOMGRENADE;
 
-//TODO gestire Gunsight e Venomgranade (cioè uso di power up quando si spara) e sistemare notify et similia
+//TODO verificare se Gunsight e Venomgranade funzionano, sistemare timer
 /**
  * PlayerController is used to control if a player can do certain actions
  */
 public class PlayerController extends Observable implements Observer{
     private BoardController boardController;
     private Billboard billboard;
-    private PlayerView playerView;
     private Player player;
     private int numAction = 0;
     private ArrayList<Cell> modifyCell;
-    private PlayerBoardView playerBoardView;
+    private boolean askForPowerUp = true;
+    private List<Player> enemies;
 
     /**
      * Default constructor
@@ -55,10 +55,6 @@ public class PlayerController extends Observable implements Observer{
         this(player);
         this.boardController = boardController;
         this.billboard = boardController.getBoard().getBillboard();
-    }
-
-    public PlayerBoardView getPlayerBoardView() {
-        return playerBoardView;
     }
 
     public void setBillboard(Billboard board){this.billboard = board;}
@@ -100,25 +96,34 @@ public class PlayerController extends Observable implements Observer{
                 player.notifyEndAction();
                 break;
             case ASKFORPOWERUP:
+                askForPowerUp = true;
                 ArrayList<PowerCard> cards = (getPotentialPowerUps(cmdObj));
                 if(cards.isEmpty()) {
                     viewPrintError("You have no usable power ups, so you can't use one");
+                    askForPowerUp = false;
                     notifyObservers();
                 }
-                else cmdForView(new CommandObj(ASKFORPOWERUP, cards));
+                else cmdForView(new CommandObj(ASKFORPOWERUP, cmdObj.getObject()));
                 break;
             case CHECKPOWERUP:
+                askForPowerUp = true;
                 if ((Boolean) cmdObj.getObject2()) {
                     ArrayList<PowerCard> power = getPotentialPowerUps(cmdObj);
                     if(!power.isEmpty())
                         cmdForView(new CommandObj(CHECKPOWERUP, power));
-                    else viewPrintError("You have no usable power ups, so you can't use one");
+                    else {
+                        viewPrintError("You have no usable power ups, so you can't use one");
+                        askForPowerUp = false;
+                    }
                 }
-                else notifyObservers();
+                else {
+                    askForPowerUp = false;
+                    notifyObservers();
+                }
                 break;
             case PAYGUNSIGHT:
                 if((int) cmdObj.getObject() != -1)
-                    playerView.askPayGunsight(player.payCubeGunsight(), player.getPowerups().get((int)cmdObj.getObject()));
+                    cmdForView(new CommandObj(PAYGUNSIGHT, player.payCubeGunsight(), cmdObj.getObject())); //cmdObj.getObject() is int referring to weapon place
                 else player.notifyEndAction();
                 break;
             case GUNSIGHTPAID:
@@ -132,6 +137,7 @@ public class PlayerController extends Observable implements Observer{
                     else {
                         PowerCard power = player.getPowerups().get((int)cmdObj.getObject());
                         player.usePowerUp(power, true);
+                        boardController.getBoard().getDiscardAmmoCardDeck().addCard(power);
                         receiveCmd(verifyPowerUp(power));
                     }
                 }
@@ -164,19 +170,21 @@ public class PlayerController extends Observable implements Observer{
                 }
                 break;
             case USE_VENOMGRENADE:
-                if(boardController.getBoard().getBillboard().isVisible(((Player)cmdObj.getObject()).getCell(), player.getCell()))
-                    ((Player)cmdObj.getObject()).addMark(player);
-                break;
-            case VENOMGRENADE:
-                ((Player)cmdObj.getObject()).addMark(player);
-                notifyObservers();
-                receiveCmd(new CommandObj(ASKFORPOWERUP, VENOMGRENADE));
+                boardController.getPlayerWhoPlay().addMark(player);
                 break;
             case USE_GUNSIGHT:
+                cmdForView(new CommandObj(USE_GUNSIGHT, enemies));
                 ((Player)cmdObj.getObject()).addDamage(player);
                 notifyObservers();
-                receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
                 break;
+            case GUNSIGHT:
+                enemies.get((int)cmdObj.getObject()).addGunsightDamage(player);
+                break;
+            case DISCARD_POWER:
+                PowerCard power = (PowerCard) cmdObj.getObject();
+                if(player.getPowerups().contains(power))
+                    player.getPowerups().remove(power);
+                askForPowerUp = false;
             case END_TURN:
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
@@ -242,18 +250,6 @@ public class PlayerController extends Observable implements Observer{
                 case SHOOT_MOVE: //move from shoot
                     actionParam = player.getNumDamages()<ADRENALINIC_SECOND_STEP.getNum() ? NORMAL_SHOOT_MOVE : ADRENALINIC_SHOOT_MOVE;
                     break;
-                default:
-                    return false;
-            }
-            if(billboard.canMove(player.getCell(), cell, actionParam.getNum())){
-                setCell(cell);
-                return true;
-            }
-        }
-        else {
-            //TODO i controlli per le due grab e le due shoot sono fatti in anticipo?
-            // Serve davvero distinguere se è Final frenzy o meno qui?
-            switch (enumCommand) {
                 case MOVE_FRENZY: //normal mode
                     actionParam = FRENZY_MOVE;
                     break;
@@ -292,9 +288,21 @@ public class PlayerController extends Observable implements Observer{
     private boolean grabAmmo(){
         AmmoCard ammoCard = (AmmoCard) boardController.getBoard().giveCardFromCell(player.getCell(), player, 0);
         if(ammoCard!=null) {
-            if (ammoCard.verifyPowerUp())
-                boardController.getBoard().giveCardFromPowerUpDeck(player);
-            boardController.getBoard().addAmmoDiscardDeck(ammoCard);
+            Card power = boardController.getBoard().getPowerUpDeck().draw();
+            if (ammoCard.verifyPowerUp()){
+                if(player.getPowerups().size() == 3) {
+                    cmdForView(new CommandObj(DISCARD_POWER, power));
+                    while(true){
+                        if(!askForPowerUp)
+                            break;
+                    }
+                        askForPowerUp = true;
+                    if(player.getPowerups().size() < 3)
+                        player.getPowerups().add((PowerCard) power);
+                }
+            else player.addPowerCard((PowerCard)power);
+
+            }
             modifyCell.add(player.getCell());
             return true;
         }
@@ -373,7 +381,7 @@ public class PlayerController extends Observable implements Observer{
         }
 
         if (selector == -1) return;
-//aggiungere caso delle priority weapons per cui un optional va bene anche prima di un attacco base
+        //aggiungere caso delle priority weapons per cui un optional va bene anche prima di un attacco base
         boolean isGoodAttack = false;
         if (selector==0){
             //BASE ATTACK
@@ -388,11 +396,14 @@ public class PlayerController extends Observable implements Observer{
         }
 
         if(isGoodAttack) {
-           // receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
-            /*chiederà ad altri giocatori che possono se usare la venomgranade
-                for()
-            boardController.getPlayerController().receiveCmd((new CommandObj(ASKFORPOWERUP, VENOMGRENADE)));
-             */
+            askForPowerUp = true;
+            while(askForPowerUp)
+                receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
+            askForPowerUp = true;
+            for(Player enemy : enemies)
+                while(!boardController.getPlayerController(enemy).returnIfPowerUpWanted()) {
+                    boardController.getPlayerController(enemy).receiveCmd(new CommandObj(ASKFORPOWERUP, VENOMGRENADE));
+                }
 
             numAction++;
             player.notifyEndAction();
@@ -400,6 +411,10 @@ public class PlayerController extends Observable implements Observer{
         }else {
             viewPrintError("Failed attack");
         }
+    }
+
+     protected boolean returnIfPowerUpWanted(){
+        return this.askForPowerUp;
     }
 
     /**
@@ -437,7 +452,7 @@ public class PlayerController extends Observable implements Observer{
 
         //Attack with base attack
         weaponCard.shoot(0,player, opponents, null);
-        //Attack whit optional attack
+        //Attack with optional attack
         for(Integer index : indexes) {
             if (!player.canPay(weaponCard.getAttack(index).getCost())) {
                 viewPrintError("You have not enough bullet to use this attack");
@@ -510,7 +525,8 @@ public class PlayerController extends Observable implements Observer{
         //Add null opponents to have opponents.size() == attack.target
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
-        return weaponCard.shoot(attackSelector, player, opponents, Optional.empty());
+        enemies = opponents;
+        return weaponCard.shoot(attackSelector, player, opponents, null);
     }
 
     /**
@@ -535,6 +551,7 @@ public class PlayerController extends Observable implements Observer{
                     viewPrintError(re.getMessage());
                 }
             }
+        enemies = opponents;
         return opponents;
     }
 
@@ -588,6 +605,7 @@ public class PlayerController extends Observable implements Observer{
             }
 
             if(areGoodTarget(potentialTargets, opponents)){
+                enemies = opponents;
                 return opponents;
             }else{
                 return Collections.emptyList();
@@ -691,10 +709,10 @@ public class PlayerController extends Observable implements Observer{
     private ArrayList<PowerCard> getPotentialPowerUps(CommandObj obj){
         ArrayList<PowerCard> powers = new ArrayList<>();
         for(PowerCard power: player.getPowerups()){
-            if(obj.getCmd() == USE_VENOMGRENADE && power.getPowerUp() == VENOMGRENADE && boardController.getBoard().getBillboard().isVisible(player.getCell(), boardController.getPlayerWhoPay().getCell()))
+            if(obj.getObject() == VENOMGRENADE && boardController.getPlayerWhoPlay() != player && boardController.getBoard().getBillboard().isVisible(player.getCell(), boardController.getPlayerWhoPlay().getCell()))
                 powers.add(power);
             else {
-                if(obj.getCmd() == SHOOT && power.getPowerUp() == GUNSIGHT) {
+                if(power.getPowerUp() == GUNSIGHT && !enemies.isEmpty()) {
                     if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 0, 1})))
                         powers.add(power);
                 }
@@ -706,21 +724,19 @@ public class PlayerController extends Observable implements Observer{
         return powers;
     }
 
-
-
     public List<Cell> getModifyCell() {
         return modifyCell;
     }
 
-    protected void myTurn(){
+    protected void myTurn(Constants maxAction){
         modifyCell = new ArrayList<>();
 
         cmdForView(new CommandObj(SHOW_BOARD));
 
         if(player.getCell()==null) regCell();
 
-        while(numAction< ACTION_PER_TURN_NORMAL_MODE.getValue()) {
-            cmdForView(new CommandObj(YOUR_TURN));
+        while(numAction < maxAction.getValue()) {
+            cmdForView(new CommandObj(YOUR_TURN, maxAction));
         }
         if(!player.getNotLoaded().isEmpty()) {
             cmdForView(new CommandObj(LOAD_WEAPONCARD, player.getNotLoadedName()));
@@ -733,7 +749,7 @@ public class PlayerController extends Observable implements Observer{
     }
 
 
-    public void viewPrintError(String mex){
+    private void viewPrintError(String mex){
         cmdForView(new CommandObj(PRINT_ERROR, mex));
     }
     
@@ -748,6 +764,7 @@ public class PlayerController extends Observable implements Observer{
     }
 
     public void notMyTurn(String name){
+        askForPowerUp = true;
         cmdForView(new CommandObj(NOT_YOUR_TURN, name));
     }
 

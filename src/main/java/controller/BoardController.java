@@ -14,6 +14,8 @@ import server.GameServerImpl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static constants.Constants.*;
+
 /**
  * BoardController controls the table game.
  */
@@ -53,8 +55,8 @@ public class BoardController{
         this.listOfPlayers = players;
         this.playerControllers = new ArrayList<>();
 
-        //TODO la Billboard da utilizzare dev'essere scelta tra le 3 possibili e memorizzate in json
-        this.board = new Board(numskulls, BillboardGenerator.generateBillboard());
+        Random random = new Random();
+        this.board = new Board(numskulls, BillboardGenerator.createBillboard(random.nextInt(3)+1));
 
         for (Player player : this.listOfPlayers){
             //Create player controller
@@ -74,7 +76,7 @@ public class BoardController{
     }
 
 
-    protected Player getPlayerWhoPay() {
+    protected Player getPlayerWhoPlay() {
         return playerWhoPlay;
     }
     /**
@@ -220,7 +222,7 @@ public class BoardController{
     public List<Player> getPotentialTargets(Cell shooterCell, EnumTargetSet targetType) {
 
         //If there are not opponents return empty list
-        if(this.listOfPlayers.size()==1) return Collections.emptyList();
+        if (this.listOfPlayers.size() == 1) return Collections.emptyList();
 
         List<Player> opponents = new ArrayList<>(this.listOfPlayers);
         opponents.remove(playerWhoPlay);
@@ -253,8 +255,9 @@ public class BoardController{
                 return opponents.stream().filter(x -> ((board.getBillboard().getCellPosition(x.getCell()).getX()) == board.getBillboard().getCellPosition(shooterCell).getX() ||
                         board.getBillboard().getCellPosition(x.getCell()).getY() == board.getBillboard().getCellPosition(shooterCell).getY())
                         && board.getBillboard().canMove(shooterCell, x.getCell(), board.getBillboard().cellDistance(shooterCell, x.getCell()))).collect(Collectors.toList());
+            default:
+                return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
     /**
@@ -355,44 +358,42 @@ public class BoardController{
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
             playerControllers.stream().filter(x-> x.getPlayer()!=player).forEach(x -> x.notMyTurn(player.getName()));
-            pc.myTurn();
+            pc.myTurn(ACTION_PER_TURN_NORMAL_MODE);
             restoreCell(pc.getModifyCell());
+            //If someone died
             if(listOfPlayers.stream().anyMatch(Player::isDead)){
                 List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
                 for(Player dead : deadPlayers) {
-
                     dead.setPawnCell(null);
-
                     HashMap<String, Integer> points = givePoints(dead);
                     notifyScore(dead.getName(), points);
-
                     if (board.getSkulls() > 0) {
-                        board.decrementSkull();
-                        dead.getPlayerBoard().addSkull();
-                        dead.resetDamage();
-                        dead.getPlayerBoard().resurrect();
-
-                        PlayerController deadPC = playerControllers.stream().filter(x -> x.getPlayer().equals(dead)).findFirst().orElse(null);
-                        if(deadPC!= null){
-                            dead.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
-                            deadPC.regCell();
-                        }
-                    }
-
-                    if(board.getSkulls()==0){
-                        HashMap<String, Integer> finalPoints = new HashMap<>();
-                        playerControllers
-                                .stream()
-                                .map(PlayerController::getPlayer)
-                                .forEach(x -> {
-                                    finalPoints.put(x.getName(), x.getPoints());
-                                });
-                        notifyScore("Partita finita", finalPoints);
+                        regeneration(dead);
                     }
                 }
             }
+            if(board.getSkulls()==0){
+                playFF();
+                totalPoints();
+                return;
+            }
         }
         changeTurn();
+    }
+
+    private void playFF(){
+        setFinalFrenzyTurns();
+        for(int i = playerTurn-1; i<playerTurn; i++) {
+            playerControllers.get(playerTurn).myTurn(ACTION_PER_TURN_FF_BEFORE_FIRST);
+        }
+        for(int i = 0; i< verifyFinalFrenzyTurns; i++){
+            playerControllers.get(playerTurn).myTurn(ACTION_PER_TURN_FF_AFTER_FIRST);
+        }
+    }
+
+
+    private void playerPlay(Player player, boolean beforeFirst){
+
     }
 
     public List<Player> notNullCellPlayers(){
@@ -416,6 +417,19 @@ public class BoardController{
                 RegenerationCell rc = (RegenerationCell) cell;
                 rc.setCard(board.getWeaponCardDeck().draw());
             }
+        }
+    }
+
+    private void regeneration(Player dead){
+        board.decrementSkull();
+        dead.getPlayerBoard().addSkull();
+        dead.resetDamage();
+        dead.getPlayerBoard().resurrect();
+
+        PlayerController deadPC = playerControllers.stream().filter(x -> x.getPlayer().equals(dead)).findFirst().orElse(null);
+        if(deadPC!= null){
+            dead.addPowerCard((PowerCard) board.getPowerUpDeck().draw());
+            deadPC.regCell();
         }
     }
 
@@ -443,6 +457,20 @@ public class BoardController{
         for(PlayerController pc : playerControllers){
             pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));
         }
+    }
+
+    /**
+     * Send all Players actual score of all players
+     */
+    private void totalPoints(){
+        HashMap<String, Integer> finalPoints = new HashMap<>();
+        playerControllers
+                .stream()
+                .map(PlayerController::getPlayer)
+                .forEach(x -> {
+                    finalPoints.put(x.getName(), x.getPoints());
+                });
+        notifyScore("Partita finita", finalPoints);
     }
 
     public void kick(Player player){
