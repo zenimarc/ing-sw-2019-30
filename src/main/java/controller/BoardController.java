@@ -358,42 +358,45 @@ public class BoardController{
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
             playerControllers.stream().filter(x-> x.getPlayer()!=player).forEach(x -> x.notMyTurn(player.getName()));
-            pc.myTurn(ACTION_PER_TURN_NORMAL_MODE);
-            restoreCell(pc.getModifyCell());
-            //If someone died
-            if(listOfPlayers.stream().anyMatch(Player::isDead)){
-                List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
-                for(Player dead : deadPlayers) {
-                    dead.setPawnCell(null);
-                    HashMap<String, Integer> points = givePoints(dead);
-                    notifyScore(dead.getName(), points);
-                    if (board.getSkulls() > 0) {
-                        regeneration(dead);
+
+            if(!isFinalFrenzy()){
+                pc.myTurn(ACTION_PER_TURN_NORMAL_MODE);
+            }else {
+                if(verifyTwoTurnsFrenzy()){
+                    pc.myTurn(ACTION_PER_TURN_FF_BEFORE_FIRST);
+                }else {
+                    pc.myTurn(ACTION_PER_TURN_FF_AFTER_FIRST);
+                    if(playerTurn==verifyFinalFrenzyTurns){
+                        totalPoints();
+                        //TODO devo chiamare qualcuno per dire che il gioco è finito!!!
+                        return;
                     }
                 }
             }
-            if(board.getSkulls()==0){
-                playFF();
-                totalPoints();
-                return;
+            restoreCell(pc.getModifyCell());
+            //If someone died
+            if(listOfPlayers.stream().anyMatch(Player::isDead)){
+                deadManager();
             }
         }
         changeTurn();
     }
 
-    private void playFF(){
-        setFinalFrenzyTurns();
-        for(int i = playerTurn-1; i<playerTurn; i++) {
-            playerControllers.get(playerTurn).myTurn(ACTION_PER_TURN_FF_BEFORE_FIRST);
+
+    private void deadManager(){
+        List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
+        for(Player dead : deadPlayers) {
+            dead.setPawnCell(null);
+            HashMap<String, Integer> points = givePoints(dead);
+            notifyScore(dead.getName(), points);
+            if (board.getSkulls() > 0) {
+                board.decrementSkull();
+                dead.getPlayerBoard().addSkull();
+                if(board.getSkulls()==0) setFinalFrenzyTurns();
+            }
+            regeneration(dead);
+
         }
-        for(int i = 0; i< verifyFinalFrenzyTurns; i++){
-            playerControllers.get(playerTurn).myTurn(ACTION_PER_TURN_FF_AFTER_FIRST);
-        }
-    }
-
-
-    private void playerPlay(Player player, boolean beforeFirst){
-
     }
 
     public List<Player> notNullCellPlayers(){
@@ -421,8 +424,6 @@ public class BoardController{
     }
 
     private void regeneration(Player dead){
-        board.decrementSkull();
-        dead.getPlayerBoard().addSkull();
         dead.resetDamage();
         dead.getPlayerBoard().resurrect();
 
