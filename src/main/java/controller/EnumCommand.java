@@ -14,10 +14,10 @@ public enum EnumCommand {
     END_TURN("End Turn", "End your turn"),
     //Final frenzy
     MOVE_FRENZY("Move Frenzy", ""),
-    GRAB_MOVE_FRENZYX1("Grab move single action", ""),
-    GRAB_MOVE_FRENZYX2("Grab move double action", ""),
-    SHOOT_MOVE_FRENZYX1("Shoot move single action", ""),
-    SHOOT_MOVE_FRENZYX2("Shoot move double action", ""),
+    GRAB_MOVE_FRENZY_AFTER_FIRST("Grab move single action", ""),
+    GRAB_MOVE_FRENZY_BEFORE_FIRST("Grab move double action", ""),
+    SHOOT_MOVE_FRENZY_AFTER_FIRST("Shoot move single action", ""),
+    SHOOT_MOVE_FRENZY_BEFORE_FIRST("Shoot move double action", ""),
     //
     REG_CELL("Regeneration Cell", "Choose Regeneration cell"),
     GET_DESTINATION_CELL("Get destination cell", "Get potential destination cell"),
@@ -66,8 +66,8 @@ public enum EnumCommand {
     ;
 
     public static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
-    public static final Set<EnumCommand> PlayerActionFF_1 = EnumSet.of(SHOOT_MOVE_FRENZYX1, MOVE_FRENZY, GRAB_MOVE_FRENZYX1);
-    public static final Set<EnumCommand> PlayerActionFF_2 = EnumSet.of(SHOOT_MOVE_FRENZYX2, GRAB_MOVE_FRENZYX2);
+    public static final Set<EnumCommand> PlayerActionFF_BEFORE = EnumSet.of(SHOOT_MOVE_FRENZY_AFTER_FIRST, MOVE_FRENZY, GRAB_MOVE_FRENZY_AFTER_FIRST);
+    public static final Set<EnumCommand> PlayerActionFF_AFTER = EnumSet.of(SHOOT_MOVE_FRENZY_BEFORE_FIRST, GRAB_MOVE_FRENZY_BEFORE_FIRST);
 
 
 

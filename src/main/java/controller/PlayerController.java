@@ -43,6 +43,7 @@ public class PlayerController extends Observable implements Observer{
     private ArrayList<Cell> modifyCell;
     private boolean askForPowerUp = true;
     private List<Player> enemies;
+    private Cell supportCell4ComboAction;
 
     /**
      * Default constructor
@@ -71,29 +72,30 @@ public class PlayerController extends Observable implements Observer{
 
     public void receiveCmd(CommandObj cmdObj){
         switch (cmdObj.getCmd()) {
-            case MOVE_FRENZY:
-            case GRAB_MOVE_FRENZYX1:
-            case GRAB_MOVE_FRENZYX2:
-            case MOVE:
             case GRAB_MOVE:
-                if(move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
-                    if(cmdObj.getCmd()==MOVE || cmdObj.getCmd()==MOVE_FRENZY) numAction++;
-                    else cmdForView(new CommandObj(GRAB, player.getCell()));
-                }else {
-                    viewPrintError();
-                }
+                moveAndDoSomethingElse(cmdObj);
                 break;
-            case GRAB_AMMO:
-                 if(grabAmmo()){
+            case MOVE_FRENZY:
+            case MOVE:
+                Cell c = billboard.getCellFromPosition((Position) (cmdObj.getObject()));
+                if(move(c , cmdObj.getCmd())){
                     numAction++;
                 }else {
                     viewPrintError();
                 }
+            break;
+            case GRAB_AMMO:
+                 if(grabAmmo()){
+                    numAction++;
+                }else {
+                     deleteMovement();
+                     viewPrintError();
+                }
                  player.notifyEndAction();
                 break;
             case GRAB_WEAPON:
-                checkCanGrabWeapon((int) cmdObj.getObject());
-                player.notifyEndAction();
+                int grabWeaponIndex = (int) cmdObj.getObject();
+                grabWeaponManager(grabWeaponIndex);
                 break;
             case ASKFORPOWERUP:
                 askForPowerUp = true;
@@ -200,11 +202,14 @@ public class PlayerController extends Observable implements Observer{
                 player.notifyEndAction();
                 break;
             case SHOOT:
-                if(player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum())
-                    if(!move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd()))
-                        viewPrintError();
-                    else checkedShoot(cmdObj);
-                else checkedShoot(cmdObj);
+                if(player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum()) {
+                    moveAndDoSomethingElse(cmdObj);
+                } else {
+                    if(checkedShoot(cmdObj)){
+                        numAction++;
+                        player.notifyEndAction();
+                    }
+                }
                 break;
             case LOAD_WEAPONCARD:
                 try {
@@ -253,16 +258,16 @@ public class PlayerController extends Observable implements Observer{
                 case MOVE_FRENZY: //normal mode
                     actionParam = FRENZY_MOVE;
                     break;
-                case GRAB_MOVE_FRENZYX1:// move for grab
+                case GRAB_MOVE_FRENZY_BEFORE_FIRST:// move for grab
                     actionParam = FRENZY_GRAB_MOVEX1;
                 break;
-                case GRAB_MOVE_FRENZYX2:// move for grab
+                case GRAB_MOVE_FRENZY_AFTER_FIRST:// move for grab
                     actionParam = FRENZY_GRAB_MOVEX2;
                 break;
-                case SHOOT_MOVE_FRENZYX1: //move from shoot
+                case SHOOT_MOVE_FRENZY_AFTER_FIRST: //move from shoot
                     actionParam = FRENZY_SHOOT_MOVEX1;
                     break;
-                case SHOOT_MOVE_FRENZYX2: //move from shoot
+                case SHOOT_MOVE_FRENZY_BEFORE_FIRST: //move from shoot
                     actionParam = FRENZY_SHOOT_MOVEX2;
                     break;
                 default:
@@ -312,29 +317,82 @@ public class PlayerController extends Observable implements Observer{
     /**
      * This function controls GRAB action in a RegenerationCells (Grab Weapon)
      * @param grabWeaponIndex index of weapon to grab
+     * @return -1 can't grab, 0 can grab but must discard, 1 can grab
      */
-    private void checkCanGrabWeapon(int grabWeaponIndex){
+    private int checkCanGrabWeapon(int grabWeaponIndex){
         WeaponCard grabWeapon = (WeaponCard) (player.getCell().getCard(grabWeaponIndex));
 
         if(grabWeapon == null){
             viewPrintError("No weapon selected");
-            return;
+            return -1;
         }
-
         int[] grabCost = toIntArray(grabWeapon.getGrabCost());
         //Can player pay this weaponCard?
         if(player.canPay(grabCost)) {
             //Can player draw another WeaponCard?
             if (player.getWeapons().size() == Constants.MAX_WEAPON_HAND_SIZE.getValue()) {
-                //He can't
-                cmdForView(new CommandObj(DISCARD_WEAPON, grabWeaponIndex));
+                return 0; //Must discard
             }else {
-                grabWeapon(grabWeaponIndex, null);
+                return 1; //Can grab
             }
         }else {
+            //Can't pay
             viewPrintError("You have no bullets to grab this weapon!");
         }
+        return -1;
+    }
 
+    /**
+     * This verify player can grab selected weapon than invoke method to grab weapon or discard and grab weapon
+     * @param grabWeaponIndex weapon index to grab
+     */
+    private void grabWeaponManager(int grabWeaponIndex){
+        switch (checkCanGrabWeapon(grabWeaponIndex)) {
+            case 0:
+                cmdForView(new CommandObj(DISCARD_WEAPON, grabWeaponIndex));
+                break;
+            case 1:
+                if (grabWeapon(grabWeaponIndex, null)){
+                    numAction++;
+                } else deleteMovement();
+                break;
+            default:
+                break;
+        }
+        player.notifyEndAction();
+    }
+
+    private void deleteMovement() {
+        if (supportCell4ComboAction != null) {
+            player.setPawnCell(supportCell4ComboAction);
+            supportCell4ComboAction = null;
+        }
+    }
+
+    private boolean moveAndDoSomethingElse(CommandObj cmdObj){
+        supportCell4ComboAction = billboard.getCellFromPosition((Position) (cmdObj.getObject()));
+
+        if(!move(supportCell4ComboAction, cmdObj.getCmd())){
+            viewPrintError("You cannot do this movement");
+            return false;
+        }
+
+        switch (cmdObj.getCmd()) {
+            case GRAB_MOVE:
+                cmdForView(new CommandObj(GRAB, player.getCell()));
+                break;
+            case SHOOT:
+                if(checkedShoot(cmdObj)){
+                    numAction++;
+                    player.notifyEndAction();
+                }else {
+                    deleteMovement();
+                }
+                break;
+            default:
+                return false;
+        }
+        return true;
     }
 
     private void discardWeapon(int discardIndex, int grabIndex) {
@@ -343,7 +401,7 @@ public class PlayerController extends Observable implements Observer{
         grabWeapon(grabIndex, (WeaponCard) discardWeapon);
     }
 
-    private void grabWeapon(int weaponIndex, WeaponCard discardWeapon) {
+    private boolean grabWeapon(int weaponIndex, WeaponCard discardWeapon) {
         //Draw weaponCard
         WeaponCard weaponCard = (WeaponCard) boardController.getBoard().giveCardFromCell(player.getCell(), player, weaponIndex);
         if (weaponCard != null) {
@@ -354,11 +412,11 @@ public class PlayerController extends Observable implements Observer{
             if (discardWeapon != null) {
                 boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
             }
-            numAction++;
             player.useAmmo(toIntArray(weaponCard.getGrabCost()));
+            return true;
         } else {
             viewPrintError("You can't draw another WeaponCard");
-
+            return false;
         }
     }
 
@@ -366,21 +424,21 @@ public class PlayerController extends Observable implements Observer{
      * This function checks if player can SHOOT
      * @param cmdObj data to use
      */
-    private void checkedShoot(CommandObj cmdObj) {
+    private boolean checkedShoot(CommandObj cmdObj) {
         WeaponCard weaponCard = (WeaponCard) cmdObj.getObject();
         //Checked load weapon
         if (!weaponCard.isReady()) {
             viewPrintError("This weapon is not loaded");
-            return;
+            return false;
         }
         //Checked good attack selector
         int selector = cmdObj.getWeaponSelector();
         if (!isGoodSelector(selector, weaponCard)) {
             viewPrintError("Selected attack is not usable");
-            return;
+            return false;
         }
 
-        if (selector == -1) return;
+        if (selector == -1) return false;
         //aggiungere caso delle priority weapons per cui un optional va bene anche prima di un attacco base
         boolean isGoodAttack = false;
         if (selector==0){
@@ -404,13 +462,11 @@ public class PlayerController extends Observable implements Observer{
                 while(!boardController.getPlayerController(enemy).returnIfPowerUpWanted()) {
                     boardController.getPlayerController(enemy).receiveCmd(new CommandObj(ASKFORPOWERUP, VENOMGRENADE));
                 }
-
-            numAction++;
-            player.notifyEndAction();
-
+            return true;
         }else {
             viewPrintError("Failed attack");
         }
+        return false;
     }
 
      protected boolean returnIfPowerUpWanted(){

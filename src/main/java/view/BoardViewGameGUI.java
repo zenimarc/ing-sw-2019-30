@@ -811,7 +811,6 @@ public class BoardViewGameGUI extends Application implements View {
      * @param y coordinate
      * @param i number of ammo till that moment
      * @param test number of blank cells
-     * @param ammo image of ammo
      * @param buttons for player action
      * @return number of Children till ammo
      */
@@ -1041,22 +1040,22 @@ public class BoardViewGameGUI extends Application implements View {
                     case MOVE_FRENZY:
                         notifyServer(new CommandObj(MOVE_FRENZY, new Position(x, y)));
                         break;
-                    case GRAB_MOVE_FRENZYX1:
+                    case GRAB_MOVE_FRENZY_AFTER_FIRST:
                         if (ammo != null)
                             ammo.setVisible(false);
 
-                        notifyServer(new CommandObj(GRAB_MOVE_FRENZYX1, new Position(x, y)));
+                        notifyServer(new CommandObj(GRAB_MOVE_FRENZY_AFTER_FIRST, new Position(x, y)));
                         break;
-                    case GRAB_MOVE_FRENZYX2:
+                    case GRAB_MOVE_FRENZY_BEFORE_FIRST:
                         if (ammo != null)
                             ammo.setVisible(false);
-                        notifyServer(new CommandObj(GRAB_MOVE_FRENZYX2, new Position(x, y)));
+                        notifyServer(new CommandObj(GRAB_MOVE_FRENZY_BEFORE_FIRST, new Position(x, y)));
                         break;
-                    case SHOOT_MOVE_FRENZYX1:
-                        notifyServer(new CommandObj(SHOOT_MOVE_FRENZYX1, new Position(x, y)));
+                    case SHOOT_MOVE_FRENZY_AFTER_FIRST:
+                        notifyServer(new CommandObj(SHOOT_MOVE_FRENZY_AFTER_FIRST, new Position(x, y)));
                         break;
-                    case SHOOT_MOVE_FRENZYX2:
-                        notifyServer(new CommandObj(SHOOT_MOVE_FRENZYX2, new Position(x, y)));
+                    case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
+                        notifyServer(new CommandObj(SHOOT_MOVE_FRENZY_BEFORE_FIRST, new Position(x, y)));
                         break;
                     case REG_CELL:
                        notifyServer(new CommandObj(REG_CELL, new Position(x, y)));
@@ -1629,8 +1628,8 @@ public class BoardViewGameGUI extends Application implements View {
             for (int i = 0; i <3; i++){
                 buttons.add(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3+i)));
             }
-            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3)), SHOOT_MOVE_FRENZYX2, returnPaneMap(), buttons);
-            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-2)), GRAB_MOVE_FRENZYX2, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3)), SHOOT_MOVE_FRENZY_BEFORE_FIRST, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-2)), GRAB_MOVE_FRENZY_BEFORE_FIRST, returnPaneMap(), buttons);
             setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-1)), MOVE_FRENZY, returnPaneMap(), buttons);
 
         }
@@ -1639,8 +1638,8 @@ public class BoardViewGameGUI extends Application implements View {
             for (int i = 0; i <3; i++){
                 buttons.add(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3+i)));
             }
-            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3)), SHOOT_MOVE_FRENZYX1, returnPaneMap(), buttons);
-            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-2)), GRAB_MOVE_FRENZYX1, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-3)), SHOOT_MOVE_FRENZY_AFTER_FIRST, returnPaneMap(), buttons);
+            setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-2)), GRAB_MOVE_FRENZY_AFTER_FIRST, returnPaneMap(), buttons);
             setActionPlayer(((Button)((Pane)root.getChildren().get(0)).getChildren().get(((Pane)root.getChildren().get(0)).getChildren().size()-5-1)), MOVE_FRENZY, returnPaneMap(), buttons);
 
         }

@@ -39,9 +39,12 @@ public class PlayerView extends Observable{
         this.addObserver(clientManager);
     }
 
+    /**
+     *Play turn in normal mode
+     */
     private void normalModeMyTurn(){
         boolean toServerAction = false;
-        EnumCommand command = choosePlayerAction();
+        EnumCommand command = choosePlayerAction(PlayerAction);
         switch (command) {
             case MOVE:
                 toServerAction = move(MOVE);
@@ -66,6 +69,29 @@ public class PlayerView extends Observable{
         if(!toServerAction) printError("Action not performed");
     }
 
+    private void finalFrenzyBeforeFirst(){
+        boolean toServerAction = false;
+        EnumCommand command = choosePlayerAction(PlayerActionFF_BEFORE);
+        switch (command){
+            case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
+            case MOVE_FRENZY:
+            case GRAB_MOVE_FRENZY_BEFORE_FIRST:
+                break;
+
+            case END_TURN:
+                notifyServer(new CommandObj(EnumCommand.END_TURN));
+                toServerAction = true;
+                break;
+                default:
+                    break;
+
+        }
+
+        if(!toServerAction) printError("Action not performed");
+    }
+
+
+
     protected void myTurn(Constants modAction) {
 
         switch (modAction) {
@@ -77,7 +103,7 @@ public class PlayerView extends Observable{
             case ACTION_PER_TURN_FF_AFTER_FIRST:
                 break;
             default:
-                return;
+                break;
         }
 
 
@@ -337,22 +363,22 @@ public class PlayerView extends Observable{
      * Ask Player wich action want to do
      * @return Player command
      */
-    private EnumCommand choosePlayerAction(){
+    private EnumCommand choosePlayerAction(Set<EnumCommand> playerCommands){
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        int slt = PlayerAction.size();
+        int slt = playerCommands.size();
         String read;
-        String formatString = "[0-"+ EnumCommand.PlayerAction.size()+"]";
+        String formatString = "[0-"+ playerCommands.size()+"]";
         while(true) {
             print(stringForPlayerAction());
             print("What do you want to do?");
             try {
                 read = in.readLine();
-                slt = read.matches(formatString) ? Integer.valueOf(read) : EnumCommand.PlayerAction.size();
+                slt = read.matches(formatString) ? Integer.valueOf(read) : playerCommands.size();
             }catch (IOException ioe){
                 ioe.fillInStackTrace();
             }
 
-            if(slt< EnumCommand.PlayerAction.size()){
+            if(slt< playerCommands.size()){
                 return EnumCommand.values()[slt];
             }
         }
