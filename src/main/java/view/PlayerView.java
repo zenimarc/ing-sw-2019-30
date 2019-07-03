@@ -119,10 +119,15 @@ public class PlayerView extends Observable{
      * @return movement success
      */
     public boolean move(EnumCommand enumCommand) {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String positionString = "";
         while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");
-            positionString = reader.next();
+            try {
+                positionString = in.readLine();
+            }catch (IOException ioe){
+                ioe.fillInStackTrace();
+            }
             }
 
         Position newPosition = new Position(

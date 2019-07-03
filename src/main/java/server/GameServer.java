@@ -25,4 +25,5 @@ public interface GameServer extends Remote {
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom) throws RemoteException;
     Position choosePositionToAttack(List<Cell> potentialCell) throws RemoteException;
     List<Player> getPlayers() throws RemoteException;
+    void askStatus(Client remoteClient) throws RemoteException;
 }

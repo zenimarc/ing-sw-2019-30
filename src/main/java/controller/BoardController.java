@@ -349,6 +349,15 @@ public class BoardController{
         playerPlay(listOfPlayers.get(0));
     }
 
+    public void updatePlayerMenuStatus(Player player){
+        PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
+        if (pc!=null){
+            if (player.equals(listOfPlayers.get(playerTurn)))
+                pc.myTurn(ACTION_PER_TURN_NORMAL_MODE);
+            else
+                pc.notMyTurn(listOfPlayers.get(playerTurn).getName());
+        }
+    }
     /**
      * Say to playerController of player to start his turn
      * @param player Player how can play
