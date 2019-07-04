@@ -218,6 +218,11 @@ public class PriorityWeapon extends WeaponCard {
 
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
         if(obj.getClass()!=PriorityWeapon.class) return false;
