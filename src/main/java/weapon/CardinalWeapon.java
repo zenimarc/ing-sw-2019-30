@@ -22,6 +22,9 @@ import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
+/**
+ * CardinalWeapon is used to deal with weapon which can attack only in one direction
+ */
 //TODO serve davvero Cardinal attack? Si potrebbe trattare come distance attack per cui la massima distanza è la distanza entro cui può colpire altri target
 public class CardinalWeapon extends WeaponCard{
 

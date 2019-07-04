@@ -12,6 +12,9 @@ import powerup.PowerCard;
 import powerup.PowerUp;
 import java.util.*;
 
+/**
+ * View is an interface used to ask things to players
+ */
 
 public interface View {
     void gameStart(Board board);
@@ -39,4 +42,5 @@ public interface View {
     void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab);
     void shoot();
     void move(EnumCommand typeAction);
+    int askAttackPriority();
 }

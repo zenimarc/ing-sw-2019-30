@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static constants.Color.*;
 import static controller.EnumTargetSet.*;
@@ -165,13 +165,9 @@ class BoardControllerTest {
     void getKineticCells(){
         p1.setPawnCell(c11);
         ArrayList<Position> potentialCells = new ArrayList<>();
-        potentialCells.add(board.getBillboard().getCellPosition(c20));
-        potentialCells.add(board.getBillboard().getCellPosition(c22));
         potentialCells.add(board.getBillboard().getCellPosition(c10));
         potentialCells.add(board.getBillboard().getCellPosition(c31));
         potentialCells.add(board.getBillboard().getCellPosition(c12));
-        potentialCells.add(board.getBillboard().getCellPosition(c00));
-        potentialCells.add(board.getBillboard().getCellPosition(c02));
         potentialCells.add(board.getBillboard().getCellPosition(c11));
         potentialCells.add(board.getBillboard().getCellPosition(c01));
         potentialCells.add(board.getBillboard().getCellPosition(c21));
@@ -204,19 +200,6 @@ class BoardControllerTest {
     }
 
     @Test
-    void finalFrenzy(){
-        controller.changeTurn();
-        controller.changeTurn(); //turn of player 3
-        assertTrue(controller.isFinalFrenzy());
-        controller.setFinalFrenzyTurns();
-        assertTrue(controller.isFrenzyTurnBeforeFirst());
-        controller.changeTurn(); //player 4
-        assertTrue(controller.isFrenzyTurnBeforeFirst());
-        controller.changeTurn(); //player 1
-        assertFalse(controller.isFrenzyTurnBeforeFirst());
-    }
-
-    @Test
     void finalFrenzyFirstPlayer(){
         assertTrue(controller.isFinalFrenzy());
         controller.setFinalFrenzyTurns();
@@ -226,6 +209,31 @@ class BoardControllerTest {
         controller.changeTurn();
         assertFalse(controller.isFrenzyTurnBeforeFirst());
     }
+
+    @Test
+    void getTargets(){
+        p1.setPawnCell(c00);
+        p2.setPawnCell(c10);
+        p3.setPawnCell(c20);
+        p4.setPawnCell(c30);
+
+        List<Player> opponents = controller.getPotentialTargets(p1.getCell(), VISIBLE, -1, 2);
+        assertTrue(opponents.contains(p2));
+        assertTrue(opponents.contains(p3));
+        assertFalse(opponents.contains(p4));
+
+        opponents = controller.getPotentialTargets(p1.getCell(), VISIBLE, 2, -1);
+        assertFalse(opponents.contains(p2));
+        assertTrue(opponents.contains(p3));
+        assertTrue(opponents.contains(p4));
+
+        opponents = controller.getPotentialTargets(p1.getCell(), VISIBLE, 2, 3);
+        assertFalse(opponents.contains(p2));
+        assertTrue(opponents.contains(p3));
+        assertTrue(opponents.contains(p4));
+
+    }
+
     private static Billboard genBillboard(){
         HashMap<Cell, Position> mappaProva = new HashMap<>();
         ArrayList<Door> doors = new ArrayList<>();
@@ -255,4 +263,5 @@ class BoardControllerTest {
 
         return new Billboard(mappaProva,doors);
     }
+
 }

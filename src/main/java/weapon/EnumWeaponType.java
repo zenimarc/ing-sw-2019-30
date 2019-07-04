@@ -1,5 +1,8 @@
 package weapon;
 
+/**
+ * EnumWeaponType is used to save all types of WeaponCards
+ */
 public enum EnumWeaponType {
 
     SIMPLE_WEAPON("SimpleWeapon"),

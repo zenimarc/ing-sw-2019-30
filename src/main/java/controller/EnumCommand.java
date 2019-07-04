@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * 
+ * EnumCommand is used to store all possible actions in a game
  */
 public enum EnumCommand {
     MOVE("Move", "Move your pawn"),
@@ -30,6 +30,8 @@ public enum EnumCommand {
     PLACE_WEAPONCARD("Place WeaponCard","..."),
     CHOOSE_ATTACK("Choose attack","..."),
     LOAD_WEAPONCARD("Load weapon","..."),
+    PRIORITY_OPTIONAL("Priority optional","..."),
+
 
     //Power ups
     ASK_FOR_POWER_UP("", ""),
@@ -88,7 +90,7 @@ public enum EnumCommand {
     }
 
     /**
-     * This function return the name of a Command
+     * This function returns the name of a Command
      * @return name
      */
     public String getName() {
@@ -96,7 +98,7 @@ public enum EnumCommand {
     }
 
     /**
-     * This function return the description of a Command
+     * This function returns the description of a Command
      * @return description
      */
     public String getDescription() {

@@ -3,8 +3,8 @@ package view;
 import client.Client;
 import client.ClientApp;
 import client.ClientRMI;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -17,14 +17,11 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 
 //TODO far partire il gioco da CLI, gestire la reconnect
 public class BoardViewGUI extends Application{
@@ -34,7 +31,12 @@ public class BoardViewGUI extends Application{
     private Client client;
     private String info;
     private Pane root;
-    private boolean hasStarted;
+    private BoardViewGameGUI game;
+    private Scene scene;
+
+    protected BoardViewGUI(BoardViewGameGUI boardViewGameGUI) {
+        this.game = boardViewGameGUI;
+    }
 
     @Override
     public void start(Stage primaryStage) { //can't change name
@@ -203,16 +205,11 @@ public class BoardViewGUI extends Application{
                 if(((ClientRMI) client).register(info)) {
                     progress.setVisible(true);
                     wait.setVisible(true);
-                    hasStarted = true;
-                    BoardViewGameGUI view = new BoardViewGameGUI();
-                    try {
-                        stage.setScene(view.createScene(client));
-                    } catch (FileNotFoundException | InterruptedException | RemoteException e) {
-                        e.fillInStackTrace();
-                    }
-                    stage.setWidth(view.getWidth());
-                    stage.setHeight(view.getHeight());
-                }
+                    stage.setScene(game.createScene(client, app));
+                    stage.setWidth(game.getWidth());
+                    stage.setHeight(game.getHeight());
+
+            }
                 else{
                      Name.setVisible(true);
                      Name.getChildren().get(1).setVisible(true);
@@ -225,36 +222,26 @@ public class BoardViewGUI extends Application{
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    if(((ClientRMI) client).reconnect(info)){
+                    if (((ClientRMI) client).reconnect(info)) {
                         connect.setVisible(false);
                         reconnect.setVisible(false);
                         progress.setVisible(true);
                         wait.setVisible(true);
-                        BoardViewGameGUI view = new BoardViewGameGUI();
-                        stage.setScene(view.createScene(client));
-                        stage.setWidth(view.getWidth());
-                        stage.setHeight(view.getHeight());
+                        stage.setScene(game.createScene(client, app));
+                        stage.setWidth(game.getWidth());
+                        stage.setHeight(game.getHeight());
+
                     }
-                } catch (RemoteException | FileNotFoundException | InterruptedException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
+                    catch (RemoteException e) {
+                        e.fillInStackTrace();
+                    }}
+
+                });
 
         return root;
     }
 
-    private EventHandler<ActionEvent> setNameAction(TextField text, Pane askName, Client clientRMI, Button connect, Button reconnect) {
-        return new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                info = text.getText();
-                connect.setVisible(true);
-                reconnect.setVisible(true);
-                askName.setVisible(false);
-            }
-        };
-    }
 
     private BackgroundImage menuBackground() {
         try {
@@ -312,34 +299,19 @@ public class BoardViewGUI extends Application{
 
     }
 
-    private void startCountDown(Stage stage) {
-        Thread thread = new Thread(){
-            public void run() {
+    protected Scene getScene(Stage stage) {
+        root = mainMenu(stage);
+        root.setBackground(new Background(menuBackground()));
 
-                Timer timer = new Timer();
-                timer.scheduleAtFixedRate(new TimerTask() {
+        scene = new Scene(root, mainMenuWidth, mainMenuHeight);//changes window dimension prima lunghezza, poi altezza
 
-                    boolean verify;
-
-                    public void run() {
-                        while(hasStarted = false){
-
-                        }
-                            timer.cancel();
-                            try {
-                                BoardViewGameGUI view = new BoardViewGameGUI();
-                                stage.setScene(view.createScene(client));
-                                stage.setWidth(view.getWidth());
-                                stage.setHeight(view.getHeight());
-                            } catch (FileNotFoundException | InterruptedException | RemoteException e) {
-                                e.printStackTrace();
-                        }
-                    }
-                }, 1000, 1000); //Every 1 second
-            }
-    };
-        thread.setDaemon(true);
-        thread.start();
+        stage.setTitle("Adrenaline"); //nome dell'app
+        stage.setResizable(false);
+        stage.setScene(scene);
+        return this.scene;
     }
 
+    private void startThread(){
+        new Thread();
+    }
 }

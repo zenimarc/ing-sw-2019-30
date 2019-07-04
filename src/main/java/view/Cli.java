@@ -15,6 +15,9 @@ import weapon.WeaponCard;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * CLI is used to ask info to a player if he is playing with CLI
+ */
 public class Cli implements View {
     private PlayerView playerView;
     private PlayerBoardView playerBoardView;
@@ -154,5 +157,10 @@ public class Cli implements View {
     @Override
     public void move(EnumCommand typeAction) {
         playerView.move(typeAction);
+    }
+
+    @Override
+    public int askAttackPriority() {
+        return playerView.askPriorityForAttacks();
     }
 }

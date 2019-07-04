@@ -5,7 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * TODO: aggiungere munizioni che ha il player, armi che ha il player, potenziamenti che ha il player.
+ * PlayerBoardView is used to represent playerboard of a player
  */
 
 public class PlayerBoardView implements Observer {
@@ -81,11 +81,11 @@ public class PlayerBoardView implements Observer {
 
 
     /**
-     * Ptrints the body of the cells
+     * Prints the body of the cells
      * @param leftChar char to be used
      * @param rightChar char to be used
      * @param text to print in the body of the cell
-     * @return
+     * @return string
      */
     private String printBodyCell(char leftChar, char rightChar, String text){
         StringBuilder stringBuilder = new StringBuilder();
@@ -102,12 +102,7 @@ public class PlayerBoardView implements Observer {
         return stringBuilder.toString();
     }
 
-    /**
-     * TODO Marco lavora
-     * @param leftChar
-     * @param rightChar
-     * @return
-     */
+
     private String printBordCell(char leftChar, char rightChar){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(leftChar);

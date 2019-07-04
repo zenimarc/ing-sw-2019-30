@@ -17,7 +17,7 @@ import static deck.Bullet.toIntArray;
 
 
 /**
- * WeaponCard is the card which represent a weapon.
+ * WeaponCard is the card which represents a weapon.
  */
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
@@ -41,7 +41,10 @@ public abstract class WeaponCard extends Card implements Serializable {
     protected Attack alternativeAttack;
     protected boolean isLoaded;
 
-    //Default constructor
+    /**
+     * Constructors
+     */
+
     public WeaponCard() {
         this.cost = new ArrayList<>();
         this.attacks = new ArrayList<>();
@@ -85,7 +88,7 @@ public abstract class WeaponCard extends Card implements Serializable {
     }
 
     /**
-     * Return grab cost of this weapon
+     * Returns grab cost of this weapon
      * @return cost
      */
     @JsonIgnore
@@ -103,14 +106,26 @@ public abstract class WeaponCard extends Card implements Serializable {
      */
     public String getName(){return this.name;}
 
+    /**
+     * This function returns the alternative attack if the weapon has one
+     * @return alternative attack
+     */
     public Attack getAlternativeAttack() {
         return alternativeAttack;
     }
 
+    /**
+     * This function returns base attack of WeaponCard
+     * @return
+     */
     public Attack getBaseAttack() {
         return baseAttack;
     }
 
+    /**
+     * This function says if a WeaponCard is loaded or not
+     * @return true if loaded, else false
+     */
     @JsonIgnore
     public boolean isReady(){return this.isLoaded;}
 
@@ -124,12 +139,13 @@ public abstract class WeaponCard extends Card implements Serializable {
     }
 
     /**
-     * Attack all player in @param opponents by the attack in position typeAttack
+     * Attack all players in @param opponents with the attack in position typeAttack
+     * Attacks are implemented by sons
      * @param typeAttack attack's index
      * @param shooter Player who shoot
      * @param opponents Player hit
-     * @param cell
-     * @return
+     * @param cell to choose
+     * @return an attack
      */
     public abstract boolean shoot(int typeAttack, Player shooter, List<Player> opponents, Optional<Cell> cell);
 
@@ -143,7 +159,7 @@ public abstract class WeaponCard extends Card implements Serializable {
 
     /**
      * Get WeaponType of this weapon
-     * @return Weapontype of this weapon
+     * @return Weapon type of this weapon
      */
     public EnumWeapon getWeaponType() {
         return weaponType;
@@ -163,6 +179,12 @@ public abstract class WeaponCard extends Card implements Serializable {
         return true;
     }
 
+    public void setLoaded() {
+        isLoaded = true;
+    }
+
+    public void setNotLoaded(){isLoaded = false;}
+
     @Override
     public String toString() {
         return this.name;
@@ -181,13 +203,6 @@ public abstract class WeaponCard extends Card implements Serializable {
             return "Loaded    ";
         else return "Not loaded";
     }
-
-    public void setLoaded() {
-        isLoaded = true;
-    }
-
-    public void setNotLoaded(){isLoaded = false;}
-
 
     @Override
     public String stringGUI(){

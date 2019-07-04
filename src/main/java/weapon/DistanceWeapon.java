@@ -18,7 +18,9 @@ import static constants.EnumAttackName.*;
 import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-
+/**
+ * DistanceWeapon is class used for dealing with Weapons which can shoot from a certain distance
+ */
 public class DistanceWeapon extends WeaponCard {
 
     public DistanceWeapon(EnumWeapon weaponType){

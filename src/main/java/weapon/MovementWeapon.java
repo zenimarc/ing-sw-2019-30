@@ -19,7 +19,9 @@ import static controller.EnumTargetSet.*;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-
+/**
+ * MovementWeapon is a class which deals with weapon that can move other players
+ */
 public class MovementWeapon extends WeaponCard {
 
     public MovementWeapon(EnumWeapon type){

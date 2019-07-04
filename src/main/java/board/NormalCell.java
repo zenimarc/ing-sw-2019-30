@@ -38,7 +38,7 @@ public class NormalCell extends Cell {
      * @return an AmmoCard
      */
     @Override
-    public Card getCard(int p) { //TODO problema se ritorna NULL
+    public Card getCard(int p) {
         return this.ammoCard;
     }
 

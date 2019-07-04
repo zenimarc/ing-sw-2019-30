@@ -5,6 +5,10 @@ import constants.Color;
 
 import java.util.*;
 
+/**
+ * EnumWeapon is used to save all Weapons' names and cost for base attack
+ */
+
 public enum EnumWeapon {
     //SimpleWeapon
     LOCK_RIFLE("Lockrifle", new ArrayList<>(Arrays.asList(new Bullet(Color.BLUE),new Bullet(Color.BLUE)))),

@@ -8,7 +8,6 @@ import client.Client;
 import constants.Constants;
 import controller.BoardController;
 import controller.CommandObj;
-import controller.EnumCommand;
 import controller.PlayerController;
 import player.Player;
 
@@ -17,6 +16,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * GameServerImpl is used to manage a single game
+ */
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private static final long SECONDS_BEFORE_START_GAME = Constants.SECONDS_BEFORE_START_GAME.getValue();;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
@@ -226,6 +228,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
 
     private synchronized void endGame(){
+        boardController.totalPoints();
         this.gameStarted = false;
         Thread.currentThread().interrupt();
     }
@@ -288,7 +291,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * this functino extrapolate a list of active Client from the list of ClientInfo
      * @return a list of active Clients
      */
-    private synchronized List<Client> getActiveClients() {
+    public synchronized List<Client> getActiveClients() {
         return this.clients.stream().filter(x -> !x.isOffline()).map(ClientInfo::getClient).collect(Collectors.toList());
     }
     private synchronized void swapOffOn(Client client){
@@ -302,7 +305,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * this function set offline flag to true of the indicated client
      * @param client to be set as offline
      */
-    private synchronized void swapOnOff(Client client){
+    public void swapOnOff(Client client){
         System.out.print("swapOnOff "+ client);
         Optional<ClientInfo> clientInfo = clients.stream().filter(x -> x.getClient().equals(client)).findFirst();
         if (clientInfo.isPresent()) {
@@ -341,9 +344,9 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     /**
      * This functions ping every clients of the game and if one client is offline, starts a timer to delete him.
      */
-    private void checkOfflineClients(){
+    public void checkOfflineClients(){
         List<Client> clientsToBeSuspended = new ArrayList<>();
-        while(isStarted()) {
+        while(true) {
             clientsToBeSuspended.clear();
             try {
                 Thread.sleep(5000);
@@ -371,8 +374,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * if after TIMES times the client doesn't reply he will be removed from the game
      * @param client to be monitored
      */
-    private void kick(Client client){
-        final long INTERVAL = 15; //Ping interval seconds
+    public void kick(Client client){
+        final long INTERVAL = (Constants.SECONDS_BEFORE_DEFINITELY_KICK_A_PLAYER.getValue())/10; //Ping interval seconds
         final int TIMES = 10; //times to ping
         int i=0;
         while(i<TIMES){

@@ -16,7 +16,9 @@ import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
-
+/**
+ * LobbyImpl is a server used to manage games
+ */
 public class LobbyImpl extends UnicastRemoteObject implements Lobby{
     private static final int MIN_PLAYERS = Constants.MIN_PLAYER.getValue();
     private static final int MAX_PLAYERS = Constants.MAX_PLAYER.getValue();

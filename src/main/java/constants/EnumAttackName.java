@@ -1,5 +1,8 @@
 package constants;
 
+/**
+ * EnumAttackName gives info about attacks
+ */
 public enum EnumAttackName {
 
 

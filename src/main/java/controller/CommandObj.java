@@ -7,10 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
-è un oggetto utile al fine di move e grab e shoot per il controller in particolare
-nel metodo update() degli observer va passato un object quindi se abbiamo bisogno di più parametri, serve un oggetto
-che li contenga tutti, ecco il motivo di questa classe
-TODO: è giusto mettere questa classe in questo package o meglio di no? -Marco
+ * CommandObj is a class used to send info between UpdateManagers
  */
 public class CommandObj implements Serializable {
     private EnumCommand cmd;

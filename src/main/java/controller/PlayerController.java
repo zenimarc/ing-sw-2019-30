@@ -9,7 +9,6 @@ import constants.Constants;
 import constants.EnumActionParam;
 import deck.AmmoCard;
 import deck.Card;
-import javafx.geometry.Pos;
 import org.jetbrains.annotations.NotNull;
 import player.Pawn;
 import powerup.PowerCard;
@@ -17,6 +16,7 @@ import player.Player;
 import powerup.PowerUp;
 import weapon.AreaWeapon;
 import weapon.EnumWeapon;
+import weapon.PriorityWeapon;
 import weapon.WeaponCard;
 
 import java.rmi.RemoteException;
@@ -30,7 +30,7 @@ import static deck.Bullet.toIntArray;
 import static powerup.PowerUp.GUNSIGHT;
 import static powerup.PowerUp.VENOMGRENADE;
 
-//TODO verificare se Gunsight e Venomgranade funzionano, sistemare timer
+
 /**
  * PlayerController is used to control if a player can do certain actions
  */
@@ -45,7 +45,7 @@ public class PlayerController extends Observable implements Observer{
     private Cell supportCell4ComboAction;
 
     /**
-     * Default constructor
+     * Constructors
      */
     public PlayerController(Player player) {
         this.player = player;
@@ -65,6 +65,11 @@ public class PlayerController extends Observable implements Observer{
         return player;
     }
 
+    /**
+     * This function is used to manage action received from a player
+     * @param o observable
+     * @param arg arg
+     */
     @Override
     public void update(Observable o, Object arg) {
     }
@@ -269,7 +274,7 @@ public class PlayerController extends Observable implements Observer{
     }
 
     /**
-     * This function controls the MOVE action and verifies if a player can move to a cell
+     * This function controls the actions with movement and verifies if a player can move to a cell
      * @param cell of destination
      * @return if the player can move, else false
      */
@@ -397,6 +402,9 @@ public class PlayerController extends Observable implements Observer{
         player.notifyEndAction();
     }
 
+    /**
+     * This function restores player's cell to original if action is not valid or player did a wrong action
+     */
     private void deleteMovement() {
         if (supportCell4ComboAction != null) {
             setCell(supportCell4ComboAction);
@@ -404,6 +412,11 @@ public class PlayerController extends Observable implements Observer{
         }
     }
 
+    /**
+     * This function is used to deal with grab and shoot actions
+     * @param cmdObj object with info
+     * @return true
+     */
     private boolean moveAndDoSomethingElse(CommandObj cmdObj){
         supportCell4ComboAction = player.getPawn().getCell();
 
@@ -432,6 +445,11 @@ public class PlayerController extends Observable implements Observer{
         return true;
     }
 
+    /**
+     * This function is used when player needs to discard a weapon
+     * @param discardIndex of weapon to discard
+     * @param grabIndex of weapon to be picked
+     */
     private void discardWeapon(int discardIndex, int grabIndex) {
         Card discardWeapon = player.rmWeapon(discardIndex);
         grabWeaponManager(grabIndex);
@@ -455,6 +473,10 @@ public class PlayerController extends Observable implements Observer{
         }
     }
 
+    /**
+     * This function is used to deal with Shoot actions
+     * @param cmdObj
+     */
     private void shootManager(CommandObj cmdObj){
         if(cmdObj.getObject().getClass().equals(Integer.class)){
             deleteMovement();
@@ -519,8 +541,8 @@ public class PlayerController extends Observable implements Observer{
     }
 
     /**
-     * This ask player which optional attack want to use, if 0 -> use only BaseAttack.
-     * Than verify if can pay optional attack, ask which opponents want shoot and shoot
+     * This asks player which optional attack wants to use, if 0 -> use only BaseAttack.
+     * Than verifies if can pay optional attack, asks which opponents want to shoot and then shoots
      * @param weaponCard Weapon to shot opponents
      * @return Shoot someone?
      */
@@ -541,6 +563,13 @@ public class PlayerController extends Observable implements Observer{
         indexes.forEach(x -> attacks.add(weaponCard.getAttack(x)));
         //Calc max target
         maxTarget = attacks.stream().mapToInt(Attack::getTarget).max().orElse(0);
+
+        if(weaponCard.getClass() == PriorityWeapon.class){
+            if(weaponCard.getAttack(0).getTarget() == 0)
+
+            cmdForView(new CommandObj(PRIORITY_OPTIONAL));
+
+        }
         //Ask for opponents to shoot
         List<Player> opponents = getTargets(weaponCard.getBaseAttack().getTargetType(), maxTarget);
         //User can't attack or decided to not attack
@@ -552,7 +581,7 @@ public class PlayerController extends Observable implements Observer{
         stdPlayerList(opponents, maxTarget);
 
         //Attack with base attack
-        weaponCard.shoot(0,player, opponents, null);
+        weaponCard.shoot(0,player, opponents, Optional.empty());
         //Attack with optional attack
         for(Integer index : indexes) {
             if (!player.canPay(weaponCard.getAttack(index).getCost())) {
@@ -627,7 +656,7 @@ public class PlayerController extends Observable implements Observer{
         stdPlayerList(opponents, maxTarget);
         //FINALLY SHOOT!!
         enemies = opponents;
-        return weaponCard.shoot(attackSelector, player, opponents, null);
+        return weaponCard.shoot(attackSelector, player, opponents, Optional.empty());
     }
 
     /**
@@ -656,6 +685,14 @@ public class PlayerController extends Observable implements Observer{
         return opponents;
     }
 
+
+    /**
+     * Implements controller to use Distanceattacks
+     * @param weaponCard to use
+     * @param attack to use
+     * @param maxTarget players
+     * @return true
+     */
     private List<Player> getDistanceAttackTargets(WeaponCard weaponCard, Attack attack, int maxTarget){
         if (weaponCard.getWeaponType() != EnumWeapon.HELLION) {
             return getTargets(attack.getTargetType(), maxTarget,
@@ -730,13 +767,13 @@ public class PlayerController extends Observable implements Observer{
     }
 
     /**
-     * This verify that attack selector is good,
+     * This function verifies if attack selector is good,
      * Only BaseAttack -> 0-1
      * BaseAttack + OptionalAttack -> 0-num_of_optional_attack+1
      * AlternativeAttack -> 0-2
-     * @param selector
-     * @param wc
-     * @return
+     * @param selector of attack
+     * @param wc WeaponCard
+     * @return true
      */
     private boolean isGoodSelector(int selector, @NotNull WeaponCard wc){
 
@@ -826,6 +863,10 @@ public class PlayerController extends Observable implements Observer{
         return modifyCell;
     }
 
+    /**
+     * This function manages turn of a player
+     * @param maxAction number of actions which can be performed in a turn
+     */
     protected void myTurn(Constants maxAction){
         modifyCell = new ArrayList<>();
 

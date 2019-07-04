@@ -65,10 +65,6 @@ public class RegenerationCell extends Cell {
      */
     @Override
     public boolean setCard(Card card) {
-        //check card is a weaponCard
-        //if(card.getClass() != WeaponCard.class){return false;} TODO: getClass prende la classe a runtime, mentre WeaponCard.class è statica
-
-        //if weaponCard[] has a free slot => insert card
         for(int i=0; i<weaponCard.length;i++){
             if(weaponCard[i]==null){
                 weaponCard[i] = (WeaponCard) card;
@@ -79,7 +75,7 @@ public class RegenerationCell extends Cell {
     }
 
     /**
-     * This adds 3 cards in the RegenerationCell at the beginning of the game //TODO serve davvero il for ?
+     * This adds 3 cards in the RegenerationCell at the beginning of the game
      * @param weaponCards to be added
      */
     public void setCards(WeaponCard[] weaponCards){

@@ -53,6 +53,9 @@ public class AmmoCardFactory {
         return ammoCard;
     }
 
+    /**
+     * This function is used to store AmmoCards
+     */
     private static void storeAmmocards(){
         File folder = new File(ammoResourcesAddress);
         if (!folder.exists()) folder.mkdirs();

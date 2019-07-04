@@ -10,6 +10,9 @@ import java.rmi.RemoteException;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * ServerUpdateManager is used to notify
+ */
 public class ServerUpdateManager implements Observer {
     private BoardController boardController;
     private GameServerImpl gameServer;
@@ -17,7 +20,7 @@ public class ServerUpdateManager implements Observer {
     /**
      * Default constructor
      */
-    public ServerUpdateManager(GameServerImpl gameServer, BoardController boardController) throws RemoteException {
+    public ServerUpdateManager(GameServerImpl gameServer, BoardController boardController){
         this.gameServer = gameServer;
         this.boardController = boardController;
         for (Player player : boardController.getListOfPlayers()) {
@@ -38,9 +41,9 @@ public class ServerUpdateManager implements Observer {
     }
 
     /**
-     *
-     * @param observable
-     * @param obj
+     * This function updates  and notifies objects
+     * @param observable observable
+     * @param obj obj
      */
     @Override
     public void update(Observable observable, Object obj) {

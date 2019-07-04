@@ -14,16 +14,6 @@ public class DistanceAttack extends Attack {
     private int minDistance;
     private int maxDistance;
 
-
-    /**
-     *
-     * @param name
-     * @param damage
-     * @param mark
-     * @param target
-     * @param minDistance
-     * @param maxDistance
-     */
     @JsonCreator
     public DistanceAttack(@JsonProperty("targetType") EnumTargetSet targetType,
                           @JsonProperty("name") EnumAttackName name,

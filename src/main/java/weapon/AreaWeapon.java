@@ -18,6 +18,9 @@ import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
+/**
+ * AreaWeapon is used to deal with Furnace WeaponCard particular implementation
+ */
 public class AreaWeapon extends WeaponCard {
 
     public AreaWeapon(EnumWeapon weaponType){

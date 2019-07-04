@@ -15,7 +15,9 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+/**
+ * ClientUpdateManager is used to notify players
+ */
 public class ClientUpdateManager extends Observable {
     private Player player;
     private Board board;
@@ -67,6 +69,8 @@ public class ClientUpdateManager extends Observable {
             case YOUR_TURN:
                 view.myTurn((Constants) cmd.getObject());
                 break;
+            case PRIORITY_OPTIONAL:
+                view.askAttackPriority();
             case LOAD_WEAPONCARD:
                 if(cmd.getObject().getClass().equals(ArrayList.class) ) {
                    try {
@@ -133,7 +137,7 @@ public class ClientUpdateManager extends Observable {
     }
 
     /**
-     * Update local Player
+     * Updates local Player
      * @param obj object received from server
      */
     private void updatePlayer(Object obj){

@@ -1,5 +1,8 @@
 package constants;
 
+/**
+ * EnumActionParam gives info about a specific action
+ */
 public enum EnumActionParam {
 
     NORMAL_MOVE(3),

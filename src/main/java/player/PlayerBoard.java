@@ -269,6 +269,10 @@ public class PlayerBoard implements Serializable {
         return string.toString();
     }
 
+    /**
+     * This function is used to add damages with Gunsight
+     * @param player from which damage is received
+     */
     void addGunsightDamage(Player player) {
         damageTrack.add(player);
     }
