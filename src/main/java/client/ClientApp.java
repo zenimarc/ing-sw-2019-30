@@ -43,8 +43,8 @@ public class ClientApp {
 
     public static void main(String[] args) {
         ClientApp clientApp = new ClientApp();
-        File folder = new File("data");
-        if (!folder.exists()) folder.mkdir();
+        File folder = new File("data"+File.separator+"tokens");
+        if (!folder.exists()) folder.mkdirs();
         clientApp.connection.init();
 
     }
