@@ -8,6 +8,7 @@ import constants.Color;
 import constants.Constants;
 import constants.EnumActionParam;
 import deck.AmmoCard;
+import deck.Bullet;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import player.Pawn;
@@ -34,7 +35,7 @@ import static powerup.PowerUp.VENOMGRENADE;
 /**
  * PlayerController is used to control if a player can do certain actions
  */
-public class PlayerController extends Observable implements Observer{
+public class PlayerController extends Observable{
     private BoardController boardController;
     private Billboard billboard;
     private Player player;
@@ -43,6 +44,7 @@ public class PlayerController extends Observable implements Observer{
     private boolean askForPowerUp = true;
     private List<Player> enemies;
     private Cell supportCell4ComboAction;
+    private Color supportColor;
 
     /**
      * Constructors
@@ -65,15 +67,15 @@ public class PlayerController extends Observable implements Observer{
         return player;
     }
 
-    /**
+/*    /**
      * This function is used to manage action received from a player
      * @param o observable
      * @param arg arg
-     */
+     /
     @Override
     public void update(Observable o, Object arg) {
     }
-
+*/
     public void receiveCmd(CommandObj cmdObj){
         switch (cmdObj.getCmd()) {
             case GRAB_MOVE:
@@ -137,6 +139,7 @@ public class PlayerController extends Observable implements Observer{
                 break;
             case TELEPORTER:
                 setCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
+                payPowerUp();
                 player.notifyEndAction();
                 break;
             case KINETICRAY_TARGET:
@@ -152,6 +155,7 @@ public class PlayerController extends Observable implements Observer{
                 Cell kntCell = billboard.getCellFromPosition((Position) cmdObj.getObject());
                 Player kntPlayer = boardController.getPlayer((String) cmdObj.getObject2());
                 setCell(kntPlayer, kntCell);
+                payPowerUp();
                 break;
             case USE_VENOMGRENADE:
                 boardController.getPlayerWhoPlay().addMark(player);
@@ -228,7 +232,8 @@ public class PlayerController extends Observable implements Observer{
         switch (cmdObj.getCmd()) {
             case CHECK_EVERY_TIME_POWER_UP:
                 powerUps = player.getPowerups().stream()
-                        .filter((x -> x.getPowerUp() == PowerUp.TELEPORTER || x.getPowerUp() == PowerUp.KINETICRAY))
+                        .filter((x -> (x.getPowerUp() == PowerUp.TELEPORTER || x.getPowerUp() == PowerUp.KINETICRAY) &&
+                                player.canPay(Bullet.colorToArray(x.getColor()))))
                         .collect(Collectors.toList());
                 if (!powerUps.isEmpty()) {
                     cmdForView(new CommandObj(ASK_FOR_POWER_UP, powerUps));
@@ -239,6 +244,7 @@ public class PlayerController extends Observable implements Observer{
             case USE_POWER_UP:
                 PowerCard powerUp =  cmdObj.getObject().getClass().equals(PowerCard.class) ? (PowerCard) cmdObj.getObject() : null;
                 if(powerUp!=null && player.getPowerups().stream().anyMatch(x-> x.equals(powerUp))) {
+                    supportColor = powerUp.getColor();
                     player.getPowerups().stream().filter(x -> x.equals(powerUp)).findFirst().ifPresent(x -> {
                                 if (x.getPowerUp().equals(PowerUp.TELEPORTER)) {
                                     cmdForView(new CommandObj(USE_TELEPORTER));
@@ -253,24 +259,6 @@ public class PlayerController extends Observable implements Observer{
             default:
                 break;
         }
-        
-        /*        
-        askForPowerUp = true;
-        
-        
-        if ((Boolean) cmdObj.getObject2()) {
-            ArrayList<PowerCard> power = getPotentialPowerUps(cmdObj);
-            if(!power.isEmpty())
-                cmdForView(new CommandObj(CHECKPOWERUP, power));
-            else {
-                viewPrintError("You have no usable power ups, so you can't use one");
-                askForPowerUp = false;
-            }
-        }
-        else {
-            askForPowerUp = false;
-            notifyObservers();
-        }*/
     }
 
     /**
@@ -324,6 +312,16 @@ public class PlayerController extends Observable implements Observer{
     private boolean movePlayer(@NotNull Player player, Cell cell, int i){
         return (!billboard.canMove(player.getPawn().getCell(), cell, i));
      }
+
+    /**
+     * Player pay to use powerUp
+     */
+    private void payPowerUp(){
+        if(supportColor!=null) {
+            player.useAmmo(Bullet.colorToArray(supportColor));
+            supportColor = null;
+        }
+    }
 
     /**
      * This function controls GRAB action in a NormalCells (Grab Ammocard)
@@ -841,6 +839,7 @@ public class PlayerController extends Observable implements Observer{
      * @param obj command by which cards are filtered
      * @return usable Power Cards
      */
+    @Deprecated
     private ArrayList<PowerCard> getPotentialPowerUps(CommandObj obj){
         ArrayList<PowerCard> powers = new ArrayList<>();
         for(PowerCard power: player.getPowerups()){

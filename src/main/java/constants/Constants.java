@@ -17,7 +17,6 @@ public enum Constants {
     TURN_TIME(180),
     SECONDS_BEFORE_START_GAME (1),
     SECONDS_BEFORE_DEFINITELY_KICK_A_PLAYER(180)
-
     ;
 
     private int value;
