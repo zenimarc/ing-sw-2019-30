@@ -144,4 +144,14 @@ public class Cli implements View {
     public void discardPowerUp(Card power) {
         playerView.discardPowerUp(power);
     }
+
+    @Override
+    public void discardWeapon(WeaponCard weapon) {
+        playerView.chooseWeaponToDiscard(weapon);
+    }
+
+    @Override
+    public void shoot() {
+        playerView.shoot();
+    }
 }

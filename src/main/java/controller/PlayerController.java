@@ -14,8 +14,6 @@ import player.Pawn;
 import powerup.PowerCard;
 import player.Player;
 import powerup.PowerUp;
-import view.PlayerBoardView;
-import view.PlayerView;
 import weapon.AreaWeapon;
 import weapon.EnumWeapon;
 import weapon.WeaponCard;

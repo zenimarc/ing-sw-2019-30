@@ -9,6 +9,8 @@ import deck.Card;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
+import weapon.WeaponCard;
+
 import java.util.*;
 
 
@@ -36,4 +38,6 @@ public interface View {
     void giveRoundScore(String playerDead, Map<String, Integer> points);
     void chooseGunsightTarget(List<Player> targets);
     void discardPowerUp(Card object2);
+    void discardWeapon(WeaponCard object);
+    void shoot();
 }

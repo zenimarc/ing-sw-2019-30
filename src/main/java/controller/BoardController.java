@@ -131,11 +131,12 @@ public class BoardController{
                 playerTurn = 0;
         }
 
-        turnHandler.interrupt();
-        turnHandler = new TurnHandler(this);
-        turnHandler.start();
-
-        playerPlay(listOfPlayers.get(playerTurn));
+        if(turnHandler != null) {
+            turnHandler.interrupt();
+            turnHandler = new TurnHandler(this);
+            turnHandler.start();
+            playerPlay(listOfPlayers.get(playerTurn));
+        }
 
         return playerTurn;
     }

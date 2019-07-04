@@ -13,6 +13,7 @@ import weapon.WeaponCard;
 
 import java.util.*;
 
+import static controller.EnumCommand.DISCARD_WEAPON;
 import static controller.EnumCommand.UPDATE_PLAYER;
 
 public class ClientUpdateManager extends Observable {
@@ -70,6 +71,9 @@ public class ClientUpdateManager extends Observable {
                    }
                 }
                 break;
+            case SHOOT:
+                view.shoot();
+                break;
             case ASKFORPOWERUP:
                 view.askPowerUp((PowerUp) cmd.getObject());
                 break;
@@ -102,6 +106,9 @@ public class ClientUpdateManager extends Observable {
             case NOT_YOUR_TURN:
                 view.notMyTurn((String) cmd.getObject());
                 break;
+                case DISCARD_WEAPON:
+                    view.discardWeapon((WeaponCard)  cmd.getObject());
+                    break;
             case PRINT_POINTS:
                 if(cmd.getObject().getClass().equals(String.class) && cmd.getObject2().getClass().equals(HashMap.class)) {
                     view.giveRoundScore((String) cmd.getObject(), (Map<String, Integer>) cmd.getObject2());

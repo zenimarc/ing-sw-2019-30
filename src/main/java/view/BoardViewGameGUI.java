@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
+import weapon.WeaponCard;
 
 import javax.jws.soap.SOAPBinding;
 import java.io.FileInputStream;
@@ -1808,6 +1809,16 @@ public class BoardViewGameGUI extends Application implements View {
         } catch (FileNotFoundException e) {
             e.fillInStackTrace();
         }
+    }
+
+    @Override
+    public void discardWeapon(WeaponCard object) {
+
+    }
+
+    @Override
+    public void shoot() {
+
     }
 
 
