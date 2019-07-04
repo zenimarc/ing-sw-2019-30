@@ -33,7 +33,7 @@ public interface View {
     void payPowerUp(PowerCard card);
     void useTeleport();
     void useKineticray(List<Player> player);
-    void giveRoundScore(String playerDead, Map<String, Integer> points);
+    void giveScore(String playerDead, Map<String, Integer> points);
     void chooseGunsightTarget(List<Player> targets);
     void discardPowerUp(Card object2);
     void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab);

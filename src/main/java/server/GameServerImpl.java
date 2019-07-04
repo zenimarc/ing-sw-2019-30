@@ -11,6 +11,8 @@ import controller.CommandObj;
 import controller.EnumCommand;
 import controller.PlayerController;
 import player.Player;
+import weapon.EnumWeapon;
+import weapon.SimpleWeapon;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -124,7 +126,19 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                     client.get().setPlayer(onePlayer);
                 players.add(onePlayer);
             }
-            boardController = new BoardController(players, 8);
+//TODO Eliminare giocatori
+            players.get(0).addDamage(players.get(1), 8);
+            players.get(0).addDamage(players.get(2), 2);
+
+            players.get(1).addWeapon(new SimpleWeapon(EnumWeapon.LOCK_RIFLE));
+            players.get(1).getWeapons().get(0).setLoaded();
+
+            players.get(2).addWeapon(new SimpleWeapon(EnumWeapon.ZX_2));
+            players.get(2).getWeapons().get(0).setLoaded();
+
+
+//TODO Rimettere 8 skulls iniziali
+            boardController = new BoardController(players, 1);
             boardController.setGameServer(this);
             //Create ServerUpdate Manager
             serverUpdateManager = new ServerUpdateManager(this, boardController);

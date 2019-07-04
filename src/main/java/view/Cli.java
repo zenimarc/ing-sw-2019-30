@@ -131,8 +131,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void giveRoundScore(String playerDead, Map<String, Integer> points) {
-        playerView.giveRoundScore(playerDead, points);
+    public void giveScore(String playerDead, Map<String, Integer> points) {
+        playerView.giveScore(playerDead, points);
     }
 
     @Override

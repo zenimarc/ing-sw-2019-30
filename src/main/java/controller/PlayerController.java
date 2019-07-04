@@ -71,6 +71,10 @@ public class PlayerController extends Observable implements Observer{
     public void receiveCmd(CommandObj cmdObj){
         switch (cmdObj.getCmd()) {
             case GRAB_MOVE:
+            case GRAB_MOVE_FRENZY_BEFORE_FIRST:
+            case GRAB_MOVE_FRENZY_AFTER_FIRST:
+            case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
+            case SHOOT_MOVE_FRENZY_AFTER_FIRST:
                 moveAndDoSomethingElse(cmdObj);
                 break;
             case MOVE_FRENZY:
@@ -227,7 +231,6 @@ public class PlayerController extends Observable implements Observer{
                     viewPrintError("Bad object arrived in PlayerController." + cce.getMessage());
                     break;
                 }
-
                 player.notifyEndAction();
                 break;
             default: 
@@ -244,7 +247,6 @@ public class PlayerController extends Observable implements Observer{
         if(player.getCell() == cell) return true;
 
         EnumActionParam actionParam;
-        if(!boardController.isFinalFrenzy()) {
             //NOT FINAL FRENZY
             switch (enumCommand) {
                 case MOVE: //normal mode
@@ -260,16 +262,16 @@ public class PlayerController extends Observable implements Observer{
                     actionParam = FRENZY_MOVE;
                     break;
                 case GRAB_MOVE_FRENZY_BEFORE_FIRST:// move for grab
-                    actionParam = FRENZY_GRAB_MOVEX1;
+                    actionParam = FRENZY_GRAB_MOVE_BEFORE_FIRST;
                 break;
                 case GRAB_MOVE_FRENZY_AFTER_FIRST:// move for grab
-                    actionParam = FRENZY_GRAB_MOVEX2;
+                    actionParam = FRENZY_GRAB_MOVE_AFTER_FIRST;
                 break;
                 case SHOOT_MOVE_FRENZY_AFTER_FIRST: //move from shoot
-                    actionParam = FRENZY_SHOOT_MOVEX1;
+                    actionParam = FRENZY_SHOOT_MOVE_AFTER_FIRST;
                     break;
                 case SHOOT_MOVE_FRENZY_BEFORE_FIRST: //move from shoot
-                    actionParam = FRENZY_SHOOT_MOVEX2;
+                    actionParam = FRENZY_SHOOT_MOVE_BEFORE_FIRST;
                     break;
                 default:
                     return false;
@@ -279,7 +281,6 @@ public class PlayerController extends Observable implements Observer{
                 return true;
             }
 
-        }
         return false;
     }
 
@@ -380,16 +381,21 @@ public class PlayerController extends Observable implements Observer{
         }
 
         switch (cmdObj.getCmd()) {
+            case GRAB_MOVE_FRENZY_AFTER_FIRST:
+            case GRAB_MOVE_FRENZY_BEFORE_FIRST:
             case GRAB_MOVE:
                 cmdForView(new CommandObj(GRAB, player.getCell()));
                 break;
             case SHOOT:
-                if(checkedShoot(cmdObj)){
-                    numAction++;
-                    player.notifyEndAction();
-                }else {
+                if(!shootManager(cmdObj))
                     deleteMovement();
-                }
+                break;
+            case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
+            case SHOOT_MOVE_FRENZY_AFTER_FIRST:
+                askForLoad();
+                if(!shootManager(cmdObj))
+                    deleteMovement();
+
                 break;
             default:
                 return false;
@@ -418,6 +424,14 @@ public class PlayerController extends Observable implements Observer{
             viewPrintError("You can't draw another WeaponCard");
             return false;
         }
+    }
+
+    private boolean shootManager(CommandObj cmdObj){
+        if(checkedShoot(cmdObj)){
+            numAction++;
+            player.notifyEndAction();
+            return true;
+        }else return false;
     }
 
     /**
@@ -454,14 +468,14 @@ public class PlayerController extends Observable implements Observer{
         }
 
         if(isGoodAttack) {
-            askForPowerUp = true;
+       /*     askForPowerUp = true;
             while(askForPowerUp)
                 receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
             askForPowerUp = true;
             for(Player enemy : enemies)
                 while(!boardController.getPlayerController(enemy).returnIfPowerUpWanted()) {
                     boardController.getPlayerController(enemy).receiveCmd(new CommandObj(ASKFORPOWERUP, VENOMGRENADE));
-                }
+                }*/
             return true;
         }else {
             viewPrintError("Failed attack");
@@ -794,10 +808,17 @@ public class PlayerController extends Observable implements Observer{
         while(numAction < maxAction.getValue()) {
             cmdForView(new CommandObj(YOUR_TURN, maxAction));
         }
+        askForLoad();
+        numAction = 0;
+    }
+
+    /**
+     * If player has not loaded weapon ask him if want load it
+     */
+    private void askForLoad(){
         if(!player.getNotLoaded().isEmpty()) {
             cmdForView(new CommandObj(LOAD_WEAPONCARD, player.getNotLoadedName()));
         }
-        numAction = 0;
     }
 
     private void viewPrintError(){
