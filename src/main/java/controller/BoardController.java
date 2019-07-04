@@ -303,7 +303,10 @@ public class BoardController{
      * @return a list
      */
     protected List<Position> getCellsKineticRay(Cell playerCell){
-        List<Cell> cells = board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().cellDistance(playerCell, x) <= 2).collect(Collectors.toList());
+        List<Cell> cells = board.getBillboard().getCellMap().keySet().stream().filter(x -> board.getBillboard().cellDistance(playerCell, x) <= 2 &&
+                        ((board.getBillboard().getCellPosition(x).getX()) == board.getBillboard().getCellPosition(playerCell).getX() ||
+                                board.getBillboard().getCellPosition(x).getY() == board.getBillboard().getCellPosition(playerCell).getY())
+        ).collect(Collectors.toList());
         ArrayList<Position> positions = new ArrayList<>();
         for(Cell cell: cells)
             positions.add(board.getBillboard().getCellPosition(cell));

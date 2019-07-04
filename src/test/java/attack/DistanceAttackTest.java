@@ -33,6 +33,9 @@ class DistanceAttackTest {
     @Test
     void attack() {
         assertFalse(distanceAttack.attack(p1,p1, cell1));
+        assertEquals(2, distanceAttack.getMinDistance());
+        assertEquals(3, distanceAttack.getMaxDistance());
+
     }
 
     @Test

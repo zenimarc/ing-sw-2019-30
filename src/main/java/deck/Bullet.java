@@ -57,12 +57,12 @@ public class Bullet implements Serializable {
     }
 
     /**
-     * This function converts an ArrayList of Bullet int an int array[num of R,num of Y, num of B]
+     * This function converts an ArrayList of Bullet into an int array[num of R,num of Y, num of B]
      * @param bullets to be converted
      * @return an array
      */
     @Contract(pure = true)
-    public static int[] enumToIntArray(@NotNull Map<Color, Integer> bullets){
+    public static int[] mapToIntArray(@NotNull Map<Color, Integer> bullets){
         int[] colorArray = new int[]{0,0,0};
 
         if(bullets.containsKey(RED))

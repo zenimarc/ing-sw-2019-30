@@ -39,4 +39,5 @@ public interface View {
     void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab);
     void shoot();
     void move(EnumCommand typeAction);
+    int askAttackPriority();
 }

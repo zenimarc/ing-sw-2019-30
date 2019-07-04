@@ -5,6 +5,7 @@ import board.*;
 import board.billboard.BillboardGenerator;
 import client.Client;
 
+import client.ClientApp;
 import constants.Constants;
 import controller.CommandObj;
 import controller.EnumCommand;
@@ -26,9 +27,7 @@ import javafx.stage.Stage;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
-import weapon.WeaponCard;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
@@ -40,7 +39,6 @@ import static constants.Constants.ACTION_PER_TURN_FF_BEFORE_FIRST;
 import static controller.EnumCommand.*;
 import static controller.EnumCommand.GUNSIGHT;
 import static deck.Bullet.*;
-import static powerup.PowerUp.*;
 import static powerup.PowerUp.KINETICRAY;
 import static powerup.PowerUp.TELEPORTER;
 import static powerup.PowerUp.VENOMGRENADE;
@@ -49,18 +47,20 @@ public class BoardViewGameGUI extends Application implements View {
     private int stageHeight = 700;
     private int stageWidth = 980;
     private Board board;
+    private ClientApp app;
     private Client client;
     private List<Player> players = new ArrayList<>();
-    private Player player = new Player("Marco");
+    private Player player;
     private EnumCommand command = CHOOSE_ACTION;
     private int ammoSize;
-    private int numBoard = 3; //TODO settarlo a -1 fino a quando board non viene settata
+    private int numBoard = 2; //TODO settarlo a -1 fino a quando board non viene settata
     private int index = 0;
     private Object object;
     private Pane root;
     private int maxTargets;
     private Object targets;
     private Object chosenTargets;
+    private Stage stage;
 
     public BoardViewGameGUI(){
 
@@ -75,6 +75,7 @@ public class BoardViewGameGUI extends Application implements View {
         if(numBoard == -1)
             numBoard = 2;
         this.board = new Board(8, BillboardGenerator.createBillboard(numBoard));
+        player = new Player("Caio");
         player.setPawnCell(board.getBillboard().getCellFromPosition(new Position(1, 1)));
         players.add(player);
         players.add(new Player("numBoard"));
@@ -95,7 +96,12 @@ public class BoardViewGameGUI extends Application implements View {
      */
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException{
-        initialize();
+        BoardViewGUI menu = new BoardViewGUI(this);
+        primaryStage.setTitle("Adrenaline");
+        primaryStage.setScene(menu.getScene(primaryStage));
+        stage = primaryStage;
+        primaryStage.show();
+        /*initialize();
         root = createGame(numBoard);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setCenterShape(true);
@@ -104,19 +110,19 @@ public class BoardViewGameGUI extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.setHeight(stageHeight);
         primaryStage.setWidth(stageWidth);
-        primaryStage.show();
+        primaryStage.show();*/
     }
 
-    public Scene createScene(Client client) throws FileNotFoundException, InterruptedException, RemoteException {
+    public Scene createScene(Client client, ClientApp app) {
+        this.app = app;
         this.client = client;
-        this.player = client.getPlayer();
-        while(numBoard == -1) {
-            Thread.sleep(5000);
-        }
-        root = createGame(numBoard);
+        root = new Pane();
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        root.setCenterShape(true);
         return new Scene(root);
+    }
+
+    protected int returnNumBoard(){
+        return this.numBoard;
     }
 
     /**
@@ -174,8 +180,6 @@ public class BoardViewGameGUI extends Application implements View {
         anchor.getChildren().get(players.size()).setVisible(false);
 
         anchor.getChildren().add(createMap(number, board1));
-        anchor.getChildren().get(players.size() + 1).setLayoutX(0);
-        anchor.getChildren().get(players.size() + 1).setLayoutY(0);
         anchor.getChildren().get(players.size() + 1).toBack();
 
         anchor.getChildren().add(timer());
@@ -301,7 +305,7 @@ public class BoardViewGameGUI extends Application implements View {
         playerBoard.getChildren().add(generateCard(playerBoardPath(giveColor(player), false), 110, 600, 0, 0, 0));
         //Weapons and power ups
         for (int i = 0; i < 3; i++) {
-            if (i + 1 > player.getWeapons().size()) {
+            if (i >= player.getWeapons().size()) {
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 90, 60, i * 60, 110, 0));
                 playerBoard.getChildren().get(2 * i + 1).setVisible(false);
             } else
@@ -333,7 +337,7 @@ public class BoardViewGameGUI extends Application implements View {
         }
 
         //Ammo
-        int[] array = enumToIntArray(player.getBullets());
+        int[] array = mapToIntArray(player.getBullets());
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++){
                 playerBoard.getChildren().add(addAmmo(i, 30, 470 + j * 35, 5 + i * 35));//base x 120, distanza 33
@@ -367,7 +371,7 @@ public class BoardViewGameGUI extends Application implements View {
 
         //Weapons and power ups
         for (int i = 0; i < 3; i++) {
-            if (i + 1 > getPlayerboardPlayer(player).getWeapons().size()) {
+            if (i >= getPlayerboardPlayer(player).getWeapons().size()) {
                 playerBoard.getChildren().add(generateCard(weaponPath("weaponCard"), 75, 50,  i * 50, 90, 0));
                 playerBoard.getChildren().get(2 * i + 1).setVisible(false);
             } else
@@ -399,7 +403,7 @@ public class BoardViewGameGUI extends Application implements View {
         }
 
         //Ammo
-        int[] array = enumToIntArray(getPlayerboardPlayer(player).getBullets());
+        int[] array = mapToIntArray(getPlayerboardPlayer(player).getBullets());
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++){
                 playerBoard.getChildren().add(addAmmo(i, 20, 270 + j * 25, 5 + i * 30));
@@ -1416,7 +1420,7 @@ public class BoardViewGameGUI extends Application implements View {
         }
 
         //Ammo
-        int[] array = enumToIntArray(p.getBullets());
+        int[] array = mapToIntArray(p.getBullets());
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++){
                 if(array[i] < j)
@@ -1582,13 +1586,20 @@ public class BoardViewGameGUI extends Application implements View {
 
     @Override
     public void gameStart(Board board) {
-        try {
-            this.players = client.getListOfPlayers();
-        } catch (RemoteException e) {
-            e.fillInStackTrace();
-        }
         this.board = board;
         setNumBoard();
+        try {
+            this.player = client.getPlayer();
+            this.players = client.getListOfPlayers();
+            root = createGame(numBoard);
+            root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+            root.setCenterShape(true);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (RemoteException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -1834,5 +1845,10 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public void move(EnumCommand typeAction) {
 
+    }
+
+    @Override
+    public int askAttackPriority() {
+        return 1;
     }
 }

@@ -64,6 +64,8 @@ public class ClientUpdateManager extends Observable {
             case YOUR_TURN:
                 view.myTurn((Constants) cmd.getObject());
                 break;
+            case PRIORITY_OPTIONAL:
+                view.askAttackPriority();
             case LOAD_WEAPONCARD:
                 if(cmd.getObject().getClass().equals(ArrayList.class) ) {
                    try {

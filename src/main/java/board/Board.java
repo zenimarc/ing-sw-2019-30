@@ -180,8 +180,7 @@ public class Board extends Observable implements Cloneable, Serializable {
         notifyObservers(this.cloneBoard());
     }
 
-    //TODO add addCardInCell(cell, card) sostituire metodo in playercontroller.grabweapon
-
+    @Deprecated
     public Card giveCardFromPowerUpDeck(Player player){
         PowerCard pc = (PowerCard) powerUpDeck.draw();
         player.addPowerCard(pc);

@@ -16,6 +16,7 @@ import player.Player;
 import powerup.PowerUp;
 import weapon.AreaWeapon;
 import weapon.EnumWeapon;
+import weapon.PriorityWeapon;
 import weapon.WeaponCard;
 
 import java.rmi.RemoteException;
@@ -559,6 +560,13 @@ public class PlayerController extends Observable implements Observer{
         indexes.forEach(x -> attacks.add(weaponCard.getAttack(x)));
         //Calc max target
         maxTarget = attacks.stream().mapToInt(Attack::getTarget).max().orElse(0);
+
+        if(weaponCard.getClass() == PriorityWeapon.class){
+            if(weaponCard.getAttack(0).getTarget() == 0)
+
+            cmdForView(new CommandObj(PRIORITY_OPTIONAL));
+
+        }
         //Ask for opponents to shoot
         List<Player> opponents = getTargets(weaponCard.getBaseAttack().getTargetType(), maxTarget);
         //User can't attack or decided to not attack
@@ -570,7 +578,7 @@ public class PlayerController extends Observable implements Observer{
         stdPlayerList(opponents, maxTarget);
 
         //Attack with base attack
-        weaponCard.shoot(0,player, opponents, null);
+        weaponCard.shoot(0,player, opponents, Optional.empty());
         //Attack with optional attack
         for(Integer index : indexes) {
             if (!player.canPay(weaponCard.getAttack(index).getCost())) {
@@ -749,7 +757,7 @@ public class PlayerController extends Observable implements Observer{
     }
 
     /**
-     * This verify that attack selector is good,
+     * This function verifies if attack selector is good,
      * Only BaseAttack -> 0-1
      * BaseAttack + OptionalAttack -> 0-num_of_optional_attack+1
      * AlternativeAttack -> 0-2

@@ -4,6 +4,7 @@ import board.Board;
 import constants.EnumAttackName;
 import controller.EnumTargetSet;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
 
@@ -34,4 +35,14 @@ class SimpleAttackTest {
         assertEquals(p2.getMarks(p1),testMark);
     }
 
+    @Test
+    void attack2() {
+        simpleAttack.attack(p1,p2, p1.getCell());
+
+        assertEquals(p1.getNumDamages(), 0);
+        assertEquals(p2.getNumDamages(), 7);
+
+        assertEquals(p1.getMarks(p2),0);
+        assertEquals(p2.getMarks(p1),testMark);
+    }
 }

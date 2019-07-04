@@ -155,4 +155,9 @@ public class Cli implements View {
     public void move(EnumCommand typeAction) {
         playerView.move(typeAction);
     }
+
+    @Override
+    public int askAttackPriority() {
+        return playerView.askPriorityForAttacks();
+    }
 }

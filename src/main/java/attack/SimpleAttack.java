@@ -62,7 +62,8 @@ public class SimpleAttack extends Attack {
         for (Player opponent : opponents) {
             if (opponent != null) {
                 opponent.addDamage(player, damage);
-                opponent.addMark(player, mark);            }
+                opponent.addMark(player, mark);
+            }
         }
         return true;
     }

@@ -30,6 +30,8 @@ public enum EnumCommand {
     PLACE_WEAPONCARD("Place WeaponCard","..."),
     CHOOSE_ATTACK("Choose attack","..."),
     LOAD_WEAPONCARD("Load weapon","..."),
+    PRIORITY_OPTIONAL("Priority optional","..."),
+
 
     //Power ups
     ASK_FOR_POWER_UP("", ""),

@@ -958,4 +958,13 @@ public class PlayerView extends Observable{
         sb.append("\n");
         return sb.toString();
     }
+
+    public int askPriorityForAttacks() {
+        String optional = "";
+        while (!optional.matches("[0-3]")) {
+            print("Do you want to use your priority attack first? [1: Yes, 0: No]");
+            optional = reader.next();
+        }
+        return Integer.valueOf(optional);
+    }
 }
