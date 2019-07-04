@@ -1597,7 +1597,7 @@ public class BoardViewGameGUI extends Application implements View {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (RemoteException | FileNotFoundException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
 
     }
