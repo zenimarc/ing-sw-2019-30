@@ -3,8 +3,15 @@ package player;
 import board.Board;
 import board.Cell;
 import board.NormalCell;
+import constants.Color;
+import deck.Bullet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import powerup.PowerCard;
+import powerup.PowerUp;
+import weapon.EnumWeapon;
+import weapon.SimpleWeapon;
+import weapon.WeaponCard;
 
 import static constants.Color.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,5 +111,53 @@ class PlayerTest {
 
     @Test
     void toString1() {
+    }
+
+    @Test
+    void rmCardTest(){
+        assertTrue(p1.getWeapons().isEmpty());
+        WeaponCard weapon = new SimpleWeapon(EnumWeapon.ELECTROSCYTHE);
+        p1.getWeapons().add(weapon);
+        assertEquals(1, p1.getWeapons().size());
+        assertEquals(weapon, p1.getWeapons().get(0));
+        p1.rmWeapon(0);
+        assertTrue(p1.getWeapons().isEmpty());
+    }
+    @Test
+    void setNotLoadWeapon(){
+        WeaponCard weapon = new SimpleWeapon(EnumWeapon.ELECTROSCYTHE);
+        p1.getWeapons().add(weapon);
+        p1.getWeapons().get(0).setNotLoaded();
+        assertFalse(p1.getWeapons().get(0).isReady());
+        p1.getWeapons().get(0).setLoaded();
+        assertTrue(p1.getWeapons().get(0).isReady());
+        p1.setNotLoadWeapon(weapon);
+        assertFalse(p1.getWeapons().get(0).isReady());
+    }
+    @Test
+    void resetDamages(){
+        Player opponent = new Player("pippo");
+        p1.addDamage(opponent);
+        p1.resetDamage();
+        assertEquals(0, p1.getNumDamages());
+    }
+    @Test
+    void usePowerUp(){
+        PowerCard pup = new PowerCard(new Bullet(Color.RED), PowerUp.GUNSIGHT);
+        assertTrue(p1.getPowerups().isEmpty());
+        p1.addPowerCard(pup);
+        assertFalse(p1.getPowerups().isEmpty());
+        p1.usePowerUp(pup, true);
+        assertTrue(p1.getPowerups().isEmpty());
+    }
+    @Test
+    void canPayPowerUp(){
+        PowerCard pup = new PowerCard(new Bullet(Color.RED), PowerUp.VENOMGRENADE);
+        p1.useAmmo(new int[]{1,1,1});
+        assertFalse(p1.canPayPowerUp(pup));
+        p1.addAmmo(new int[]{1,1,1});
+        assertTrue(p1.canPayPowerUp(pup));
+        p1.addAmmo(new int[]{1,1,1});
+        assertTrue(p1.canPayGunsight(RED));
     }
 }
