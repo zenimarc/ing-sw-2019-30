@@ -11,8 +11,6 @@ import controller.CommandObj;
 import controller.EnumCommand;
 import controller.PlayerController;
 import player.Player;
-import weapon.EnumWeapon;
-import weapon.SimpleWeapon;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -68,7 +66,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * @return true if it's full, and false if it isn't full.
      */
     public synchronized boolean isFull(){
-        System.out.println("ci sono "+clients.size()+" players" +" e il max e: "+ maxPlayer);
+        //System.out.println("ci sono "+clients.size()+" players" +" e il max e: "+ maxPlayer);
         return (clients.size() >= maxPlayer);
     }
 
@@ -126,19 +124,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                     client.get().setPlayer(onePlayer);
                 players.add(onePlayer);
             }
-//TODO Eliminare giocatori
-            players.get(0).addDamage(players.get(1), 8);
-            players.get(0).addDamage(players.get(2), 2);
-
-            players.get(1).addWeapon(new SimpleWeapon(EnumWeapon.LOCK_RIFLE));
-            players.get(1).getWeapons().get(0).setLoaded();
-
-            players.get(2).addWeapon(new SimpleWeapon(EnumWeapon.ZX_2));
-            players.get(2).getWeapons().get(0).setLoaded();
-
-
-//TODO Rimettere 8 skulls iniziali
-            boardController = new BoardController(players, 1);
+            boardController = new BoardController(players, 8);
             boardController.setGameServer(this);
             //Create ServerUpdate Manager
             serverUpdateManager = new ServerUpdateManager(this, boardController);
@@ -251,7 +237,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      */
     public synchronized void addClient(ClientInfo client){
         this.clients.add(client);
-        System.out.println("ho appena aggiunto "+ client);
+        System.out.println("ho appena aggiunto "+ client.getUserToken()+" al gameserver: "+this.gameToken+"\n ora ci sono "+
+                clients.size()+" players\n servono almeno "+minPlayer+" players per iniziare il game");
 
         if (canBeginGame() && !beginCountdown.isAlive()) {
             beginCountdown = new Thread(this::beginCountdown);
@@ -283,8 +270,8 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
     public void removeClient(Player player){
         try{
-            swapOnOff(getClient(player));
             Client client = this.getClient(player);
+            swapOnOff(client);
             if (client!=null)
                 client.timeExpired();
         }catch (RemoteException | NullPointerException ex){
