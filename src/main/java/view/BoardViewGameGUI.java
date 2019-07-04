@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
+import weapon.WeaponCard;
 
 import javax.jws.soap.SOAPBinding;
 import java.io.FileInputStream;

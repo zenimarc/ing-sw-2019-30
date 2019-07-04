@@ -133,6 +133,11 @@ public class SimpleWeapon extends WeaponCard{
 
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
         if(obj.getClass()!=SimpleWeapon.class) return false;

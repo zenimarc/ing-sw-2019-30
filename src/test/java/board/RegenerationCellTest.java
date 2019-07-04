@@ -29,7 +29,7 @@ class RegenerationCellTest {
         assertEquals(weapon3, weapons[2]);
         //verifies if the card is given to player and removed from cell
         cell.giveCard(player, 1);
-        assertEquals(weapon2, player.getWeapons().get(1));
+        assertEquals(weapon2, player.getWeapons().get(0));
         cell.removeCard(cell.getCard(1));
         cell.setCard(weapon3);
         assertEquals(weapon3, cell.getCard(1));

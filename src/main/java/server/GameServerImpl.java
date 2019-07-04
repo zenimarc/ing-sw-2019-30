@@ -270,7 +270,9 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     public void removeClient(Player player){
         try{
             swapOnOff(getClient(player));
-            this.getClient(player).timeExpired();
+            Client client = this.getClient(player);
+            if (client!=null)
+                client.timeExpired();
         }catch (RemoteException | NullPointerException ex){
             ex.fillInStackTrace();
         }

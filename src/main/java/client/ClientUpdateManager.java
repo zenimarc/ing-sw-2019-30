@@ -9,11 +9,9 @@ import player.Player;
 import powerup.PowerCard;
 import powerup.PowerUp;
 import view.View;
-import weapon.WeaponCard;
 
 import java.util.*;
 
-import static controller.EnumCommand.UPDATE_PLAYER;
 
 public class ClientUpdateManager extends Observable {
     private Player player;

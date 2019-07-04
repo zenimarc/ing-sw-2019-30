@@ -166,6 +166,11 @@ public class CardinalWeapon extends WeaponCard{
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj==null) return false;
         if(obj.getClass()!=CardinalWeapon.class) return false;

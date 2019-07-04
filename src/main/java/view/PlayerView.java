@@ -325,29 +325,30 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask player what powerUpCard wants discard to be regenerated
+     * This function asks player which powerUpCard wants to discard to decide in which RegenerationCell he wants to be regenerated
      * @return
      */
     private int choosePowerUp4Regeneration(){
-        int slt;
+        int size = player.getPowerups().size()-1;
+        String formatString = "[0-"+ size +"]";
+        String slt = "";
+
         List<PowerCard> powerUps = player.getPowerups();
-
-        while (true) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Set your RegenerationCell. Your PowerUpCards are:\n");
-            for (PowerCard pc : powerUps) {
-                sb.append(powerUps.indexOf(pc));
-                sb.append(") ");
-                sb.append(pc);
-                sb.append('\n');
-            }
-            sb.append("In which Regeneration cell do you want to go? (Enter number)[0] ");
-
-            print(sb.toString());
-
-            slt = reader.nextInt();
-            if (slt < powerUps.size()) return slt;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Set your RegenerationCell. Your PowerUpCards are:\n");
+        for (PowerCard pc : powerUps) {
+            sb.append(powerUps.indexOf(pc));
+            sb.append(") ");
+            sb.append(pc);
+            sb.append('\n');
         }
+        print(sb.toString());
+
+        while (!slt.matches(formatString)) {
+            print("In which Regeneration cell do you want to go? (Enter number)[0] ");
+            slt = reader.next();
+        }
+        return Integer.valueOf(slt);
     }
 
     /**
@@ -552,25 +553,21 @@ public class PlayerView extends Observable{
      */
     public List<Integer> chooseOptionalAttack(List<Attack> attacks, boolean canRandom){
         ArrayList<Integer> indexes = new ArrayList<>();
-        String format;
-        String read;
+
+        String read = "";
 
         if(attacks.isEmpty()) return Collections.emptyList();
 
         List<Attack> attackList = new ArrayList<>();
         attackList.addAll(attacks);
+        String format = "[0-"+attackList.size()+"]";
 
         if(canRandom) {
-            while (true) {
-                format = "[0-"+attackList.size()+"]";
-                print(stringForChooseAttackInList(attackList));
+            while (!read.matches(format) && !read.equals("0")) {
                 read = reader.next();
-                if(read.matches(format)) {
-                    if (!read.equals("0")){
-                        indexes.add(attacks.indexOf(attackList.get(Integer.valueOf(read)-1)));
-                        attackList.remove(Integer.valueOf(read)-1);
-                    }
-                    else break;
+                if(read.matches(format) && !read.equals("0")) {
+                    indexes.add(attacks.indexOf(attackList.get(Integer.valueOf(read)-1)));
+                    attackList.remove(Integer.valueOf(read)-1);
                 }
             }
         }
@@ -892,11 +889,12 @@ public class PlayerView extends Observable{
         for(Card card : player.getPowerups()){
             sb.append(player.getPowerups().indexOf(card));
             sb.append(") ");
-            sb.append(power.toString());
+            sb.append(card.toString());
             sb.append("\t");
         }
         sb.append("3) ");
-        sb.append(power +"\n");
+        sb.append(power);
+        sb.append("\n");
         return sb.toString();
     }
 }
