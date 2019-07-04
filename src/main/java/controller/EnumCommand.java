@@ -32,7 +32,7 @@ public enum EnumCommand {
     LOAD_WEAPONCARD("Load weapon","..."),
 
     //Power ups
-    ASKFORPOWERUP("", ""),
+    ASK_FOR_POWER_UP("", ""),
     CHECKPOWERUP("check usable power ups", "..."),
     PAYPOWERUP("check payable power up", "..."),
     PAYGUNSIGHT("check if can pay Gunsight", "..."),
@@ -46,6 +46,9 @@ public enum EnumCommand {
     USE_VENOMGRENADE("Use Venom Grenade power Up", "..."),
     USE_KINETICRAY("Use Kinetic Ray power Up", "..."),
     KINETICRAY("Use Kinetic Ray power Up", "..."),
+
+    CHECK_EVERY_TIME_POWER_UP("",""),
+    USE_POWER_UP("Use power up","Use power up"),
 
     //Controller to View
     PRINT_ERROR("Print error",""),

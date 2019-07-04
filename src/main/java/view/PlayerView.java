@@ -57,7 +57,7 @@ public class PlayerView extends Observable{
                 toServerAction = true;
                 break;
             case POWERUP:
-                notifyServer(new CommandObj(CHECKPOWERUP, POWERUP, true));
+                notifyServer(new CommandObj(CHECK_EVERY_TIME_POWER_UP, true));
                 toServerAction = true;
                 break;
             case END_TURN:
@@ -822,39 +822,52 @@ public class PlayerView extends Observable{
         notifyObservers(cmd);
     }
 
-    public void askForPowerUp(PowerUp power){
-        String format = "[0-1]";
-        String read = "";
-        while (!read.matches(format)) {
-            print("Do you want to use a Power up? [1: Yes, 0: No] ");
-            read = reader.next();
+    private String stringForChoosePowerUp(List<PowerCard> powers){
+        StringBuilder sb = new StringBuilder();
+        sb.append("You can use: ");
+        sb.append("\t0)No one");
+        for(int i = 0 ; i< powers.size(); i++){
+            sb.append('\t');
+            sb.append(i+1);
+            sb.append(")");
+            sb.append(powers.get(i).getPowerUp());
+            sb.append(" (");
+            sb.append(powers.get(i).getColor());
+            sb.append(")");
         }
-        if(Integer.valueOf(read) == 1)
-            notifyServer(new CommandObj(CHECKPOWERUP, power,true));
-        else  notifyServer(new CommandObj(CHECKPOWERUP, power,false));
+        sb.append('\n');
+        sb.append("Which do you want?");
+
+        return sb.toString();
     }
 
-    public boolean usePowerUp() {
-        if (player.getPowerups().isEmpty()) {
-            printError("You have no power ups, so you can't use one");
-            return false;
-        }
-        choosePowerUp(player.getPowerups());
+    public void askForPowerUp(List<PowerCard> powers){
+        String format = "[0-"+powers.size()+"]";
+        String read = "";
+        String question = stringForChoosePowerUp(powers);
 
-        String format = "[0-" + player.getPowerups().size() + "]";
-        String read;
-
-        while(true){
-            print(choosePowerUp(player.getPowerups()));
+        while (!read.matches(format)) {
+            print(question);
             read = reader.next();
-            if(read.matches(format)) break;
         }
-        if(Integer.valueOf(read) != 0) {
-            if (player.getPowerups().get(Integer.valueOf(read) - 1).getPowerUp() == PowerUp.GUNSIGHT)
-                notifyServer(new CommandObj(PAYGUNSIGHT, Integer.valueOf(read) - 1));
-            else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read) - 1));
+
+        notifyServer(new CommandObj(USE_POWER_UP, powers.get(Integer.valueOf(read)-1)));
+    }
+
+    public boolean usePowerUp(PowerUp powerUpType) {
+
+        switch (powerUpType) {
+            case TELEPORTER:
+                move(TELEPORTER);
+                break;
+            case GUNSIGHT:
+            case KINETICRAY:
+            case VENOMGRENADE:
+                break;
+            default:
+                break;
         }
-        else notifyServer(new CommandObj(PAYPOWERUP, Integer.valueOf(read) - 1));
+
         return true;
     }
 
@@ -881,10 +894,6 @@ public class PlayerView extends Observable{
         if(Integer.valueOf(read) == 1)
             bool = true;
         notifyServer(new CommandObj(PAIDPOWERUP, power, bool));
-    }
-
-    protected void moveTeleporter() {
-        move(TELEPORTER);
     }
 
     protected void chooseTargets(List<Player> players){

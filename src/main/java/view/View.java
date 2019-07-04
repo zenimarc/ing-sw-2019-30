@@ -28,11 +28,10 @@ public interface View {
     List<String> getTargetsName(List<Player> potentialTarget, int maxTarget);
     List<Integer> chooseIndexes(List<Attack> attacks, boolean canRandom);
     Position choosePositionToAttack(List<Position> potentialposition);
-    void askPowerUp(PowerUp power);
-    void usePowerUp();
+    void askPowerUp(List<PowerCard> powers);
+    void usePowerUp(PowerUp powerUpType);
     void payGunsight(int[] bullets, int card);
     void payPowerUp(PowerCard card);
-    void useTeleport();
     void useKineticray(List<Player> player);
     void giveScore(String playerDead, Map<String, Integer> points);
     void chooseGunsightTarget(List<Player> targets);

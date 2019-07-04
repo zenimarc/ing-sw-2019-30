@@ -102,13 +102,13 @@ public class Cli implements View {
     }
 
     @Override
-    public void askPowerUp(PowerUp power) {
+    public void askPowerUp(List<PowerCard> power) {
         playerView.askForPowerUp(power);
     }
 
     @Override
-    public void usePowerUp() {
-        playerView.usePowerUp();
+    public void usePowerUp(PowerUp powerUpType) {
+        playerView.usePowerUp(powerUpType);
     }
 
     @Override
@@ -119,11 +119,6 @@ public class Cli implements View {
     @Override
     public void payPowerUp(PowerCard card) {
         playerView.askToPay(card);
-    }
-
-    @Override
-    public void useTeleport() {
-        playerView.moveTeleporter();
     }
 
     @Override

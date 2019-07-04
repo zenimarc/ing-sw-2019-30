@@ -432,7 +432,7 @@ public class BoardViewGameGUI extends Application implements View {
             @Override
             public void handle(ActionEvent event) {
                 switch(command){
-                    case ASKFORPOWERUP:
+                    case ASK_FOR_POWER_UP:
                         notifyServer(new CommandObj(CHECKPOWERUP, object, true));
                         pane.setVisible(false);
                     case PLACE_WEAPONCARD:
@@ -457,7 +457,7 @@ public class BoardViewGameGUI extends Application implements View {
             @Override
             public void handle(ActionEvent event) {
                 switch(command){
-                    case ASKFORPOWERUP:
+                    case ASK_FOR_POWER_UP:
                         notifyServer(new CommandObj(CHECKPOWERUP, object, false));
                         pane.setVisible(false);
                     case PLACE_WEAPONCARD:
@@ -1743,18 +1743,22 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
+    public void askPowerUp(List<PowerCard> powers) {
+
+    }
+
+    @Override
+    public void usePowerUp(PowerUp powerUpType) {
+
+    }
+
     public void askPowerUp(PowerUp power) {
         root.getChildren().get(players.size()).setVisible(true);
         ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Do you want to use a power up?");
         ((Pane)root.getChildren().get(players.size())).getChildren().get(1).setVisible(true);
         ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(true);
         object = power;
-        command = ASKFORPOWERUP;
-    }
-
-    @Override
-    public void usePowerUp() {
-        command = POWERUP;
+        command = ASK_FOR_POWER_UP;
     }
 
     @Override
@@ -1774,13 +1778,6 @@ public class BoardViewGameGUI extends Application implements View {
         ((Pane)root.getChildren().get(players.size())).getChildren().get(2).setVisible(false);
         object = card;
         command = PAYPOWERUP;
-    }
-
-    @Override
-    public void useTeleport() {
-        command = EnumCommand.TELEPORTER;
-        for(int i = board.getBillboard().getCellMap().size()-1; i > -1; i++)
-            illuminateCell(((Button)(returnPaneMap()).getChildren().get(returnPaneMap().getChildren().size()-board.getSkulls()-players.size()-i-5)), true);
     }
 
     @Override

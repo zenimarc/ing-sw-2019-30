@@ -79,11 +79,8 @@ public class ClientUpdateManager extends Observable {
                     view.weaponIndexToDiscard((ArrayList<String>) cmd.getObject(), (int) cmd.getObject2());
                 }
                 break;
-            case ASKFORPOWERUP:
-                view.askPowerUp((PowerUp) cmd.getObject());
-                break;
-            case CHECKPOWERUP:
-                view.usePowerUp();
+            case ASK_FOR_POWER_UP:
+                view.askPowerUp((List) cmd.getObject());
                 break;
             case PAYGUNSIGHT:
                 view.payGunsight((int[])cmd.getObject(), (int) cmd.getObject2());
@@ -92,7 +89,7 @@ public class ClientUpdateManager extends Observable {
                 view.payPowerUp((PowerCard) cmd.getObject());
                 break;
             case USE_TELEPORTER:
-                view.useTeleport();
+                view.usePowerUp(PowerUp.TELEPORTER);
                 break;
             case USE_KINETICRAY:
                 view.useKineticray((List<Player>)cmd.getObject());

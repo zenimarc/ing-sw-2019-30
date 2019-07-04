@@ -99,8 +99,8 @@ public class PlayerController extends Observable implements Observer{
             case GRAB_WEAPON:
                 int grabWeaponIndex = (int) cmdObj.getObject();
                 grabWeaponManager(grabWeaponIndex);
-                break;
-            case ASKFORPOWERUP:
+                break;/*
+            case ASK_FOR_POWER_UP:
                 askForPowerUp = true;
                 ArrayList<PowerCard> cards = (getPotentialPowerUps(cmdObj));
                 if(cards.isEmpty()) {
@@ -108,23 +108,11 @@ public class PlayerController extends Observable implements Observer{
                     askForPowerUp = false;
                     notifyObservers();
                 }
-                else cmdForView(new CommandObj(ASKFORPOWERUP, cmdObj.getObject()));
-                break;
-            case CHECKPOWERUP:
-                askForPowerUp = true;
-                if ((Boolean) cmdObj.getObject2()) {
-                    ArrayList<PowerCard> power = getPotentialPowerUps(cmdObj);
-                    if(!power.isEmpty())
-                        cmdForView(new CommandObj(CHECKPOWERUP, power));
-                    else {
-                        viewPrintError("You have no usable power ups, so you can't use one");
-                        askForPowerUp = false;
-                    }
-                }
-                else {
-                    askForPowerUp = false;
-                    notifyObservers();
-                }
+                else cmdForView(new CommandObj(ASK_FOR_POWER_UP, cmdObj.getObject()));
+                break;*/
+            case USE_POWER_UP:
+            case CHECK_EVERY_TIME_POWER_UP:
+                powerUpManager(cmdObj);
                 break;
             case PAYGUNSIGHT:
                 if((int) cmdObj.getObject() != -1)
@@ -151,9 +139,6 @@ public class PlayerController extends Observable implements Observer{
             case PAIDPOWERUP:
                 player.usePowerUp((PowerCard) cmdObj.getObject(), (Boolean) cmdObj.getObject2());
                 receiveCmd(verifyPowerUp((PowerCard) cmdObj.getObject()));
-                break;
-            case USE_TELEPORTER:
-                cmdForView(new CommandObj(USE_TELEPORTER));
                 break;
             case TELEPORTER:
                 setCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
@@ -237,6 +222,64 @@ public class PlayerController extends Observable implements Observer{
             default: 
                 break;
         }
+    }
+
+    /**
+     * TO USE POWER UP: CommandObj format: USE_POWER_UP, PowerCard to use
+     * @param cmdObj operation using powerup
+     */
+    private void powerUpManager(CommandObj cmdObj){
+        List<PowerCard> powerUps;
+
+        switch (cmdObj.getCmd()) {
+            case CHECK_EVERY_TIME_POWER_UP:
+                powerUps = player.getPowerups().stream()
+                        .filter((x -> x.getPowerUp() == PowerUp.TELEPORTER || x.getPowerUp() == PowerUp.KINETICRAY))
+                        .collect(Collectors.toList());
+                if (!powerUps.isEmpty()) {
+                    cmdForView(new CommandObj(ASK_FOR_POWER_UP, powerUps));
+                } else {
+                    viewPrintError("No PowerUp usable");
+                }
+                break;
+            case USE_POWER_UP:
+                PowerCard powerUp =  cmdObj.getObject().getClass().equals(PowerCard.class) ? (PowerCard) cmdObj.getObject() : null;
+                if(powerUp!=null &&
+                        player.getPowerups()
+                                .stream()
+                                .anyMatch(x-> x.equals(powerUp))) {
+                    player.getPowerups().stream().filter(x -> x.equals(powerUp)).findFirst().ifPresent(x -> {
+                                if (x.getPowerUp().equals(PowerUp.TELEPORTER)) {
+                                    cmdForView(new CommandObj(USE_TELEPORTER));
+
+                                } else if (x.getPowerUp().equals(PowerUp.KINETICRAY)) {
+                                    cmdForView(new CommandObj(USE_KINETICRAY));
+                                }
+                            }
+                    );
+                }
+                break;
+            default:
+                break;
+        }
+        
+        /*        
+        askForPowerUp = true;
+        
+        
+        if ((Boolean) cmdObj.getObject2()) {
+            ArrayList<PowerCard> power = getPotentialPowerUps(cmdObj);
+            if(!power.isEmpty())
+                cmdForView(new CommandObj(CHECKPOWERUP, power));
+            else {
+                viewPrintError("You have no usable power ups, so you can't use one");
+                askForPowerUp = false;
+            }
+        }
+        else {
+            askForPowerUp = false;
+            notifyObservers();
+        }*/
     }
 
     /**
@@ -476,11 +519,11 @@ public class PlayerController extends Observable implements Observer{
         if(isGoodAttack) {
        /*     askForPowerUp = true;
             while(askForPowerUp)
-                receiveCmd(new CommandObj(ASKFORPOWERUP, GUNSIGHT));
+                receiveCmd(new CommandObj(ASK_FOR_POWER_UP, GUNSIGHT));
             askForPowerUp = true;
             for(Player enemy : enemies)
                 while(!boardController.getPlayerController(enemy).returnIfPowerUpWanted()) {
-                    boardController.getPlayerController(enemy).receiveCmd(new CommandObj(ASKFORPOWERUP, VENOMGRENADE));
+                    boardController.getPlayerController(enemy).receiveCmd(new CommandObj(ASK_FOR_POWER_UP, VENOMGRENADE));
                 }*/
             return true;
         }else {
