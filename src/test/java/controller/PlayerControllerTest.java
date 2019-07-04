@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-//TODO fare i test
-
 class PlayerControllerTest {
     private static Billboard myBillboard;
     private static HashMap<Cell, Position> mappaProva = new HashMap<>();

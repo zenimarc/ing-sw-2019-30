@@ -37,7 +37,7 @@ public class Pawn implements Serializable {
      * @param cell of destination
      */
 
-    public void setCell(Cell cell){ //TODO: la chiamerà il controller quando il giocatore decide dove iniziare, è public? -Marco
+    public void setCell(Cell cell){
         this.position = cell;
     }
 

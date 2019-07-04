@@ -135,7 +135,7 @@ public class WeaponFactory {
      * This function is used to load all Weapons
      * @return a List of weapons
      */
-    private List<WeaponCard> getWeaponCardList(){
+    public List<WeaponCard> getWeaponCardList(){
 
         return loadWeaponCardsJackson();
     }

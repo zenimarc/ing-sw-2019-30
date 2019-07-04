@@ -89,7 +89,7 @@ public enum EnumCommand {
     }
 
     /**
-     * This function return the name of a Command
+     * This function returns the name of a Command
      * @return name
      */
     public String getName() {
@@ -97,7 +97,7 @@ public enum EnumCommand {
     }
 
     /**
-     * This function return the description of a Command
+     * This function returns the description of a Command
      * @return description
      */
     public String getDescription() {
