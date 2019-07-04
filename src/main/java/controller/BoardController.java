@@ -471,7 +471,7 @@ public class BoardController{
     /**
      * Send all Players actual score of all players
      */
-    private void totalPoints(){
+    public void totalPoints(){
         HashMap<String, Integer> finalPoints = new HashMap<>();
         playerControllers
                 .stream()
