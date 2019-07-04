@@ -53,7 +53,8 @@ public class PlayerView extends Observable{
                 toServerAction = move(GRAB_MOVE);
                 break;
             case SHOOT:
-                toServerAction = shoot();
+                notifyServer(new CommandObj(SHOOT_CHECK));
+                toServerAction = true;
                 break;
             case POWERUP:
                 notifyServer(new CommandObj(CHECKPOWERUP, POWERUP, true));
@@ -167,7 +168,7 @@ public class PlayerView extends Observable{
             }catch (IOException ioe){
                 ioe.fillInStackTrace();
             }
-            }
+        }
 
         Position newPosition = new Position(
                 Integer.valueOf(positionString.split(",")[0]),
@@ -206,7 +207,7 @@ public class PlayerView extends Observable{
         return false;
     }
 
-    private boolean shoot() {
+    public boolean shoot() {
         if (player.getWeapons().isEmpty()) {
             printError("You have not loaded weapon, so you can't shoot");
             return false;
@@ -216,7 +217,10 @@ public class PlayerView extends Observable{
                 .map(WeaponCard::getName)
                 .collect(Collectors.toCollection(ArrayList::new)));
         //Not want to place weapon
-        if (index == -1) return false;
+        if (index == -1) {
+            notifyServer(new CommandObj(EnumCommand.SHOOT, index));
+            return false;
+        }
         //else want shoot
         WeaponCard weaponCard = player.getWeapons().get(index);
 

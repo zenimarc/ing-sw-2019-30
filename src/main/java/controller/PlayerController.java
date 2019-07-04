@@ -75,6 +75,7 @@ public class PlayerController extends Observable implements Observer{
             case GRAB_MOVE_FRENZY_AFTER_FIRST:
             case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
             case SHOOT_MOVE_FRENZY_AFTER_FIRST:
+            case SHOOT_MOVE:
                 moveAndDoSomethingElse(cmdObj);
                 break;
             case MOVE_FRENZY:
@@ -206,15 +207,15 @@ public class PlayerController extends Observable implements Observer{
                     discardWeapon(discardIndex, (int) cmdObj.getObject2());
                 }
                 break;
-            case SHOOT:
+            case SHOOT_CHECK:
                 if(player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum()) {
-                    moveAndDoSomethingElse(cmdObj);
+                    cmdForView(new CommandObj(SHOOT_MOVE));
                 } else {
-                    if(checkedShoot(cmdObj)){
-                        numAction++;
-                        player.notifyEndAction();
-                    }
+                    cmdForView(new CommandObj(SHOOT));
                 }
+                break;
+            case SHOOT:
+                shootManager(cmdObj);
                 break;
             case LOAD_WEAPONCARD:
                 try {
@@ -279,6 +280,8 @@ public class PlayerController extends Observable implements Observer{
             if(billboard.canMove(player.getCell(), cell, actionParam.getNum())){
                 setCell(cell);
                 return true;
+            }else {
+                viewPrintError("Illegal movement");
             }
 
         return false;
@@ -367,15 +370,15 @@ public class PlayerController extends Observable implements Observer{
 
     private void deleteMovement() {
         if (supportCell4ComboAction != null) {
-            player.setPawnCell(supportCell4ComboAction);
+            setCell(supportCell4ComboAction);
             supportCell4ComboAction = null;
         }
     }
 
     private boolean moveAndDoSomethingElse(CommandObj cmdObj){
-        supportCell4ComboAction = billboard.getCellFromPosition((Position) (cmdObj.getObject()));
+        supportCell4ComboAction = player.getPawn().getCell();
 
-        if(!move(supportCell4ComboAction, cmdObj.getCmd())){
+        if(!move(billboard.getCellFromPosition((Position) (cmdObj.getObject())), cmdObj.getCmd())){
             viewPrintError("You cannot do this movement");
             return false;
         }
@@ -386,16 +389,13 @@ public class PlayerController extends Observable implements Observer{
             case GRAB_MOVE:
                 cmdForView(new CommandObj(GRAB, player.getCell()));
                 break;
-            case SHOOT:
-                if(!shootManager(cmdObj))
-                    deleteMovement();
+            case SHOOT_MOVE:
+                cmdForView(new CommandObj(SHOOT));
                 break;
             case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
             case SHOOT_MOVE_FRENZY_AFTER_FIRST:
                 askForLoad();
-                if(!shootManager(cmdObj))
-                    deleteMovement();
-
+                cmdForView(new CommandObj(SHOOT));
                 break;
             default:
                 return false;
@@ -426,12 +426,18 @@ public class PlayerController extends Observable implements Observer{
         }
     }
 
-    private boolean shootManager(CommandObj cmdObj){
+    private void shootManager(CommandObj cmdObj){
+        if(cmdObj.getObject().getClass().equals(Integer.class)){
+            deleteMovement();
+            return;
+        }
+
         if(checkedShoot(cmdObj)){
             numAction++;
             player.notifyEndAction();
-            return true;
-        }else return false;
+        }else{
+            deleteMovement();
+        }
     }
 
     /**

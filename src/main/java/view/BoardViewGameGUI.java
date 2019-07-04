@@ -1829,4 +1829,13 @@ public class BoardViewGameGUI extends Application implements View {
         return (Pane) root.getChildren().get(players.size()+1);
     }
 
+    @Override
+    public void shoot() {
+
+    }
+
+    @Override
+    public void move(EnumCommand typeAction) {
+
+    }
 }

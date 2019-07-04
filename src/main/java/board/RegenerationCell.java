@@ -32,7 +32,7 @@ public class RegenerationCell extends Cell {
     public RegenerationCell(Color color, WeaponCard[] weaponCard){
         super(color);
 
-        this.weaponCard = new WeaponCard[Constants.MAX_WEAPON_REGENERATIONCELL.getValue()];
+        this.weaponCard = new WeaponCard[Constants.MAX_WEAPON_REGENERATION_CELL.getValue()];
 
         for(int i=0;i<this.weaponCard.length && i<weaponCard.length;i++){
             this.weaponCard[i] = weaponCard[i];

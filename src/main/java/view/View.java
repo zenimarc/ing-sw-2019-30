@@ -5,6 +5,7 @@ import board.Board;
 import board.Cell;
 import board.Position;
 import constants.Constants;
+import controller.EnumCommand;
 import deck.Card;
 import player.Player;
 import powerup.PowerCard;
@@ -37,4 +38,6 @@ public interface View {
     void chooseGunsightTarget(List<Player> targets);
     void discardPowerUp(Card object2);
     void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab);
+    void shoot();
+    void move(EnumCommand typeAction);
 }

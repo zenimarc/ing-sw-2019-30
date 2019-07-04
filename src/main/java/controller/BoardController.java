@@ -465,7 +465,6 @@ public class BoardController{
         }
     }
 
-
     /**
      * Send all Players actual score of all players
      */
@@ -477,7 +476,7 @@ public class BoardController{
                 .forEach(x -> {
                     finalPoints.put(x.getName(), x.getPoints());
                 });
-        notifyScore("Partita finita", finalPoints);
+        notifyScore(finalPoints);
     }
 
     public void kick(Player player){
@@ -489,11 +488,13 @@ public class BoardController{
         this.kick(listOfPlayers.get(playerTurn));
         changeTurn();
     }
+
     public void suspend(Player playerToSuspend){
         Optional<Player> p = listOfPlayers.stream().filter(x -> x.equals(playerToSuspend)).findFirst();
         if (p.isPresent())
             p.get().suspend();
     }
+
     public void reactivate(Player playerToReactivate){
         playerToReactivate.reactivate();
     }

@@ -5,6 +5,7 @@ import board.Board;
 import board.Cell;
 import board.Position;
 import constants.Constants;
+import controller.EnumCommand;
 import deck.Card;
 import player.Player;
 import powerup.PowerCard;
@@ -148,5 +149,15 @@ public class Cli implements View {
     @Override
     public void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab){
         playerView.chooseWeaponToDiscard(potentialWeapon, weaponToGrab);
+    }
+
+    @Override
+    public void shoot() {
+        playerView.shoot();
+    }
+
+    @Override
+    public void move(EnumCommand typeAction) {
+        playerView.move(typeAction);
     }
 }

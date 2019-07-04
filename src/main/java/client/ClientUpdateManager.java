@@ -52,6 +52,12 @@ public class ClientUpdateManager extends Observable {
             case SHOW_BOARD:
                 view.showBoard();
                 break;
+            case SHOOT:
+                view.shoot();
+                break;
+            case SHOOT_MOVE:
+                view.move(cmd.getCmd());
+                break;
             case REG_CELL:
                 view.regeneratePlayer();
                 break;
@@ -107,8 +113,12 @@ public class ClientUpdateManager extends Observable {
                 view.notMyTurn((String) cmd.getObject());
                 break;
             case PRINT_POINTS:
-                if(cmd.getObject().getClass().equals(String.class) && cmd.getObject2().getClass().equals(HashMap.class)) {
-                    view.giveScore((String) cmd.getObject(), (Map<String, Integer>) cmd.getObject2());
+                if(cmd.getObject2().getClass().equals(HashMap.class)){
+                    if(cmd.getObject()==null)
+                        view.giveScore(null, (Map<String, Integer>) cmd.getObject2());
+                    else if(cmd.getObject().getClass().equals(String.class)) {
+                        view.giveScore((String) cmd.getObject(), (Map<String, Integer>) cmd.getObject2());
+                    }
                 }
                 break;
             default:
