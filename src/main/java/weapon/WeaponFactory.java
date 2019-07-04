@@ -10,8 +10,8 @@ import java.util.List;
 
 public class WeaponFactory {
 
-    private static final String WEAPON_RESOURCES_ADDRESS = "src"+File.separator+
-            "resources"+File.separator+
+    private static final String WEAPON_RESOURCES_ADDRESS =
+            "data"+File.separator+
             "weapon" + File.separator;
 
     /**
@@ -68,7 +68,7 @@ public class WeaponFactory {
         WeaponCard wp;
 
         File folder = new File(WEAPON_RESOURCES_ADDRESS);
-        if (!folder.exists()) folder.mkdir();
+        if (!folder.exists()) folder.mkdirs();
 
         for (EnumWeapon weapon : EnumWeapon.values()) {
             wp = null;

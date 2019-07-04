@@ -5,6 +5,7 @@ import player.Player;
 import view.Cli;
 import view.View;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Observer;
 
@@ -42,6 +43,8 @@ public class ClientApp {
 
     public static void main(String[] args) {
         ClientApp clientApp = new ClientApp();
+        File folder = new File("data");
+        if (!folder.exists()) folder.mkdir();
         clientApp.connection.init();
 
     }

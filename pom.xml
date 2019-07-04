@@ -78,29 +78,43 @@
             </plugin>
 
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
-                <configuration>
-                    <destFile>target/jacoco.exec</destFile>
-                    <dataFile>target/jacoco.exec</dataFile>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
                 <executions>
                     <execution>
-                        <id>jacoco-initialize</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-site</id>
+                        <id>build-first</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>report</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>server.LobbyImpl</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>adrenaline-server</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-second</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>client.ClientApp</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>adrenaline</finalName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
