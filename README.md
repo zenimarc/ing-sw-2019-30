@@ -3,7 +3,7 @@
 - Regole Complete + CLI + RMI + 1 FA (Partite multiple)
 
 Abbiamo predisposto il progetto per poter integrare facilmente una connessione tramite Socket, essendo il nostro protocollo di comunicazione basato sull'invio e la ricezione di comandi.
-E' inoltre predisposta un'interfaccia generica di View implementata da CLI ed eventualmente implementabile da GUI, la quale è stata parzialmente sviluppata, ma per questioni di tempo non è stata ultimata.
+E' inoltre predisposta un'interfaccia generica di View implementata da CLI ed eventualmente implementabile da GUI, quest'ultima è stata parzialmente sviluppata, ma per questioni di tempo non è stata ultimata.
 
 ## Utilizzo server
 Per lanciare il server è sufficiente avviare adrenaline-server.jar
