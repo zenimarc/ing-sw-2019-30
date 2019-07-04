@@ -2,6 +2,7 @@ package client;
 
 import board.Board;
 import board.Cell;
+import board.Position;
 import constants.Constants;
 import controller.CommandObj;
 import deck.Card;
@@ -10,7 +11,9 @@ import powerup.PowerCard;
 import powerup.PowerUp;
 import view.View;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ClientUpdateManager extends Observable {
@@ -89,10 +92,16 @@ public class ClientUpdateManager extends Observable {
                 view.payPowerUp((PowerCard) cmd.getObject());
                 break;
             case USE_TELEPORTER:
-                view.usePowerUp(PowerUp.TELEPORTER);
+                view.usePowerUp(PowerUp.TELEPORTER, Collections.emptyList());
                 break;
             case USE_KINETICRAY:
-                view.useKineticray((List<Player>)cmd.getObject());
+                if(!cmd.getList().isEmpty()) {
+                    view.usePowerUp(PowerUp.KINETICRAY,
+                            cmd.getList().stream().map(x->(Player) x).collect(Collectors.toList()));
+                }
+                break;
+            case KINETICRAY_TARGET:
+                view.useKineticray((List<Position>) cmd.getObject(), (String) cmd.getObject2());
                 break;
             case USE_GUNSIGHT:
                 view.chooseGunsightTarget((List<Player>)cmd.getObject());

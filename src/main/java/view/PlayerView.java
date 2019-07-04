@@ -345,14 +345,6 @@ public class PlayerView extends Observable{
         return true;
     }
 
-    public void drawCLI(BoardViewCLI map) {
-        map.drawCLI();
-    }
-
-    public void drawGUI() {
-        // TODO implement here
-    }
-
     private String stringForChooseTarget(List<Player> possibleTarget){
         StringBuilder sb = new StringBuilder();
 
@@ -694,7 +686,7 @@ public class PlayerView extends Observable{
     }
 
     public Position chooseCellToAttack(List<Position> positions){
-        String mex = stringForChooseCell("This is an AreaAttack.", "Where do you want shoot? ", positions);
+        String mex = stringForChooseCell("Uoooo! Area effect!", "Where do you want shoot? ", positions);
         String format = "[1-"+positions.size()+"]";
         String read;
         while (true) {
@@ -704,6 +696,11 @@ public class PlayerView extends Observable{
                 return positions.get(Integer.valueOf(read)-1);
             }
         }
+    }
+
+    public void chooseCellToKineticrai(List<Position> positions, String opponent){
+        Position p = chooseCellToAttack(positions);
+        notifyServer(new CommandObj(USE_KINETICRAY, p, opponent));
     }
 
     private boolean discardOrPayPowerUp(PowerCard powerUp){
@@ -770,6 +767,22 @@ public class PlayerView extends Observable{
         sbStar.append('\n');
 
         return sbStar.toString();
+    }
+
+    /**
+     * This is to notify player action of other players
+     * @param opponent Nickname of player who play
+     * @param action action that do
+     */
+    public void opponentsAction(String opponent, String action){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(opponent);
+        sb.append(": ");
+        sb.append(action);
+        sb.append("\n");
+
+        print(sb.toString());
     }
 
     private String starLine(){
@@ -841,6 +854,10 @@ public class PlayerView extends Observable{
         return sb.toString();
     }
 
+    /**
+     * Ask which power up in powers want to use
+     * @param powers possible PowerUp
+     */
     public void askForPowerUp(List<PowerCard> powers){
         String format = "[0-"+powers.size()+"]";
         String read = "";
@@ -854,14 +871,19 @@ public class PlayerView extends Observable{
         notifyServer(new CommandObj(USE_POWER_UP, powers.get(Integer.valueOf(read)-1)));
     }
 
-    public boolean usePowerUp(PowerUp powerUpType) {
+    public boolean usePowerUp(PowerUp powerUpType, List<Player> opponents) {
 
         switch (powerUpType) {
             case TELEPORTER:
                 move(TELEPORTER);
                 break;
-            case GUNSIGHT:
             case KINETICRAY:
+                Player p = chooseTarget(opponents);
+                if(p!=null) {
+                    notifyServer(new CommandObj(KINETICRAY_TARGET, p.getName()));
+                }
+                break;
+            case GUNSIGHT:
             case VENOMGRENADE:
                 break;
             default:
@@ -896,17 +918,6 @@ public class PlayerView extends Observable{
         notifyServer(new CommandObj(PAIDPOWERUP, power, bool));
     }
 
-    protected void chooseTargets(List<Player> players){
-        String target = "";
-        while (!target.matches("[0-"+ players.size() +"]") || Integer.valueOf(target) == 0) {
-            print("Which player do you want to move?");
-            print("Possible target are:\n");
-            print(stringForChooseTarget(players));
-            target = reader.next();
-        }
-        moveKineticray(Integer.valueOf(target)-1);
-    }
-
     protected void chooseGunsightTarget(List<Player> players){
         String target = "";
         while (!target.matches("[0-"+ players.size() +"]") || Integer.valueOf(target) == 0) {
@@ -916,19 +927,6 @@ public class PlayerView extends Observable{
             target = reader.next();
         }
         notifyServer(new CommandObj(GUNSIGHT, Integer.valueOf(target)-1));
-    }
-
-    private void moveKineticray(int player) {
-        String positionString = "";
-        while (!positionString.matches("[0-2],[0-3]")) {
-            print("Where do you want to move?");
-            positionString = reader.next();
-            Position newPosition = new Position(
-                    Integer.valueOf(positionString.split(",")[0]),
-                    Integer.valueOf(positionString.split(",")[1]));
-            notifyServer(new CommandObj(KINETICRAY, player, newPosition));
-        }
-
     }
 
     public void discardPowerUp(Card power) {

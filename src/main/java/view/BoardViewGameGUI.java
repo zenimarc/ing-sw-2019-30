@@ -1748,9 +1748,10 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void usePowerUp(PowerUp powerUpType) {
+    public void usePowerUp(PowerUp powerUpType, List<Player> potentialTarget) {
 
     }
+
 
     public void askPowerUp(PowerUp power) {
         root.getChildren().get(players.size()).setVisible(true);
@@ -1781,6 +1782,10 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
+    public void useKineticray(List<Position> positions, String opponent) {
+
+    }
+
     public void useKineticray(List<Player> player) {
         command = CHOOSE_OPPONENTS;
     }

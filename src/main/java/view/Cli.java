@@ -107,8 +107,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void usePowerUp(PowerUp powerUpType) {
-        playerView.usePowerUp(powerUpType);
+    public void usePowerUp(PowerUp powerUpType, List<Player> potentialTarget) {
+        playerView.usePowerUp(powerUpType, potentialTarget);
     }
 
     @Override
@@ -122,8 +122,8 @@ public class Cli implements View {
     }
 
     @Override
-    public void useKineticray(List<Player> players) {
-        playerView.chooseTargets(players);
+    public void useKineticray(List<Position> positions, String opponent) {
+       playerView.chooseCellToKineticrai(positions, opponent);
     }
 
     @Override

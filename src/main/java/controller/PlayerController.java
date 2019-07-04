@@ -9,6 +9,7 @@ import constants.Constants;
 import constants.EnumActionParam;
 import deck.AmmoCard;
 import deck.Card;
+import javafx.geometry.Pos;
 import org.jetbrains.annotations.NotNull;
 import player.Pawn;
 import powerup.PowerCard;
@@ -81,41 +82,31 @@ public class PlayerController extends Observable implements Observer{
             case MOVE_FRENZY:
             case MOVE:
                 Cell c = billboard.getCellFromPosition((Position) (cmdObj.getObject()));
-                if(move(c , cmdObj.getCmd())){
+                if (move(c, cmdObj.getCmd())) {
                     numAction++;
-                }else {
+                } else {
                     viewPrintError();
                 }
-            break;
+                break;
             case GRAB_AMMO:
-                 if(grabAmmo()){
+                if (grabAmmo()) {
                     numAction++;
-                }else {
-                     deleteMovement();
-                     viewPrintError();
+                } else {
+                    deleteMovement();
+                    viewPrintError();
                 }
-                 player.notifyEndAction();
+                player.notifyEndAction();
                 break;
             case GRAB_WEAPON:
                 int grabWeaponIndex = (int) cmdObj.getObject();
                 grabWeaponManager(grabWeaponIndex);
-                break;/*
-            case ASK_FOR_POWER_UP:
-                askForPowerUp = true;
-                ArrayList<PowerCard> cards = (getPotentialPowerUps(cmdObj));
-                if(cards.isEmpty()) {
-                    viewPrintError("You have no usable power ups, so you can't use one");
-                    askForPowerUp = false;
-                    notifyObservers();
-                }
-                else cmdForView(new CommandObj(ASK_FOR_POWER_UP, cmdObj.getObject()));
-                break;*/
+                break;
             case USE_POWER_UP:
             case CHECK_EVERY_TIME_POWER_UP:
                 powerUpManager(cmdObj);
                 break;
             case PAYGUNSIGHT:
-                if((int) cmdObj.getObject() != -1)
+                if ((int) cmdObj.getObject() != -1)
                     cmdForView(new CommandObj(PAYGUNSIGHT, player.payCubeGunsight(), cmdObj.getObject())); //cmdObj.getObject() is int referring to weapon place
                 else player.notifyEndAction();
                 break;
@@ -124,17 +115,16 @@ public class PlayerController extends Observable implements Observer{
                 receiveCmd(new CommandObj(PAYPOWERUP, cmdObj.getObject()));
                 break;
             case PAYPOWERUP:
-                if((int) cmdObj.getObject() != -1) {
-                    if (player.canPayPower(player.getPowerups().get((int)cmdObj.getObject())))
-                        cmdForView(new CommandObj(PAYPOWERUP, player.getPowerups().get((int)cmdObj.getObject())));
+                if ((int) cmdObj.getObject() != -1) {
+                    if (player.canPayPower(player.getPowerups().get((int) cmdObj.getObject())))
+                        cmdForView(new CommandObj(PAYPOWERUP, player.getPowerups().get((int) cmdObj.getObject())));
                     else {
-                        PowerCard power = player.getPowerups().get((int)cmdObj.getObject());
+                        PowerCard power = player.getPowerups().get((int) cmdObj.getObject());
                         player.usePowerUp(power, true);
                         boardController.getBoard().getDiscardAmmoCardDeck().addCard(power);
                         receiveCmd(verifyPowerUp(power));
                     }
-                }
-                else player.notifyEndAction();
+                } else player.notifyEndAction();
                 break;
             case PAIDPOWERUP:
                 player.usePowerUp((PowerCard) cmdObj.getObject(), (Boolean) cmdObj.getObject2());
@@ -144,56 +134,55 @@ public class PlayerController extends Observable implements Observer{
                 setCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
                 player.notifyEndAction();
                 break;
-            case USE_KINETICRAY:
-                cmdForView(new CommandObj(USE_KINETICRAY, boardController.notNullCellPlayers()));
+            case KINETICRAY_TARGET:
+                Player p = boardController.getListOfPlayers().stream().filter(x -> x.getName().equals((String) cmdObj.getObject())).findFirst().orElse(null);
+                if (p != null) {
+                    List<Position> potentialPosition = boardController.getCellsKineticRay(p.getCell());
+                    if (!potentialPosition.isEmpty()) {
+                        cmdForView(new CommandObj(KINETICRAY_TARGET, potentialPosition, p.getName()));
+                    }
+                }
                 break;
-            case KINETICRAY:
-                Position pos = (Position) cmdObj.getObject2();
-                if(boardController.getCellsKineticRay(boardController.notNullCellPlayers().get((int)cmdObj.getObject()).getCell()).contains(pos)) {
-                    setOtherCell(boardController.notNullCellPlayers().get((int)cmdObj.getObject()), boardController.getBoard().getBillboard().getCellFromPosition(pos));
-                    player.notifyEndAction();
-                    notifyObservers();
-                }
-                else {
-                    viewPrintError("Cell not valid");
-                    cmdForView(new CommandObj(USE_KINETICRAY, boardController.notNullCellPlayers()));
-                }
+            case USE_KINETICRAY:
+                Cell kntCell = billboard.getCellFromPosition((Position) cmdObj.getObject());
+                Player kntPlayer = boardController.getPlayer((String) cmdObj.getObject2());
+                setCell(kntPlayer, kntCell);
                 break;
             case USE_VENOMGRENADE:
                 boardController.getPlayerWhoPlay().addMark(player);
                 break;
             case USE_GUNSIGHT:
                 cmdForView(new CommandObj(USE_GUNSIGHT, enemies));
-                ((Player)cmdObj.getObject()).addDamage(player);
+                ((Player) cmdObj.getObject()).addDamage(player);
                 notifyObservers();
                 break;
             case GUNSIGHT:
-                enemies.get((int)cmdObj.getObject()).addGunsightDamage(player);
+                enemies.get((int) cmdObj.getObject()).addGunsightDamage(player);
                 break;
             case DISCARD_POWER:
                 PowerCard power = (PowerCard) cmdObj.getObject();
-                if(player.getPowerups().contains(power))
+                if (player.getPowerups().contains(power))
                     player.getPowerups().remove(power);
                 askForPowerUp = false;
                 break;
             case END_TURN:
-                numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
+                numAction += ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
             case REG_CELL:
                 PowerCard powerCard = (PowerCard) cmdObj.getObject();
-                if(boardController.setRegenerationCell(player, powerCard.getColor())){
+                if (boardController.setRegenerationCell(player, powerCard.getColor())) {
                     player.usePowerUp(powerCard, true);
                     boardController.getBoard().addPowerUpDiscardDeck(powerCard);
                 }
                 break;
             case DISCARD_WEAPON:
                 int discardIndex = cmdObj.getObject().getClass().equals(Integer.class) ? (int) cmdObj.getObject() : -1;
-                if(discardIndex!= -1 && cmdObj.getObject2().getClass().equals(Integer.class)) {
+                if (discardIndex != -1 && cmdObj.getObject2().getClass().equals(Integer.class)) {
                     discardWeapon(discardIndex, (int) cmdObj.getObject2());
                 }
                 break;
             case SHOOT_CHECK:
-                if(player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum()) {
+                if (player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum()) {
                     cmdForView(new CommandObj(SHOOT_MOVE));
                 } else {
                     cmdForView(new CommandObj(SHOOT));
@@ -206,20 +195,20 @@ public class PlayerController extends Observable implements Observer{
                 try {
                     int index = (Integer) cmdObj.getObject();
                     WeaponCard wpToLoad = player.getNotLoaded().get(index);
-                    if(index >= player.getNotLoaded().size()) viewPrintError("Bad index");
-                    if(player.canPay(toIntArray(wpToLoad.getCost()))){
+                    if (index >= player.getNotLoaded().size()) viewPrintError("Bad index");
+                    if (player.canPay(toIntArray(wpToLoad.getCost()))) {
                         wpToLoad.setLoaded();
                         player.useAmmo(toIntArray(wpToLoad.getCost()));
-                    }else{
+                    } else {
                         viewPrintError("You have not enough ammo to load this weapon");
                     }
-                }catch (ClassCastException cce){
+                } catch (ClassCastException cce) {
                     viewPrintError("Bad object arrived in PlayerController." + cce.getMessage());
                     break;
                 }
                 player.notifyEndAction();
                 break;
-            default: 
+            default:
                 break;
         }
     }
@@ -244,16 +233,13 @@ public class PlayerController extends Observable implements Observer{
                 break;
             case USE_POWER_UP:
                 PowerCard powerUp =  cmdObj.getObject().getClass().equals(PowerCard.class) ? (PowerCard) cmdObj.getObject() : null;
-                if(powerUp!=null &&
-                        player.getPowerups()
-                                .stream()
-                                .anyMatch(x-> x.equals(powerUp))) {
+                if(powerUp!=null && player.getPowerups().stream().anyMatch(x-> x.equals(powerUp))) {
                     player.getPowerups().stream().filter(x -> x.equals(powerUp)).findFirst().ifPresent(x -> {
                                 if (x.getPowerUp().equals(PowerUp.TELEPORTER)) {
                                     cmdForView(new CommandObj(USE_TELEPORTER));
-
                                 } else if (x.getPowerUp().equals(PowerUp.KINETICRAY)) {
-                                    cmdForView(new CommandObj(USE_KINETICRAY));
+                                    cmdForView(new CommandObj(USE_KINETICRAY, boardController.getListOfPlayers()
+                                            .stream().filter(y -> !y.getName().equals(this.player.getName())).collect(Collectors.toList())));
                                 }
                             }
                     );
@@ -532,10 +518,6 @@ public class PlayerController extends Observable implements Observer{
         return false;
     }
 
-     protected boolean returnIfPowerUpWanted(){
-        return this.askForPowerUp;
-    }
-
     /**
      * This ask player which optional attack want to use, if 0 -> use only BaseAttack.
      * Than verify if can pay optional attack, ask which opponents want shoot and shoot
@@ -674,7 +656,6 @@ public class PlayerController extends Observable implements Observer{
         return opponents;
     }
 
-
     private List<Player> getDistanceAttackTargets(WeaponCard weaponCard, Attack attack, int maxTarget){
         if (weaponCard.getWeaponType() != EnumWeapon.HELLION) {
             return getTargets(attack.getTargetType(), maxTarget,
@@ -785,10 +766,8 @@ public class PlayerController extends Observable implements Observer{
      * @param player to be moved
      * @param cell of destination
      */
-    private void setOtherCell(@NotNull Player player, Cell cell){
-        player.getCell().removePawn(player.getPawn());
-        player.getPawn().setCell(cell);
-        cell.addPawn(player.getPawn());
+    private void setCell(@NotNull Player player, Cell cell){
+        this.boardController.getBoard().setPlayerCell(player, cell);
     }
 
     /**
@@ -796,7 +775,7 @@ public class PlayerController extends Observable implements Observer{
      * @param cell of destination
      */
     public void setCell(Cell cell){
-        this.boardController.getBoard().setPlayerCell(this.player,cell);
+        setCell(this.player, cell);
     }
 
     /**

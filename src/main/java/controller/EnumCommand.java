@@ -45,8 +45,9 @@ public enum EnumCommand {
     TELEPORTER("", ""),
     USE_VENOMGRENADE("Use Venom Grenade power Up", "..."),
     USE_KINETICRAY("Use Kinetic Ray power Up", "..."),
-    KINETICRAY("Use Kinetic Ray power Up", "..."),
 
+    KINETICRAY("Use Kinetic Ray power Up", "..."),
+    KINETICRAY_TARGET("",""),
     CHECK_EVERY_TIME_POWER_UP("",""),
     USE_POWER_UP("Use power up","Use power up"),
 
