@@ -124,7 +124,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
 
     private void storeToken(UUID token){
-        File file = new File("token.txt");
+        File file = new File(this.nickname+"-token.txt");
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.write(token.toString());
         } catch (IOException | NullPointerException ex) {
@@ -133,7 +133,7 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
     }
 
     private boolean loadTokenFromFile(){
-        try (BufferedReader buff = new BufferedReader(new FileReader("token.txt"))){
+        try (BufferedReader buff = new BufferedReader(new FileReader(this.nickname+"-token.txt"))){
             userToken = UUID.fromString(buff.readLine());
         }catch (IOException ioe){
             ioe.fillInStackTrace();

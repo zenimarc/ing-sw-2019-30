@@ -12,10 +12,9 @@ import java.util.List;
  * PowerCardFactory is used to create a deck of PowerCards
  */
 public class PowerCardFactory {
-    private static final String POWERCARD_RESOURCES_ADDRESS = "src" + File.separator +
-            "resources"+ File.separator +
-            "cards" + File.separator +
-            "powercards.json";
+    private static final String POWERCARD_RESOURCES_ADDRESS =
+            "data"+ File.separator +
+            "cards" + File.separator;
 
     /**
      * This function is used to create a PowerCard deck from a Jackson file
@@ -25,7 +24,10 @@ public class PowerCardFactory {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        File powerUpFile = new File(POWERCARD_RESOURCES_ADDRESS);
+        File powerUpFile = new File(POWERCARD_RESOURCES_ADDRESS + "powercards.json");
+
+        //if folder doesn't exist store all weapon
+        if(!powerUpFile.exists()){storePowercards();}
 
         if(powerUpFile.exists()) {
             try {
@@ -50,6 +52,25 @@ public class PowerCardFactory {
      */
     public List<PowerCard> getPowerCardsList(){
         return powerCardsJackson();
+    }
+
+    private void storePowercards(){
+        File folder = new File(POWERCARD_RESOURCES_ADDRESS);
+        if (!folder.exists()) folder.mkdirs();
+
+        File file = new File(POWERCARD_RESOURCES_ADDRESS + "powercards.json");
+
+        if(file.exists()) return;
+
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.write("[{\"bullet\":{\"color\":\"RED\"},\"cardType\":\"GUNSIGHT\"}, {\"bullet\":{\"color\":\"RED\"},\"cardType\":\"KINETICRAY\"}, {\"bullet\":{\"color\":\"RED\"},\"cardType\":\"TELEPORTER\"}, {\"bullet\":{\"color\":\"RED\"},\"cardType\":\"VENOMGRENADE\"}, {\"bullet\":{\"color\":\"YELLOW\"},\"cardType\":\"GUNSIGHT\"}, {\"bullet\":{\"color\":\"YELLOW\"},\"cardType\":\"KINETICRAY\"}, {\"bullet\":{\"color\":\"YELLOW\"},\"cardType\":\"TELEPORTER\"}, {\"bullet\":{\"color\":\"YELLOW\"},\"cardType\":\"VENOMGRENADE\"}, {\"bullet\":{\"color\":\"BLUE\"},\"cardType\":\"GUNSIGHT\"}, {\"bullet\":{\"color\":\"BLUE\"},\"cardType\":\"KINETICRAY\"}, {\"bullet\":{\"color\":\"BLUE\"},\"cardType\":\"TELEPORTER\"}, {\"bullet\":{\"color\":\"BLUE\"},\"cardType\":\"VENOMGRENADE\"}]\n");
+            writer.flush();
+        } catch (IOException ioe) {
+            ioe.fillInStackTrace();
+            System.out.println(ioe.getLocalizedMessage());
+        }catch (NullPointerException npe){
+            System.out.println(npe.getLocalizedMessage());
+        }
     }
 
 }
