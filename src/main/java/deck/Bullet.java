@@ -74,6 +74,21 @@ public class Bullet implements Serializable {
         return colorArray;
     }
 
+    @NotNull
+    @Contract(pure = true)
+    public static int[] colorToArray(Color color){
+        switch (color) {
+            case RED:
+                return new int[]{1, 0, 0};
+            case YELLOW:
+                return new int[]{0, 1, 0};
+            case BLUE:
+                return new int[]{0, 0, 1};
+            default:
+                return new int[]{0, 0, 0};
+        }
+    }
+
     /**
      * This function converts an array of cubes into a String
      * @param cubes with info
