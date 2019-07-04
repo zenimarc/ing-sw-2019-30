@@ -70,6 +70,11 @@ public class ClientUpdateManager extends Observable {
                    }
                 }
                 break;
+            case DISCARD_WEAPON:
+                if(cmd.getObject2().getClass().equals(Integer.class) && cmd.getObject().getClass().equals(ArrayList.class)){
+                    view.weaponIndexToDiscard((ArrayList<String>) cmd.getObject(), (int) cmd.getObject2());
+                }
+                break;
             case ASKFORPOWERUP:
                 view.askPowerUp((PowerUp) cmd.getObject());
                 break;
@@ -93,6 +98,7 @@ public class ClientUpdateManager extends Observable {
                 break;
             case DISCARD_POWER:
                 view.discardPowerUp((Card) cmd.getObject());
+                break;
             case UPDATE_PLAYER:
                 updatePlayer(cmd.getObject());
                 break;

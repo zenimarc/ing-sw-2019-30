@@ -36,4 +36,5 @@ public interface View {
     void giveRoundScore(String playerDead, Map<String, Integer> points);
     void chooseGunsightTarget(List<Player> targets);
     void discardPowerUp(Card object2);
+    void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab);
 }

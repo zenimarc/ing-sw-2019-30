@@ -187,6 +187,7 @@ public class PlayerController extends Observable implements Observer{
                 if(player.getPowerups().contains(power))
                     player.getPowerups().remove(power);
                 askForPowerUp = false;
+                break;
             case END_TURN:
                 numAction+= ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
@@ -198,8 +199,10 @@ public class PlayerController extends Observable implements Observer{
                 }
                 break;
             case DISCARD_WEAPON:
-                player.rmWeapon((int) cmdObj.getObject());
-                player.notifyEndAction();
+                int discardIndex = cmdObj.getObject().getClass().equals(Integer.class) ? (int) cmdObj.getObject() : -1;
+                if(discardIndex!= -1 && cmdObj.getObject2().getClass().equals(Integer.class)) {
+                    discardWeapon(discardIndex, (int) cmdObj.getObject2());
+                }
                 break;
             case SHOOT:
                 if(player.getNumDamages() >= ADRENALINIC_SECOND_STEP.getNum()) {
@@ -349,10 +352,11 @@ public class PlayerController extends Observable implements Observer{
     private void grabWeaponManager(int grabWeaponIndex){
         switch (checkCanGrabWeapon(grabWeaponIndex)) {
             case 0:
-                cmdForView(new CommandObj(DISCARD_WEAPON, grabWeaponIndex));
+                cmdForView(new CommandObj(DISCARD_WEAPON, player.getWeapons().stream()
+                        .map(WeaponCard::getName).collect(Collectors.toList()), grabWeaponIndex));
                 break;
             case 1:
-                if (grabWeapon(grabWeaponIndex, null)){
+                if (grabWeapon(grabWeaponIndex)){
                     numAction++;
                 } else deleteMovement();
                 break;
@@ -396,12 +400,13 @@ public class PlayerController extends Observable implements Observer{
     }
 
     private void discardWeapon(int discardIndex, int grabIndex) {
-        if (discardIndex == -1) return;
         Card discardWeapon = player.rmWeapon(discardIndex);
-        grabWeapon(grabIndex, (WeaponCard) discardWeapon);
+        grabWeaponManager(grabIndex);
+        boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
+
     }
 
-    private boolean grabWeapon(int weaponIndex, WeaponCard discardWeapon) {
+    private boolean grabWeapon(int weaponIndex) {
         //Draw weaponCard
         WeaponCard weaponCard = (WeaponCard) boardController.getBoard().giveCardFromCell(player.getCell(), player, weaponIndex);
         if (weaponCard != null) {
@@ -409,9 +414,6 @@ public class PlayerController extends Observable implements Observer{
             weaponCard.setLoaded();
             //Add cell to modify cell
             modifyCell.add(player.getCell());
-            if (discardWeapon != null) {
-                boardController.getBoard().addCardInCell(discardWeapon, player.getCell());
-            }
             player.useAmmo(toIntArray(weaponCard.getGrabCost()));
             return true;
         } else {

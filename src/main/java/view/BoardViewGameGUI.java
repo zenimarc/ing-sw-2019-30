@@ -1810,6 +1810,11 @@ public class BoardViewGameGUI extends Application implements View {
         }
     }
 
+    @Override
+    public void weaponIndexToDiscard(List<String> potentialWeapon, int weaponToGrab) {
+        //TODO da fare...
+    }
+
 
     private void notifyServer(CommandObj obj) {
         try {

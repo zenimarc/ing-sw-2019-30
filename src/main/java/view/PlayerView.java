@@ -173,7 +173,9 @@ public class PlayerView extends Observable{
             return false;
         }
 
-        int index = chooseWeaponToPlace();
+        int index = chooseWeaponToPlace(player.getWeapons().stream()
+                .map(WeaponCard::getName)
+                .collect(Collectors.toCollection(ArrayList::new)));
         //Not want to place weapon
         if (index == -1) return false;
         //else want shoot
@@ -395,12 +397,10 @@ public class PlayerView extends Observable{
      * @param query Query mex
      * @return string for choose weapon from hand
      */
-    private String stringForChooseWeaponFromHand(String mex, String query){
+    private String stringForChooseWeaponFromHand(String mex, String query, List<String> weapons){
         StringBuilder sb = new StringBuilder();
         sb.append(mex);
-
-        sb.append(stringWeaponFromList(player.getWeapons().stream().map(WeaponCard::getName).collect(Collectors.toList()),
-                true));
+        sb.append(stringWeaponFromList(weapons, true));
         sb.append(query);
         return sb.toString();
     }
@@ -417,40 +417,39 @@ public class PlayerView extends Observable{
             print(mex);
             read = reader.next();
             if(read.matches(formatString)){
-                break;
+                return Integer.valueOf(read)-1;
             }
         }
-
-        return Integer.valueOf(read)-1;
     }
 
     /**
      * String for choose weapon to discard
      * @return String for choose weapon to discard
      */
-    private String stringForChooseWeaponToDiscard() {
+    private String stringForChooseWeaponToDiscard(List<String> weapons) {
         return stringForChooseWeaponFromHand("You have just three weapon in your hand. You have:\n",
-                "\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ");
+                "\nWhich do you want to discard? [0 = I don't want grab a new Weapon] ", weapons);
     }
 
     /**
      * Execute chooseWeaponFromHand using message for discard weapon
      * @return index of card to discard
      */
-    public int chooseWeaponToDiscard(){
-        return chooseWeaponFromHand(stringForChooseWeaponToDiscard());
+    public void chooseWeaponToDiscard(List<String> weapons, int grabIndex ){
+        int discardIndex = chooseWeaponFromHand(stringForChooseWeaponToDiscard(weapons));
+        notifyServer(new CommandObj(DISCARD_WEAPON, discardIndex, grabIndex));
     }
 
-    private String stringForChooseWeaponToPlace(){
-        return stringForChooseWeaponFromHand("You have this Weapon: ", "What weapon to shoot?");
+    private String stringForChooseWeaponToPlace(ArrayList<String> weapons){
+        return stringForChooseWeaponFromHand("You have this Weapon: ", "What weapon to shoot?", weapons);
     }
 
     /**
      * Execute chooseWeaponFromHand using message for place weaponcard
      * @return index of card to place
      */
-    private int chooseWeaponToPlace(){
-        return  chooseWeaponFromHand(stringForChooseWeaponToPlace());
+    private int chooseWeaponToPlace(ArrayList<String> weapons){
+        return  chooseWeaponFromHand(stringForChooseWeaponToPlace(weapons));
     }
 
     private String stringForChooseWeaponCard(List<WeaponCard> weaponCards){
