@@ -65,9 +65,9 @@ public enum EnumCommand {
     CHOOSE_CELL("", "")
     ;
 
-    public static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
-    public static final Set<EnumCommand> PlayerActionFF_BEFORE = EnumSet.of(SHOOT_MOVE_FRENZY_AFTER_FIRST, MOVE_FRENZY, GRAB_MOVE_FRENZY_AFTER_FIRST);
-    public static final Set<EnumCommand> PlayerActionFF_AFTER = EnumSet.of(SHOOT_MOVE_FRENZY_BEFORE_FIRST, GRAB_MOVE_FRENZY_BEFORE_FIRST);
+    protected static final Set<EnumCommand> PlayerAction = EnumSet.of(MOVE, GRAB, SHOOT, POWERUP, END_TURN);
+    protected static final Set<EnumCommand> PlayerActionFF_BEFORE = EnumSet.of(SHOOT_MOVE_FRENZY_AFTER_FIRST, MOVE_FRENZY, GRAB_MOVE_FRENZY_AFTER_FIRST);
+    protected static final Set<EnumCommand> PlayerActionFF_AFTER = EnumSet.of(SHOOT_MOVE_FRENZY_BEFORE_FIRST, GRAB_MOVE_FRENZY_BEFORE_FIRST);
 
 
 
