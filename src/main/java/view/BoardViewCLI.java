@@ -9,7 +9,7 @@ import weapon.WeaponCard;
 import java.util.Observable;
 import java.util.Observer;
 
-import static constants.Constants.MAX_WEAPON_REGENERATIONCELL;
+import static constants.Constants.MAX_WEAPON_REGENERATION_CELL;
 
 /**
  * BoardViewCLI is used to draw the map of the game. It can draw Cli or GUI version
@@ -319,7 +319,7 @@ public class BoardViewCLI implements Observer {
      */
     private void printCards(int x) {
         StringBuilder stream = new StringBuilder();
-        for(int i = MAX_WEAPON_REGENERATIONCELL.getValue() -1; i > -1; i--){
+        for(int i = MAX_WEAPON_REGENERATION_CELL.getValue() -1; i > -1; i--){
             for (int y = 0; y < horizontalCells; y++) {
                 if (getCell(x, y) == null){
                     if(y == 0)

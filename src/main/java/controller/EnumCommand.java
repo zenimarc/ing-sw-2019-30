@@ -26,6 +26,7 @@ public enum EnumCommand {
     DISCARD_WEAPON("Discard weapon","..."),
     GRAB_MOVE("Grab move", "Move than Grab"),
     SHOOT_MOVE("Shot move", "Move than Shoot"),
+    SHOOT_CHECK("",""),
     PLACE_WEAPONCARD("Place WeaponCard","..."),
     CHOOSE_ATTACK("Choose attack","..."),
     LOAD_WEAPONCARD("Load weapon","..."),
