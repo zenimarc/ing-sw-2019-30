@@ -350,7 +350,7 @@ public class BoardController{
         playerPlay(listOfPlayers.get(0));
     }
 
-    public void updatePlayerMenuStatus(Player player){
+    public synchronized void updatePlayerMenuStatus(Player player){
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if (pc!=null){
             if (player.equals(listOfPlayers.get(playerTurn)))
@@ -363,7 +363,7 @@ public class BoardController{
      * Say to playerController of player to start his turn
      * @param player Player how can play
      */
-    public void playerPlay(Player player){
+    public synchronized void playerPlay(Player player){
         PlayerController pc = playerControllers.stream().filter(x-> x.getPlayer()==player).findFirst().orElse(null);
         if(pc!=null) {
             playerWhoPlay = pc.getPlayer();
