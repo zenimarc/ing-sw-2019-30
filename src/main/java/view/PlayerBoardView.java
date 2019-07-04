@@ -81,10 +81,10 @@ public class PlayerBoardView implements Observer {
 
 
     /**
-     * TODO Marco non fa la javadoc
-     * @param leftChar
-     * @param rightChar
-     * @param text
+     * Ptrints the body of the cells
+     * @param leftChar char to be used
+     * @param rightChar char to be used
+     * @param text to print in the body of the cell
      * @return
      */
     private String printBodyCell(char leftChar, char rightChar, String text){
@@ -118,8 +118,8 @@ public class PlayerBoardView implements Observer {
     }
 
     /**
-     * TODO Marco sfaticato
-     * @return
+     * prints header of a cell
+     * @return a string of the header of the cell
      */
     private String printHeader(){
         //HEADER
@@ -148,10 +148,7 @@ public class PlayerBoardView implements Observer {
         return stringBuilder.toString();
     }
 
-    /**
-     * TODO mi sono rotto
-     * @return
-     */
+
     private String printCellBodies(){
         //CELL BODY
         StringBuilder stringBuilder = new StringBuilder();
@@ -175,12 +172,7 @@ public class PlayerBoardView implements Observer {
         return stringBuilder.toString();
     }
 
-    /**
-     * This function prints the top and bottom border of the playerboard
-     * @param leftBorder char
-     * @param rightBorder char
-     * @return a string
-     */
+
     private String printTopBorder(char leftBorder, char rightBorder, char separator){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(printBordCell(leftBorder, separator));

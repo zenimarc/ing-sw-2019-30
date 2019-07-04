@@ -73,4 +73,13 @@ class PositionTest {
         assertEquals(p1.getY(), 2);
 
     }
+    @Test
+    void compareTo(){
+        Position pos1 = new Position(1, 1);
+        Position pos2 = new Position(1,2);
+        Position pos3 = new Position(2,0);
+        assertEquals(1, pos3.compareTo(pos1));
+        assertEquals(1, pos2.compareTo(pos1));
+        assertEquals(-1, pos2.compareTo(pos3));
+    }
 }

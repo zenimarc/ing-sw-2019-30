@@ -33,7 +33,7 @@ public class Position implements Comparable, Serializable {
     }
 
     /**
-     * This function verifies if two objects have the same position//TODO JAVADOC
+     * This function verifies if two objects have the same position
       * @param obj to verify the position
      * @return false if it is null or position is different, else true
      */
