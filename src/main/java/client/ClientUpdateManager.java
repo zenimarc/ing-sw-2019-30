@@ -12,7 +12,9 @@ import view.View;
 
 import java.util.*;
 
-
+/**
+ * ClientUpdateManager is used to notify players
+ */
 public class ClientUpdateManager extends Observable {
     private Player player;
     private Board board;
@@ -126,7 +128,7 @@ public class ClientUpdateManager extends Observable {
     }
 
     /**
-     * Update local Player
+     * Updates local Player
      * @param obj object received from server
      */
     private void updatePlayer(Object obj){

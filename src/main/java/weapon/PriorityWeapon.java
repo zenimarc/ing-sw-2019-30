@@ -17,6 +17,9 @@ import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
+/**
+ * PriorityWeapon is a class which deals with weapon which have an optional which can be used before a basic attack
+ */
 public class PriorityWeapon extends WeaponCard {
 
     public PriorityWeapon(EnumWeapon type){

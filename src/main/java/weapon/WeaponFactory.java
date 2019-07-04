@@ -8,6 +8,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * WeaponFactory is a class used to store and load all WeaponCards
+ */
 public class WeaponFactory {
 
     private static final String WEAPON_RESOURCES_ADDRESS =
@@ -15,8 +18,8 @@ public class WeaponFactory {
             "weapon" + File.separator;
 
     /**
-     * This return a list of weapon stored in WEAPON_RESOURCES_ADDRESS, if weapons don't exist create them
-     * @return list of weapon stored in local
+     * This function returns a list of weapon stored in WEAPON_RESOURCES_ADDRESS, if weapons don't exist it creates them
+     * @return list of weapons stored in local
      */
     private List<WeaponCard> loadWeaponCardsJackson(){
         List<WeaponCard> weaponCards = new ArrayList<>();
@@ -38,7 +41,7 @@ public class WeaponFactory {
     }
 
     /**
-     * Store json weapon in weponResourcesAddress if doesn't exist
+     * Stores json weapon in weaponResourcesAddress if it doesn't exist
      * @param jsonWeapon weapons's json String
      * @param weaponName file's name
      */
@@ -60,7 +63,7 @@ public class WeaponFactory {
     }
 
     /**
-     * Store All weapon in  EnumWeapon in "weapon" in resoures
+     * Stores all weapons in  EnumWeapon in"weapon" resources
      */
     public void storeAllWeapons() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -101,6 +104,11 @@ public class WeaponFactory {
         }
     }
 
+    /**
+     * These functions returns the weapon wanted based on its Weapon type
+     * @param type of weapon
+     * @return a WeaponCard
+     */
     private WeaponCard getSimpleWeapon(EnumWeapon type) {return new SimpleWeapon(type);}
 
     private WeaponCard getDistanceWeapon(EnumWeapon type) {
@@ -123,7 +131,11 @@ public class WeaponFactory {
         return new PriorityWeapon(type);
     }
 
-    public List<WeaponCard> getWeaponCardList(){
+    /**
+     * This function is used to load all Weapons
+     * @return a List of weapons
+     */
+    private List<WeaponCard> getWeaponCardList(){
 
         return loadWeaponCardsJackson();
     }

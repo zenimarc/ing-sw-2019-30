@@ -12,6 +12,9 @@ import powerup.PowerCard;
 import powerup.PowerUp;
 import java.util.*;
 
+/**
+ * View is an interface used to ask things to players
+ */
 
 public interface View {
     void gameStart(Board board);

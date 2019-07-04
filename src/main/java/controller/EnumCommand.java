@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * 
+ * EnumCommand is used to store all possible actions in a game
  */
 public enum EnumCommand {
     MOVE("Move", "Move your pawn"),

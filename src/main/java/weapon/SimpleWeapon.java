@@ -18,8 +18,14 @@ import static controller.EnumTargetSet.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
+/**
+ * SimpleWeapon is used for weapons' attacks which don't have particular effects
+ */
 public class SimpleWeapon extends WeaponCard{
 
+    /**
+     *Constructor
+     */
     public SimpleWeapon(EnumWeapon type){
         this.weaponType = type;
         this.name = type.getName();
@@ -80,6 +86,13 @@ public class SimpleWeapon extends WeaponCard{
     public EnumWeapon getType(){return this.weaponType;}
 
 
+    /**
+     * The following functions are used to deal with specific weapon attacks
+     * @param typeAttack index of attack
+     * @param shooter player who is shooting
+     * @param opponents to be shot
+     * @return true if attack was good, else false
+     */
     private boolean lockrifleShoot(int typeAttack, Player shooter, @NotNull List<Player> opponents){
 
         switch (typeAttack) {

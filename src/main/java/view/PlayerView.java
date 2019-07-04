@@ -25,7 +25,7 @@ import static constants.Color.convertToColor;
 import static controller.EnumCommand.*;
 
 /**
- * 
+ * PlayerView is used to ask a player what he wants to do
  */
 public class PlayerView extends Observable{
     private Player player;
@@ -71,7 +71,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask player action to do in FFrenzy, player is before first player
+     * Asks player action to do in FFrenzy if player is before first player
      * @return good action
      */
     private boolean finalFrenzyBeforeFirst(){
@@ -99,7 +99,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask player action to do in FFrenzy, player is after first player or is first player
+     * Asks player action to do in FFrenzy if player is after first player or is first player
      * @return good action
      */
     private boolean finalFrenzyAfterFirst(){
@@ -124,7 +124,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Select correct option-menu to ask player action to do
+     * Select correct option-menu to ask player which action he wants to do
      * @param modAction normal turn, ff after first, ff before first
      */
     protected void myTurn(Constants modAction) {
@@ -153,9 +153,9 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask new position and notify MOVE action
+     * This asks new position and notify MOVE action
      * @param enumCommand type of movement
-     * @return movement success
+     * @return true if movement was successful
      */
     public boolean move(EnumCommand enumCommand) {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -179,8 +179,8 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This invoke grabAmmo or grabWeapon
-     * @return
+     * This function invokes grabAmmo or grabWeapon
+     * @return the result of grab
      */
     public boolean grab(Cell cell) {
         if(cell.getClass() == NormalCell.class) return grabAmmo();
@@ -189,8 +189,8 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask which weapon want and notify that action
-     * @return
+     * This function asks which weapon the player wants and notifies that action
+     * @return true
      */
     private boolean grabWeapon(RegenerationCell cell){
         int drawIndex = chooseWeaponCard(cell);
@@ -199,14 +199,18 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This notify to grab ammo
-     * @return
+     * This notifies to grab ammo
+     * @return false
      */
     private boolean grabAmmo(){
         notifyServer(new CommandObj(EnumCommand.GRAB_AMMO));
         return false;
     }
 
+    /**
+     * This function is used to ask information about shooting action
+     * @return true
+     */
     public boolean shoot() {
         if (player.getWeapons().isEmpty()) {
             printError("You have not loaded weapon, so you can't shoot");
@@ -233,7 +237,7 @@ public class PlayerView extends Observable{
 
     /**
      * Asks player if he wants to load some weapons, then notifies server of his choice
-     * @return
+     * @return false if no weapons need to be loaded
      */
     public boolean loadWeapon(List<String> notLoaded){
 
@@ -253,8 +257,8 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask player if want load some weapon
-     * @return
+     * This function asks player if he wants to load some weapons
+     * @return true if he wants, else false
      */
     private boolean wantLoad(){
         String format = "[0-1]";
@@ -267,8 +271,8 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask player which weapon want to load and return index
-     * @return
+     * This function asks player which weapon wants to load and returns index
+     * @return index of weapon wanted to load
      */
     private int chooseWeaponToLoad(List<String> notLoaded){
         String format = "[0-" + notLoaded.size() + "]";
@@ -282,9 +286,9 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask player which opponents want to hit from a list
+     * This function asks player which opponents wants to hit from a list
      * @param possibleTarget possible target list
-     * @return player who can hit
+     * @return players who can hit
      */
     private Player chooseTarget(List<Player> possibleTarget){
         String format = "[0-"+possibleTarget.size()+"]";
@@ -308,9 +312,9 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask player which opponents want hit from possible target
-     * @param numTarget max target to hit
-     * @param checkedList all possible target
+     * This function asks player which opponents wants hit from possible target
+     * @param numTarget max target which can be hit
+     * @param checkedList all possible targets
      * @return list of opponents to hit
      */
     public List<Player> chooseTargets(int numTarget, List<Player> checkedList){
@@ -339,6 +343,10 @@ public class PlayerView extends Observable{
         return targets;
     }
 
+    /**
+     * This function asks in which RegenerationCell the player wants to regenerate in
+     * @return true
+     */
     public boolean regeneratesPlayer(){
         int index = choosePowerUp4Regeneration();
         notifyServer(new CommandObj(EnumCommand.REG_CELL, player.getPowerups().get(index)));
@@ -349,14 +357,8 @@ public class PlayerView extends Observable{
         map.drawCLI();
     }
 
-    public void drawGUI() {
-        // TODO implement here
-    }
-
     private String stringForChooseTarget(List<Player> possibleTarget){
         StringBuilder sb = new StringBuilder();
-
-
         for(Player p : possibleTarget){
             sb.append(possibleTarget.indexOf(p)+1);
             sb.append(") ");
@@ -369,7 +371,7 @@ public class PlayerView extends Observable{
 
     /**
      * This function asks player which powerUpCard wants to discard to decide in which RegenerationCell he wants to be regenerated
-     * @return
+     * @return number of Power up to be discarded
      */
     private int choosePowerUp4Regeneration(){
         int size = player.getPowerups().size()-1;
@@ -395,7 +397,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Generate string for choose player action
+     * Generates string for choose player action
      * @return String for choose player action
      */
     private String stringForPlayerAction(List<EnumCommand> commands){
@@ -411,7 +413,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask Player wich action want to do
+     * Asks Player wich action he wants to do
      * @return Player command
      */
     private EnumCommand choosePlayerAction(Set<EnumCommand> playerCommands){
@@ -438,7 +440,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Ask player wich card want play (only loaded)
+     * Asks player which WeaponCard wants to use (only loaded)
      * @param mex Introducion mex
      * @param query Query mex
      * @return string for choose weapon from hand
@@ -452,9 +454,9 @@ public class PlayerView extends Observable{
     }
 
     /**
-         * This ask player what WeaponCard want to discard
-         * @return index of WeaponCard to Discard, -1 if don't want to discard
-         */
+     * This function asks player which WeaponCard wants to discard
+     * @return index of WeaponCard to Discard, -1 if don't want to discard
+     */
     private int chooseWeaponFromHand(String mex){
         String read;
         String formatString = "[0-"+ Constants.MAX_WEAPON_HAND_SIZE.getValue()+"]";
@@ -478,20 +480,24 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * Execute chooseWeaponFromHand using message for discard weapon
-     * @return index of card to discard
+     * Executes chooseWeaponFromHand using message for discard weapon
      */
     public void chooseWeaponToDiscard(List<String> weapons, int grabIndex ){
         int discardIndex = chooseWeaponFromHand(stringForChooseWeaponToDiscard(weapons));
         notifyServer(new CommandObj(DISCARD_WEAPON, discardIndex, grabIndex));
     }
 
+    /**
+     * String for choosing  weapon to use
+     * @param weapons which can be used
+     * @return string
+     */
     private String stringForChooseWeaponToPlace(ArrayList<String> weapons){
-        return stringForChooseWeaponFromHand("You have this Weapon: ", "What weapon to shoot?", weapons);
+        return stringForChooseWeaponFromHand("You have this Weapons: ", "What weapon do you want to use?", weapons);
     }
 
     /**
-     * Execute chooseWeaponFromHand using message for place weaponcard
+     * Executes chooseWeaponFromHand using message for place WeaponCard
      * @return index of card to place
      */
     private int chooseWeaponToPlace(ArrayList<String> weapons){
@@ -532,7 +538,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask player which WeaponCard want to draw in a RegenerationCell
+     * This asks player which WeaponCard wants to draw in a RegenerationCell
      * @return index of chosen WeaponCard
      */
     private int chooseWeaponCard(RegenerationCell cell){
@@ -592,9 +598,9 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask user what optional attack want use
+     * This asks user which optional attack wants use
      * @param canRandom user can use optional attack without order
-     * @return list of index of choosen optional attack
+     * @return list of index of chosen optional attack
      */
     public List<Integer> chooseOptionalAttack(List<Attack> attacks, boolean canRandom){
         ArrayList<Integer> indexes = new ArrayList<>();
@@ -628,14 +634,14 @@ public class PlayerView extends Observable{
 
         sb.append("\tBase attack is:\n\t");
         sb.append(stringOnlyBaseAttack(wc));
-        sb.append("\tor else you can choose alterative attack:\n");
+        sb.append("\tor else you can choose alternative attack:\n");
         sb.append("\t\t2)");
         sb.append(wc.getAlternativeAttack());
         return sb.toString();
     }
 
     /**
-     * Create string for choose which attack want to use
+     * Creates string for choosing which attack wants to use
      * @param wc WeaponCard
      * @return String contains possible attack
      */
@@ -659,7 +665,7 @@ public class PlayerView extends Observable{
     }
 
     /**
-     * This ask player which attack want to use: BaseAttack or use OptionalAttack or use AlternativeAttack
+     * This asks player which attack wants to use: BaseAttack, OptionalAttack or AlternativeAttack
      * @param wc WeaponCard
      * @return index of attack to use
      */

@@ -16,6 +16,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * GameServerImpl is used to manage a single game
+ */
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private static final long SECONDS_BEFORE_START_GAME = Constants.SECONDS_BEFORE_START_GAME.getValue();;
     private transient BoardController boardController; //ho il riferimento al controller, però non lascio chiamare al client i suoi metodi
