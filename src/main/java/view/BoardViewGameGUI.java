@@ -1789,7 +1789,7 @@ public class BoardViewGameGUI extends Application implements View {
     }
 
     @Override
-    public void giveRoundScore(String playerDead, Map<String, Integer> points) {
+    public void giveScore(String playerDead, Map<String, Integer> points) {
         changeMessage(playerDead, (Pane) root.getChildren().get(players.size()+3));
     }
 

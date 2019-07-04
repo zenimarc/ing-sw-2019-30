@@ -108,7 +108,7 @@ public class ClientUpdateManager extends Observable {
                 break;
             case PRINT_POINTS:
                 if(cmd.getObject().getClass().equals(String.class) && cmd.getObject2().getClass().equals(HashMap.class)) {
-                    view.giveRoundScore((String) cmd.getObject(), (Map<String, Integer>) cmd.getObject2());
+                    view.giveScore((String) cmd.getObject(), (Map<String, Integer>) cmd.getObject2());
                 }
                 break;
             default:

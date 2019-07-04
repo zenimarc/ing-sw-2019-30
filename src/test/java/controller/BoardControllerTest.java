@@ -209,22 +209,22 @@ class BoardControllerTest {
         controller.changeTurn(); //turn of player 3
         assertTrue(controller.isFinalFrenzy());
         controller.setFinalFrenzyTurns();
-        assertTrue(controller.verifyTwoTurnsFrenzy());
+        assertTrue(controller.isFrenzyTurnBeforeFirst());
         controller.changeTurn(); //player 4
-        assertTrue(controller.verifyTwoTurnsFrenzy());
+        assertTrue(controller.isFrenzyTurnBeforeFirst());
         controller.changeTurn(); //player 1
-        assertFalse(controller.verifyTwoTurnsFrenzy());
+        assertFalse(controller.isFrenzyTurnBeforeFirst());
     }
 
     @Test
     void finalFrenzyFirstPlayer(){
         assertTrue(controller.isFinalFrenzy());
         controller.setFinalFrenzyTurns();
-        assertFalse(controller.verifyTwoTurnsFrenzy());
+        assertFalse(controller.isFrenzyTurnBeforeFirst());
         controller.changeTurn();
-        assertFalse(controller.verifyTwoTurnsFrenzy());
+        assertFalse(controller.isFrenzyTurnBeforeFirst());
         controller.changeTurn();
-        assertFalse(controller.verifyTwoTurnsFrenzy());
+        assertFalse(controller.isFrenzyTurnBeforeFirst());
     }
     private static Billboard genBillboard(){
         HashMap<Cell, Position> mappaProva = new HashMap<>();

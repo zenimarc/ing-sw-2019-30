@@ -42,7 +42,7 @@ public class PlayerView extends Observable{
     /**
      *Play turn in normal mode
      */
-    private void normalModeMyTurn(){
+    private boolean normalModeMyTurn(){
         boolean toServerAction = false;
         EnumCommand command = choosePlayerAction(PlayerAction);
         switch (command) {
@@ -66,18 +66,26 @@ public class PlayerView extends Observable{
             default:
                 break;
         }
-        if(!toServerAction) printError("Action not performed");
+        return toServerAction;
     }
 
-    private void finalFrenzyBeforeFirst(){
+    /**
+     * Ask player action to do in FFrenzy, player is before first player
+     * @return good action
+     */
+    private boolean finalFrenzyBeforeFirst(){
         boolean toServerAction = false;
         EnumCommand command = choosePlayerAction(PlayerActionFF_BEFORE);
         switch (command){
             case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
-            case MOVE_FRENZY:
-            case GRAB_MOVE_FRENZY_BEFORE_FIRST:
+                toServerAction = (move(SHOOT_MOVE_FRENZY_BEFORE_FIRST));
                 break;
-
+            case MOVE_FRENZY:
+                toServerAction = move(command);
+                break;
+            case GRAB_MOVE_FRENZY_BEFORE_FIRST:
+                toServerAction = move(GRAB_MOVE_FRENZY_BEFORE_FIRST);
+                break;
             case END_TURN:
                 notifyServer(new CommandObj(EnumCommand.END_TURN));
                 toServerAction = true;
@@ -86,26 +94,56 @@ public class PlayerView extends Observable{
                     break;
 
         }
-
-        if(!toServerAction) printError("Action not performed");
+        return toServerAction;
     }
 
+    /**
+     * Ask player action to do in FFrenzy, player is after first player or is first player
+     * @return good action
+     */
+    private boolean finalFrenzyAfterFirst(){
+        boolean toServerAction = false;
+        EnumCommand command = choosePlayerAction(PlayerActionFF_AFTER);
+        switch (command){
+            case SHOOT_MOVE_FRENZY_AFTER_FIRST:
+                toServerAction = move(SHOOT_MOVE_FRENZY_AFTER_FIRST);
+                break;
+            case GRAB_MOVE_FRENZY_AFTER_FIRST:
+                toServerAction = move(GRAB_MOVE_FRENZY_AFTER_FIRST);
+                break;
+            case END_TURN:
+                notifyServer(new CommandObj(EnumCommand.END_TURN));
+                toServerAction = true;
+                break;
+            default:
+                break;
 
+        }
+        return toServerAction;
+    }
 
+    /**
+     * Select correct option-menu to ask player action to do
+     * @param modAction normal turn, ff after first, ff before first
+     */
     protected void myTurn(Constants modAction) {
+        boolean toServerAction = false;
 
         switch (modAction) {
             case ACTION_PER_TURN_NORMAL_MODE:
-                normalModeMyTurn();
+                toServerAction = normalModeMyTurn();
                 break;
             case ACTION_PER_TURN_FF_BEFORE_FIRST:
+                toServerAction = finalFrenzyBeforeFirst();
                 break;
             case ACTION_PER_TURN_FF_AFTER_FIRST:
+                toServerAction = finalFrenzyAfterFirst();
                 break;
             default:
                 break;
         }
 
+        if(!toServerAction) printError("Action not performed");
 
     }
 
@@ -121,6 +159,7 @@ public class PlayerView extends Observable{
     public boolean move(EnumCommand enumCommand) {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String positionString = "";
+
         while (!positionString.matches("[0-2],[0-3]")) {
             print("Where do you want to move?");
             try {
@@ -355,11 +394,11 @@ public class PlayerView extends Observable{
      * Generate string for choose player action
      * @return String for choose player action
      */
-    private String stringForPlayerAction(){
+    private String stringForPlayerAction(List<EnumCommand> commands){
         StringBuilder sb = new StringBuilder();
         sb.append("Possible Actions: \n");
-        for(EnumCommand action : EnumCommand.PlayerAction){
-            sb.append(action.ordinal());
+        for(EnumCommand action : commands){
+            sb.append(commands.indexOf(action));
             sb.append(") ");
             sb.append(action.getName());
             sb.append('\n');
@@ -376,8 +415,10 @@ public class PlayerView extends Observable{
         int slt = playerCommands.size();
         String read;
         String formatString = "[0-"+ playerCommands.size()+"]";
+        String question = stringForPlayerAction(new ArrayList<>(playerCommands));
+
         while(true) {
-            print(stringForPlayerAction());
+            print(question);
             print("What do you want to do?");
             try {
                 read = in.readLine();
@@ -387,7 +428,7 @@ public class PlayerView extends Observable{
             }
 
             if(slt< playerCommands.size()){
-                return EnumCommand.values()[slt];
+                return (EnumCommand) (new ArrayList(playerCommands)).get(slt);
             }
         }
     }
@@ -553,21 +594,25 @@ public class PlayerView extends Observable{
      */
     public List<Integer> chooseOptionalAttack(List<Attack> attacks, boolean canRandom){
         ArrayList<Integer> indexes = new ArrayList<>();
-
-        String read = "";
+        String format;
+        String read;
 
         if(attacks.isEmpty()) return Collections.emptyList();
 
         List<Attack> attackList = new ArrayList<>();
         attackList.addAll(attacks);
-        String format = "[0-"+attackList.size()+"]";
 
         if(canRandom) {
-            while (!read.matches(format) && !read.equals("0")) {
+            while (true) {
+                format = "[0-"+attackList.size()+"]";
+                print(stringForChooseAttackInList(attackList));
                 read = reader.next();
-                if(read.matches(format) && !read.equals("0")) {
-                    indexes.add(attacks.indexOf(attackList.get(Integer.valueOf(read)-1)));
-                    attackList.remove(Integer.valueOf(read)-1);
+                if(read.matches(format)) {
+                    if (!read.equals("0")){
+                        indexes.add(attacks.indexOf(attackList.get(Integer.valueOf(read)-1)));
+                        attackList.remove(Integer.valueOf(read)-1);
+                    }
+                    else break;
                 }
             }
         }
@@ -748,15 +793,15 @@ public class PlayerView extends Observable{
         return sb.toString();
     }
 
-
-    public void giveRoundScore(String nameDead, Map<String, Integer> points) {
+    public void giveScore(String nameDead, Map<String, Integer> points) {
         StringBuilder sb = new StringBuilder();
         String starLine = starLine();
 
         sb.append("\n\n");
         sb.append(starLine);
         sb.append("\n");
-        sb.append(wordInStar(nameDead.toUpperCase()+" is dead"));
+        if(nameDead==null) sb.append(wordInStar("END GAME"));
+        else sb.append(wordInStar(nameDead.toUpperCase()+" is dead"));
         sb.append(starLine);
         sb.append("\n");
         sb.append(wordInStar("Points are:"));
@@ -791,11 +836,14 @@ public class PlayerView extends Observable{
             return false;
         }
         choosePowerUp(player.getPowerups());
+
         String format = "[0-" + player.getPowerups().size() + "]";
-        String read = "";
-        while (!read.matches(format)) {
+        String read;
+
+        while(true){
             print(choosePowerUp(player.getPowerups()));
             read = reader.next();
+            if(read.matches(format)) break;
         }
         if(Integer.valueOf(read) != 0) {
             if (player.getPowerups().get(Integer.valueOf(read) - 1).getPowerUp() == PowerUp.GUNSIGHT)

@@ -22,7 +22,8 @@ import static constants.Constants.*;
 public class BoardController{
 
     private int playerTurn = 0;
-    private int verifyFinalFrenzyTurns = 0;
+    private int firstPlayerInFF = 2; //TODO metterlo a 0
+    private boolean hasFirstPlayInFrenzy = false;
     private List<Player> listOfPlayers;
     private List<PlayerController> playerControllers;
     private Board board;
@@ -43,7 +44,6 @@ public class BoardController{
         this(players, 8);
         this.board = board;
         this.playerControllers = controllers;
-
     }
 
     /**
@@ -94,8 +94,6 @@ public class BoardController{
         return listOfPlayers.stream().filter(x -> x.getName().equals(nickname)).findFirst().orElse(null);
     }
 
-    public int getFrenzyturns (){return this.verifyFinalFrenzyTurns;}
-
     /**
      * This function returns the board associated with this controller
      * @return the board associated with this controller
@@ -109,14 +107,6 @@ public class BoardController{
      */
 
     public int getNumTurns() { return this.playerTurn; }
-
-    /**
-     * this function returns the current player's name who's playing
-     * @return the current player's name who's playing
-     */
-    public String getPlayerNameWhoPlay(){
-        return listOfPlayers.get(playerTurn).getName();
-    }
 
     /**
      * This function changes the number to decide which turn is
@@ -150,20 +140,16 @@ public class BoardController{
     }
 
     /**
-     * This function changes the value of verifyFinalFrenzyTurns to decide the number of actions of a player during Final Frenzy
+     * This function changes the value of firstPlayerInFF to decide the number of actions of a player during Final Frenzy
      */
     public void setFinalFrenzyTurns(){
         if(this.isFinalFrenzy()){
-            this.verifyFinalFrenzyTurns = this.playerTurn;
+            this.firstPlayerInFF = this.playerTurn;
         }
     }
 
-    /**
-     * This function verifies if the player can have one or two turns during Final Frenzy
-     * @return true if he can have two turns, false if one
-     */
-    public boolean verifyTwoTurnsFrenzy(){
-        return(this.verifyFinalFrenzyTurns != 0 && this.playerTurn >= this.verifyFinalFrenzyTurns);
+    public boolean isFrenzyTurnBeforeFirst(){
+        return hasFirstPlayInFrenzy;
     }
 
     /**
@@ -372,11 +358,14 @@ public class BoardController{
             if(!isFinalFrenzy()){
                 pc.myTurn(ACTION_PER_TURN_NORMAL_MODE);
             }else {
-                if(verifyTwoTurnsFrenzy()){
+
+                if(playerTurn==0) hasFirstPlayInFrenzy = true;
+
+                if(!hasFirstPlayInFrenzy){
                     pc.myTurn(ACTION_PER_TURN_FF_BEFORE_FIRST);
                 }else {
                     pc.myTurn(ACTION_PER_TURN_FF_AFTER_FIRST);
-                    if(playerTurn==verifyFinalFrenzyTurns){
+                    if(playerTurn==firstPlayerInFF){
                         totalPoints();
                         //TODO devo chiamare qualcuno per dire che il gioco è finito!!!
                         return;
@@ -469,6 +458,13 @@ public class BoardController{
             pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, deadPlayer, points ));
         }
     }
+
+    private void notifyScore(Map<String, Integer> points ){
+        for(PlayerController pc : playerControllers){
+            pc.cmdForView(new CommandObj(EnumCommand.PRINT_POINTS, null ,points));
+        }
+    }
+
 
     /**
      * Send all Players actual score of all players

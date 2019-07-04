@@ -151,7 +151,7 @@ class PlayerControllerTest {
         //final frenzy single turn
         control.changeTurn();
         control.changeTurn();
-        assertFalse(control.verifyTwoTurnsFrenzy());
+        assertFalse(control.isFrenzyTurnBeforeFirst());
         assertFalse(controller.move(c01, 10));
         assertFalse(controller.move(c23, 11));
         assertTrue(controller.move(c12, 11));
