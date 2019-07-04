@@ -489,7 +489,7 @@ public class BoardController{
     public void kickPlayerWhoPlay(){
         System.out.println("disconnetto per inattività: "+listOfPlayers.get(playerTurn).getName());
         this.kick(listOfPlayers.get(playerTurn));
-        changeTurn();
+        getPlayerController(listOfPlayers.get(playerTurn)).receiveCmd(new CommandObj(EnumCommand.END_TURN));
     }
 
     public void suspend(Player playerToSuspend){
