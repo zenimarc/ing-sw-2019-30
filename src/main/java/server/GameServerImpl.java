@@ -111,7 +111,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     /**
      * This function is used to begin the game
      */
-    public void startGame(){
+    private void startGame(){
         System.out.println("il gameserver: "+this.getGameToken()+" ha startato il game");
         this.gameStarted = true;
         List<Player> players = new ArrayList<>();
@@ -225,7 +225,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     }
 
 
-    public synchronized void endGame(){
+    private synchronized void endGame(){
         this.gameStarted = false;
         Thread.currentThread().interrupt();
     }
@@ -246,6 +246,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         }
     }
 
+    @Deprecated
     public List<Client> getClientsFromPlayers(List<Player> players){
         return this.clients.stream().filter(x -> !x.isOffline()
                 && players.contains(x.getPlayer())).map(ClientInfo::getClient).collect(Collectors.toList());
@@ -287,10 +288,10 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * this functino extrapolate a list of active Client from the list of ClientInfo
      * @return a list of active Clients
      */
-    public synchronized List<Client> getActiveClients() {
+    private synchronized List<Client> getActiveClients() {
         return this.clients.stream().filter(x -> !x.isOffline()).map(ClientInfo::getClient).collect(Collectors.toList());
     }
-    public synchronized void swapOffOn(Client client){
+    private synchronized void swapOffOn(Client client){
         System.out.print("swapOffOn "+ client);
         Optional<ClientInfo> clientInfo = clients.stream().filter(x -> x.getClient().equals(client)).findFirst();
         if (clientInfo.isPresent())
@@ -301,7 +302,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      * this function set offline flag to true of the indicated client
      * @param client to be set as offline
      */
-    public synchronized void swapOnOff(Client client){
+    private synchronized void swapOnOff(Client client){
         System.out.print("swapOnOff "+ client);
         Optional<ClientInfo> clientInfo = clients.stream().filter(x -> x.getClient().equals(client)).findFirst();
         if (clientInfo.isPresent()) {
@@ -396,7 +397,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             endGame();
         }
     }
-
+    @Deprecated
     public synchronized int changeTurn() {
 
         boardController.changeTurn();
@@ -408,6 +409,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         return this.turn;
     }
 
+    @Deprecated
     public synchronized void changeTurn(Client remoteClient){
         if(clients.get(this.getTurn()).getClient().equals(remoteClient))
             this.changeTurn();
@@ -418,6 +420,5 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
      */
     public void start(){
         new Thread(this::checkOfflineClients).start();
-        //TODO: far partire il checkoogìfline e anche il timer del turno (2 min per azione)
     }
 }
