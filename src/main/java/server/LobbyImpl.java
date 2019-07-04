@@ -64,7 +64,7 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
      * @throws RemoteException
      */
     private GameServerImpl createGame(ClientInfo clientInfo) throws RemoteException{
-        System.out.println("provo a generare un nuovo gameserver");
+        System.out.println("generating a new gameserver");
         GameServerImpl game = new GameServerImpl(MIN_PLAYERS, MAX_PLAYERS);
         gamesList.put(game.getGameToken(), game);
         clientInfo.setGameToken(game.getGameToken());
@@ -88,7 +88,6 @@ public class LobbyImpl extends UnicastRemoteObject implements Lobby{
             UUID userToken = UUID.randomUUID();
             System.out.println("generated token: " + userToken + " for client: " + username );
             ClientInfo clientInfo = new ClientInfo(remoteClient, userToken, null);
-            System.out.println("ho generato new client info: "+clientInfo);
             GameServerImpl gameServer = getFreeGameServer();
             if (gameServer != null) {
                 clientInfo.setGameToken(gameServer.getGameToken());

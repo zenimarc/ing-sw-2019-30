@@ -484,7 +484,7 @@ public class BoardController{
     }
 
     public void kickPlayerWhoPlay(){
-        System.out.println("voglio ckickare"+listOfPlayers.get(playerTurn));
+        System.out.println("disconnetto per inattività: "+listOfPlayers.get(playerTurn).getName());
         this.kick(listOfPlayers.get(playerTurn));
         changeTurn();
     }
