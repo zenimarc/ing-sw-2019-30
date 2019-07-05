@@ -23,14 +23,14 @@ class DeckTest {
     @Test
     void draw() {
         Bullet bullet1 = new Bullet(Color.WHITE);
-        PowerCard card1 = new PowerCard(bullet1, PowerUp.GUNSIGHT);
+        PowerCard card1 = new PowerCard(bullet1, PowerUp.TARGETING_SCOPE);
         deck.addCard(card1);
         assertEquals(card1, deck.draw());
     }
 
     @Test
     void addCardTest() {
-        Card card1 = new PowerCard(new Bullet(Color.WHITE), PowerUp.GUNSIGHT);
+        Card card1 = new PowerCard(new Bullet(Color.WHITE), PowerUp.TARGETING_SCOPE);
         deck.addCard(card1);
         assertEquals(1, deck.getSize());
     }

@@ -6,6 +6,7 @@ import constants.Color;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
+import powerup.PowerUp;
 import weapon.WeaponCard;
 
 import java.io.Serializable;
@@ -28,6 +29,8 @@ public class Player extends Observable implements Cloneable, Serializable {
     private ArrayList<PowerCard> powerups;
     private Map<Color, Integer> ammo;
     private boolean isActive;
+    private Player potentialTagbackGrenade;
+
 
     /**
      * Default constructors
@@ -309,6 +312,16 @@ public class Player extends Observable implements Cloneable, Serializable {
     }
 
     /**
+     * This function return a list of Tagback Grenade of player (can be empty)
+     * @return
+     */
+    public List<PowerCard> haveTagbackGranade(){
+        return powerups.stream()
+                .filter(x -> x.getPowerUp().equals(PowerUp.TAGBACK_GRENADE))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Clone this player
      * @return a clone of this player
      */
@@ -491,5 +504,23 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     public void addGunsightDamage(Player player) {
         playerBoard.addGunsightDamage(player);
+    }
+
+    public boolean canUseTagbackGrenade() {
+        return potentialTagbackGrenade!=null;
+    }
+
+    public void useTagbackGrenade(){
+        addMark(potentialTagbackGrenade);
+        potentialTagbackGrenade.notifyEndAction();
+        potentialTagbackGrenade = null;
+    }
+
+    public void enableTagbackGrenade(Player player){
+        potentialTagbackGrenade = player;
+    }
+
+    public Player getPotentialTagbackGrenade() {
+        return potentialTagbackGrenade;
     }
 }

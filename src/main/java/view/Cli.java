@@ -163,4 +163,9 @@ public class Cli implements View {
     public int askAttackPriority() {
         return playerView.askPriorityForAttacks();
     }
+
+    @Override
+    public void isMyTurn() {
+            playerView.print(playerView.stringForMyTurn());
+    }
 }

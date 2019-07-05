@@ -27,9 +27,9 @@ class CardTest {
 
     @Test
     void powerTest(){
-        PowerCard power = new PowerCard(new Bullet(Color.RED), PowerUp.GUNSIGHT);
+        PowerCard power = new PowerCard(new Bullet(Color.RED), PowerUp.TARGETING_SCOPE);
         assertEquals(Color.RED, power.getColor());
-        assertEquals(PowerUp.GUNSIGHT, power.getPowerUp());
+        assertEquals(PowerUp.TARGETING_SCOPE, power.getPowerUp());
 
     }
 }

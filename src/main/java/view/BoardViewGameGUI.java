@@ -37,11 +37,11 @@ import static constants.Color.convertToColor;
 import static constants.Constants.ACTION_PER_TURN_FF_AFTER_FIRST;
 import static constants.Constants.ACTION_PER_TURN_FF_BEFORE_FIRST;
 import static controller.EnumCommand.*;
-import static controller.EnumCommand.GUNSIGHT;
+import static controller.EnumCommand.TARGETING_SCOPE;
 import static deck.Bullet.*;
-import static powerup.PowerUp.KINETICRAY;
+import static powerup.PowerUp.NEWTON;
 import static powerup.PowerUp.TELEPORTER;
-import static powerup.PowerUp.VENOMGRENADE;
+import static powerup.PowerUp.TAGBACK_GRENADE;
 
 public class BoardViewGameGUI extends Application implements View {
     private int stageHeight = 700;
@@ -1069,8 +1069,8 @@ public class BoardViewGameGUI extends Application implements View {
                     case TELEPORTER:
                         notifyServer(new CommandObj(EnumCommand.TELEPORTER, new Position(x, y)));
                         break;
-                    case KINETICRAY:
-                        notifyServer(new CommandObj(EnumCommand.KINETICRAY, (Player) object, new Position(x, y)));
+                    case NEWTON:
+                        notifyServer(new CommandObj(EnumCommand.NEWTON, (Player) object, new Position(x, y)));
                         break;
                     case CHOOSE_CELL:
                         if(((List<Position>)targets).contains(new Position(x, y))) {
@@ -1099,24 +1099,24 @@ public class BoardViewGameGUI extends Application implements View {
             public void handle(ActionEvent event) {
                 switch (command) {
                     case CHOOSE_ACTION:
-                        if (player.getPowerups().get(i).getPowerUp() == TELEPORTER || player.getPowerups().get(i).getPowerUp() == KINETICRAY){
+                        if (player.getPowerups().get(i).getPowerUp() == TELEPORTER || player.getPowerups().get(i).getPowerUp() == NEWTON){
                             if(player.getPowerups().get(i).getPowerUp() == TELEPORTER)
                                 notifyServer(new CommandObj(PAYPOWERUP, i));
-                            if (player.getPowerups().get(i).getPowerUp() == KINETICRAY)
+                            if (player.getPowerups().get(i).getPowerUp() == NEWTON)
                                 notifyServer(new CommandObj(PAYPOWERUP, i));
                         }
                         else powerUp.disableProperty();
                         break;
                     case SHOOT://after shooting
-                        if (player.getPowerups().get(i).getPowerUp() != VENOMGRENADE) {
-                            if (player.getPowerups().get(i).getPowerUp() == PowerUp.GUNSIGHT)
+                        if (player.getPowerups().get(i).getPowerUp() != TAGBACK_GRENADE) {
+                            if (player.getPowerups().get(i).getPowerUp() == PowerUp.TARGETING_SCOPE)
                                 notifyServer(new CommandObj(PAYGUNSIGHT, i));
                             else notifyServer(new CommandObj(PAYPOWERUP, i));
                         }
                         else powerUp.disableProperty();
                         break;
-                    case USE_VENOMGRENADE:// after getting hit
-                        if (player.getPowerups().get(i).getPowerUp() == VENOMGRENADE)
+                    case USE_TAGBACK_GRENADE:// after getting hit
+                        if (player.getPowerups().get(i).getPowerUp() == TAGBACK_GRENADE)
                             notifyServer(new CommandObj(PAYPOWERUP, i));
                         else powerUp.disableProperty();
                         break;
@@ -1345,9 +1345,9 @@ public class BoardViewGameGUI extends Application implements View {
             @Override
             public void handle(ActionEvent event) {
                 switch (command) {
-                    case USE_KINETICRAY:
+                    case USE_NEWTON:
                         object = name;
-                        command = EnumCommand.KINETICRAY;
+                        command = EnumCommand.NEWTON;
                         break;
                     case CHOOSE_OPPONENTS:
                         if(((List<Player>)targets).contains(name)){
@@ -1368,7 +1368,7 @@ public class BoardViewGameGUI extends Application implements View {
                     case USE_GUNSIGHT:
                         if(!((ArrayList<Player>)targets).contains(name))
                             pawn.disableProperty();
-                        else notifyServer(new CommandObj(GUNSIGHT, ((ArrayList<Player>)targets).indexOf(name)));
+                        else notifyServer(new CommandObj(TARGETING_SCOPE, ((ArrayList<Player>)targets).indexOf(name)));
                         break;
                     default:
                         pawn.disableProperty();
@@ -1855,5 +1855,10 @@ public class BoardViewGameGUI extends Application implements View {
     @Override
     public int askAttackPriority() {
         return 1;
+    }
+
+    @Override
+    public void isMyTurn() {
+
     }
 }

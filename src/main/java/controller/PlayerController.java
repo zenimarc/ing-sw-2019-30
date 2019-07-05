@@ -28,8 +28,8 @@ import static constants.Constants.ACTION_PER_TURN_NORMAL_MODE;
 import static constants.EnumActionParam.*;
 import static controller.EnumCommand.*;
 import static deck.Bullet.toIntArray;
-import static powerup.PowerUp.GUNSIGHT;
-import static powerup.PowerUp.VENOMGRENADE;
+import static powerup.PowerUp.TARGETING_SCOPE;
+import static powerup.PowerUp.TAGBACK_GRENADE;
 
 
 /**
@@ -77,6 +77,8 @@ public class PlayerController extends Observable{
     }
 */
     public void receiveCmd(CommandObj cmdObj){
+        PowerCard powerCard;
+
         switch (cmdObj.getCmd()) {
             case GRAB_MOVE:
             case GRAB_MOVE_FRENZY_BEFORE_FIRST:
@@ -142,30 +144,35 @@ public class PlayerController extends Observable{
                 payPowerUp();
                 player.notifyEndAction();
                 break;
-            case KINETICRAY_TARGET:
+            case NEWTON_TARGET:
                 Player p = boardController.getListOfPlayers().stream().filter(x -> x.getName().equals((String) cmdObj.getObject())).findFirst().orElse(null);
                 if (p != null) {
                     List<Position> potentialPosition = boardController.getCellsKineticRay(p.getCell());
                     if (!potentialPosition.isEmpty()) {
-                        cmdForView(new CommandObj(KINETICRAY_TARGET, potentialPosition, p.getName()));
+                        cmdForView(new CommandObj(NEWTON_TARGET, potentialPosition, p.getName()));
                     }
                 }
                 break;
-            case USE_KINETICRAY:
+            case USE_NEWTON:
                 Cell kntCell = billboard.getCellFromPosition((Position) cmdObj.getObject());
                 Player kntPlayer = boardController.getPlayer((String) cmdObj.getObject2());
                 setCell(kntPlayer, kntCell);
                 payPowerUp();
                 break;
-            case USE_VENOMGRENADE:
-                boardController.getPlayerWhoPlay().addMark(player);
+            case USE_TAGBACK_GRENADE:
+                powerCard = player.getPowerups().stream().filter(x->x.getPowerUp().equals(TAGBACK_GRENADE)).findFirst().orElse(null);
+                if(powerCard!=null)
+                    if(player.canPay(Bullet.colorToArray(powerCard.getColor()))) {
+                        player.useTagbackGrenade();
+                        player.useAmmo(Bullet.colorToArray(powerCard.getColor()));
+                    }
                 break;
             case USE_GUNSIGHT:
                 cmdForView(new CommandObj(USE_GUNSIGHT, enemies));
                 ((Player) cmdObj.getObject()).addDamage(player);
                 notifyObservers();
                 break;
-            case GUNSIGHT:
+            case TARGETING_SCOPE:
                 enemies.get((int) cmdObj.getObject()).addGunsightDamage(player);
                 break;
             case DISCARD_POWER:
@@ -178,7 +185,7 @@ public class PlayerController extends Observable{
                 numAction += ACTION_PER_TURN_NORMAL_MODE.getValue();
                 break;
             case REG_CELL:
-                PowerCard powerCard = (PowerCard) cmdObj.getObject();
+                powerCard = (PowerCard) cmdObj.getObject();
                 if (boardController.setRegenerationCell(player, powerCard.getColor())) {
                     player.usePowerUp(powerCard, true);
                     boardController.getBoard().addPowerUpDiscardDeck(powerCard);
@@ -232,7 +239,7 @@ public class PlayerController extends Observable{
         switch (cmdObj.getCmd()) {
             case CHECK_EVERY_TIME_POWER_UP:
                 powerUps = player.getPowerups().stream()
-                        .filter((x -> (x.getPowerUp() == PowerUp.TELEPORTER || x.getPowerUp() == PowerUp.KINETICRAY) &&
+                        .filter((x -> (x.getPowerUp() == PowerUp.TELEPORTER || x.getPowerUp() == PowerUp.NEWTON) &&
                                 player.canPay(Bullet.colorToArray(x.getColor()))))
                         .collect(Collectors.toList());
                 if (!powerUps.isEmpty()) {
@@ -248,8 +255,8 @@ public class PlayerController extends Observable{
                     player.getPowerups().stream().filter(x -> x.equals(powerUp)).findFirst().ifPresent(x -> {
                                 if (x.getPowerUp().equals(PowerUp.TELEPORTER)) {
                                     cmdForView(new CommandObj(USE_TELEPORTER));
-                                } else if (x.getPowerUp().equals(PowerUp.KINETICRAY)) {
-                                    cmdForView(new CommandObj(USE_KINETICRAY, boardController.getListOfPlayers()
+                                } else if (x.getPowerUp().equals(PowerUp.NEWTON)) {
+                                    cmdForView(new CommandObj(USE_NEWTON, boardController.getListOfPlayers()
                                             .stream().filter(y -> !y.getName().equals(this.player.getName())).collect(Collectors.toList())));
                                 }
                             }
@@ -516,27 +523,39 @@ public class PlayerController extends Observable{
         }else if (!weaponCard.getAttacks().isEmpty()) {
             //BASE ATTACK + OPTIONAL ATTACK
             if(shootOptionalAttack(weaponCard)) isGoodAttack = true;
-//            askWhichOptionalAttack(weaponCard);
         }else if(weaponCard.getAlternativeAttack()!=null){
             //ALTERNATIVE ATTACK
             if(shootAlternativeAttack(weaponCard)) isGoodAttack = true;
         }
 
         if(isGoodAttack) {
-       /*     askForPowerUp = true;
-            while(askForPowerUp)
-                receiveCmd(new CommandObj(ASK_FOR_POWER_UP, GUNSIGHT));
-            askForPowerUp = true;
-            for(Player enemy : enemies)
-                while(!boardController.getPlayerController(enemy).returnIfPowerUpWanted()) {
-                    boardController.getPlayerController(enemy).receiveCmd(new CommandObj(ASK_FOR_POWER_UP, VENOMGRENADE));
-                }*/
+            askForTagbackGrenade();
             return true;
         }else {
             viewPrintError("Failed attack");
         }
         return false;
     }
+
+    /**
+     * Support for Tagback Grenade. Search if some player have Tagback Grenade and if can pay, if true enable tagback grenade
+     */
+    private void askForTagbackGrenade(){
+        List<Player> players = enemies.stream().filter(x -> x!= null &&
+                !(x.haveTagbackGranade().isEmpty()) &&
+                boardController.getBoard().getBillboard().visibleCells(x.getCell()).contains(this.player.getCell())
+                )
+                .collect(Collectors.toList());
+        if(!players.isEmpty()){
+            for(Player opponent: players){
+                if(opponent.haveTagbackGranade().stream().anyMatch(x-> opponent.canPay(Bullet.colorToArray(x.getColor())))){
+                    opponent.enableTagbackGrenade(player);
+                }
+            }
+        }
+        enemies.clear();
+    }
+
 
     /**
      * This asks player which optional attack wants to use, if 0 -> use only BaseAttack.
@@ -679,7 +698,6 @@ public class PlayerController extends Observable{
                     viewPrintError(re.getMessage());
                 }
             }
-        enemies = opponents;
         return opponents;
     }
 
@@ -821,12 +839,12 @@ public class PlayerController extends Observable{
      */
     private CommandObj verifyPowerUp(PowerCard power) {
         switch(power.getPowerUp()) {
-            case KINETICRAY:
-                return new CommandObj(USE_KINETICRAY);
-            case GUNSIGHT:
+            case NEWTON:
+                return new CommandObj(USE_NEWTON);
+            case TARGETING_SCOPE:
                 return new CommandObj(USE_GUNSIGHT);
-            case VENOMGRENADE:
-                return new CommandObj(USE_VENOMGRENADE);
+            case TAGBACK_GRENADE:
+                return new CommandObj(USE_TAGBACK_GRENADE);
             case TELEPORTER:
                 return new CommandObj(USE_TELEPORTER);
 
@@ -843,14 +861,14 @@ public class PlayerController extends Observable{
     private ArrayList<PowerCard> getPotentialPowerUps(CommandObj obj){
         ArrayList<PowerCard> powers = new ArrayList<>();
         for(PowerCard power: player.getPowerups()){
-            if(obj.getObject() == VENOMGRENADE && boardController.getPlayerWhoPlay() != player && boardController.getBoard().getBillboard().isVisible(player.getCell(), boardController.getPlayerWhoPlay().getCell()))
+            if(obj.getObject() == TAGBACK_GRENADE && boardController.getPlayerWhoPlay() != player && boardController.getBoard().getBillboard().isVisible(player.getCell(), boardController.getPlayerWhoPlay().getCell()))
                 powers.add(power);
             else {
-                if(power.getPowerUp() == GUNSIGHT && !enemies.isEmpty()) {
-                    if (power.getPowerUp() == GUNSIGHT && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 0, 1})))
+                if(power.getPowerUp() == TARGETING_SCOPE && !enemies.isEmpty()) {
+                    if (power.getPowerUp() == TARGETING_SCOPE && (player.canPay(new int[]{1,0,0}) || player.canPay(new int[]{0, 1, 0}) || player.canPay(new int[]{0, 0, 1})))
                         powers.add(power);
                 }
-                else if(power.getPowerUp() == PowerUp.TELEPORTER || (power.getPowerUp() == PowerUp.KINETICRAY && boardController.notNullCellPlayers().size() > 0))
+                else if(power.getPowerUp() == PowerUp.TELEPORTER || (power.getPowerUp() == PowerUp.NEWTON && boardController.notNullCellPlayers().size() > 0))
                     powers.add(power);
 
             }
@@ -873,8 +891,14 @@ public class PlayerController extends Observable{
 
         if(player.getCell()==null) regCell();
 
+        cmdForView(new CommandObj(YOUR_TURN));
+
+        if(this.player.canUseTagbackGrenade()){
+            cmdForView(new CommandObj(USE_TAGBACK_GRENADE, Arrays.asList(player.getPotentialTagbackGrenade())));
+        }
+
         while(numAction < maxAction.getValue()) {
-            cmdForView(new CommandObj(YOUR_TURN, maxAction));
+            cmdForView(new CommandObj(TIME_TO_PLAY, maxAction));
         }
         askForLoad();
         numAction = 0;

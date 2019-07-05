@@ -4,8 +4,8 @@ package powerup;
  * PowerUp is an enumeration to distinguish the different power ups
  */
 public enum PowerUp {
-    GUNSIGHT,
-    KINETICRAY,
+    TARGETING_SCOPE,
+    NEWTON,
     TELEPORTER,
-    VENOMGRENADE
+    TAGBACK_GRENADE
 }

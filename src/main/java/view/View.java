@@ -43,4 +43,5 @@ public interface View {
     void shoot();
     void move(EnumCommand typeAction);
     int askAttackPriority();
+    void isMyTurn();
 }

@@ -143,7 +143,7 @@ class PlayerTest {
     }
     @Test
     void usePowerUp(){
-        PowerCard pup = new PowerCard(new Bullet(Color.RED), PowerUp.GUNSIGHT);
+        PowerCard pup = new PowerCard(new Bullet(Color.RED), PowerUp.TARGETING_SCOPE);
         assertTrue(p1.getPowerups().isEmpty());
         p1.addPowerCard(pup);
         assertFalse(p1.getPowerups().isEmpty());
@@ -152,7 +152,7 @@ class PlayerTest {
     }
     @Test
     void canPayPowerUp(){
-        PowerCard pup = new PowerCard(new Bullet(Color.RED), PowerUp.VENOMGRENADE);
+        PowerCard pup = new PowerCard(new Bullet(Color.RED), PowerUp.TAGBACK_GRENADE);
         p1.useAmmo(new int[]{1,1,1});
         assertFalse(p1.canPayPowerUp(pup));
         p1.addAmmo(new int[]{1,1,1});

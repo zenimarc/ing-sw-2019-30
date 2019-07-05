@@ -66,7 +66,7 @@ public class ClientUpdateManager extends Observable {
             case REG_CELL:
                 view.regeneratePlayer();
                 break;
-            case YOUR_TURN:
+            case TIME_TO_PLAY:
                 view.myTurn((Constants) cmd.getObject());
                 break;
             case PRIORITY_OPTIONAL:
@@ -98,13 +98,19 @@ public class ClientUpdateManager extends Observable {
             case USE_TELEPORTER:
                 view.usePowerUp(PowerUp.TELEPORTER, Collections.emptyList());
                 break;
-            case USE_KINETICRAY:
+            case USE_NEWTON:
                 if(!cmd.getList().isEmpty()) {
-                    view.usePowerUp(PowerUp.KINETICRAY,
+                    view.usePowerUp(PowerUp.NEWTON,
                             cmd.getList().stream().map(x->(Player) x).collect(Collectors.toList()));
                 }
                 break;
-            case KINETICRAY_TARGET:
+            case USE_TAGBACK_GRENADE:
+                if(!cmd.getList().isEmpty()) {
+                    view.usePowerUp(PowerUp.TAGBACK_GRENADE,
+                            cmd.getList().stream().map(x->(Player) x).collect(Collectors.toList()));
+                }
+                break;
+            case NEWTON_TARGET:
                 view.useKineticray((List<Position>) cmd.getObject(), (String) cmd.getObject2());
                 break;
             case USE_GUNSIGHT:
@@ -121,6 +127,9 @@ public class ClientUpdateManager extends Observable {
                 break;
             case NOT_YOUR_TURN:
                 view.notMyTurn((String) cmd.getObject());
+                break;
+            case YOUR_TURN:
+                view.isMyTurn();
                 break;
             case PRINT_POINTS:
                 if(cmd.getObject2().getClass().equals(HashMap.class)){

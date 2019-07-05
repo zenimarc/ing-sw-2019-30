@@ -710,7 +710,7 @@ public class PlayerView extends Observable{
 
     public void chooseCellToKineticrai(List<Position> positions, String opponent){
         Position p = chooseCellToAttack(positions);
-        notifyServer(new CommandObj(USE_KINETICRAY, p, opponent));
+        notifyServer(new CommandObj(USE_NEWTON, p, opponent));
     }
 
     private boolean discardOrPayPowerUp(PowerCard powerUp){
@@ -764,7 +764,7 @@ public class PlayerView extends Observable{
         System.out.println(string);
     }
 
-    public String stringForTurnOf(String name){
+    private String stringTurn(boolean myTurn, String name){
         String starLine = starLine();
 
         StringBuilder sbStar = new StringBuilder();
@@ -772,11 +772,23 @@ public class PlayerView extends Observable{
         sbStar.append('\n');
         sbStar.append(starLine);
         sbStar.append('\n');
-        sbStar.append(wordInStar("Turn of: "+ name.toUpperCase()));
+        if(myTurn) {
+            sbStar.append(wordInStar("!!! My turn !!!"));
+        }else {
+            sbStar.append(wordInStar("Turn of: " + name.toUpperCase()));
+        }
         sbStar.append(starLine);
         sbStar.append('\n');
 
         return sbStar.toString();
+    }
+
+    public String stringForTurnOf(String name){
+       return stringTurn(false, name);
+    }
+
+    public String stringForMyTurn(){
+       return stringTurn(true, null);
     }
 
     /**
@@ -882,25 +894,42 @@ public class PlayerView extends Observable{
     }
 
     public boolean usePowerUp(PowerUp powerUpType, List<Player> opponents) {
-
+        Player p;
         switch (powerUpType) {
             case TELEPORTER:
                 move(TELEPORTER);
                 break;
-            case KINETICRAY:
-                Player p = chooseTarget(opponents);
+            case NEWTON:
+                p = chooseTarget(opponents);
                 if(p!=null) {
-                    notifyServer(new CommandObj(KINETICRAY_TARGET, p.getName()));
+                    notifyServer(new CommandObj(NEWTON_TARGET, p.getName()));
                 }
                 break;
-            case GUNSIGHT:
-            case VENOMGRENADE:
+            case TAGBACK_GRENADE:
+                useTagbackGrenade(opponents.get(0));
+                break;
+            case TARGETING_SCOPE:
                 break;
             default:
                 break;
         }
 
         return true;
+    }
+
+    private void useTagbackGrenade(Player opponent){
+        String format = "[0-1]";
+        String question = "Do you want use TAGBACK GRENADE against "+opponent.getName()+"? [0: No; 1:Yes]";
+        String read="";
+
+        while(!read.matches(format)){
+            print(question);
+            read = reader.next();
+        }
+
+        if(read.equals("1")) notifyServer(new CommandObj(USE_TAGBACK_GRENADE));
+
+
     }
 
     public void askPayGunsight(int[] payCubeGunsight, int power) {
@@ -936,7 +965,7 @@ public class PlayerView extends Observable{
             print(stringForChooseTarget(players));
             target = reader.next();
         }
-        notifyServer(new CommandObj(GUNSIGHT, Integer.valueOf(target)-1));
+        notifyServer(new CommandObj(TARGETING_SCOPE, Integer.valueOf(target)-1));
     }
 
     public void discardPowerUp(Card power) {

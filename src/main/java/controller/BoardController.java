@@ -348,6 +348,7 @@ public class BoardController{
                 pc.notMyTurn(listOfPlayers.get(playerTurn).getName());
         }
     }
+
     /**
      * Say to playerController of player to start his turn
      * @param player Player how can play
@@ -383,7 +384,6 @@ public class BoardController{
         }
         changeTurn();
     }
-
 
     private void deadManager(){
         List<Player> deadPlayers = listOfPlayers.stream().filter(Player::isDead).collect(Collectors.toList());
