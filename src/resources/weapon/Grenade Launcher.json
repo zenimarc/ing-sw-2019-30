@@ -1,0 +1,33 @@
+{
+  "WeaponClass" : "weapon.PriorityWeapon",
+  "name" : "Grenade Launcher",
+  "cost" : [ {
+    "color" : "RED"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.PriorityAttack",
+    "targetType" : "VISIBLE",
+    "name" : "GRENADE_LAUNCHER_OPT1",
+    "damage" : 1,
+    "target" : -1,
+    "movement" : 0,
+    "priority" : 1,
+    "mark" : 0,
+    "description" : "grenade: Deal 1 damage to every player on a square you can see. You can use this before or after the basic effect's move.",
+    "cost" : [ 1, 0, 0 ]
+  } ],
+  "baseAttack" : {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "GRENADE_LAUNCHER_BASE",
+    "description" : "effect: Deal 1 damage to 1 target you can see. Then you may move the target 1 square.",
+    "damage" : 1,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : null,
+  "weaponType" : "GRENADE_LAUNCHER",
+  "grabCostCLI" : "[R:0,Y:0,B:0]",
+  "weaponCostCLI" : "[R:1,Y:0,B:0]"
+}

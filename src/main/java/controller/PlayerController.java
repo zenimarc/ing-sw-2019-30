@@ -77,7 +77,7 @@ public class PlayerController extends Observable{
             case SHOOT_MOVE_FRENZY_BEFORE_FIRST:
             case SHOOT_MOVE_FRENZY_AFTER_FIRST:
             case SHOOT_MOVE:
-                moveAndDoSomethingElse(cmdObj);
+                if(!moveAndDoSomethingElse(cmdObj)) viewPrintError("Illegal action");
                 break;
             case MOVE_FRENZY:
             case MOVE:
@@ -251,6 +251,7 @@ public class PlayerController extends Observable{
      * @param cell of destination
      * @return if the player can move, else false
      */
+
     public boolean move(Cell cell, EnumCommand enumCommand){
         if(player.getCell() == cell) return true;
 
@@ -711,7 +712,6 @@ public class PlayerController extends Observable{
         return opponents;
     }
 
-
     /**
      * Implements controller to use Distanceattacks
      * @param weaponCard to use
@@ -935,11 +935,6 @@ public class PlayerController extends Observable{
     protected void cmdForView(CommandObj cmd){
         setChanged();
         notifyObservers(cmd);
-    }
-
-    private void setPlayerboardFrenzy(){
-        if(boardController.isFinalFrenzy())
-            player.getPlayerBoard().setFrenzy(true);
     }
 
     public void notMyTurn(String name){

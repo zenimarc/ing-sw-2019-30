@@ -1,0 +1,37 @@
+{
+  "WeaponClass" : "weapon.DistanceWeapon",
+  "name" : "Hellion",
+  "cost" : [ {
+    "color" : "RED"
+  }, {
+    "color" : "YELLOW"
+  } ],
+  "attacks" : [ ],
+  "baseAttack" : {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "HELLION_BASE",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 1,
+    "minDistance" : 1,
+    "maxDistance" : -1,
+    "description" : "Deal 1 damage to 1 target you can see at least 1 move away. Than give 1 mark to that target and everyone else on that square",
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "HELLION_OPT1",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 1,
+    "minDistance" : 1,
+    "maxDistance" : -1,
+    "description" : "Deal 1 damage to 1 target you can see at least 1 move away. Them give 2 marks to that target and everyone else on that square.",
+    "cost" : [ 1, 0, 0 ]
+  },
+  "weaponType" : "HELLION",
+  "grabCostCLI" : "[R:0,Y:1,B:0]",
+  "weaponCostCLI" : "[R:1,Y:1,B:0]"
+}

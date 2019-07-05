@@ -25,7 +25,8 @@ public enum EnumAttackName {
     THOR_OPT2("Rocket fist mode", "voltage: Deal 2 damage to a third target that your second target can see. You cannot use this effect unless you first use the chain reaction."),
     HEATSEEKER_BASE("Effect","Choose 1 target you cannot see and deal 3 damage to it."),
     //Area weapon
-    FURNACE_OPT1("Cozy fire mode","lorem ipsum"),
+    FURNACE_BASE("Basic mode","Choose a room you can see, but not the room you are in. Deal 1 damage to everyone in that room."),
+    FURNACE_OPT1("Cozy fire mode","Choose a square exactly one move away. Deal 1 damage and 1 mark to everyone on that square."),
     //Movement weapon
     TRACTOR_BEAN_OPT1("Punisher mode","Chose a target 0,1 or 2 moves away from you. Move the target to your square and deal 3 damage to it."),
     VORTEX_CANNON_OPT1("With black hole","Chose up 2 other targets on the vortex or 1 move away from it. Move them onto the vortex and give them each 1 damage."),

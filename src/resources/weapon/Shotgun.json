@@ -1,0 +1,35 @@
+{
+  "WeaponClass" : "weapon.MovementWeapon",
+  "name" : "Shotgun",
+  "cost" : [ {
+    "color" : "YELLOW"
+  }, {
+    "color" : "RED"
+  } ],
+  "attacks" : [ ],
+  "baseAttack" : {
+    "type" : "attack.MoveAttack",
+    "targetType" : "SAME_CELL",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "",
+    "damage" : 3,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : {
+    "type" : "attack.DistanceAttack",
+    "targetType" : "VISIBLE",
+    "name" : "SHOTGUN_OP1",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : 1,
+    "minDistance" : 1,
+    "maxDistance" : 1,
+    "description" : "lorem ipsum",
+    "cost" : [ 0, 0, 0 ]
+  },
+  "weaponType" : "SHOTGUN",
+  "grabCostCLI" : "[R:1,Y:0,B:0]",
+  "weaponCostCLI" : "[R:1,Y:1,B:0]"
+}

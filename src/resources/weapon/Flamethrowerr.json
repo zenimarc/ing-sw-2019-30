@@ -1,0 +1,35 @@
+{
+  "WeaponClass" : "weapon.CardinalWeapon",
+  "name" : "Flamethrowerr",
+  "cost" : [ {
+    "color" : "RED"
+  } ],
+  "attacks" : [ ],
+  "baseAttack" : {
+    "type" : "attack.CardinalAttack",
+    "targetType" : "CARDINAL",
+    "name" : "FLAMETHROWER_BASE",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 2,
+    "minDistance" : 1,
+    "maxDistance" : 2,
+    "description" : "mode: Choose a square 1 move away and possibly a second square 1 more move away in the same direction. On each square, you may choose 1 target and give it 1 damage.",
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : {
+    "type" : "attack.CardinalAttack",
+    "targetType" : "CARDINAL",
+    "name" : "FLAMETHROWER_OP1",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : -1,
+    "minDistance" : 1,
+    "maxDistance" : 2,
+    "description" : "Choose 2 squares as above. Deal 2 damage to everyone on the first square and 1 damage to everyone on the second square.",
+    "cost" : [ 0, 2, 0 ]
+  },
+  "weaponType" : "FLAMETHROWER",
+  "grabCostCLI" : "[R:0,Y:0,B:0]",
+  "weaponCostCLI" : "[R:1,Y:0,B:0]"
+}

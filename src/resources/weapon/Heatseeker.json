@@ -1,0 +1,27 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "Heatseeker",
+  "cost" : [ {
+    "color" : "RED"
+  }, {
+    "color" : "RED"
+  }, {
+    "color" : "YELLOW"
+  } ],
+  "attacks" : [ ],
+  "baseAttack" : {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "NOT_VISIBLE",
+    "name" : "HEATSEEKER_BASE",
+    "description" : "Choose 1 target you cannot see and deal 3 damage to it.",
+    "damage" : 3,
+    "mark" : 0,
+    "target" : 1,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : null,
+  "type" : "HEATSEEKER",
+  "weaponType" : "HEATSEEKER",
+  "grabCostCLI" : "[R:1,Y:1,B:0]",
+  "weaponCostCLI" : "[R:2,Y:1,B:0]"
+}

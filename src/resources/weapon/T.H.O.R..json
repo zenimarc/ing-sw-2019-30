@@ -1,0 +1,41 @@
+{
+  "WeaponClass" : "weapon.SimpleWeapon",
+  "name" : "T.H.O.R.",
+  "cost" : [ {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "THOR_OPT1",
+    "description" : "reaction: Deal 1 damage to a second target that your first target can see.",
+    "damage" : 1,
+    "mark" : 0,
+    "target" : 1,
+    "cost" : [ 0, 0, 0 ]
+  }, {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "THOR_OPT2",
+    "description" : "voltage: Deal 2 damage to a third target that your second target can see. You cannot use this effect unless you first use the chain reaction.",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : 1,
+    "cost" : [ 0, 0, 1 ]
+  } ],
+  "baseAttack" : {
+    "type" : "attack.SimpleAttack",
+    "targetType" : "VISIBLE",
+    "name" : "THOR_BASE",
+    "description" : "Deal 2 damage to 1 target you can see.",
+    "damage" : 2,
+    "mark" : 0,
+    "target" : 1,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : null,
+  "type" : "THOR",
+  "weaponType" : "THOR",
+  "grabCostCLI" : "[R:0,Y:0,B:0]",
+  "weaponCostCLI" : "[R:0,Y:0,B:1]"
+}

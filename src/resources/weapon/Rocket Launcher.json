@@ -1,0 +1,44 @@
+{
+  "WeaponClass" : "weapon.PriorityWeapon",
+  "name" : "Rocket Launcher",
+  "cost" : [ {
+    "color" : "RED"
+  }, {
+    "color" : "RED"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.PriorityAttack",
+    "targetType" : "VISIBLE",
+    "name" : "ROCKET_LAUNCHER_OPT1",
+    "damage" : 0,
+    "target" : 0,
+    "movement" : 2,
+    "priority" : 1,
+    "mark" : 0,
+    "description" : "Choose 1 target on any square exactly 1 move away. Move onto that squareand give the target 1 damage and 2 marks.",
+    "cost" : [ 0, 0, 1 ]
+  }, {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "ROCKET_LAUNCHER_OPT2",
+    "description" : "During the basic effect, deal 1 damage to every player on your target's original square – including the target, even if you move it.",
+    "damage" : 1,
+    "target" : 2,
+    "mark" : 0,
+    "cost" : [ 0, 1, 0 ]
+  } ],
+  "baseAttack" : {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "ROCKET_LAUNCHER_BASE",
+    "description" : "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
+    "damage" : 2,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : null,
+  "weaponType" : "ROCKET_LAUNCHER",
+  "grabCostCLI" : "[R:1,Y:0,B:0]",
+  "weaponCostCLI" : "[R:2,Y:0,B:0]"
+}

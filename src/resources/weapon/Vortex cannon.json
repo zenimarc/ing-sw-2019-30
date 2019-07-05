@@ -1,0 +1,33 @@
+{
+  "WeaponClass" : "weapon.MovementWeapon",
+  "name" : "Vortex cannon",
+  "cost" : [ {
+    "color" : "RED"
+  }, {
+    "color" : "BLUE"
+  } ],
+  "attacks" : [ {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "VORTEX_CANNON_OPT1",
+    "description" : "Chose up 2 other targets on the vortex or 1 move away from it. Move them onto the vortex and give them each 1 damage.",
+    "damage" : 1,
+    "target" : 2,
+    "mark" : 0,
+    "cost" : [ 1, 0, 0 ]
+  } ],
+  "baseAttack" : {
+    "type" : "attack.MoveAttack",
+    "targetType" : "VISIBLE",
+    "name" : "BASE_ATTACK_NAME",
+    "description" : "",
+    "damage" : 2,
+    "target" : 1,
+    "mark" : 0,
+    "cost" : [ 0, 0, 0 ]
+  },
+  "alternativeAttack" : null,
+  "weaponType" : "VORTEX_CANNON",
+  "grabCostCLI" : "[R:0,Y:0,B:1]",
+  "weaponCostCLI" : "[R:1,Y:0,B:1]"
+}
