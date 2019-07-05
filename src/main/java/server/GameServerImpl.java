@@ -154,6 +154,15 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
             }
     }
 
+    private void broadcastMsg(String msg){
+        for (Client client : getActiveClients())
+            try {
+                client.showMsg(msg);
+            }catch (RemoteException re){
+                re.fillInStackTrace();
+            }
+    }
+
     /**
      * This command is used to send a command to a player
      * @param cmd to be sent
@@ -230,6 +239,12 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private synchronized void endGame(){
         boardController.totalPoints();
         this.gameStarted = false;
+        for(Client client : getActiveClients())
+            try{
+                client.timeExpired();
+            }catch (RemoteException re){
+                re.fillInStackTrace();
+            }
         Thread.currentThread().interrupt();
     }
 
@@ -297,8 +312,10 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private synchronized void swapOffOn(Client client){
         System.out.print("swapOffOn "+ client);
         Optional<ClientInfo> clientInfo = clients.stream().filter(x -> x.getClient().equals(client)).findFirst();
-        if (clientInfo.isPresent())
+        if (clientInfo.isPresent()) {
             clientInfo.get().setOn();
+        }
+
     }
 
     /**
@@ -311,6 +328,9 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         if (clientInfo.isPresent()) {
             clientInfo.get().setOff();
             boardController.suspend(clientInfo.get().getPlayer());
+            broadcastMsg(clientInfo.get().getPlayer().getName()+" ha lasciato il gioco");
+            if(boardController.getNumActivePlayers()<minPlayer)
+                endGame();
         }
     }
 
@@ -359,8 +379,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
                 }
                 for (Client client : clientsToBeSuspended) {
                     swapOnOff(client);
-                    new Thread(() -> kick(client)).start();
-                    //TODO: qui magari fare thread pool e far partire il countdown timer thread senza lambda.
+                    //new Thread(() -> kick(client)).start(); TODO: mettere se si vuole impedire riconnessione dopo tot secs.
                 }
             }catch (InterruptedException ie){
                 ie.fillInStackTrace();

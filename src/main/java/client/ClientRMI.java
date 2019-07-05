@@ -93,6 +93,10 @@ public class ClientRMI extends UnicastRemoteObject implements Client, Observer {
         gameServer.receiveCMD(cmd, this);
     }
 
+    public void showMsg(String msg){
+        view.giveMessage(" ", msg);
+    }
+
     /**
      * this function register this client to the remote Lobby and if the Lobby accept the
      * registration, the client saves his userToken in local attribute.
