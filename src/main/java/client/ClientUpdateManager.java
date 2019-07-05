@@ -94,10 +94,7 @@ public class ClientUpdateManager extends Observable {
                 view.usePowerUp(PowerUp.TELEPORTER, Collections.emptyList());
                 break;
             case USE_NEWTON:
-                if(!cmd.getList().isEmpty()) {
-                    view.usePowerUp(PowerUp.NEWTON,
-                            cmd.getList().stream().map(x->(Player) x).collect(Collectors.toList()));
-                }
+                view.usePowerUp(PowerUp.NEWTON, (List) cmd.getObject());
                 break;
             case USE_TAGBACK_GRENADE:
                     view.usePowerUp(PowerUp.TAGBACK_GRENADE, (List) cmd.getObject());
