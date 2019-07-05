@@ -136,22 +136,7 @@ public class WeaponFactory {
      * @return a List of weapons
      */
     public List<WeaponCard> getWeaponCardList(){
-
-        List<WeaponCard> okCards = new ArrayList<>();
-        okCards.add(new SimpleWeapon(EnumWeapon.LOCK_RIFLE));
-        okCards.add(new SimpleWeapon(EnumWeapon.MACHINE_GUN));
-        okCards.add(new SimpleWeapon(EnumWeapon.ELECTROSCYTHE));
-        okCards.add(new SimpleWeapon(EnumWeapon.HEATSEEKER));
-        okCards.add(new SimpleWeapon(EnumWeapon.ZX_2));
-
-        okCards.add(new AreaWeapon(EnumWeapon.FURNACE));
-
-        okCards.add(new DistanceWeapon(EnumWeapon.WHISPER));
-        okCards.add(new DistanceWeapon(EnumWeapon.HELLION));
-        okCards.add(new DistanceWeapon(EnumWeapon.SHOCK_WAVE));
-
-        return okCards;
-   //     return loadWeaponCardsJackson();
+        return loadWeaponCardsJackson();
     }
 
     public static void main(String[] arg) {
