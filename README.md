@@ -1,5 +1,5 @@
 # ing-sw-2019-30
-## Funzioanlità sviluppate
+## Funzionalità sviluppate
 - Regole Complete + CLI + RMI + 1 FA (Partite multiple)
 
 Abbiamo predisposto il progetto per poter integrare facilmente una connessione tramite Socket, essendo il nostro protocollo di comunicazione basato sull'invio e la ricezione di comandi.
