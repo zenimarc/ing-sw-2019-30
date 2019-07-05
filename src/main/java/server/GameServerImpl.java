@@ -239,6 +239,12 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
     private synchronized void endGame(){
         boardController.totalPoints();
         this.gameStarted = false;
+        for(Client client : getActiveClients())
+            try{
+                client.timeExpired();
+            }catch (RemoteException re){
+                re.fillInStackTrace();
+            }
         Thread.currentThread().interrupt();
     }
 
