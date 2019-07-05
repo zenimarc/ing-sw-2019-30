@@ -5,9 +5,11 @@ import board.NormalCell;
 import board.Position;
 import board.RegenerationCell;
 import board.billboard.Billboard;
+import constants.Color;
 import constants.Constants;
 import controller.CommandObj;
 import controller.EnumCommand;
+import deck.Bullet;
 import deck.Card;
 import player.Player;
 import powerup.PowerCard;
@@ -292,16 +294,18 @@ public class PlayerView extends Observable{
      */
     private Player chooseTarget(List<Player> possibleTarget){
         String format = "[0-"+possibleTarget.size()+"]";
-        print("Possible target are:\n");
-        print("0) No one\t");
-
-        String question = stringForChooseTarget(possibleTarget);
-        print("\nWhich opponent do you want to shoot?");
         String read;
         int index;
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("Possible target are:\n");
+        sb.append("0) No one\t");
+        sb.append(stringForChooseTarget(possibleTarget));
+        sb.append("\nWhich opponent do you want to shoot?");
+
+
         while(true){
-            print(question);
+            print(sb.toString());
             read = reader.next();
             if(read.matches(format)){
                 index = Integer.valueOf(read)-1;
@@ -709,6 +713,7 @@ public class PlayerView extends Observable{
     }
 
     public void chooseCellToKineticrai(List<Position> positions, String opponent){
+        print("Use NEWTON!\n");
         Position p = chooseCellToAttack(positions);
         notifyServer(new CommandObj(USE_NEWTON, p, opponent));
     }
@@ -890,11 +895,14 @@ public class PlayerView extends Observable{
             read = reader.next();
         }
 
+        if(Integer.valueOf(read)==0) return;
+
         notifyServer(new CommandObj(USE_POWER_UP, powers.get(Integer.valueOf(read)-1)));
     }
 
     public boolean usePowerUp(PowerUp powerUpType, List<Player> opponents) {
         Player p;
+        Color c;
         switch (powerUpType) {
             case TELEPORTER:
                 move(TELEPORTER);
@@ -909,12 +917,40 @@ public class PlayerView extends Observable{
                 useTagbackGrenade(opponents.get(0));
                 break;
             case TARGETING_SCOPE:
+                p = chooseTarget(opponents);
+                c = chooseColorToPay();
+                if(p!=null){
+                    notifyServer(new CommandObj(TARGETING_SCOPE, p, c));
+                }
                 break;
             default:
                 break;
         }
 
         return true;
+    }
+
+    private Color chooseColorToPay(){
+        return selectBulletToUse(player.getAmmo());
+    }
+
+    private Color selectBulletToUse(int[] cubes){
+        String format = "[0-4]";
+        StringBuilder question = new StringBuilder();
+        question.append("You have: ");
+        question.append(Bullet.intArrayToString(cubes));
+        question.append("\nWhat do you want to use? [0:No one 1:R 2:G 3:B] ");
+        String read;
+
+        while(true){
+            print(question.toString());
+            read = reader.next();
+            if(read.matches(format)){
+                int i = Integer.valueOf(read)-1;
+                if(i==-1) return null;
+                if(cubes[i]!=0) return Color.convertToColor(i);
+            }
+        }
     }
 
     private void useTagbackGrenade(Player opponent){
@@ -941,20 +977,6 @@ public class PlayerView extends Observable{
             read = reader.next();
         }
         notifyServer(new CommandObj(GUNSIGHTPAID, power, convertToColor(Integer.valueOf(read))));
-    }
-
-    public void askToPay(PowerCard power) {
-        String format = "[0-1]";
-        String read = "";
-        boolean bool = false;
-
-        while (!read.matches(format)) {
-            print("Do you want to pay or to discard your power up? [0: Pay, 1: Discard]");
-            read = reader.next();
-        }
-        if(Integer.valueOf(read) == 1)
-            bool = true;
-        notifyServer(new CommandObj(PAIDPOWERUP, power, bool));
     }
 
     protected void chooseGunsightTarget(List<Player> players){

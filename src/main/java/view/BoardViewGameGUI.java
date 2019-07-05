@@ -1773,7 +1773,6 @@ public class BoardViewGameGUI extends Application implements View {
         command = ASK_FOR_POWER_UP;
     }
 
-    @Override
     public void payGunsight(int[] bullets, int card) {
         root.getChildren().get(players.size()).setVisible(true);
         ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Choose which cube do you want to use");
@@ -1782,7 +1781,6 @@ public class BoardViewGameGUI extends Application implements View {
         command = PAYGUNSIGHT;
     }
 
-    @Override
     public void payPowerUp(PowerCard card) {
         root.getChildren().get(players.size()).setVisible(true);
         ((Label)((Pane)root.getChildren().get(players.size())).getChildren().get(0)).setText("Click on th power up if you want to discard it, else the cubes if you want to pay it");
@@ -1806,7 +1804,6 @@ public class BoardViewGameGUI extends Application implements View {
         changeMessage(playerDead, (Pane) root.getChildren().get(players.size()+3));
     }
 
-    @Override
     public void chooseGunsightTarget(List<Player> targets) {
         this.targets = targets;
         command = USE_GUNSIGHT;

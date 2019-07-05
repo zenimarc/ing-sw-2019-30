@@ -3,6 +3,7 @@ package player;
 import board.Cell;
 import constants.Constants;
 import constants.Color;
+import deck.Bullet;
 import deck.Card;
 import org.jetbrains.annotations.NotNull;
 import powerup.PowerCard;
@@ -522,5 +523,9 @@ public class Player extends Observable implements Cloneable, Serializable {
 
     public Player getPotentialTagbackGrenade() {
         return potentialTagbackGrenade;
+    }
+
+    public int[] getAmmo() {
+        return Bullet.mapToIntArray(ammo);
     }
 }

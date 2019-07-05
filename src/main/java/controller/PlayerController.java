@@ -67,15 +67,6 @@ public class PlayerController extends Observable{
         return player;
     }
 
-/*    /**
-     * This function is used to manage action received from a player
-     * @param o observable
-     * @param arg arg
-     /
-    @Override
-    public void update(Observable o, Object arg) {
-    }
-*/
     public void receiveCmd(CommandObj cmdObj){
         PowerCard powerCard;
 
@@ -114,15 +105,6 @@ public class PlayerController extends Observable{
             case CHECK_EVERY_TIME_POWER_UP:
                 powerUpManager(cmdObj);
                 break;
-            case PAYGUNSIGHT:
-                if ((int) cmdObj.getObject() != -1)
-                    cmdForView(new CommandObj(PAYGUNSIGHT, player.payCubeGunsight(), cmdObj.getObject())); //cmdObj.getObject() is int referring to weapon place
-                else player.notifyEndAction();
-                break;
-            case GUNSIGHTPAID:
-                player.canPayGunsight((Color) cmdObj.getObject2());
-                receiveCmd(new CommandObj(PAYPOWERUP, cmdObj.getObject()));
-                break;
             case PAYPOWERUP:
                 if ((int) cmdObj.getObject() != -1) {
                     if (player.canPayPower(player.getPowerups().get((int) cmdObj.getObject())))
@@ -139,11 +121,6 @@ public class PlayerController extends Observable{
                 player.usePowerUp((PowerCard) cmdObj.getObject(), (Boolean) cmdObj.getObject2());
                 receiveCmd(verifyPowerUp((PowerCard) cmdObj.getObject()));
                 break;
-            case TELEPORTER:
-                setCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
-                payPowerUp();
-                player.notifyEndAction();
-                break;
             case NEWTON_TARGET:
                 Player p = boardController.getListOfPlayers().stream().filter(x -> x.getName().equals((String) cmdObj.getObject())).findFirst().orElse(null);
                 if (p != null) {
@@ -152,6 +129,11 @@ public class PlayerController extends Observable{
                         cmdForView(new CommandObj(NEWTON_TARGET, potentialPosition, p.getName()));
                     }
                 }
+                break;
+            case TELEPORTER:
+                setCell(billboard.getCellFromPosition((Position) (cmdObj.getObject())));
+                payPowerUp();
+                player.notifyEndAction();
                 break;
             case USE_NEWTON:
                 Cell kntCell = billboard.getCellFromPosition((Position) cmdObj.getObject());
@@ -165,15 +147,11 @@ public class PlayerController extends Observable{
                     if(player.canPay(Bullet.colorToArray(powerCard.getColor()))) {
                         player.useTagbackGrenade();
                         player.useAmmo(Bullet.colorToArray(powerCard.getColor()));
+                        player.notifyEndAction();
                     }
                 break;
-            case USE_GUNSIGHT:
-                cmdForView(new CommandObj(USE_GUNSIGHT, enemies));
-                ((Player) cmdObj.getObject()).addDamage(player);
-                notifyObservers();
-                break;
             case TARGETING_SCOPE:
-                enemies.get((int) cmdObj.getObject()).addGunsightDamage(player);
+                useTargetingScope(cmdObj);
                 break;
             case DISCARD_POWER:
                 PowerCard power = (PowerCard) cmdObj.getObject();
@@ -315,10 +293,6 @@ public class PlayerController extends Observable{
 
         return false;
     }
-
-    private boolean movePlayer(@NotNull Player player, Cell cell, int i){
-        return (!billboard.canMove(player.getPawn().getCell(), cell, i));
-     }
 
     /**
      * Player pay to use powerUp
@@ -529,7 +503,9 @@ public class PlayerController extends Observable{
         }
 
         if(isGoodAttack) {
-            askForTagbackGrenade();
+            enableOpponentsForTagbackGrenade();
+            verifyTargetingScope();
+            enemies.clear();
             return true;
         }else {
             viewPrintError("Failed attack");
@@ -538,9 +514,9 @@ public class PlayerController extends Observable{
     }
 
     /**
-     * Support for Tagback Grenade. Search if some player have Tagback Grenade and if can pay, if true enable tagback grenade
+     *Support for Tagback Grenade. Search if some player have Tagback Grenade and if can pay, if true enable tagback grenade
      */
-    private void askForTagbackGrenade(){
+    private void enableOpponentsForTagbackGrenade(){
         List<Player> players = enemies.stream().filter(x -> x!= null &&
                 !(x.haveTagbackGranade().isEmpty()) &&
                 boardController.getBoard().getBillboard().visibleCells(x.getCell()).contains(this.player.getCell())
@@ -553,9 +529,43 @@ public class PlayerController extends Observable{
                 }
             }
         }
-        enemies.clear();
     }
 
+    /**
+     * Check if player can pay, than add damage to "Sfigghi" opponents
+     * @param cmdObj cmdObj contains good news!
+     */
+    private void useTargetingScope(CommandObj cmdObj){
+        Player p;
+        int[] cubes;
+        if(cmdObj.getObject().getClass().equals(Player.class) && cmdObj.getObject2().getClass().equals(Color.class)){
+            p = boardController.getPlayer(((Player) cmdObj.getObject()).getName());
+            cubes = Bullet.colorToArray((Color) cmdObj.getObject2());
+            if(player.canPay(cubes)){
+                player.addDamage(p);
+                p.notifyEndAction();
+                player.useAmmo(cubes);
+                player.notifyEndAction();
+            }else {
+                viewPrintError("You can't pay this effect.");
+            }
+        }else viewPrintError("Format Error, sorry!");
+
+    }
+
+    /**
+     * Check if player can use TARGETING_SCOPE to add a damage to 1 of opponents just hit
+     */
+    private void verifyTargetingScope(){
+        List<PowerCard> powerCards = this.player.getPowerups().stream()
+                .filter(x->x.getPowerUp().equals(TARGETING_SCOPE)).collect(Collectors.toList());
+        if(powerCards.isEmpty()) return;
+        if(player.canPay(new int[]{1,0,0})|| player.canPay(new int[]{0,1,0})||player.canPay(new int[]{0,0,1})){
+            CommandObj commandObj = new CommandObj(EnumCommand.TARGETING_SCOPE,
+                    enemies.stream().filter(x->x!=null).collect(Collectors.toList()));
+            cmdForView(commandObj);
+        }
+    }
 
     /**
      * This asks player which optional attack wants to use, if 0 -> use only BaseAttack.

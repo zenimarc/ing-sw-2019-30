@@ -29,8 +29,11 @@ public enum Color {
     public static Color convertToColor(int i){
         if(i == 0)
             return RED;
-        if(i == 1)
+        else if(i == 1)
             return YELLOW;
-        return BLUE;
+        else if(i==2)
+            return BLUE;
+        else
+            return null;
     }
 }

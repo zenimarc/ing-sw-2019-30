@@ -89,12 +89,7 @@ public class ClientUpdateManager extends Observable {
             case ASK_FOR_POWER_UP:
                 view.askPowerUp((List) cmd.getObject());
                 break;
-            case PAYGUNSIGHT:
-                view.payGunsight((int[])cmd.getObject(), (int) cmd.getObject2());
-                break;
-            case PAYPOWERUP:
-                view.payPowerUp((PowerCard) cmd.getObject());
-                break;
+
             case USE_TELEPORTER:
                 view.usePowerUp(PowerUp.TELEPORTER, Collections.emptyList());
                 break;
@@ -105,16 +100,13 @@ public class ClientUpdateManager extends Observable {
                 }
                 break;
             case USE_TAGBACK_GRENADE:
-                if(!cmd.getList().isEmpty()) {
-                    view.usePowerUp(PowerUp.TAGBACK_GRENADE,
-                            cmd.getList().stream().map(x->(Player) x).collect(Collectors.toList()));
-                }
+                    view.usePowerUp(PowerUp.TAGBACK_GRENADE, (List) cmd.getObject());
+                break;
+            case TARGETING_SCOPE:
+                    view.usePowerUp(PowerUp.TARGETING_SCOPE, (List) cmd.getObject());
                 break;
             case NEWTON_TARGET:
                 view.useKineticray((List<Position>) cmd.getObject(), (String) cmd.getObject2());
-                break;
-            case USE_GUNSIGHT:
-                view.chooseGunsightTarget((List<Player>)cmd.getObject());
                 break;
             case DISCARD_POWER:
                 view.discardPowerUp((Card) cmd.getObject());

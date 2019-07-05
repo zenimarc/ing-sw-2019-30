@@ -4,6 +4,7 @@ import board.Cell;
 import weapon.WeaponCard;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class CommandObj implements Serializable {
         this.object2 = obj2;
     }
 
-    public CommandObj(EnumCommand cmd, List<Object> objs){
+    public CommandObj(EnumCommand cmd, ArrayList<Object> objs){
         this.cmd = cmd;
         this.objects = objs;
     }

@@ -115,16 +115,6 @@ public class Cli implements View {
     }
 
     @Override
-    public void payGunsight(int[] bullets, int card) {
-        playerView.askPayGunsight(bullets, card);
-    }
-
-    @Override
-    public void payPowerUp(PowerCard card) {
-        playerView.askToPay(card);
-    }
-
-    @Override
     public void useKineticray(List<Position> positions, String opponent) {
        playerView.chooseCellToKineticrai(positions, opponent);
     }
@@ -132,11 +122,6 @@ public class Cli implements View {
     @Override
     public void giveScore(String playerDead, Map<String, Integer> points) {
         playerView.giveScore(playerDead, points);
-    }
-
-    @Override
-    public void chooseGunsightTarget(List<Player> targets) {
-        playerView.chooseGunsightTarget(targets);
     }
 
     @Override
