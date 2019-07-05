@@ -23,6 +23,7 @@ public interface Client extends Remote {
  //   void receiveObj(Object obj) throws RemoteException;
     void gameStarted() throws RemoteException;
     List<Player> getListOfPlayers() throws RemoteException;
+    void showMsg(String msg) throws RemoteException;
 
     /**
      * Ask player opponents to hit

@@ -502,4 +502,7 @@ public class BoardController{
         playerToReactivate.reactivate();
     }
 
+    public int getNumActivePlayers(){
+        return this.listOfPlayers.stream().filter(x->x.isActive()).collect(Collectors.toList()).size();
+    }
 }
